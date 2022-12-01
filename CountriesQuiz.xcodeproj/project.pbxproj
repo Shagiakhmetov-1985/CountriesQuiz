@@ -13,6 +13,8 @@
 		C3E2EB372938E7F300AB40AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3E2EB352938E7F300AB40AD /* Main.storyboard */; };
 		C3E2EB392938E7F400AB40AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3E2EB382938E7F400AB40AD /* Assets.xcassets */; };
 		C3E2EB3C2938E7F400AB40AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3E2EB3A2938E7F400AB40AD /* LaunchScreen.storyboard */; };
+		C3E2EB4B2938EA6800AB40AD /* FlagsOfCountries.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB4A2938EA6800AB40AD /* FlagsOfCountries.swift */; };
+		C3E2EB4D2938ED6800AB40AD /* CountriesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB4C2938ED6800AB40AD /* CountriesManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		C3E2EB382938E7F400AB40AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C3E2EB3B2938E7F400AB40AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C3E2EB3D2938E7F400AB40AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C3E2EB4A2938EA6800AB40AD /* FlagsOfCountries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagsOfCountries.swift; sourceTree = "<group>"; };
+		C3E2EB4C2938ED6800AB40AD /* CountriesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountriesManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +60,65 @@
 		C3E2EB2E2938E7F300AB40AD /* CountriesQuiz */ = {
 			isa = PBXGroup;
 			children = (
-				C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */,
-				C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */,
-				C3E2EB332938E7F300AB40AD /* ViewController.swift */,
-				C3E2EB352938E7F300AB40AD /* Main.storyboard */,
-				C3E2EB382938E7F400AB40AD /* Assets.xcassets */,
-				C3E2EB3A2938E7F400AB40AD /* LaunchScreen.storyboard */,
-				C3E2EB3D2938E7F400AB40AD /* Info.plist */,
+				C3E2EB492938E92600AB40AD /* StorageManager */,
+				C3E2EB472938E90D00AB40AD /* Models */,
+				C3E2EB452938E8C800AB40AD /* Supporting */,
+				C3E2EB442938E88100AB40AD /* ViewControllers */,
+				C3E2EB432938E87000AB40AD /* Storyboards */,
+				C3E2EB462938E8D100AB40AD /* Resources */,
 			);
 			path = CountriesQuiz;
+			sourceTree = "<group>";
+		};
+		C3E2EB432938E87000AB40AD /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				C3E2EB352938E7F300AB40AD /* Main.storyboard */,
+				C3E2EB3A2938E7F400AB40AD /* LaunchScreen.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		C3E2EB442938E88100AB40AD /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				C3E2EB332938E7F300AB40AD /* ViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		C3E2EB452938E8C800AB40AD /* Supporting */ = {
+			isa = PBXGroup;
+			children = (
+				C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */,
+				C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */,
+				C3E2EB3D2938E7F400AB40AD /* Info.plist */,
+			);
+			path = Supporting;
+			sourceTree = "<group>";
+		};
+		C3E2EB462938E8D100AB40AD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C3E2EB382938E7F400AB40AD /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C3E2EB472938E90D00AB40AD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C3E2EB4A2938EA6800AB40AD /* FlagsOfCountries.swift */,
+				C3E2EB4C2938ED6800AB40AD /* CountriesManager.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C3E2EB492938E92600AB40AD /* StorageManager */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = StorageManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,6 +195,8 @@
 				C3E2EB342938E7F300AB40AD /* ViewController.swift in Sources */,
 				C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */,
 				C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */,
+				C3E2EB4D2938ED6800AB40AD /* CountriesManager.swift in Sources */,
+				C3E2EB4B2938EA6800AB40AD /* FlagsOfCountries.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,7 +345,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S4AD5RA4FS;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CountriesQuiz/Info.plist;
+				INFOPLIST_FILE = CountriesQuiz/Supporting/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -317,7 +373,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S4AD5RA4FS;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CountriesQuiz/Info.plist;
+				INFOPLIST_FILE = CountriesQuiz/Supporting/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

@@ -4,8 +4,8 @@
 <dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Gamestation.otf</string>
 		<string>echorevival.otf</string>
+		<string>fontick.otf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

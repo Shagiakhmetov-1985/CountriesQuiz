@@ -60,6 +60,7 @@ class MainViewController: UIViewController {
     private var imageMain: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "Worldmap")
+        image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
     
@@ -96,6 +97,42 @@ class MainViewController: UIViewController {
                                shadowOffsetHeight: 2
         )
         button.addTarget(self, action: #selector(startQuizOfFlags), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var buttonSetting: UIButton = {
+        let button = setButton(title: "Setting",
+                               size: 22,
+                               colorTitle: UIColor(
+                                red: 184/255,
+                                green: 247/255,
+                                blue: 252/255,
+                                alpha: 1
+                               ),
+                               colorBackgroud: UIColor(
+                                red: 125/255,
+                                green: 222/255,
+                                blue: 255/255,
+                                alpha: 0.15
+                               ),
+                               radiusCorner: 10,
+                               borderWidth: 3,
+                               borderColor: UIColor(
+                                red: 184/255,
+                                green: 247/255,
+                                blue: 252/255,
+                                alpha: 1).cgColor,
+                               shadowColor: UIColor(
+                                red: 54/255,
+                                green: 55/255,
+                                blue: 252/255,
+                                alpha: 1
+                               ).cgColor,
+                               radiusShadow: 3,
+                               shadowOffsetWidth: 2,
+                               shadowOffsetHeight: 2
+        )
+        button.addTarget(self, action: #selector(setting), for: .touchUpInside)
         return button
     }()
     
@@ -166,7 +203,8 @@ class MainViewController: UIViewController {
         setupSubviews(subviews: imageMain,
                       labelMainCountries,
                       labelMainQuiz,
-                      buttonQuizOfFlags
+                      buttonQuizOfFlags,
+                      buttonSetting
         )
         setConstraints()
     }
@@ -182,7 +220,6 @@ class MainViewController: UIViewController {
     }
     // MARK: - Set constraints
     private func setConstraints() {
-        imageMain.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageMain.topAnchor.constraint(equalTo: view.topAnchor),
             imageMain.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -190,30 +227,39 @@ class MainViewController: UIViewController {
             imageMain.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
-        labelMainCountries.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             labelMainCountries.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
             labelMainCountries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
             labelMainCountries.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50)
         ])
         
-        labelMainQuiz.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             labelMainQuiz.topAnchor.constraint(equalTo: labelMainCountries.topAnchor, constant: 45),
             labelMainQuiz.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 220),
             labelMainQuiz.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
-        buttonQuizOfFlags.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             buttonQuizOfFlags.topAnchor.constraint(equalTo: labelMainQuiz.topAnchor, constant: 150),
             buttonQuizOfFlags.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             buttonQuizOfFlags.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
         ])
+        
+        NSLayoutConstraint.activate([
+            buttonSetting.topAnchor.constraint(equalTo: buttonQuizOfFlags.topAnchor, constant: 48),
+            buttonSetting.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            buttonSetting.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
+        ])
     }
     
     @objc private func startQuizOfFlags() {
-        print("start game!")
+        
+    }
+    
+    @objc private func setting() {
+        let settingVC = SettingViewController()
+        settingVC.modalPresentationStyle = .fullScreen
+        present(settingVC, animated: true)
     }
 }
 // MARK: - Setup label
@@ -222,10 +268,6 @@ extension MainViewController {
                           size: CGFloat,
                           style: String,
                           color: UIColor,
-                          x: CGFloat? = nil,
-                          y: CGFloat? = nil,
-                          width: CGFloat? = nil,
-                          height: CGFloat? = nil,
                           colorOfShadow: CGColor? = nil,
                           radiusOfShadow: CGFloat? = nil,
                           shadowOffsetWidth: CGFloat? = nil,
@@ -234,20 +276,19 @@ extension MainViewController {
         label.text = title
         label.font = UIFont(name: style, size: size)
         label.textColor = color
-        label.frame = CGRect(x: x ?? 0, y: y ?? 0, width: width ?? 0, height: height ?? 0)
         label.layer.shadowColor = colorOfShadow
         label.layer.shadowRadius = radiusOfShadow ?? 0
         label.layer.shadowOpacity = 1
         label.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
                                           height: shadowOffsetHeight ?? 0
         )
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
 }
 // MARK: - Setup button
 extension MainViewController {
     private func setButton(title: String,
-                           style: String? = nil,
                            size: CGFloat,
                            colorTitle: UIColor? = nil,
                            colorBackgroud: UIColor? = nil,
@@ -258,10 +299,10 @@ extension MainViewController {
                            radiusShadow: CGFloat? = nil,
                            shadowOffsetWidth: CGFloat? = nil,
                            shadowOffsetHeight: CGFloat? = nil) -> UIButton {
-        let button = UIButton()
+        let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
-        button.setTitleColor(colorTitle, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: size, weight: .semibold)
+        button.setTitleColor(colorTitle, for: .normal)
         button.backgroundColor = colorBackgroud
         button.layer.cornerRadius = radiusCorner
         button.layer.borderWidth = borderWidth ?? 0
@@ -272,6 +313,7 @@ extension MainViewController {
         button.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
                                            height: shadowOffsetHeight ?? 0
         )
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
 }

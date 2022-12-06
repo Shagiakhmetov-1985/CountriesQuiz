@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C38139E9293C9A5D0067D374 /* Gamestation.otf in Resources */ = {isa = PBXBuildFile; fileRef = C38139E8293C9A5D0067D374 /* Gamestation.otf */; };
 		C38139EB293C9A890067D374 /* echorevival.otf in Resources */ = {isa = PBXBuildFile; fileRef = C38139EA293C9A890067D374 /* echorevival.otf */; };
+		C3B35F20293FADC300A8493F /* fontick.otf in Resources */ = {isa = PBXBuildFile; fileRef = C3B35F1F293FADC300A8493F /* fontick.otf */; };
+		C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D292EA293F5F0900786752 /* SettingViewController.swift */; };
 		C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */; };
 		C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */; };
 		C3E2EB342938E7F300AB40AD /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB332938E7F300AB40AD /* MainViewController.swift */; };
@@ -20,8 +21,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		C38139E8293C9A5D0067D374 /* Gamestation.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Gamestation.otf; sourceTree = "<group>"; };
 		C38139EA293C9A890067D374 /* echorevival.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = echorevival.otf; sourceTree = "<group>"; };
+		C3B35F1F293FADC300A8493F /* fontick.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontick.otf; sourceTree = "<group>"; };
+		C3D292EA293F5F0900786752 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		C3E2EB2C2938E7F300AB40AD /* CountriesQuiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CountriesQuiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -48,8 +50,8 @@
 		C38139E7293C9A1E0067D374 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				C38139E8293C9A5D0067D374 /* Gamestation.otf */,
 				C38139EA293C9A890067D374 /* echorevival.otf */,
+				C3B35F1F293FADC300A8493F /* fontick.otf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -97,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				C3E2EB332938E7F300AB40AD /* MainViewController.swift */,
+				C3D292EA293F5F0900786752 /* SettingViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -196,8 +199,8 @@
 				C38139EB293C9A890067D374 /* echorevival.otf in Resources */,
 				C3E2EB3C2938E7F400AB40AD /* LaunchScreen.storyboard in Resources */,
 				C3E2EB392938E7F400AB40AD /* Assets.xcassets in Resources */,
-				C38139E9293C9A5D0067D374 /* Gamestation.otf in Resources */,
 				C3E2EB372938E7F300AB40AD /* Main.storyboard in Resources */,
+				C3B35F20293FADC300A8493F /* fontick.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +216,7 @@
 				C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */,
 				C3E2EB4D2938ED6800AB40AD /* CountriesManager.swift in Sources */,
 				C3E2EB4B2938EA6800AB40AD /* FlagsOfCountries.swift in Sources */,
+				C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

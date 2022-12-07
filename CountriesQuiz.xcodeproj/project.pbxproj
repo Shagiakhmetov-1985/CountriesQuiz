@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C38139EB293C9A890067D374 /* echorevival.otf in Resources */ = {isa = PBXBuildFile; fileRef = C38139EA293C9A890067D374 /* echorevival.otf */; };
 		C3B35F20293FADC300A8493F /* fontick.otf in Resources */ = {isa = PBXBuildFile; fileRef = C3B35F1F293FADC300A8493F /* fontick.otf */; };
+		C3B35F22294084BD00A8493F /* PickerViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B35F21294084BD00A8493F /* PickerViewManager.swift */; };
 		C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D292EA293F5F0900786752 /* SettingViewController.swift */; };
 		C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */; };
 		C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */; };
@@ -23,6 +24,7 @@
 /* Begin PBXFileReference section */
 		C38139EA293C9A890067D374 /* echorevival.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = echorevival.otf; sourceTree = "<group>"; };
 		C3B35F1F293FADC300A8493F /* fontick.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontick.otf; sourceTree = "<group>"; };
+		C3B35F21294084BD00A8493F /* PickerViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerViewManager.swift; sourceTree = "<group>"; };
 		C3D292EA293F5F0900786752 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		C3E2EB2C2938E7F300AB40AD /* CountriesQuiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CountriesQuiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 			children = (
 				C3E2EB4A2938EA6800AB40AD /* FlagsOfCountries.swift */,
 				C3E2EB4C2938ED6800AB40AD /* CountriesManager.swift */,
+				C3B35F21294084BD00A8493F /* PickerViewManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -212,6 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3E2EB342938E7F300AB40AD /* MainViewController.swift in Sources */,
+				C3B35F22294084BD00A8493F /* PickerViewManager.swift in Sources */,
 				C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */,
 				C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */,
 				C3E2EB4D2938ED6800AB40AD /* CountriesManager.swift in Sources */,

@@ -41,7 +41,7 @@ class SettingViewController: UIViewController {
         return button
     }()
     
-    private lazy var labelAllCountries: UILabel = {
+    private lazy var labelNumberQuestions: UILabel = {
         let label = setLabel(
             title: "Количество вопросов:",
             size: 28,
@@ -58,14 +58,14 @@ class SettingViewController: UIViewController {
                 blue: 215/255,
                 alpha: 1
             ).cgColor,
-            radiusOfShadow: 2.5,
+            radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2
         )
         return label
     }()
     
-    private lazy var labelNumAllCountries: UILabel = {
+    private lazy var labelNumber: UILabel = {
         let label = setLabel(
             title: "20",
             size: 28,
@@ -82,19 +82,414 @@ class SettingViewController: UIViewController {
                 blue: 215/255,
                 alpha: 1
             ).cgColor,
-            radiusOfShadow: 2.5,
+            radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2
         )
         return label
     }()
     
+    private lazy var pickerViewNumberQuestion: UIPickerView = {
+        let pickerView = setPickerView(
+            backgroundColor: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            cornerRadius: 13
+        )
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        pickerView.translatesAutoresizingMaskIntoConstraints = false
+        return pickerView
+    }()
+    
+    private lazy var labelAllCountries: UILabel = {
+        let label = setLabel(
+            title: """
+            Все страны мира
+            Количество стран: 245
+            """,
+            size: 26,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            colorOfShadow: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return label
+    }()
+    
+    private lazy var toggleAllCountries: UISwitch = {
+        let toggle = setToggle(
+            toggleColor: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            onColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ),
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            shadowRadius: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return toggle
+    }()
+    
+    private lazy var stackViewAllCountries: UIStackView = {
+        let stackView = setStackView(autoresizingConstraints: false,
+                                     label: labelAllCountries,
+                                     toggle: toggleAllCountries
+        )
+        return stackView
+    }()
+    
+    private lazy var labelAmericaContinent: UILabel = {
+        let label = setLabel(
+            title: """
+            Континент Америки
+            Количество стран: 55
+            """,
+            size: 26,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            colorOfShadow: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return label
+    }()
+    
+    private lazy var toggleAmericaContinent: UISwitch = {
+        let toggle = setToggle(
+            toggleColor: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            onColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ),
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            shadowRadius: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return toggle
+    }()
+    
+    private lazy var stackViewAmericaContinent: UIStackView = {
+        let stackView = setStackView(autoresizingConstraints: false,
+                                     label: labelAmericaContinent,
+                                     toggle: toggleAmericaContinent
+        )
+        return stackView
+    }()
+    
+    private lazy var labelEuropeContinent: UILabel = {
+        let label = setLabel(
+            title: """
+            Континент Европы
+            Количество стран: 51
+            """,
+            size: 26,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            colorOfShadow: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return label
+    }()
+    
+    private lazy var toggleEuropeContinent: UISwitch = {
+        let toggle = setToggle(
+            toggleColor: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            onColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ),
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            shadowRadius: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return toggle
+    }()
+    
+    private lazy var stackViewEuropeContinent: UIStackView = {
+        let stackView = setStackView(autoresizingConstraints: false,
+                                     label: labelEuropeContinent,
+                                     toggle: toggleEuropeContinent
+        )
+        return stackView
+    }()
+    
+    private lazy var labelAfricaContinent: UILabel = {
+        let label = setLabel(
+            title: """
+            Континент Африки
+            Количество стран: 59
+            """,
+            size: 26,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            colorOfShadow: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return label
+    }()
+    
+    private lazy var toggleAfricaContinent: UISwitch = {
+        let toggle = setToggle(
+            toggleColor: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            onColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ),
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            shadowRadius: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return toggle
+    }()
+    
+    private lazy var stackViewAfricaContinent: UIStackView = {
+        let stackView = setStackView(autoresizingConstraints: false,
+                                     label: labelAfricaContinent,
+                                     toggle: toggleAfricaContinent
+        )
+        return stackView
+    }()
+    
+    private lazy var labelAsiaContinent: UILabel = {
+        let label = setLabel(
+            title: """
+            Континент Азии
+            Количество стран: 54
+            """,
+            size: 26,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            colorOfShadow: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return label
+    }()
+    
+    private lazy var toggleAsiaContinent: UISwitch = {
+        let toggle = setToggle(
+            toggleColor: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            onColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ),
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            shadowRadius: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return toggle
+    }()
+    
+    private lazy var stackViewAsiaContinent: UIStackView = {
+        let stackView = setStackView(autoresizingConstraints: false,
+                                     label: labelAsiaContinent,
+                                     toggle: toggleAsiaContinent
+        )
+        return stackView
+    }()
+    
+    private lazy var labelOceaniaContinent: UILabel = {
+        let label = setLabel(
+            title: """
+            Континент Океании
+            Количество стран: 26
+            """,
+            size: 26,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            colorOfShadow: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return label
+    }()
+    
+    private lazy var toggleOceaniaContinent: UISwitch = {
+        let toggle = setToggle(
+            toggleColor: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            onColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ),
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            shadowRadius: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return toggle
+    }()
+    
+    private lazy var stackViewOceaniaContinent: UIStackView = {
+        let stackView = setStackView(autoresizingConstraints: false,
+                                     label: labelOceaniaContinent,
+                                     toggle: toggleOceaniaContinent
+        )
+        return stackView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSettingVC()
         setupSubviews(subviews: buttonBackMenu,
-                      labelAllCountries,
-                      labelNumAllCountries
+                      labelNumberQuestions,
+                      labelNumber,
+                      pickerViewNumberQuestion,
+                      stackViewAllCountries,
+                      stackViewAmericaContinent,
+                      stackViewEuropeContinent,
+                      stackViewAfricaContinent,
+                      stackViewAsiaContinent,
+                      stackViewOceaniaContinent
         )
         setConstraints()
     }
@@ -122,14 +517,57 @@ class SettingViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            labelAllCountries.topAnchor.constraint(equalTo: buttonBackMenu.topAnchor, constant: 50),
-            labelAllCountries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            labelAllCountries.trailingAnchor.constraint(equalTo: labelNumAllCountries.trailingAnchor, constant: 40)
+            labelNumberQuestions.topAnchor.constraint(equalTo: buttonBackMenu.bottomAnchor, constant: 15),
+            labelNumberQuestions.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            labelNumberQuestions.trailingAnchor.constraint(equalTo: labelNumber.leadingAnchor, constant: 20)
         ])
         
         NSLayoutConstraint.activate([
-            labelNumAllCountries.topAnchor.constraint(equalTo: buttonBackMenu.topAnchor, constant: 50),
-            labelNumAllCountries.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            labelNumber.topAnchor.constraint(equalTo: buttonBackMenu.bottomAnchor, constant: 15),
+            labelNumber.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            pickerViewNumberQuestion.topAnchor.constraint(equalTo: labelNumberQuestions.bottomAnchor, constant: 12),
+            pickerViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            pickerViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            pickerViewNumberQuestion.heightAnchor.constraint(equalToConstant: 110)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewAllCountries.topAnchor.constraint(equalTo: pickerViewNumberQuestion.bottomAnchor, constant: 15),
+            stackViewAllCountries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAllCountries.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewAmericaContinent.topAnchor.constraint(equalTo: stackViewAllCountries.bottomAnchor, constant: 15),
+            stackViewAmericaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAmericaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewEuropeContinent.topAnchor.constraint(equalTo: stackViewAmericaContinent.bottomAnchor, constant: 15),
+            stackViewEuropeContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewEuropeContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewAfricaContinent.topAnchor.constraint(equalTo: stackViewEuropeContinent.bottomAnchor, constant: 15),
+            stackViewAfricaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAfricaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewAsiaContinent.topAnchor.constraint(equalTo: stackViewAfricaContinent.bottomAnchor, constant: 15),
+            stackViewAsiaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAsiaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewOceaniaContinent.topAnchor.constraint(equalTo: stackViewAsiaContinent.bottomAnchor, constant: 15),
+            stackViewOceaniaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewOceaniaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
     }
     
@@ -189,7 +627,77 @@ extension SettingViewController {
         label.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
                                           height: shadowOffsetHeight ?? 0
         )
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }
+}
+
+extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        91
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        let label = UILabel()
+        let title = "\(row + 10)"
+        let attributed = NSAttributedString(string: title, attributes: [
+            .font: UIFont(name: "mr_fontick", size: 28) ?? "",
+            .foregroundColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 252/255,
+                alpha: 1)
+        ])
+        label.attributedText = attributed
+        label.textAlignment = .center
+        return label
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        labelNumber.text = "\(row + 10)"
+    }
+    
+    private func setPickerView(backgroundColor: UIColor,
+                               cornerRadius: CGFloat) -> UIPickerView {
+        let pickerView = UIPickerView()
+        pickerView.backgroundColor = backgroundColor
+        pickerView.layer.cornerRadius = cornerRadius
+        return pickerView
+    }
+}
+
+extension SettingViewController {
+    private func setToggle(toggleColor: UIColor,
+                           onColor: UIColor,
+                           shadowColor: CGColor? = nil,
+                           shadowRadius: CGFloat? = nil,
+                           shadowOffsetWidth: CGFloat? = nil,
+                           shadowOffsetHeight: CGFloat? = nil) -> UISwitch {
+        let toggle = UISwitch()
+        toggle.thumbTintColor = toggleColor
+        toggle.onTintColor = onColor
+        toggle.layer.shadowColor = shadowColor
+        toggle.layer.shadowRadius = shadowRadius ?? 0
+        toggle.layer.shadowOpacity = 1
+        toggle.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
+                                           height: shadowOffsetHeight ?? 0
+        )
+        return toggle
+    }
+}
+
+extension SettingViewController {
+    private func setStackView(autoresizingConstraints: Bool,
+                              label: UILabel,
+                              toggle: UISwitch) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [label, toggle])
+        stackView.translatesAutoresizingMaskIntoConstraints = autoresizingConstraints
+        stackView.alignment = .center
+        return stackView
     }
 }

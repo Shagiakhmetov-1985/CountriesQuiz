@@ -8,12 +8,22 @@
 import UIKit
 
 class SettingViewController: UIViewController {
+    // MARK: - Private properties
+    private lazy var viewPanel: UIView = {
+        let view = setView(color: UIColor(
+            red: 102/255,
+            green: 153/255,
+            blue: 255/255,
+            alpha: 1
+        ))
+        return view
+    }()
     
     private lazy var buttonBackMenu: UIButton = {
         let button = setButton(
             title: "Главное меню",
             style: "mr_fontick",
-            size: 16,
+            size: 15,
             colorTitle: UIColor(
                 red: 54/255,
                 green: 55/255,
@@ -41,6 +51,23 @@ class SettingViewController: UIViewController {
         return button
     }()
     
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.frame = view.bounds
+        scrollView.contentSize = contentSize
+        return scrollView
+    }()
+    
+    private lazy var contentView: UIView = {
+        let view = setView()
+        view.frame.size = contentSize
+        return view
+    }()
+    
+    private var contentSize: CGSize {
+        CGSize(width: view.frame.width, height: view.frame.height + 500)
+    }
+    
     private lazy var labelNumberQuestions: UILabel = {
         let label = setLabel(
             title: "Количество вопросов:",
@@ -60,7 +87,8 @@ class SettingViewController: UIViewController {
             ).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
+            shadowOffsetHeight: 2,
+            numberOfLines: 1
         )
         return label
     }()
@@ -87,6 +115,13 @@ class SettingViewController: UIViewController {
             shadowOffsetHeight: 2
         )
         return label
+    }()
+    
+    private lazy var stackViewNumberQuestion: UIStackView = {
+        let stackView = setStackViewLabels(autoresizingConstraints: false,
+                                           labelFirst: labelNumberQuestions,
+                                           labelSecond: labelNumber)
+        return stackView
     }()
     
     private lazy var pickerViewNumberQuestion: UIPickerView = {
@@ -476,22 +511,34 @@ class SettingViewController: UIViewController {
         )
         return stackView
     }()
-    
+    // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSettingVC()
-        setupSubviews(subviews: buttonBackMenu,
-                      labelNumberQuestions,
-                      labelNumber,
-                      pickerViewNumberQuestion,
-                      stackViewAllCountries,
-                      stackViewAmericaContinent,
-                      stackViewEuropeContinent,
-                      stackViewAfricaContinent,
-                      stackViewAsiaContinent,
-                      stackViewOceaniaContinent
+        setupSubviews(subviews: viewPanel,
+                      buttonBackMenu,
+                      contentView
+        )
+        setupSubviewsOnContentView(subviews: scrollView)
+        setupSubviewsOnScrollView(subviews: stackViewNumberQuestion,
+                                  pickerViewNumberQuestion,
+                                  stackViewAllCountries,
+                                  stackViewAmericaContinent,
+                                  stackViewEuropeContinent,
+                                  stackViewAfricaContinent,
+                                  stackViewAsiaContinent,
+                                  stackViewOceaniaContinent
         )
         setConstraints()
+    }
+    // MARK: - Private methods
+    private func setupSettingVC() {
+        view.backgroundColor = UIColor(
+            red: 54/255,
+            green: 55/255,
+            blue: 215/255,
+            alpha: 1
+        )
     }
     
     private func setupSubviews(subviews: UIView...) {
@@ -500,35 +547,47 @@ class SettingViewController: UIViewController {
         }
     }
     
-    private func setupSettingVC() {
-        let gradientLayer = CAGradientLayer()
-        let colorBlue = UIColor(red: 30/255, green: 113/255, blue: 204/255, alpha: 1)
-        let colorLightBlue = UIColor(red: 102/255, green: 153/255, blue: 204/255, alpha: 1)
-        gradientLayer.frame = view.bounds
-        gradientLayer.colors = [colorLightBlue.cgColor, colorBlue.cgColor]
-        view.layer.addSublayer(gradientLayer)
+    private func setupSubviewsOnContentView(subviews: UIView...) {
+        subviews.forEach { subview in
+            contentView.addSubview(subview)
+        }
     }
     
+    private func setupSubviewsOnScrollView(subviews: UIView...) {
+        subviews.forEach { subview in
+            scrollView.addSubview(subview)
+        }
+    }
+    // MARK: - Setup constraints
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            buttonBackMenu.topAnchor.constraint(equalTo: view.topAnchor, constant: 40),
+            viewPanel.topAnchor.constraint(equalTo: view.topAnchor),
+            viewPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            viewPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            viewPanel.heightAnchor.constraint(equalToConstant: 70)
+        ])
+        
+        NSLayoutConstraint.activate([
+            buttonBackMenu.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
             buttonBackMenu.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonBackMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -235)
+            buttonBackMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -245)
         ])
         
         NSLayoutConstraint.activate([
-            labelNumberQuestions.topAnchor.constraint(equalTo: buttonBackMenu.bottomAnchor, constant: 15),
-            labelNumberQuestions.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            labelNumberQuestions.trailingAnchor.constraint(equalTo: labelNumber.leadingAnchor, constant: 20)
+            contentView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 1),
+            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            labelNumber.topAnchor.constraint(equalTo: buttonBackMenu.bottomAnchor, constant: 15),
-            labelNumber.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            stackViewNumberQuestion.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 14),
+            stackViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
         NSLayoutConstraint.activate([
-            pickerViewNumberQuestion.topAnchor.constraint(equalTo: labelNumberQuestions.bottomAnchor, constant: 12),
+            pickerViewNumberQuestion.topAnchor.constraint(equalTo: stackViewNumberQuestion.bottomAnchor, constant: 12),
             pickerViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             pickerViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             pickerViewNumberQuestion.heightAnchor.constraint(equalToConstant: 110)
@@ -575,7 +634,29 @@ class SettingViewController: UIViewController {
         dismiss(animated: true)
     }
 }
-
+// MARK: - Setup view
+extension SettingViewController {
+    private func setView(color: UIColor? = nil) -> UIView {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        if let color = color {
+            view.backgroundColor = color
+        } else {
+            setGradient(content: view)
+        }
+        return view
+    }
+    
+    private func setGradient(content: UIView) {
+        let gradientLayer = CAGradientLayer()
+        let colorBlue = UIColor(red: 30/255, green: 113/255, blue: 204/255, alpha: 1)
+        let colorLightBlue = UIColor(red: 102/255, green: 153/255, blue: 204/255, alpha: 1)
+        gradientLayer.frame = view.bounds
+        gradientLayer.colors = [colorLightBlue.cgColor, colorBlue.cgColor]
+        content.layer.addSublayer(gradientLayer)
+    }
+}
+// MARK: - Setup button
 extension SettingViewController {
     private func setButton(title: String,
                            style: String? = nil,
@@ -607,7 +688,7 @@ extension SettingViewController {
         return button
     }
 }
-
+// MARK: - Setup label
 extension SettingViewController {
     private func setLabel(title: String,
                           size: CGFloat,
@@ -616,7 +697,8 @@ extension SettingViewController {
                           colorOfShadow: CGColor? = nil,
                           radiusOfShadow: CGFloat? = nil,
                           shadowOffsetWidth: CGFloat? = nil,
-                          shadowOffsetHeight: CGFloat? = nil) -> UILabel {
+                          shadowOffsetHeight: CGFloat? = nil,
+                          numberOfLines: Int? = nil) -> UILabel {
         let label = UILabel()
         label.text = title
         label.font = UIFont(name: style, size: size)
@@ -627,12 +709,12 @@ extension SettingViewController {
         label.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
                                           height: shadowOffsetHeight ?? 0
         )
-        label.numberOfLines = 0
+        label.numberOfLines = numberOfLines ?? 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
 }
-
+// MARK: - Setup picker view
 extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
@@ -670,7 +752,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         return pickerView
     }
 }
-
+// MARK: - Setup toggle
 extension SettingViewController {
     private func setToggle(toggleColor: UIColor,
                            onColor: UIColor,
@@ -690,8 +772,17 @@ extension SettingViewController {
         return toggle
     }
 }
-
+// MARK: - Setup stack view
 extension SettingViewController {
+    private func setStackViewLabels(autoresizingConstraints: Bool,
+                                    labelFirst: UILabel,
+                                    labelSecond: UILabel) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [labelFirst, labelSecond])
+        stackView.translatesAutoresizingMaskIntoConstraints = autoresizingConstraints
+        stackView.spacing = view.frame.width - (view.frame.width - 29)
+        return stackView
+    }
+    
     private func setStackView(autoresizingConstraints: Bool,
                               label: UILabel,
                               toggle: UISwitch) -> UIStackView {

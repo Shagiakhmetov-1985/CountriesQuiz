@@ -8,7 +8,7 @@
 import UIKit
 
 class SettingViewController: UIViewController {
-    // MARK: - Private properties
+    // MARK: - Subviews
     private lazy var viewPanel: UIView = {
         let view = setView(color: UIColor(
             red: 102/255,
@@ -71,7 +71,7 @@ class SettingViewController: UIViewController {
     private lazy var labelNumberQuestions: UILabel = {
         let label = setLabel(
             title: "Количество вопросов:",
-            size: 28,
+            size: 26,
             style: "mr_fontick",
             color: UIColor(
                 red: 153/255,
@@ -96,7 +96,7 @@ class SettingViewController: UIViewController {
     private lazy var labelNumber: UILabel = {
         let label = setLabel(
             title: "20",
-            size: 28,
+            size: 26,
             style: "mr_fontick",
             color: UIColor(
                 red: 153/255,
@@ -132,11 +132,9 @@ class SettingViewController: UIViewController {
                 blue: 255/255,
                 alpha: 1
             ),
-            cornerRadius: 13
+            cornerRadius: 13,
+            tag: 1
         )
-        pickerView.dataSource = self
-        pickerView.delegate = self
-        pickerView.translatesAutoresizingMaskIntoConstraints = false
         return pickerView
     }()
     
@@ -511,6 +509,190 @@ class SettingViewController: UIViewController {
         )
         return stackView
     }()
+    
+    private lazy var labelTimeElapsed: UILabel = {
+        let label = setLabel(
+            title: "Обратный отсчет",
+            size: 26,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            colorOfShadow: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return label
+    }()
+    
+    private lazy var toggleTimeElapsed: UISwitch = {
+        let toggle = setToggle(
+            toggleColor: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            onColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ),
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            shadowRadius: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return toggle
+    }()
+    
+    private lazy var stackViewTimeElapsed: UIStackView = {
+        let stackView = setStackView(autoresizingConstraints: false,
+                                     label: labelTimeElapsed,
+                                     toggle: toggleTimeElapsed
+        )
+        return stackView
+    }()
+    
+    private lazy var labelTimeElapsedQuestion: UILabel = {
+        let label = setLabel(
+            title: "Время вопроса:",
+            size: 26,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            colorOfShadow: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2,
+            numberOfLines: 1
+        )
+        return label
+    }()
+    
+    private lazy var labelTimeElapsedNumber: UILabel = {
+        let label = setLabel(
+            title: "10",
+            size: 26,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            colorOfShadow: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2
+        )
+        return label
+    }()
+    
+    private lazy var stackViewLabelTimeElapsed: UIStackView = {
+        let stackView = setStackViewLabels(autoresizingConstraints: false,
+                                           labelFirst: labelTimeElapsedQuestion,
+                                           labelSecond: labelTimeElapsedNumber
+        )
+        return stackView
+    }()
+    
+    private lazy var segmentedControl: UISegmentedControl = {
+        let segment = setSegmentedControl(
+            background: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            segmentColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ),
+            elements: ["Один вопрос", "Все вопросы"],
+            titleSelectedColor: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            titleNormalColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            )
+        )
+        return segment
+    }()
+    
+    private lazy var pickerViewOneQuestion: UIPickerView = {
+        let pickerView = setPickerView(
+            backgroundColor: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            cornerRadius: 13,
+            tag: 2
+        )
+        return pickerView
+    }()
+    
+    private lazy var pickerViewAllQuestions: UIPickerView = {
+        let pickerView = setPickerView(
+            backgroundColor: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            cornerRadius: 13,
+            tag: 3
+        )
+        return pickerView
+    }()
+    
+    private lazy var stackViewPickerViews: UIStackView = {
+        let stackView = setStackViewPickerViews(autoresizingConstraints: false,
+                                                pickerViewFirst: pickerViewOneQuestion,
+                                                pickerViewSecond: pickerViewAllQuestions
+        )
+        return stackView
+    }()
+    
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -527,7 +709,11 @@ class SettingViewController: UIViewController {
                                   stackViewEuropeContinent,
                                   stackViewAfricaContinent,
                                   stackViewAsiaContinent,
-                                  stackViewOceaniaContinent
+                                  stackViewOceaniaContinent,
+                                  stackViewTimeElapsed,
+                                  stackViewLabelTimeElapsed,
+                                  segmentedControl,
+                                  stackViewPickerViews
         )
         setConstraints()
     }
@@ -583,7 +769,8 @@ class SettingViewController: UIViewController {
         NSLayoutConstraint.activate([
             stackViewNumberQuestion.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 14),
             stackViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            stackViewNumberQuestion.widthAnchor.constraint(equalToConstant: 200)
         ])
         
         NSLayoutConstraint.activate([
@@ -627,6 +814,34 @@ class SettingViewController: UIViewController {
             stackViewOceaniaContinent.topAnchor.constraint(equalTo: stackViewAsiaContinent.bottomAnchor, constant: 15),
             stackViewOceaniaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             stackViewOceaniaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewTimeElapsed.topAnchor.constraint(equalTo: stackViewOceaniaContinent.bottomAnchor, constant: 30),
+            stackViewTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewLabelTimeElapsed.topAnchor.constraint(equalTo: stackViewTimeElapsed.bottomAnchor, constant: 15),
+            stackViewLabelTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewLabelTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            segmentedControl.topAnchor.constraint(equalTo: stackViewLabelTimeElapsed.bottomAnchor, constant: 15),
+            segmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            segmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewPickerViews.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 15),
+            stackViewPickerViews.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewPickerViews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            pickerViewOneQuestion.widthAnchor.constraint(equalToConstant: 160),
+            pickerViewOneQuestion.heightAnchor.constraint(equalToConstant: 110),
+            pickerViewAllQuestions.widthAnchor.constraint(equalToConstant: 160),
+            pickerViewAllQuestions.heightAnchor.constraint(equalToConstant: 110)
         ])
     }
     
@@ -721,35 +936,81 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        91
+        switch pickerView.tag {
+        case 1:
+            return 91
+        case 2:
+            return 10
+        default:
+            return 41
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         let label = UILabel()
-        let title = "\(row + 10)"
-        let attributed = NSAttributedString(string: title, attributes: [
-            .font: UIFont(name: "mr_fontick", size: 28) ?? "",
+        var title = ""
+        var attributed = NSAttributedString()
+        
+        switch pickerView.tag {
+        case 1:
+            title = "\(row + 10)"
+            attributed = attributedString(title: title)
+        case 2:
+            title = "\(row + 6)"
+            attributed = attributedString(title: title)
+        default:
+            title = "\(row + 80)"
+            attributed = attributedString(title: title)
+        }
+        label.textAlignment = .center
+        label.attributedText = attributed
+        return label
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        switch pickerView.tag {
+        case 1:
+            labelNumber.text = "\(row + 10)"
+        case 2:
+            labelTimeElapsedNumber.text = "\(row + 6)"
+        default:
+            labelTimeElapsedNumber.text = "\(row + 80)"
+        }
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+        switch pickerView.tag {
+        case 1:
+            return pickerView.frame.width
+        case 2:
+            return 150
+        default:
+            return 150
+        }
+    }
+    
+    private func setPickerView(backgroundColor: UIColor,
+                               cornerRadius: CGFloat,
+                               tag: Int) -> UIPickerView {
+        let pickerView = UIPickerView()
+        pickerView.backgroundColor = backgroundColor
+        pickerView.layer.cornerRadius = cornerRadius
+        pickerView.tag = tag
+        pickerView.translatesAutoresizingMaskIntoConstraints = false
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        return pickerView
+    }
+    
+    private func attributedString(title: String) -> NSAttributedString {
+        NSAttributedString(string: title, attributes: [
+            .font: UIFont(name: "mr_fontick", size: 26) ?? "",
             .foregroundColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 252/255,
                 alpha: 1)
         ])
-        label.attributedText = attributed
-        label.textAlignment = .center
-        return label
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        labelNumber.text = "\(row + 10)"
-    }
-    
-    private func setPickerView(backgroundColor: UIColor,
-                               cornerRadius: CGFloat) -> UIPickerView {
-        let pickerView = UIPickerView()
-        pickerView.backgroundColor = backgroundColor
-        pickerView.layer.cornerRadius = cornerRadius
-        return pickerView
     }
 }
 // MARK: - Setup toggle
@@ -769,6 +1030,7 @@ extension SettingViewController {
         toggle.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
                                            height: shadowOffsetHeight ?? 0
         )
+        toggle.translatesAutoresizingMaskIntoConstraints = false
         return toggle
     }
 }
@@ -779,7 +1041,10 @@ extension SettingViewController {
                                     labelSecond: UILabel) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [labelFirst, labelSecond])
         stackView.translatesAutoresizingMaskIntoConstraints = autoresizingConstraints
-        stackView.spacing = view.frame.width - (view.frame.width - 29)
+        stackView.distribution = .equalSpacing
+//        labelSecond.textAlignment = .center
+//        labelFirst.backgroundColor = .red
+//        labelSecond.backgroundColor = .green
         return stackView
     }
     
@@ -790,5 +1055,41 @@ extension SettingViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = autoresizingConstraints
         stackView.alignment = .center
         return stackView
+    }
+    
+    private func setStackViewPickerViews(autoresizingConstraints: Bool,
+                                         pickerViewFirst: UIPickerView,
+                                         pickerViewSecond: UIPickerView) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [pickerViewFirst, pickerViewSecond])
+        stackView.translatesAutoresizingMaskIntoConstraints = autoresizingConstraints
+        stackView.alignment = .center
+        stackView.distribution = .equalSpacing
+        return stackView
+    }
+}
+// MARK: - Setup segmented control
+extension SettingViewController {
+    private func setSegmentedControl(background: UIColor,
+                                     segmentColor: UIColor,
+                                     elements: [Any],
+                                     titleSelectedColor: UIColor,
+                                     titleNormalColor: UIColor) -> UISegmentedControl {
+        let segment = UISegmentedControl(items: elements)
+        let font = UIFont(name: "mr_fontick", size: 26)
+        segment.backgroundColor = background
+        segment.selectedSegmentTintColor = segmentColor
+        segment.tintColor = .white
+        segment.setTitleTextAttributes([
+            NSAttributedString.Key
+                .font: font ?? "",
+                .foregroundColor: titleSelectedColor
+        ], for: .selected)
+        segment.setTitleTextAttributes([
+            NSAttributedString.Key
+                .font: font ?? "",
+                .foregroundColor: titleNormalColor
+        ], for: .normal)
+        segment.translatesAutoresizingMaskIntoConstraints = false
+        return segment
     }
 }

@@ -65,7 +65,7 @@ class SettingViewController: UIViewController {
     }()
     
     private var contentSize: CGSize {
-        CGSize(width: view.frame.width, height: view.frame.height + 500)
+        CGSize(width: view.frame.width, height: view.frame.height + 280)
     }
     
     private lazy var labelNumberQuestions: UILabel = {
@@ -88,14 +88,15 @@ class SettingViewController: UIViewController {
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
-            numberOfLines: 1
+            numberOfLines: 1,
+            textAlignment: .right
         )
         return label
     }()
     
     private lazy var labelNumber: UILabel = {
         let label = setLabel(
-            title: "20",
+            title: "\(settingDefault.numberQuestions)",
             size: 26,
             style: "mr_fontick",
             color: UIColor(
@@ -112,7 +113,8 @@ class SettingViewController: UIViewController {
             ).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
+            shadowOffsetHeight: 2,
+            textAlignment: .center
         )
         return label
     }()
@@ -589,7 +591,8 @@ class SettingViewController: UIViewController {
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
-            numberOfLines: 1
+            numberOfLines: 1,
+            textAlignment: .right
         )
         return label
     }()
@@ -613,7 +616,8 @@ class SettingViewController: UIViewController {
             ).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
+            shadowOffsetHeight: 2,
+            textAlignment: .center
         )
         return label
     }()
@@ -693,6 +697,8 @@ class SettingViewController: UIViewController {
         return stackView
     }()
     
+    var settingDefault: Setting!
+    var delegate: RewriteSettingDelegate!
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -724,6 +730,22 @@ class SettingViewController: UIViewController {
             green: 55/255,
             blue: 215/255,
             alpha: 1
+        )
+        
+        pickerViewNumberQuestion.selectRow(
+            settingDefault.numberQuestions - 10,
+            inComponent: 0,
+            animated: false
+        )
+        pickerViewOneQuestion.selectRow(
+            settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6,
+            inComponent: 0,
+            animated: false
+        )
+        pickerViewAllQuestions.selectRow(
+            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime - 80,
+            inComponent: 0,
+            animated: false
         )
     }
     
@@ -770,7 +792,7 @@ class SettingViewController: UIViewController {
             stackViewNumberQuestion.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 14),
             stackViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            stackViewNumberQuestion.widthAnchor.constraint(equalToConstant: 200)
+            labelNumber.widthAnchor.constraint(equalToConstant: 55)
         ])
         
         NSLayoutConstraint.activate([
@@ -825,7 +847,8 @@ class SettingViewController: UIViewController {
         NSLayoutConstraint.activate([
             stackViewLabelTimeElapsed.topAnchor.constraint(equalTo: stackViewTimeElapsed.bottomAnchor, constant: 15),
             stackViewLabelTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewLabelTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            stackViewLabelTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            labelTimeElapsedNumber.widthAnchor.constraint(equalToConstant: 100)
         ])
         
         NSLayoutConstraint.activate([
@@ -847,6 +870,10 @@ class SettingViewController: UIViewController {
     
     @objc private func backToMenu() {
         dismiss(animated: true)
+    }
+    
+    @objc private func defaultSetting() {
+        
     }
 }
 // MARK: - Setup view
@@ -913,7 +940,8 @@ extension SettingViewController {
                           radiusOfShadow: CGFloat? = nil,
                           shadowOffsetWidth: CGFloat? = nil,
                           shadowOffsetHeight: CGFloat? = nil,
-                          numberOfLines: Int? = nil) -> UILabel {
+                          numberOfLines: Int? = nil,
+                          textAlignment: NSTextAlignment? = nil) -> UILabel {
         let label = UILabel()
         label.text = title
         label.font = UIFont(name: style, size: size)
@@ -925,6 +953,7 @@ extension SettingViewController {
                                           height: shadowOffsetHeight ?? 0
         )
         label.numberOfLines = numberOfLines ?? 0
+        label.textAlignment = textAlignment ?? .natural
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
@@ -1041,10 +1070,6 @@ extension SettingViewController {
                                     labelSecond: UILabel) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [labelFirst, labelSecond])
         stackView.translatesAutoresizingMaskIntoConstraints = autoresizingConstraints
-        stackView.distribution = .equalSpacing
-//        labelSecond.textAlignment = .center
-//        labelFirst.backgroundColor = .red
-//        labelSecond.backgroundColor = .green
         return stackView
     }
     
@@ -1062,7 +1087,6 @@ extension SettingViewController {
                                          pickerViewSecond: UIPickerView) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [pickerViewFirst, pickerViewSecond])
         stackView.translatesAutoresizingMaskIntoConstraints = autoresizingConstraints
-        stackView.alignment = .center
         stackView.distribution = .equalSpacing
         return stackView
     }
@@ -1078,7 +1102,6 @@ extension SettingViewController {
         let font = UIFont(name: "mr_fontick", size: 26)
         segment.backgroundColor = background
         segment.selectedSegmentTintColor = segmentColor
-        segment.tintColor = .white
         segment.setTitleTextAttributes([
             NSAttributedString.Key
                 .font: font ?? "",
@@ -1089,6 +1112,7 @@ extension SettingViewController {
                 .font: font ?? "",
                 .foregroundColor: titleNormalColor
         ], for: .normal)
+        segment.selectedSegmentIndex = 0
         segment.translatesAutoresizingMaskIntoConstraints = false
         return segment
     }

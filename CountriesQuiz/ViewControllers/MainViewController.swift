@@ -6,6 +6,10 @@
 //
 
 import UIKit
+// MARK: - Delegate rewrite user defaults
+protocol RewriteSettingDelegate {
+    func rewriteSetting(setting: Setting)
+}
 
 class MainViewController: UIViewController {
     // MARK: - Private properties
@@ -196,10 +200,12 @@ class MainViewController: UIViewController {
         )
         return label
     }()
+    
+    private var settingDefault = StorageManager.shared.fetchSetting()
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
-//        setupMenu()
+        setupMenu()
         setupSubviews(subviews: imageMain,
                       labelMainCountries,
                       labelMainQuiz,
@@ -259,6 +265,8 @@ class MainViewController: UIViewController {
     @objc private func setting() {
         let settingVC = SettingViewController()
         settingVC.modalPresentationStyle = .fullScreen
+        settingVC.settingDefault = settingDefault
+        settingVC.delegate = self
         present(settingVC, animated: true)
     }
 }
@@ -315,5 +323,11 @@ extension MainViewController {
         )
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
+    }
+}
+
+extension MainViewController: RewriteSettingDelegate {
+    func rewriteSetting(setting: Setting) {
+        StorageManager.shared.rewriteSetting(setting: setting)
     }
 }

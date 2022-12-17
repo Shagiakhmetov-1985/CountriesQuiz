@@ -8,36 +8,36 @@
 import Foundation
 
 struct Setting: Codable {
-    let numberQuestions: Int
-    let allCountries: Bool
-    let americaContinent: Bool
-    let europeContinent: Bool
-    let africaContinent: Bool
-    let asiaContinent: Bool
-    let oceaniaContinent: Bool
-    let timeElapsed: TimeElapsed
+    var countQuestions: Int
+    var allCountries: Bool
+    var americaContinent: Bool
+    var europeContinent: Bool
+    var africaContinent: Bool
+    var asiaContinent: Bool
+    var oceaniaContinent: Bool
+    var timeElapsed: TimeElapsed
 }
 
 struct TimeElapsed: Codable {
-    let timeElapsed: Bool
-    let questionSelect: QuestionSelect
+    var timeElapsed: Bool
+    var questionSelect: QuestionSelect
 }
 
 struct QuestionSelect: Codable {
-    let oneQuestion: Bool
-    let allQuestion: Bool
-    let questionTime: QuestionTime
+    var oneQuestion: Bool
+    var allQuestion: Bool
+    var questionTime: QuestionTime
 }
 
 struct QuestionTime: Codable {
-    let oneQuestionTime: Int
-    let allQuestionTime: Int
+    var oneQuestionTime: Int
+    var allQuestionTime: Int
 }
 
 extension Setting {
     static func getSettingDefault() -> Setting {
         let setting = Setting(
-            numberQuestions: 20,
+            countQuestions: 20,
             allCountries: true,
             americaContinent: false,
             europeContinent: false,

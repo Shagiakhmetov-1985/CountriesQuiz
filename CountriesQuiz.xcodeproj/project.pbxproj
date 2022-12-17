@@ -132,7 +132,6 @@
 				C3E2EB4A2938EA6800AB40AD /* FlagsOfCountries.swift */,
 				C3E2EB4C2938ED6800AB40AD /* CountriesManager.swift */,
 				C376AC062947261D00DE5E86 /* Setting.swift */,
-				C376AC0829474EB400DE5E86 /* StorageManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -140,6 +139,7 @@
 		C3E2EB492938E92600AB40AD /* StorageManager */ = {
 			isa = PBXGroup;
 			children = (
+				C376AC0829474EB400DE5E86 /* StorageManager.swift */,
 			);
 			path = StorageManager;
 			sourceTree = "<group>";

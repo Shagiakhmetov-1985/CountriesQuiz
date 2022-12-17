@@ -6,7 +6,7 @@
 //
 
 import UIKit
-// MARK: - Delegate rewrite user defaults
+// MARK: - Protocol of delegate rewrite user defaults
 protocol RewriteSettingDelegate {
     func rewriteSetting(setting: Setting)
 }
@@ -139,7 +139,7 @@ class MainViewController: UIViewController {
         button.addTarget(self, action: #selector(setting), for: .touchUpInside)
         return button
     }()
-    
+    /*
     private lazy var imageQuestionmark: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(systemName: "questionmark.square.dashed")
@@ -185,7 +185,7 @@ class MainViewController: UIViewController {
         image.layer.shadowOffset = CGSize(width: 0, height: 2)
         return image
     }()
-    
+    */
     private lazy var labelQuizOfFlags: UILabel = {
         let label = setLabel(
             title: "Quiz of flags",
@@ -201,11 +201,10 @@ class MainViewController: UIViewController {
         return label
     }()
     
-    private var settingDefault = StorageManager.shared.fetchSetting()
+    private var settingDefault: Setting!
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupMenu()
         setupSubviews(subviews: imageMain,
                       labelMainCountries,
                       labelMainQuiz,
@@ -214,11 +213,12 @@ class MainViewController: UIViewController {
         )
         setConstraints()
     }
-    // MARK: - Private methods
-    private func setupMenu() {
-        
-    }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        settingDefault = StorageManager.shared.fetchSetting()
+    }
+    // MARK: - Private methods
     private func setupSubviews(subviews: UIView...) {
         subviews.forEach { subview in
             view.addSubview(subview)
@@ -325,7 +325,7 @@ extension MainViewController {
         return button
     }
 }
-
+// MARK: - Delegate rewrite user defaults
 extension MainViewController: RewriteSettingDelegate {
     func rewriteSetting(setting: Setting) {
         StorageManager.shared.rewriteSetting(setting: setting)

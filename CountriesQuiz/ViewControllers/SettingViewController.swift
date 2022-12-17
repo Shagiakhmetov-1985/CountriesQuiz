@@ -96,7 +96,7 @@ class SettingViewController: UIViewController {
     
     private lazy var labelNumber: UILabel = {
         let label = setLabel(
-            title: "\(settingDefault.numberQuestions)",
+            title: "\(settingDefault.countQuestions)",
             size: 26,
             style: "mr_fontick",
             color: UIColor(
@@ -181,6 +181,7 @@ class SettingViewController: UIViewController {
                 blue: 215/255,
                 alpha: 1
             ),
+            isOn: settingDefault.allCountries,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
@@ -243,6 +244,7 @@ class SettingViewController: UIViewController {
                 blue: 215/255,
                 alpha: 1
             ),
+            isOn: settingDefault.americaContinent,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
@@ -305,6 +307,7 @@ class SettingViewController: UIViewController {
                 blue: 215/255,
                 alpha: 1
             ),
+            isOn: settingDefault.europeContinent,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
@@ -367,6 +370,7 @@ class SettingViewController: UIViewController {
                 blue: 215/255,
                 alpha: 1
             ),
+            isOn: settingDefault.africaContinent,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
@@ -429,6 +433,7 @@ class SettingViewController: UIViewController {
                 blue: 215/255,
                 alpha: 1
             ),
+            isOn: settingDefault.asiaContinent,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
@@ -491,6 +496,7 @@ class SettingViewController: UIViewController {
                 blue: 215/255,
                 alpha: 1
             ),
+            isOn: settingDefault.oceaniaContinent,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
@@ -550,6 +556,7 @@ class SettingViewController: UIViewController {
                 blue: 215/255,
                 alpha: 1
             ),
+            isOn: settingDefault.timeElapsed.timeElapsed,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
@@ -699,6 +706,7 @@ class SettingViewController: UIViewController {
     
     var settingDefault: Setting!
     var delegate: RewriteSettingDelegate!
+    
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -733,7 +741,7 @@ class SettingViewController: UIViewController {
         )
         
         pickerViewNumberQuestion.selectRow(
-            settingDefault.numberQuestions - 10,
+            settingDefault.countQuestions - 10,
             inComponent: 0,
             animated: false
         )
@@ -742,8 +750,11 @@ class SettingViewController: UIViewController {
             inComponent: 0,
             animated: false
         )
+        let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime
+        let currentProduct = 4 * settingDefault.countQuestions
+        let currentRow = currentTime - currentProduct
         pickerViewAllQuestions.selectRow(
-            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime - 80,
+            currentRow,
             inComponent: 0,
             animated: false
         )
@@ -875,7 +886,90 @@ class SettingViewController: UIViewController {
     @objc private func defaultSetting() {
         
     }
+    
+    @objc private func toggleAction(target: UISwitch) {
+        switch target {
+            
+        case toggleAllCountries:
+            
+            toggleAllCountriesCheck()
+            
+        case toggleAmericaContinent, toggleEuropeContinent, toggleAfricaContinent,
+            toggleAsiaContinent, toggleOceaniaContinent:
+            
+            toggleAllContinentsCheck()
+            
+        default:
+            print("Other!")
+        }
+    }
+    
+    private func toggleAllCountriesCheck () {
+        if !toggleAmericaContinent.isOn, !toggleEuropeContinent.isOn, !toggleAfricaContinent.isOn,
+           !toggleAsiaContinent.isOn, !toggleOceaniaContinent.isOn {
+            toggleOn(toggles: toggleAllCountries)
+            toggleRewrite(allCountries: true, americaContinent: false, europeContinent: false,
+                          africaContinent: false, asiaContinent: false, oceaniaContinent: false
+            )
+        } else {
+            toggleOff(toggles: toggleAmericaContinent, toggleEuropeContinent,
+                      toggleAfricaContinent, toggleAsiaContinent, toggleOceaniaContinent)
+            toggleRewrite(allCountries: true, americaContinent: false, europeContinent: false,
+                          africaContinent: false, asiaContinent: false, oceaniaContinent: false
+            )
+        }
+    }
+    
+    private func toggleAllContinentsCheck() {
+        if toggleAmericaContinent.isOn, toggleEuropeContinent.isOn, toggleAfricaContinent.isOn,
+           toggleAsiaContinent.isOn, toggleOceaniaContinent.isOn {
+            toggleOff(toggles: toggleAmericaContinent, toggleEuropeContinent,
+                      toggleAfricaContinent, toggleAsiaContinent, toggleOceaniaContinent)
+            toggleOn(toggles: toggleAllCountries)
+            toggleRewrite(allCountries: true, americaContinent: false, europeContinent: false,
+                          africaContinent: false, asiaContinent: false, oceaniaContinent: false
+            )
+        } else {
+            toggleOff(toggles: toggleAllCountries)
+        }
+    }
+    
+    private func toggleOff(toggles: UISwitch...) {
+        toggles.forEach { toggle in
+            toggle.setOn(false, animated: true)
+        }
+    }
+    
+    private func toggleOn(toggles: UISwitch...) {
+        toggles.forEach { toggle in
+            toggle.setOn(true, animated: true)
+        }
+    }
+    
+    private func toggleRewrite(allCountries: Bool,
+                                  americaContinent: Bool,
+                                  europeContinent: Bool,
+                                  africaContinent: Bool,
+                                  asiaContinent: Bool,
+                                  oceaniaContinent: Bool) {
+        settingDefault.allCountries = allCountries
+        settingDefault.americaContinent = americaContinent
+        settingDefault.europeContinent = europeContinent
+        settingDefault.africaContinent = africaContinent
+        settingDefault.asiaContinent = asiaContinent
+        settingDefault.oceaniaContinent = oceaniaContinent
+    }
 }
+
+//extension Bool {
+//    mutating func toggleOffCountries() {
+//        self = false
+//    }
+//
+//    mutating func toggleOnCountries() {
+//        self = true
+//    }
+//}
 // MARK: - Setup view
 extension SettingViewController {
     private func setView(color: UIColor? = nil) -> UIView {
@@ -971,7 +1065,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         case 2:
             return 10
         default:
-            return 41
+            return (6 * settingDefault.countQuestions) - (4 * settingDefault.countQuestions) + 1
         }
     }
     
@@ -979,6 +1073,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         let label = UILabel()
         var title = ""
         var attributed = NSAttributedString()
+        let allQuestionTime = 4 * settingDefault.countQuestions
         
         switch pickerView.tag {
         case 1:
@@ -988,7 +1083,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             title = "\(row + 6)"
             attributed = attributedString(title: title)
         default:
-            title = "\(row + 80)"
+            title = "\(row + allQuestionTime)"
             attributed = attributedString(title: title)
         }
         label.textAlignment = .center
@@ -997,13 +1092,23 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        let countQuestion = row + 10
+        let oneQuestionTime = row + 6
+        let allQuestionTime = row + (4 * settingDefault.countQuestions)
         switch pickerView.tag {
         case 1:
-            labelNumber.text = "\(row + 10)"
+            labelNumber.text = "\(countQuestion)"
+            settingDefault.countQuestions = countQuestion
+            pickerViewAllQuestions.reloadAllComponents()
+            delegate.rewriteSetting(setting: settingDefault)
         case 2:
-            labelTimeElapsedNumber.text = "\(row + 6)"
+            labelTimeElapsedNumber.text = "\(oneQuestionTime)"
+            settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime = oneQuestionTime
+            delegate.rewriteSetting(setting: settingDefault)
         default:
-            labelTimeElapsedNumber.text = "\(row + 80)"
+            labelTimeElapsedNumber.text = "\(allQuestionTime)"
+            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime = allQuestionTime
+            delegate.rewriteSetting(setting: settingDefault)
         }
     }
     
@@ -1046,6 +1151,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
 extension SettingViewController {
     private func setToggle(toggleColor: UIColor,
                            onColor: UIColor,
+                           isOn: Bool,
                            shadowColor: CGColor? = nil,
                            shadowRadius: CGFloat? = nil,
                            shadowOffsetWidth: CGFloat? = nil,
@@ -1059,6 +1165,8 @@ extension SettingViewController {
         toggle.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
                                            height: shadowOffsetHeight ?? 0
         )
+        toggle.isOn = isOn
+        toggle.addTarget(self, action: #selector(toggleAction), for: .valueChanged)
         toggle.translatesAutoresizingMaskIntoConstraints = false
         return toggle
     }

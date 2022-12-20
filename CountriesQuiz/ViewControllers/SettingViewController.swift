@@ -579,22 +579,16 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var labelTimeElapsedQuestion: UILabel = {
+        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1).cgColor
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1).cgColor
         let label = setLabel(
             title: "Время вопроса:",
             size: 26,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1
-            ),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1
-            ).cgColor,
+            color: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
+            colorOfShadow: settingDefault.timeElapsed.timeElapsed ? blue : gray,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
@@ -605,22 +599,16 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var labelTimeElapsedNumber: UILabel = {
+        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1).cgColor
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1).cgColor
         let label = setLabel(
             title: "10",
             size: 26,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1
-            ),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1
-            ).cgColor,
+            color: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
+            colorOfShadow: settingDefault.timeElapsed.timeElapsed ? blue : gray,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
@@ -638,32 +626,17 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var segmentedControl: UISegmentedControl = {
+        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
         let segment = setSegmentedControl(
-            background: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1
-            ),
-            segmentColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1
-            ),
+            background: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
+            segmentColor: settingDefault.timeElapsed.timeElapsed ? blue : gray,
             elements: ["Один вопрос", "Все вопросы"],
-            titleSelectedColor: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1
-            ),
-            titleNormalColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1
-            )
+            titleSelectedColor: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
+            titleNormalColor: settingDefault.timeElapsed.timeElapsed ? blue : gray,
+            isEnabled: settingDefault.timeElapsed.timeElapsed ? true : false
         )
         return segment
     }()
@@ -740,24 +713,16 @@ class SettingViewController: UIViewController {
             alpha: 1
         )
         
-        pickerViewNumberQuestion.selectRow(
-            settingDefault.countQuestions - 10,
-            inComponent: 0,
-            animated: false
-        )
-        pickerViewOneQuestion.selectRow(
-            settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6,
-            inComponent: 0,
-            animated: false
-        )
-        let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime
-        let currentProduct = 4 * settingDefault.countQuestions
-        let currentRow = currentTime - currentProduct
-        pickerViewAllQuestions.selectRow(
-            currentRow,
-            inComponent: 0,
-            animated: false
-        )
+        let countQuestion = settingDefault.countQuestions
+        let currentRowCountQuestion = countQuestion - 10
+        pickerViewNumberQuestion.selectRow(currentRowCountQuestion, inComponent: 0, animated: false)
+        
+        let currentRowOneQuestion = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
+        pickerViewOneQuestion.selectRow(currentRowOneQuestion, inComponent: 0, animated: false)
+        
+        let currentTimeAllQuestion = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime
+        let currentRowAllQuestion = currentTimeAllQuestion - (4 * countQuestion)
+        pickerViewAllQuestions.selectRow(currentRowAllQuestion, inComponent: 0, animated: false)
     }
     
     private func setupSubviews(subviews: UIView...) {
@@ -886,52 +851,77 @@ class SettingViewController: UIViewController {
     @objc private func defaultSetting() {
         
     }
-    
+    // MARK: - Setting of toggles
     @objc private func toggleAction(target: UISwitch) {
         switch target {
             
         case toggleAllCountries:
             
-            toggleAllCountriesCheck()
+            if !toggleAmericaContinent.isOn, !toggleEuropeContinent.isOn, !toggleAfricaContinent.isOn,
+               !toggleAsiaContinent.isOn, !toggleOceaniaContinent.isOn {
+                toggleOn(toggles: toggleAllCountries)
+            } else {
+                toggleOff(toggles: toggleAmericaContinent, toggleEuropeContinent,
+                          toggleAfricaContinent, toggleAsiaContinent, toggleOceaniaContinent)
+            }
             
         case toggleAmericaContinent, toggleEuropeContinent, toggleAfricaContinent,
             toggleAsiaContinent, toggleOceaniaContinent:
             
-            toggleAllContinentsCheck()
+            if toggleAmericaContinent.isOn, toggleEuropeContinent.isOn, toggleAfricaContinent.isOn,
+               toggleAsiaContinent.isOn, toggleOceaniaContinent.isOn {
+                toggleOff(toggles: toggleAmericaContinent, toggleEuropeContinent,
+                          toggleAfricaContinent, toggleAsiaContinent, toggleOceaniaContinent)
+                toggleOn(toggles: toggleAllCountries)
+            } else {
+                toggleOff(toggles: toggleAllCountries)
+            }
             
         default:
-            print("Other!")
+            
+            settingDefault.timeElapsed.timeElapsed = target.isOn ? true : false
+            delegate.rewriteSetting(setting: settingDefault)
+            
+            let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+            let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
+            let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+            let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+            let font = UIFont(name: "mr_fontick", size: 26)
+            
+            labelTimeElapsedQuestion.textColor = target.isOn ? lightBlue : lightGray
+            labelTimeElapsedQuestion.layer.shadowColor = target.isOn ? blue.cgColor : gray.cgColor
+            labelTimeElapsedNumber.textColor = target.isOn ? lightBlue : lightGray
+            labelTimeElapsedNumber.layer.shadowColor = target.isOn ? blue.cgColor : gray.cgColor
+            
+            segmentedControl.isUserInteractionEnabled = target.isOn ? true : false
+            segmentedControl.backgroundColor = target.isOn ? lightBlue : lightGray
+            segmentedControl.selectedSegmentTintColor = target.isOn ? blue : gray
+            
+            let titleSelectedColor: UIColor = target.isOn ? lightBlue : lightGray
+            segmentedControl.setTitleTextAttributes([
+                NSAttributedString.Key
+                    .font: font ?? "",
+                    .foregroundColor: titleSelectedColor
+            ], for: .selected)
+            let titleNormalColor: UIColor = target.isOn ? blue : gray
+            segmentedControl.setTitleTextAttributes([
+                NSAttributedString.Key
+                    .font: font ?? "",
+                    .foregroundColor: titleNormalColor
+            ], for: .normal)
+            
+            pickerViewOneQuestion.isUserInteractionEnabled = target.isOn ? true : false
+            pickerViewOneQuestion.backgroundColor = target.isOn ? lightBlue : lightGray
+            pickerViewOneQuestion.reloadAllComponents()
+            pickerViewAllQuestions.isUserInteractionEnabled = target.isOn ? true : false
+            pickerViewAllQuestions.backgroundColor = target.isOn ? lightBlue : lightGray
+            pickerViewAllQuestions.reloadAllComponents()
+            
         }
-    }
-    
-    private func toggleAllCountriesCheck () {
-        if !toggleAmericaContinent.isOn, !toggleEuropeContinent.isOn, !toggleAfricaContinent.isOn,
-           !toggleAsiaContinent.isOn, !toggleOceaniaContinent.isOn {
-            toggleOn(toggles: toggleAllCountries)
-            toggleRewrite(allCountries: true, americaContinent: false, europeContinent: false,
-                          africaContinent: false, asiaContinent: false, oceaniaContinent: false
-            )
-        } else {
-            toggleOff(toggles: toggleAmericaContinent, toggleEuropeContinent,
-                      toggleAfricaContinent, toggleAsiaContinent, toggleOceaniaContinent)
-            toggleRewrite(allCountries: true, americaContinent: false, europeContinent: false,
-                          africaContinent: false, asiaContinent: false, oceaniaContinent: false
-            )
-        }
-    }
-    
-    private func toggleAllContinentsCheck() {
-        if toggleAmericaContinent.isOn, toggleEuropeContinent.isOn, toggleAfricaContinent.isOn,
-           toggleAsiaContinent.isOn, toggleOceaniaContinent.isOn {
-            toggleOff(toggles: toggleAmericaContinent, toggleEuropeContinent,
-                      toggleAfricaContinent, toggleAsiaContinent, toggleOceaniaContinent)
-            toggleOn(toggles: toggleAllCountries)
-            toggleRewrite(allCountries: true, americaContinent: false, europeContinent: false,
-                          africaContinent: false, asiaContinent: false, oceaniaContinent: false
-            )
-        } else {
-            toggleOff(toggles: toggleAllCountries)
-        }
+        
+        toggleRewrite(allCountries: toggleAllCountries.isOn, americaContinent: toggleAmericaContinent.isOn,
+                      europeContinent: toggleEuropeContinent.isOn, africaContinent: toggleAfricaContinent.isOn,
+                      asiaContinent: toggleAsiaContinent.isOn, oceaniaContinent: toggleOceaniaContinent.isOn)
     }
     
     private func toggleOff(toggles: UISwitch...) {
@@ -958,18 +948,9 @@ class SettingViewController: UIViewController {
         settingDefault.africaContinent = africaContinent
         settingDefault.asiaContinent = asiaContinent
         settingDefault.oceaniaContinent = oceaniaContinent
+        delegate.rewriteSetting(setting: settingDefault)
     }
 }
-
-//extension Bool {
-//    mutating func toggleOffCountries() {
-//        self = false
-//    }
-//
-//    mutating func toggleOnCountries() {
-//        self = true
-//    }
-//}
 // MARK: - Setup view
 extension SettingViewController {
     private func setView(color: UIColor? = nil) -> UIView {
@@ -1073,7 +1054,6 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         let label = UILabel()
         var title = ""
         var attributed = NSAttributedString()
-        let allQuestionTime = 4 * settingDefault.countQuestions
         
         switch pickerView.tag {
         case 1:
@@ -1081,34 +1061,46 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             attributed = attributedString(title: title)
         case 2:
             title = "\(row + 6)"
-            attributed = attributedString(title: title)
+            attributed = attributedStringTimeElapsed(title: title)
         default:
+            let allQuestionTime = 4 * settingDefault.countQuestions
             title = "\(row + allQuestionTime)"
-            attributed = attributedString(title: title)
+            attributed = attributedStringTimeElapsed(title: title)
         }
+        
         label.textAlignment = .center
         label.attributedText = attributed
         return label
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let countQuestion = row + 10
-        let oneQuestionTime = row + 6
-        let allQuestionTime = row + (4 * settingDefault.countQuestions)
         switch pickerView.tag {
         case 1:
+            
+            let countQuestion = row + 10
+            let allQuestionTime = 5 * countQuestion
+            let currentRow = allQuestionTime - (4 * countQuestion)
             labelNumber.text = "\(countQuestion)"
             settingDefault.countQuestions = countQuestion
+            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime = allQuestionTime
             pickerViewAllQuestions.reloadAllComponents()
+            pickerViewAllQuestions.selectRow(currentRow, inComponent: 0, animated: false)
             delegate.rewriteSetting(setting: settingDefault)
+            
         case 2:
+            
+            let oneQuestionTime = row + 6
             labelTimeElapsedNumber.text = "\(oneQuestionTime)"
             settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime = oneQuestionTime
             delegate.rewriteSetting(setting: settingDefault)
+            
         default:
+            
+            let allQuestionTime = row + (4 * settingDefault.countQuestions)
             labelTimeElapsedNumber.text = "\(allQuestionTime)"
             settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime = allQuestionTime
             delegate.rewriteSetting(setting: settingDefault)
+            
         }
     }
     
@@ -1139,11 +1131,22 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     private func attributedString(title: String) -> NSAttributedString {
         NSAttributedString(string: title, attributes: [
             .font: UIFont(name: "mr_fontick", size: 26) ?? "",
-            .foregroundColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1)
+            .foregroundColor:
+                UIColor(
+                    red: 54/255,
+                    green: 55/255,
+                    blue: 252/255,
+                    alpha: 1)
+        ])
+    }
+    
+    private func attributedStringTimeElapsed(title: String) -> NSAttributedString {
+        let blue = UIColor(red: 54/255, green: 55/255, blue: 252/255, alpha: 1)
+        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+        let currentColor: UIColor = settingDefault.timeElapsed.timeElapsed ? blue : gray
+        return NSAttributedString(string: title, attributes: [
+            .font: UIFont(name: "mr_fontick", size: 26) ?? "",
+            .foregroundColor: currentColor
         ])
     }
 }
@@ -1205,7 +1208,8 @@ extension SettingViewController {
                                      segmentColor: UIColor,
                                      elements: [Any],
                                      titleSelectedColor: UIColor,
-                                     titleNormalColor: UIColor) -> UISegmentedControl {
+                                     titleNormalColor: UIColor,
+                                     isEnabled: Bool) -> UISegmentedControl {
         let segment = UISegmentedControl(items: elements)
         let font = UIFont(name: "mr_fontick", size: 26)
         segment.backgroundColor = background
@@ -1221,6 +1225,7 @@ extension SettingViewController {
                 .foregroundColor: titleNormalColor
         ], for: .normal)
         segment.selectedSegmentIndex = 0
+        segment.isUserInteractionEnabled = isEnabled
         segment.translatesAutoresizingMaskIntoConstraints = false
         return segment
     }

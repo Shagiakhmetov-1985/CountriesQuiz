@@ -25,7 +25,6 @@ struct TimeElapsed: Codable {
 
 struct QuestionSelect: Codable {
     var oneQuestion: Bool
-    var allQuestion: Bool
     var questionTime: QuestionTime
 }
 
@@ -48,7 +47,6 @@ extension Setting {
                 timeElapsed: true,
                 questionSelect: QuestionSelect(
                     oneQuestion: true,
-                    allQuestion: false,
                     questionTime: QuestionTime(
                         oneQuestionTime: 10,
                         allQuestionTime: 100

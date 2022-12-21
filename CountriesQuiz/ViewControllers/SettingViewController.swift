@@ -135,7 +135,8 @@ class SettingViewController: UIViewController {
                 alpha: 1
             ),
             cornerRadius: 13,
-            tag: 1
+            tag: 1,
+            isEnabled: true
         )
         return pickerView
     }()
@@ -636,35 +637,32 @@ class SettingViewController: UIViewController {
             elements: ["Один вопрос", "Все вопросы"],
             titleSelectedColor: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
             titleNormalColor: settingDefault.timeElapsed.timeElapsed ? blue : gray,
+            setIndex: settingDefault.timeElapsed.questionSelect.oneQuestion ? 0 : 1,
             isEnabled: settingDefault.timeElapsed.timeElapsed ? true : false
         )
         return segment
     }()
     
     private lazy var pickerViewOneQuestion: UIPickerView = {
+        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
         let pickerView = setPickerView(
-            backgroundColor: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1
-            ),
+            backgroundColor: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
             cornerRadius: 13,
-            tag: 2
+            tag: 2,
+            isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 2) : false
         )
         return pickerView
     }()
     
     private lazy var pickerViewAllQuestions: UIPickerView = {
+        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
         let pickerView = setPickerView(
-            backgroundColor: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1
-            ),
+            backgroundColor: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
             cornerRadius: 13,
-            tag: 3
+            tag: 3,
+            isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 3) : false
         )
         return pickerView
     }()
@@ -924,6 +922,29 @@ class SettingViewController: UIViewController {
                       asiaContinent: toggleAsiaContinent.isOn, oceaniaContinent: toggleOceaniaContinent.isOn)
     }
     
+    @objc private func segmentedControlAction() {
+        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        
+        if segmentedControl.selectedSegmentIndex == 0 {
+            segmentAction(pickerView: pickerViewOneQuestion, isEnabled: true, backgroundColor: lightBlue)
+            segmentAction(pickerView: pickerViewAllQuestions, isEnabled: false, backgroundColor: lightGray)
+        } else {
+            segmentAction(pickerView: pickerViewOneQuestion, isEnabled: false, backgroundColor: lightGray)
+            segmentAction(pickerView: pickerViewAllQuestions, isEnabled: true, backgroundColor: lightBlue)
+        }
+    }
+    
+    private func segmentAction(pickerView: UIPickerView,
+                               isEnabled: Bool,
+                               backgroundColor: UIColor) {
+        pickerView.isUserInteractionEnabled = isEnabled
+        pickerView.backgroundColor = backgroundColor
+        pickerView.reloadAllComponents()
+        settingDefault.timeElapsed.questionSelect.oneQuestion = isEnabled
+        delegate.rewriteSetting(setting: settingDefault)
+    }
+    
     private func toggleOff(toggles: UISwitch...) {
         toggles.forEach { toggle in
             toggle.setOn(false, animated: true)
@@ -949,6 +970,27 @@ class SettingViewController: UIViewController {
         settingDefault.asiaContinent = asiaContinent
         settingDefault.oceaniaContinent = oceaniaContinent
         delegate.rewriteSetting(setting: settingDefault)
+    }
+    
+    private func isEnabled(tag: Int) -> Bool {
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            if tag == 2 {
+                return true
+            } else {
+                return false
+            }
+        default:
+            if tag == 2 {
+                return false
+            } else {
+                return true
+            }
+        }
+    }
+    
+    private func isEnabledColor() {
+        
     }
 }
 // MARK: - Setup view
@@ -1117,11 +1159,13 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     private func setPickerView(backgroundColor: UIColor,
                                cornerRadius: CGFloat,
-                               tag: Int) -> UIPickerView {
+                               tag: Int,
+                               isEnabled: Bool) -> UIPickerView {
         let pickerView = UIPickerView()
         pickerView.backgroundColor = backgroundColor
         pickerView.layer.cornerRadius = cornerRadius
         pickerView.tag = tag
+        pickerView.isUserInteractionEnabled = isEnabled
         pickerView.translatesAutoresizingMaskIntoConstraints = false
         pickerView.dataSource = self
         pickerView.delegate = self
@@ -1209,6 +1253,7 @@ extension SettingViewController {
                                      elements: [Any],
                                      titleSelectedColor: UIColor,
                                      titleNormalColor: UIColor,
+                                     setIndex: Int,
                                      isEnabled: Bool) -> UISegmentedControl {
         let segment = UISegmentedControl(items: elements)
         let font = UIFont(name: "mr_fontick", size: 26)
@@ -1224,8 +1269,9 @@ extension SettingViewController {
                 .font: font ?? "",
                 .foregroundColor: titleNormalColor
         ], for: .normal)
-        segment.selectedSegmentIndex = 0
+        segment.selectedSegmentIndex = setIndex
         segment.isUserInteractionEnabled = isEnabled
+        segment.addTarget(self, action: #selector(segmentedControlAction), for: .valueChanged)
         segment.translatesAutoresizingMaskIntoConstraints = false
         return segment
     }

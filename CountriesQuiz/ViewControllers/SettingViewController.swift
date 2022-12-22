@@ -585,7 +585,7 @@ class SettingViewController: UIViewController {
         let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
         let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1).cgColor
         let label = setLabel(
-            title: "Время вопроса:",
+            title: isEnabledText(),
             size: 26,
             style: "mr_fontick",
             color: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
@@ -605,7 +605,7 @@ class SettingViewController: UIViewController {
         let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
         let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1).cgColor
         let label = setLabel(
-            title: "10",
+            title: setLabelNumberQuestions(),
             size: 26,
             style: "mr_fontick",
             color: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
@@ -644,10 +644,9 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var pickerViewOneQuestion: UIPickerView = {
-        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
         let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
         let pickerView = setPickerView(
-            backgroundColor: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
+            backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 2) : lightGray,
             cornerRadius: 13,
             tag: 2,
             isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 2) : false
@@ -656,10 +655,9 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var pickerViewAllQuestions: UIPickerView = {
-        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
         let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
         let pickerView = setPickerView(
-            backgroundColor: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
+            backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 3) : lightGray,
             cornerRadius: 13,
             tag: 3,
             isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 3) : false
@@ -822,7 +820,8 @@ class SettingViewController: UIViewController {
             stackViewLabelTimeElapsed.topAnchor.constraint(equalTo: stackViewTimeElapsed.bottomAnchor, constant: 15),
             stackViewLabelTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             stackViewLabelTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            labelTimeElapsedNumber.widthAnchor.constraint(equalToConstant: 100)
+            labelTimeElapsedQuestion.widthAnchor.constraint(equalToConstant: 285),
+            labelTimeElapsedNumber.widthAnchor.constraint(equalToConstant: 50)
         ])
         
         NSLayoutConstraint.activate([
@@ -848,6 +847,16 @@ class SettingViewController: UIViewController {
     
     @objc private func defaultSetting() {
         
+    }
+    // MARK: - Setting label of number questions
+    private func setLabelNumberQuestions() -> String {
+        let text: String
+        if pickerViewOneQuestion.isUserInteractionEnabled {
+            text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
+        } else {
+            text = "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime)"
+        }
+        return text
     }
     // MARK: - Setting of toggles
     @objc private func toggleAction(target: UISwitch) {
@@ -908,11 +917,11 @@ class SettingViewController: UIViewController {
                     .foregroundColor: titleNormalColor
             ], for: .normal)
             
-            pickerViewOneQuestion.isUserInteractionEnabled = target.isOn ? true : false
-            pickerViewOneQuestion.backgroundColor = target.isOn ? lightBlue : lightGray
+            pickerViewOneQuestion.isUserInteractionEnabled = target.isOn ? isEnabled(tag: 2) : false
+            pickerViewOneQuestion.backgroundColor = target.isOn ? isEnabledColor(tag: 2) : lightGray
             pickerViewOneQuestion.reloadAllComponents()
-            pickerViewAllQuestions.isUserInteractionEnabled = target.isOn ? true : false
-            pickerViewAllQuestions.backgroundColor = target.isOn ? lightBlue : lightGray
+            pickerViewAllQuestions.isUserInteractionEnabled = target.isOn ? isEnabled(tag: 3) : false
+            pickerViewAllQuestions.backgroundColor = target.isOn ? isEnabledColor(tag: 3) : lightGray
             pickerViewAllQuestions.reloadAllComponents()
             
         }
@@ -920,29 +929,6 @@ class SettingViewController: UIViewController {
         toggleRewrite(allCountries: toggleAllCountries.isOn, americaContinent: toggleAmericaContinent.isOn,
                       europeContinent: toggleEuropeContinent.isOn, africaContinent: toggleAfricaContinent.isOn,
                       asiaContinent: toggleAsiaContinent.isOn, oceaniaContinent: toggleOceaniaContinent.isOn)
-    }
-    
-    @objc private func segmentedControlAction() {
-        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
-        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
-        
-        if segmentedControl.selectedSegmentIndex == 0 {
-            segmentAction(pickerView: pickerViewOneQuestion, isEnabled: true, backgroundColor: lightBlue)
-            segmentAction(pickerView: pickerViewAllQuestions, isEnabled: false, backgroundColor: lightGray)
-        } else {
-            segmentAction(pickerView: pickerViewOneQuestion, isEnabled: false, backgroundColor: lightGray)
-            segmentAction(pickerView: pickerViewAllQuestions, isEnabled: true, backgroundColor: lightBlue)
-        }
-    }
-    
-    private func segmentAction(pickerView: UIPickerView,
-                               isEnabled: Bool,
-                               backgroundColor: UIColor) {
-        pickerView.isUserInteractionEnabled = isEnabled
-        pickerView.backgroundColor = backgroundColor
-        pickerView.reloadAllComponents()
-        settingDefault.timeElapsed.questionSelect.oneQuestion = isEnabled
-        delegate.rewriteSetting(setting: settingDefault)
     }
     
     private func toggleOff(toggles: UISwitch...) {
@@ -971,7 +957,43 @@ class SettingViewController: UIViewController {
         settingDefault.oceaniaContinent = oceaniaContinent
         delegate.rewriteSetting(setting: settingDefault)
     }
+    // MARK: - Setting of segmented control
+    @objc private func segmentedControlAction() {
+        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        
+        if segmentedControl.selectedSegmentIndex == 0 {
+            let countQuestion = settingDefault.countQuestions
+            let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime
+            let currentRow = currentTime - (4 * countQuestion)
+            pickerViewAllQuestions.selectRow(currentRow, inComponent: 0, animated: false)
+            settingDefault.timeElapsed.questionSelect.oneQuestion = true
+            delegate.rewriteSetting(setting: settingDefault)
+            segmentAction(pickerView: pickerViewOneQuestion, isEnabled: true, backgroundColor: lightBlue)
+            segmentAction(pickerView: pickerViewAllQuestions, isEnabled: false, backgroundColor: lightGray)
+            labelTimeElapsedQuestion.text = "Время одного вопроса:"
+            labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
+        } else {
+            let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime
+            let currentRow = currentTime - 6
+            pickerViewOneQuestion.selectRow(currentRow, inComponent: 0, animated: false)
+            settingDefault.timeElapsed.questionSelect.oneQuestion = false
+            delegate.rewriteSetting(setting: settingDefault)
+            segmentAction(pickerView: pickerViewOneQuestion, isEnabled: false, backgroundColor: lightGray)
+            segmentAction(pickerView: pickerViewAllQuestions, isEnabled: true, backgroundColor: lightBlue)
+            labelTimeElapsedQuestion.text = "Время всех вопросов:"
+            labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime)"
+        }
+    }
     
+    private func segmentAction(pickerView: UIPickerView,
+                               isEnabled: Bool,
+                               backgroundColor: UIColor) {
+        pickerView.isUserInteractionEnabled = isEnabled
+        pickerView.backgroundColor = backgroundColor
+        pickerView.reloadAllComponents()
+    }
+    // MARK: - Enabled or disabled picker view and color
     private func isEnabled(tag: Int) -> Bool {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
@@ -989,8 +1011,52 @@ class SettingViewController: UIViewController {
         }
     }
     
-    private func isEnabledColor() {
-        
+    private func isEnabledColor(tag: Int) -> UIColor {
+        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            if tag == 2 {
+                return lightBlue
+            } else {
+                return lightGray
+            }
+        default:
+            if tag == 2 {
+                return lightGray
+            } else {
+                return lightBlue
+            }
+        }
+    }
+    
+    private func isEnabledTextColor(tag: Int) -> UIColor {
+        let blue = UIColor(red: 54/255, green: 55/255, blue: 252/255, alpha: 1)
+        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            if tag == 2 {
+                return blue
+            } else {
+                return gray
+            }
+        default:
+            if tag == 2 {
+                return gray
+            } else {
+                return blue
+            }
+        }
+    }
+    
+    private func isEnabledText() -> String {
+        let text: String
+        if segmentedControl.selectedSegmentIndex == 0 {
+            text = "Время одного вопроса:"
+        } else {
+            text = "Время всех вопросов:"
+        }
+        return text
     }
 }
 // MARK: - Setup view
@@ -1103,11 +1169,11 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             attributed = attributedString(title: title)
         case 2:
             title = "\(row + 6)"
-            attributed = attributedStringTimeElapsed(title: title)
+            attributed = attributedStringTimeElapsed(title: title, tag: 2)
         default:
             let allQuestionTime = 4 * settingDefault.countQuestions
             title = "\(row + allQuestionTime)"
-            attributed = attributedStringTimeElapsed(title: title)
+            attributed = attributedStringTimeElapsed(title: title, tag: 3)
         }
         
         label.textAlignment = .center
@@ -1120,11 +1186,12 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         case 1:
             
             let countQuestion = row + 10
-            let allQuestionTime = 5 * countQuestion
-            let currentRow = allQuestionTime - (4 * countQuestion)
+            let averageQuestionTime = 5 * countQuestion
+            let currentRow = averageQuestionTime - (4 * countQuestion)
             labelNumber.text = "\(countQuestion)"
+            labelTimeElapsedNumber.text = checkPickerView(time: averageQuestionTime)
             settingDefault.countQuestions = countQuestion
-            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime = allQuestionTime
+            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime = averageQuestionTime
             pickerViewAllQuestions.reloadAllComponents()
             pickerViewAllQuestions.selectRow(currentRow, inComponent: 0, animated: false)
             delegate.rewriteSetting(setting: settingDefault)
@@ -1184,14 +1251,19 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         ])
     }
     
-    private func attributedStringTimeElapsed(title: String) -> NSAttributedString {
-        let blue = UIColor(red: 54/255, green: 55/255, blue: 252/255, alpha: 1)
+    private func attributedStringTimeElapsed(title: String, tag: Int) -> NSAttributedString {
         let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
-        let currentColor: UIColor = settingDefault.timeElapsed.timeElapsed ? blue : gray
+        let currentColor: UIColor = settingDefault.timeElapsed.timeElapsed ? isEnabledTextColor(tag: tag) : gray
         return NSAttributedString(string: title, attributes: [
             .font: UIFont(name: "mr_fontick", size: 26) ?? "",
             .foregroundColor: currentColor
         ])
+    }
+    
+    private func checkPickerView(time: Int) -> String {
+        let text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
+        guard pickerViewAllQuestions.isUserInteractionEnabled else { return text }
+        return "\(time)"
     }
 }
 // MARK: - Setup toggle

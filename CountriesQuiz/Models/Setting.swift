@@ -9,6 +9,7 @@ import Foundation
 
 struct Setting: Codable {
     var countQuestions: Int
+    var countRows: Int
     var allCountries: Bool
     var americaContinent: Bool
     var europeContinent: Bool
@@ -30,13 +31,14 @@ struct QuestionSelect: Codable {
 
 struct QuestionTime: Codable {
     var oneQuestionTime: Int
-    var allQuestionTime: Int
+    var allQuestionsTime: Int
 }
 
 extension Setting {
     static func getSettingDefault() -> Setting {
         let setting = Setting(
-            countQuestions: 20,
+            countQuestions: DefaultSetting.countQuestions.rawValue,
+            countRows: DefaultSetting.countRows.rawValue,
             allCountries: true,
             americaContinent: false,
             europeContinent: false,
@@ -48,12 +50,19 @@ extension Setting {
                 questionSelect: QuestionSelect(
                     oneQuestion: true,
                     questionTime: QuestionTime(
-                        oneQuestionTime: 10,
-                        allQuestionTime: 100
+                        oneQuestionTime: DefaultSetting.oneQuestionTime.rawValue,
+                        allQuestionsTime: DefaultSetting.allQuestionsTime.rawValue
                     )
                 )
             )
         )
         return setting
     }
+}
+
+enum DefaultSetting: Int {
+    case countQuestions = 20
+    case countRows = 91
+    case oneQuestionTime = 10
+    case allQuestionsTime = 100
 }

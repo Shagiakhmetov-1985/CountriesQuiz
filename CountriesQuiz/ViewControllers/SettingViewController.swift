@@ -716,7 +716,7 @@ class SettingViewController: UIViewController {
         let currentRowOneQuestion = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
         pickerViewOneQuestion.selectRow(currentRowOneQuestion, inComponent: 0, animated: false)
         
-        let currentTimeAllQuestion = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime
+        let currentTimeAllQuestion = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime
         let currentRowAllQuestion = currentTimeAllQuestion - (4 * countQuestion)
         pickerViewAllQuestions.selectRow(currentRowAllQuestion, inComponent: 0, animated: false)
     }
@@ -854,7 +854,7 @@ class SettingViewController: UIViewController {
         if pickerViewOneQuestion.isUserInteractionEnabled {
             text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
         } else {
-            text = "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime)"
+            text = "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
         }
         return text
     }
@@ -879,6 +879,9 @@ class SettingViewController: UIViewController {
                toggleAsiaContinent.isOn, toggleOceaniaContinent.isOn {
                 toggleOff(toggles: toggleAmericaContinent, toggleEuropeContinent,
                           toggleAfricaContinent, toggleAsiaContinent, toggleOceaniaContinent)
+                toggleOn(toggles: toggleAllCountries)
+            } else if !toggleAllCountries.isOn, !toggleAmericaContinent.isOn, !toggleEuropeContinent.isOn,
+                      !toggleAfricaContinent.isOn, !toggleAsiaContinent.isOn, !toggleOceaniaContinent.isOn {
                 toggleOn(toggles: toggleAllCountries)
             } else {
                 toggleOff(toggles: toggleAllCountries)
@@ -929,6 +932,10 @@ class SettingViewController: UIViewController {
         toggleRewrite(allCountries: toggleAllCountries.isOn, americaContinent: toggleAmericaContinent.isOn,
                       europeContinent: toggleEuropeContinent.isOn, africaContinent: toggleAfricaContinent.isOn,
                       asiaContinent: toggleAsiaContinent.isOn, oceaniaContinent: toggleOceaniaContinent.isOn)
+        setupRowsPickerView(allCountries: toggleAllCountries.isOn, americaContinent: toggleAmericaContinent.isOn,
+                            europeContinent: toggleEuropeContinent.isOn, africaContinent: toggleAfricaContinent.isOn,
+                            asiaContinent: toggleAsiaContinent.isOn, oceaniaContinent: toggleOceaniaContinent.isOn)
+        
     }
     
     private func toggleOff(toggles: UISwitch...) {
@@ -944,11 +951,11 @@ class SettingViewController: UIViewController {
     }
     
     private func toggleRewrite(allCountries: Bool,
-                                  americaContinent: Bool,
-                                  europeContinent: Bool,
-                                  africaContinent: Bool,
-                                  asiaContinent: Bool,
-                                  oceaniaContinent: Bool) {
+                               americaContinent: Bool,
+                               europeContinent: Bool,
+                               africaContinent: Bool,
+                               asiaContinent: Bool,
+                               oceaniaContinent: Bool) {
         settingDefault.allCountries = allCountries
         settingDefault.americaContinent = americaContinent
         settingDefault.europeContinent = europeContinent
@@ -957,6 +964,76 @@ class SettingViewController: UIViewController {
         settingDefault.oceaniaContinent = oceaniaContinent
         delegate.rewriteSetting(setting: settingDefault)
     }
+    
+    private func setupRowsPickerView(allCountries: Bool,
+                                     americaContinent: Bool,
+                                     europeContinent: Bool,
+                                     africaContinent: Bool,
+                                     asiaContinent: Bool,
+                                     oceaniaContinent: Bool) {
+        var countRows = checkAllCountries(toggle: allCountries) +
+        checkAmericaContinent(toggle: americaContinent) +
+        checkEuropeContinent(toggle: europeContinent) +
+        checkAfricaContinent(toggle: africaContinent) +
+        checkAsiaContinent(toggle: asiaContinent) +
+        checkOceaniaContinent(toggle: oceaniaContinent) - 9
+        
+        if countRows > DefaultSetting.countRows.rawValue {
+            countRows = DefaultSetting.countRows.rawValue
+        }
+        
+        if countRows < settingDefault.countRows {
+            let countQuestions = countRows + 9
+            let averageQuestionTime = 5 * countQuestions
+            let currentRow = averageQuestionTime - (4 * countQuestions)
+            let currentRowFromPickerView = pickerViewNumberQuestion.selectedRow(inComponent: 0)
+//            print("текущая строка пикеравью: \(currentRowFromPickerView)")
+            labelTimeElapsedNumber.text = checkPickerView(time: averageQuestionTime)
+            if currentRowFromPickerView <= countRows {
+                labelNumber.text = "\(currentRowFromPickerView)"
+                settingDefault.countQuestions = currentRowFromPickerView
+            } else {
+                labelNumber.text = "\(countQuestions)"
+                settingDefault.countQuestions = countQuestions
+            }
+            settingDefault.countRows = countRows
+            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime = averageQuestionTime
+            pickerViewNumberQuestion.reloadAllComponents()
+            pickerViewNumberQuestion.selectRow(countRows, inComponent: 0, animated: true)
+            pickerViewAllQuestions.reloadAllComponents()
+            pickerViewAllQuestions.selectRow(currentRow, inComponent: 0, animated: false)
+        } else {
+            settingDefault.countRows = countRows
+            pickerViewNumberQuestion.reloadAllComponents()
+        }
+        
+        delegate.rewriteSetting(setting: settingDefault)
+        print(settingDefault ?? "")
+    }
+    
+    private func checkAllCountries(toggle: Bool) -> Int {
+        toggle ? FlagsOfCountries.shared.countries.count : 0
+    }
+    
+    private func checkAmericaContinent(toggle: Bool) -> Int {
+        toggle ? FlagsOfCountries.shared.countriesOfAmericanContinent.count : 0
+    }
+    
+    private func checkEuropeContinent(toggle: Bool) -> Int {
+        toggle ? FlagsOfCountries.shared.countriesOfEuropeanContinent.count : 0
+    }
+    
+    private func checkAfricaContinent(toggle: Bool) -> Int {
+        toggle ? FlagsOfCountries.shared.countriesOfAfricanContinent.count : 0
+    }
+    
+    private func checkAsiaContinent(toggle: Bool) -> Int {
+        toggle ? FlagsOfCountries.shared.countriesOfAsianContinent.count : 0
+    }
+    
+    private func checkOceaniaContinent(toggle: Bool) -> Int {
+        toggle ? FlagsOfCountries.shared.countriesOfOceanContinent.count : 0
+    }
     // MARK: - Setting of segmented control
     @objc private func segmentedControlAction() {
         let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
@@ -964,25 +1041,33 @@ class SettingViewController: UIViewController {
         
         if segmentedControl.selectedSegmentIndex == 0 {
             let countQuestion = settingDefault.countQuestions
-            let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime
+            let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime
             let currentRow = currentTime - (4 * countQuestion)
+            
             pickerViewAllQuestions.selectRow(currentRow, inComponent: 0, animated: false)
+            
             settingDefault.timeElapsed.questionSelect.oneQuestion = true
             delegate.rewriteSetting(setting: settingDefault)
+            
             segmentAction(pickerView: pickerViewOneQuestion, isEnabled: true, backgroundColor: lightBlue)
             segmentAction(pickerView: pickerViewAllQuestions, isEnabled: false, backgroundColor: lightGray)
+            
             labelTimeElapsedQuestion.text = "Время одного вопроса:"
             labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
         } else {
             let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime
             let currentRow = currentTime - 6
+            
             pickerViewOneQuestion.selectRow(currentRow, inComponent: 0, animated: false)
+            
             settingDefault.timeElapsed.questionSelect.oneQuestion = false
             delegate.rewriteSetting(setting: settingDefault)
+            
             segmentAction(pickerView: pickerViewOneQuestion, isEnabled: false, backgroundColor: lightGray)
             segmentAction(pickerView: pickerViewAllQuestions, isEnabled: true, backgroundColor: lightBlue)
+            
             labelTimeElapsedQuestion.text = "Время всех вопросов:"
-            labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime)"
+            labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
         }
     }
     
@@ -1150,7 +1235,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch pickerView.tag {
         case 1:
-            return 91
+            return settingDefault.countRows
         case 2:
             return 10
         default:
@@ -1191,7 +1276,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             labelNumber.text = "\(countQuestion)"
             labelTimeElapsedNumber.text = checkPickerView(time: averageQuestionTime)
             settingDefault.countQuestions = countQuestion
-            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime = averageQuestionTime
+            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime = averageQuestionTime
             pickerViewAllQuestions.reloadAllComponents()
             pickerViewAllQuestions.selectRow(currentRow, inComponent: 0, animated: false)
             delegate.rewriteSetting(setting: settingDefault)
@@ -1207,7 +1292,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             
             let allQuestionTime = row + (4 * settingDefault.countQuestions)
             labelTimeElapsedNumber.text = "\(allQuestionTime)"
-            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionTime = allQuestionTime
+            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime = allQuestionTime
             delegate.rewriteSetting(setting: settingDefault)
             
         }

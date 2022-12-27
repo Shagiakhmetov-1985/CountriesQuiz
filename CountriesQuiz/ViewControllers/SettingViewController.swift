@@ -51,6 +51,38 @@ class SettingViewController: UIViewController {
         return button
     }()
     
+    private lazy var buttonDefaultSetting: UIButton = {
+        let button = setButton(
+            title: "Сброс",
+            style: "mr_fontick",
+            size: 15,
+            colorTitle: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 252/255,
+                alpha: 1
+            ),
+            colorBackgroud: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1
+            ),
+            radiusCorner: 14,
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1
+            ).cgColor,
+            radiusShadow: 2.5,
+            shadowOffsetWidth: 2.5,
+            shadowOffsetHeight: 2.5
+        )
+        button.addTarget(self, action: #selector(defaultSetting), for: .touchUpInside)
+        return button
+    }()
+    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.frame = view.bounds
@@ -65,7 +97,7 @@ class SettingViewController: UIViewController {
     }()
     
     private var contentSize: CGSize {
-        CGSize(width: view.frame.width, height: view.frame.height + 280)
+        CGSize(width: view.frame.width, height: view.frame.height + fixSizeForContentViewBySizeIphone())
     }
     
     private lazy var labelNumberQuestions: UILabel = {
@@ -145,7 +177,7 @@ class SettingViewController: UIViewController {
         let label = setLabel(
             title: """
             Все страны мира
-            Количество стран: 245
+            Количество стран: \(FlagsOfCountries.shared.countries.count)
             """,
             size: 26,
             style: "mr_fontick",
@@ -208,7 +240,7 @@ class SettingViewController: UIViewController {
         let label = setLabel(
             title: """
             Континент Америки
-            Количество стран: 55
+            Количество стран: \(FlagsOfCountries.shared.countriesOfAmericanContinent.count)
             """,
             size: 26,
             style: "mr_fontick",
@@ -271,7 +303,7 @@ class SettingViewController: UIViewController {
         let label = setLabel(
             title: """
             Континент Европы
-            Количество стран: 51
+            Количество стран: \(FlagsOfCountries.shared.countriesOfEuropeanContinent.count)
             """,
             size: 26,
             style: "mr_fontick",
@@ -334,7 +366,7 @@ class SettingViewController: UIViewController {
         let label = setLabel(
             title: """
             Континент Африки
-            Количество стран: 59
+            Количество стран: \(FlagsOfCountries.shared.countriesOfAfricanContinent.count)
             """,
             size: 26,
             style: "mr_fontick",
@@ -397,7 +429,7 @@ class SettingViewController: UIViewController {
         let label = setLabel(
             title: """
             Континент Азии
-            Количество стран: 54
+            Количество стран: \(FlagsOfCountries.shared.countriesOfAsianContinent.count)
             """,
             size: 26,
             style: "mr_fontick",
@@ -460,7 +492,7 @@ class SettingViewController: UIViewController {
         let label = setLabel(
             title: """
             Континент Океании
-            Количество стран: 26
+            Количество стран: \(FlagsOfCountries.shared.countriesOfOceanContinent.count)
             """,
             size: 26,
             style: "mr_fontick",
@@ -682,6 +714,7 @@ class SettingViewController: UIViewController {
         setupSettingVC()
         setupSubviews(subviews: viewPanel,
                       buttonBackMenu,
+                      buttonDefaultSetting,
                       contentView
         )
         setupSubviewsOnContentView(subviews: scrollView)
@@ -744,13 +777,19 @@ class SettingViewController: UIViewController {
             viewPanel.topAnchor.constraint(equalTo: view.topAnchor),
             viewPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             viewPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            viewPanel.heightAnchor.constraint(equalToConstant: 70)
+            viewPanel.heightAnchor.constraint(equalToConstant: fixConstraintsForViewPanelBySizeIphone())
         ])
         
         NSLayoutConstraint.activate([
-            buttonBackMenu.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
+            buttonBackMenu.topAnchor.constraint(equalTo: view.topAnchor, constant: fixConstraintsForButtonBySizeIphone()),
             buttonBackMenu.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             buttonBackMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -245)
+        ])
+        
+        NSLayoutConstraint.activate([
+            buttonDefaultSetting.topAnchor.constraint(equalTo: view.topAnchor, constant: fixConstraintsForButtonBySizeIphone()),
+            buttonDefaultSetting.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 245),
+            buttonDefaultSetting.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
         NSLayoutConstraint.activate([
@@ -841,12 +880,24 @@ class SettingViewController: UIViewController {
         ])
     }
     
+    private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
+        return view.frame.height > 736 ? 110 : 70
+    }
+    
+    private func fixSizeForContentViewBySizeIphone() -> CGFloat {
+        return view.frame.height > 736 ? 140 : 280
+    }
+    
+    private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
+        return view.frame.height > 736 ? 60 : 30
+    }
+    // MARK: - Activating buttons
     @objc private func backToMenu() {
         dismiss(animated: true)
     }
     
     @objc private func defaultSetting() {
-        
+        showAlert(setting: settingDefault)
     }
     // MARK: - Setting label of number questions
     private func setLabelNumberQuestions() -> String {
@@ -984,31 +1035,26 @@ class SettingViewController: UIViewController {
         
         if countRows < settingDefault.countRows {
             let countQuestions = countRows + 9
-            let averageQuestionTime = 5 * countQuestions
-            let currentRow = averageQuestionTime - (4 * countQuestions)
-            let currentRowFromPickerView = pickerViewNumberQuestion.selectedRow(inComponent: 0)
-//            print("текущая строка пикеравью: \(currentRowFromPickerView)")
-            labelTimeElapsedNumber.text = checkPickerView(time: averageQuestionTime)
-            if currentRowFromPickerView <= countRows {
-                labelNumber.text = "\(currentRowFromPickerView)"
-                settingDefault.countQuestions = currentRowFromPickerView
-            } else {
-                labelNumber.text = "\(countQuestions)"
-                settingDefault.countQuestions = countQuestions
-            }
+            
             settingDefault.countRows = countRows
-            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime = averageQuestionTime
             pickerViewNumberQuestion.reloadAllComponents()
-            pickerViewNumberQuestion.selectRow(countRows, inComponent: 0, animated: true)
-            pickerViewAllQuestions.reloadAllComponents()
-            pickerViewAllQuestions.selectRow(currentRow, inComponent: 0, animated: false)
+            pickerViewNumberQuestion.selectRow(countRows, inComponent: 0, animated: false)
+            
+            if countQuestions < settingDefault.countQuestions {
+                let averageQuestionTime = 5 * countQuestions
+                let currentRow = averageQuestionTime - (4 * countQuestions)
+                
+                setupDataFromPickerView(countQuestion: countQuestions,
+                                        averageTime: averageQuestionTime,
+                                        currentRow: currentRow)
+                
+            }
         } else {
             settingDefault.countRows = countRows
             pickerViewNumberQuestion.reloadAllComponents()
         }
         
         delegate.rewriteSetting(setting: settingDefault)
-        print(settingDefault ?? "")
     }
     
     private func checkAllCountries(toggle: Bool) -> Int {
@@ -1044,30 +1090,30 @@ class SettingViewController: UIViewController {
             let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime
             let currentRow = currentTime - (4 * countQuestion)
             
-            pickerViewAllQuestions.selectRow(currentRow, inComponent: 0, animated: false)
-            
-            settingDefault.timeElapsed.questionSelect.oneQuestion = true
-            delegate.rewriteSetting(setting: settingDefault)
-            
             segmentAction(pickerView: pickerViewOneQuestion, isEnabled: true, backgroundColor: lightBlue)
             segmentAction(pickerView: pickerViewAllQuestions, isEnabled: false, backgroundColor: lightGray)
             
-            labelTimeElapsedQuestion.text = "Время одного вопроса:"
-            labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
+            setupDataFromSegmentedControl(
+                currentRow: currentRow,
+                pickerView: pickerViewAllQuestions,
+                oneQuestion: true,
+                timeElapsedQuestion: "Время одного вопроса:",
+                timeElapsedNumber: "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
+            )
         } else {
             let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime
             let currentRow = currentTime - 6
             
-            pickerViewOneQuestion.selectRow(currentRow, inComponent: 0, animated: false)
-            
-            settingDefault.timeElapsed.questionSelect.oneQuestion = false
-            delegate.rewriteSetting(setting: settingDefault)
-            
             segmentAction(pickerView: pickerViewOneQuestion, isEnabled: false, backgroundColor: lightGray)
             segmentAction(pickerView: pickerViewAllQuestions, isEnabled: true, backgroundColor: lightBlue)
             
-            labelTimeElapsedQuestion.text = "Время всех вопросов:"
-            labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
+            setupDataFromSegmentedControl(
+                currentRow: currentRow,
+                pickerView: pickerViewOneQuestion,
+                oneQuestion: false,
+                timeElapsedQuestion: "Время всех вопросов:",
+                timeElapsedNumber: "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
+            )
         }
     }
     
@@ -1077,6 +1123,21 @@ class SettingViewController: UIViewController {
         pickerView.isUserInteractionEnabled = isEnabled
         pickerView.backgroundColor = backgroundColor
         pickerView.reloadAllComponents()
+    }
+    
+    private func setupDataFromSegmentedControl(currentRow: Int,
+                                               pickerView: UIPickerView,
+                                               oneQuestion: Bool,
+                                               timeElapsedQuestion: String,
+                                               timeElapsedNumber: String) {
+        pickerView.selectRow(currentRow, inComponent: 0, animated: false)
+        
+        settingDefault.timeElapsed.questionSelect.oneQuestion = oneQuestion
+        
+        labelTimeElapsedQuestion.text = timeElapsedQuestion
+        labelTimeElapsedNumber.text = timeElapsedNumber
+        
+        delegate.rewriteSetting(setting: settingDefault)
     }
     // MARK: - Enabled or disabled picker view and color
     private func isEnabled(tag: Int) -> Bool {
@@ -1273,12 +1334,11 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             let countQuestion = row + 10
             let averageQuestionTime = 5 * countQuestion
             let currentRow = averageQuestionTime - (4 * countQuestion)
-            labelNumber.text = "\(countQuestion)"
-            labelTimeElapsedNumber.text = checkPickerView(time: averageQuestionTime)
-            settingDefault.countQuestions = countQuestion
-            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime = averageQuestionTime
-            pickerViewAllQuestions.reloadAllComponents()
-            pickerViewAllQuestions.selectRow(currentRow, inComponent: 0, animated: false)
+            
+            setupDataFromPickerView(countQuestion: countQuestion,
+                                    averageTime: averageQuestionTime,
+                                    currentRow: currentRow)
+            
             delegate.rewriteSetting(setting: settingDefault)
             
         case 2:
@@ -1345,10 +1405,21 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         ])
     }
     
-    private func checkPickerView(time: Int) -> String {
+    private func checkPickerViewEnabled(time: Int) -> String {
         let text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
         guard pickerViewAllQuestions.isUserInteractionEnabled else { return text }
         return "\(time)"
+    }
+    
+    private func setupDataFromPickerView(countQuestion: Int, averageTime: Int, currentRow: Int) {
+        labelNumber.text = "\(countQuestion)"
+        labelTimeElapsedNumber.text = checkPickerViewEnabled(time: averageTime)
+        
+        settingDefault.countQuestions = countQuestion
+        settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime = averageTime
+        
+        pickerViewAllQuestions.reloadAllComponents()
+        pickerViewAllQuestions.selectRow(currentRow, inComponent: 0, animated: false)
     }
 }
 // MARK: - Setup toggle
@@ -1431,5 +1502,50 @@ extension SettingViewController {
         segment.addTarget(self, action: #selector(segmentedControlAction), for: .valueChanged)
         segment.translatesAutoresizingMaskIntoConstraints = false
         return segment
+    }
+}
+// MARK: - Alert controller
+extension SettingViewController {
+    private func showAlert(setting: Setting) {
+        let title = "Сбросить настройки"
+        
+        let alert = AlertController(
+            title: title,
+            message: "Вы действительно хотите скинуть все настройки до заводских?",
+            preferredStyle: .alert
+        )
+        
+        alert.action(setting: setting) {
+            self.resetSetting()
+        }
+        
+        present(alert, animated: true)
+    }
+    
+    private func resetSetting() {
+        settingDefault = Setting.getSettingDefault()
+        
+        let currentRowCountQuestion = settingDefault.countQuestions - 10
+        let averageQuestionTime = 5 * settingDefault.countQuestions
+        let currentRowTimeElapsedOneQuestion = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
+        let currentRowTimeElapsedAllQuestions = averageQuestionTime - (4 * settingDefault.countQuestions)
+        
+        labelNumber.text = "\(settingDefault.countQuestions)"
+        labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
+        
+        toggleOn(toggles: toggleAllCountries, toggleTimeElapsed)
+        toggleOff(toggles: toggleAmericaContinent, toggleEuropeContinent,
+                  toggleAfricaContinent, toggleAsiaContinent, toggleOceaniaContinent)
+        
+        segmentedControl.selectedSegmentIndex = 0
+        
+        pickerViewNumberQuestion.reloadAllComponents()
+        pickerViewNumberQuestion.selectRow(currentRowCountQuestion, inComponent: 0, animated: false)
+        pickerViewOneQuestion.reloadAllComponents()
+        pickerViewOneQuestion.selectRow(currentRowTimeElapsedOneQuestion, inComponent: 0, animated: false)
+        pickerViewAllQuestions.reloadAllComponents()
+        pickerViewAllQuestions.selectRow(currentRowTimeElapsedAllQuestions, inComponent: 0, animated: false)
+        
+        delegate.rewriteSetting(setting: settingDefault)
     }
 }

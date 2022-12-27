@@ -20,6 +20,7 @@
 		C3E2EB3C2938E7F400AB40AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3E2EB3A2938E7F400AB40AD /* LaunchScreen.storyboard */; };
 		C3E2EB4B2938EA6800AB40AD /* FlagsOfCountries.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB4A2938EA6800AB40AD /* FlagsOfCountries.swift */; };
 		C3E2EB4D2938ED6800AB40AD /* CountriesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB4C2938ED6800AB40AD /* CountriesManager.swift */; };
+		C3E3C2DA295B602900054A1F /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E3C2D9295B602900054A1F /* AlertController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		C3E2EB3D2938E7F400AB40AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C3E2EB4A2938EA6800AB40AD /* FlagsOfCountries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagsOfCountries.swift; sourceTree = "<group>"; };
 		C3E2EB4C2938ED6800AB40AD /* CountriesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountriesManager.swift; sourceTree = "<group>"; };
+		C3E3C2D9295B602900054A1F /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 			children = (
 				C3E2EB332938E7F300AB40AD /* MainViewController.swift */,
 				C3D292EA293F5F0900786752 /* SettingViewController.swift */,
+				C3E3C2D9295B602900054A1F /* AlertController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -218,6 +221,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3E2EB342938E7F300AB40AD /* MainViewController.swift in Sources */,
+				C3E3C2DA295B602900054A1F /* AlertController.swift in Sources */,
 				C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */,
 				C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */,
 				C3E2EB4D2938ED6800AB40AD /* CountriesManager.swift in Sources */,

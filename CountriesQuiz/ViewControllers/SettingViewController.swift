@@ -52,32 +52,22 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var buttonDefaultSetting: UIButton = {
+        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
         let button = setButton(
             title: "Сброс",
             style: "mr_fontick",
             size: 15,
-            colorTitle: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1
-            ),
-            colorBackgroud: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1
-            ),
+            colorTitle: conditions() ? blue : gray,
+            colorBackgroud: conditions() ? lightBlue : lightGray,
             radiusCorner: 14,
-            shadowColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1
-            ).cgColor,
+            shadowColor: conditions() ? blue.cgColor : gray.cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
-            shadowOffsetHeight: 2.5
+            shadowOffsetHeight: 2.5,
+            isEnabled: conditions() ? true : false
         )
         button.addTarget(self, action: #selector(defaultSetting), for: .touchUpInside)
         return button
@@ -899,6 +889,18 @@ class SettingViewController: UIViewController {
     @objc private func defaultSetting() {
         showAlert(setting: settingDefault)
     }
+    
+    private func buttonIsEnabled(isEnabled: Bool, titleColor: UIColor,
+                                 backgroundColor: UIColor, shadowColor: CGColor) {
+        buttonDefaultSetting.isEnabled = isEnabled
+        buttonDefaultSetting.setTitleColor(titleColor, for: .normal)
+        buttonDefaultSetting.backgroundColor = backgroundColor
+        buttonDefaultSetting.layer.shadowColor = shadowColor
+    }
+    
+    private func conditions() -> Bool {
+        !settingDefault.allCountries && settingDefault.countQuestions > 50
+    }
     // MARK: - Setting label of number questions
     private func setLabelNumberQuestions() -> String {
         let text: String
@@ -986,6 +988,22 @@ class SettingViewController: UIViewController {
         setupRowsPickerView(allCountries: toggleAllCountries.isOn, americaContinent: toggleAmericaContinent.isOn,
                             europeContinent: toggleEuropeContinent.isOn, africaContinent: toggleAfricaContinent.isOn,
                             asiaContinent: toggleAsiaContinent.isOn, oceaniaContinent: toggleOceaniaContinent.isOn)
+        
+        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+        conditions() ?
+        buttonIsEnabled(
+            isEnabled: true,
+            titleColor: blue,
+            backgroundColor: lightBlue,
+            shadowColor: blue.cgColor) :
+        buttonIsEnabled(
+            isEnabled: false,
+            titleColor: gray,
+            backgroundColor: lightGray,
+            shadowColor: gray.cgColor)
         
     }
     
@@ -1204,6 +1222,41 @@ class SettingViewController: UIViewController {
         }
         return text
     }
+    // MARK: - Reset setting default
+    private func resetSetting() {
+        settingDefault = Setting.getSettingDefault()
+        
+        let currentRowCountQuestion = settingDefault.countQuestions - 10
+        let averageQuestionTime = 5 * settingDefault.countQuestions
+        let currentRowTimeElapsedOneQuestion = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
+        let currentRowTimeElapsedAllQuestions = averageQuestionTime - (4 * settingDefault.countQuestions)
+        
+        labelNumber.text = "\(settingDefault.countQuestions)"
+        labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
+        
+        toggleOn(toggles: toggleAllCountries, toggleTimeElapsed)
+        toggleOff(toggles: toggleAmericaContinent, toggleEuropeContinent,
+                  toggleAfricaContinent, toggleAsiaContinent, toggleOceaniaContinent)
+        
+        segmentedControl.selectedSegmentIndex = 0
+        
+        pickerViewNumberQuestion.reloadAllComponents()
+        pickerViewNumberQuestion.selectRow(currentRowCountQuestion, inComponent: 0, animated: false)
+        pickerViewOneQuestion.reloadAllComponents()
+        pickerViewOneQuestion.selectRow(currentRowTimeElapsedOneQuestion, inComponent: 0, animated: false)
+        pickerViewAllQuestions.reloadAllComponents()
+        pickerViewAllQuestions.selectRow(currentRowTimeElapsedAllQuestions, inComponent: 0, animated: false)
+        
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+        buttonIsEnabled(
+            isEnabled: false,
+            titleColor: gray,
+            backgroundColor: lightGray,
+            shadowColor: gray.cgColor)
+        
+        delegate.rewriteSetting(setting: settingDefault)
+    }
 }
 // MARK: - Setup view
 extension SettingViewController {
@@ -1240,7 +1293,8 @@ extension SettingViewController {
                            shadowColor: CGColor? = nil,
                            radiusShadow: CGFloat? = nil,
                            shadowOffsetWidth: CGFloat? = nil,
-                           shadowOffsetHeight: CGFloat? = nil) -> UIButton {
+                           shadowOffsetHeight: CGFloat? = nil,
+                           isEnabled: Bool? = nil) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
         button.setTitleColor(colorTitle, for: .normal)
@@ -1255,6 +1309,7 @@ extension SettingViewController {
         button.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
                                            height: shadowOffsetHeight ?? 0
         )
+        button.isEnabled = isEnabled ?? true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
@@ -1338,6 +1393,22 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             setupDataFromPickerView(countQuestion: countQuestion,
                                     averageTime: averageQuestionTime,
                                     currentRow: currentRow)
+            
+            let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+            let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
+            let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+            let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+            conditions() ?
+            buttonIsEnabled(
+                isEnabled: true,
+                titleColor: blue,
+                backgroundColor: lightBlue,
+                shadowColor: blue.cgColor) :
+            buttonIsEnabled(
+                isEnabled: false,
+                titleColor: gray,
+                backgroundColor: lightGray,
+                shadowColor: gray.cgColor)
             
             delegate.rewriteSetting(setting: settingDefault)
             
@@ -1520,32 +1591,5 @@ extension SettingViewController {
         }
         
         present(alert, animated: true)
-    }
-    
-    private func resetSetting() {
-        settingDefault = Setting.getSettingDefault()
-        
-        let currentRowCountQuestion = settingDefault.countQuestions - 10
-        let averageQuestionTime = 5 * settingDefault.countQuestions
-        let currentRowTimeElapsedOneQuestion = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
-        let currentRowTimeElapsedAllQuestions = averageQuestionTime - (4 * settingDefault.countQuestions)
-        
-        labelNumber.text = "\(settingDefault.countQuestions)"
-        labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
-        
-        toggleOn(toggles: toggleAllCountries, toggleTimeElapsed)
-        toggleOff(toggles: toggleAmericaContinent, toggleEuropeContinent,
-                  toggleAfricaContinent, toggleAsiaContinent, toggleOceaniaContinent)
-        
-        segmentedControl.selectedSegmentIndex = 0
-        
-        pickerViewNumberQuestion.reloadAllComponents()
-        pickerViewNumberQuestion.selectRow(currentRowCountQuestion, inComponent: 0, animated: false)
-        pickerViewOneQuestion.reloadAllComponents()
-        pickerViewOneQuestion.selectRow(currentRowTimeElapsedOneQuestion, inComponent: 0, animated: false)
-        pickerViewAllQuestions.reloadAllComponents()
-        pickerViewAllQuestions.selectRow(currentRowTimeElapsedAllQuestions, inComponent: 0, animated: false)
-        
-        delegate.rewriteSetting(setting: settingDefault)
     }
 }

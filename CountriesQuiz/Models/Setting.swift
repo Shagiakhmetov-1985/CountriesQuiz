@@ -60,12 +60,6 @@ extension Setting {
     }
 }
 
-extension Setting: Equatable {
-    static func == (lhs: Setting, rhs: Setting) -> Bool {
-        return lhs.allCountries == rhs.allCountries
-    }
-}
-
 enum DefaultSetting: Int {
     case countQuestions = 20
     case countRows = 91

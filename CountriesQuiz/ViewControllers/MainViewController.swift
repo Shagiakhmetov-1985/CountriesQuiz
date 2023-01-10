@@ -139,53 +139,7 @@ class MainViewController: UIViewController {
         button.addTarget(self, action: #selector(setting), for: .touchUpInside)
         return button
     }()
-    /*
-    private lazy var imageQuestionmark: UIImageView = {
-        let image = UIImageView()
-        image.image = UIImage(systemName: "questionmark.square.dashed")
-        image.tintColor = UIColor(
-            red: 184/255,
-            green: 247/255,
-            blue: 252/255,
-            alpha: 1
-        )
-        image.frame = CGRect(x: 180, y: 350, width: 75, height: 55)
-        image.transform = image.transform.rotated(by: .pi / -9)
-        image.layer.shadowColor = CGColor(
-            red: 54/255,
-            green: 55/255,
-            blue: 252/255,
-            alpha: 1
-        )
-        image.layer.shadowRadius = 2.5
-        image.layer.shadowOpacity = 1
-        image.layer.shadowOffset = CGSize(width: 0, height: 2)
-        return image
-    }()
     
-    private lazy var imageFilemenu: UIImageView = {
-        let image = UIImageView()
-        image.image = UIImage(systemName: "filemenu.and.selection")
-        image.tintColor = UIColor(
-            red: 184/255,
-            green: 247/255,
-            blue: 252/255,
-            alpha: 1
-        )
-        image.frame = CGRect(x: 138, y: 350, width: 75, height: 55)
-        image.transform = image.transform.rotated(by: .pi / -9)
-        image.layer.shadowColor = CGColor(
-            red: 54/255,
-            green: 55/255,
-            blue: 252/255,
-            alpha: 1
-        )
-        image.layer.shadowRadius = 2.5
-        image.layer.shadowOpacity = 1
-        image.layer.shadowOffset = CGSize(width: 0, height: 2)
-        return image
-    }()
-    */
     private lazy var labelQuizOfFlags: UILabel = {
         let label = setLabel(
             title: "Quiz of flags",
@@ -202,6 +156,7 @@ class MainViewController: UIViewController {
     }()
     
     private var settingDefault: Setting!
+    private var transition = Transition()
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -259,7 +214,10 @@ class MainViewController: UIViewController {
     }
     
     @objc private func startQuizOfFlags() {
-        
+        let quizOfFlagsVC = QuizOfFlagsViewController()
+        quizOfFlagsVC.modalPresentationStyle = .custom
+        quizOfFlagsVC.transitioningDelegate = self
+        present(quizOfFlagsVC, animated: true)
     }
     
     @objc private func setting() {
@@ -329,5 +287,19 @@ extension MainViewController {
 extension MainViewController: RewriteSettingDelegate {
     func rewriteSetting(setting: Setting) {
         StorageManager.shared.rewriteSetting(setting: setting)
+    }
+}
+// MARK: - UIViewControllerTransitioningDelegate
+extension MainViewController: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        transition.transitionMode = .present
+        transition.startingPoint = buttonQuizOfFlags.center
+        return transition
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        transition.transitionMode = .dismiss
+        transition.startingPoint = buttonQuizOfFlags.center
+        return transition
     }
 }

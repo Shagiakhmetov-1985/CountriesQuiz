@@ -14,7 +14,7 @@ enum TransitionMode {
 class Transition: NSObject {
     private var rectangle = UIView()
     
-    var duration = 0.4
+    var duration = 0.5
     var transitionMode: TransitionMode = .present
     var startingPoint = CGPoint.zero {
         didSet {

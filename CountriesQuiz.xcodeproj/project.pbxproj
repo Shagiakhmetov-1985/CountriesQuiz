@@ -74,6 +74,14 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		C3A5B9A12974258D000F15F0 /* Alert controller */ = {
+			isa = PBXGroup;
+			children = (
+				C3E3C2D9295B602900054A1F /* AlertController.swift */,
+			);
+			path = "Alert controller";
+			sourceTree = "<group>";
+		};
 		C3E2EB232938E7F300AB40AD = {
 			isa = PBXGroup;
 			children = (
@@ -98,6 +106,7 @@
 				C3E2EB472938E90D00AB40AD /* Models */,
 				C3E2EB452938E8C800AB40AD /* Supporting */,
 				C3E2EB442938E88100AB40AD /* ViewControllers */,
+				C3A5B9A12974258D000F15F0 /* Alert controller */,
 				C36773F4296D541E0096BCC5 /* AnimatedTransition */,
 				C3E2EB432938E87000AB40AD /* Storyboards */,
 				C3E2EB462938E8D100AB40AD /* Resources */,
@@ -120,7 +129,6 @@
 				C3E2EB332938E7F300AB40AD /* MainViewController.swift */,
 				C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */,
 				C3D292EA293F5F0900786752 /* SettingViewController.swift */,
-				C3E3C2D9295B602900054A1F /* AlertController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";

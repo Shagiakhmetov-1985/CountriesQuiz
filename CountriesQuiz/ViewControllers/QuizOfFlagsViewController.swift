@@ -188,6 +188,7 @@ class QuizOfFlagsViewController: UIViewController {
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5
         )
+        button.addTarget(self, action: #selector(firstButtonPress), for: .touchUpInside)
         return button
     }()
     
@@ -284,6 +285,14 @@ class QuizOfFlagsViewController: UIViewController {
         return button
     }()
     
+    private var imageFlagSpring: NSLayoutConstraint!
+    private var buttonFirstSpring: NSLayoutConstraint!
+    private var buttonSecondSpring: NSLayoutConstraint!
+    private var buttonThirdSpring: NSLayoutConstraint!
+    private var buttonFourthSpring: NSLayoutConstraint!
+    
+    private var timer = Timer()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupQuizOfFlagsVC()
@@ -301,6 +310,13 @@ class QuizOfFlagsViewController: UIViewController {
                       buttonAnswerFourth
         )
         setConstraints()
+        setupHideSubviews()
+        hideSubviews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        startGame()
     }
     
     private func setupQuizOfFlagsVC() {
@@ -315,6 +331,47 @@ class QuizOfFlagsViewController: UIViewController {
     private func setupSubviews(subviews: UIView...) {
         subviews.forEach { subview in
             view.addSubview(subview)
+        }
+    }
+    
+    private func setupHideSubviews() {
+        imageFlagSpring.constant += view.bounds.width
+        buttonFirstSpring.constant += view.bounds.width
+        buttonSecondSpring.constant += view.bounds.width
+        buttonThirdSpring.constant += view.bounds.width
+        buttonFourthSpring.constant += view.bounds.width
+    }
+    
+    private func hideSubviews() {
+        imageFlag.isHidden = true
+        buttonAnswerFirst.isHidden = true
+        buttonAnswerSecond.isHidden = true
+        buttonAnswerThird.isHidden = true
+        buttonAnswerFourth.isHidden = true
+    }
+    
+    private func startGame() {
+        timer = Timer.scheduledTimer(
+            timeInterval: 1, target: self, selector: #selector(showSubviews),
+            userInfo: nil, repeats: false)
+    }
+    
+    @objc private func showSubviews() {
+        timer.invalidate()
+        
+        imageFlag.isHidden = false
+        buttonAnswerFirst.isHidden = false
+        buttonAnswerSecond.isHidden = false
+        buttonAnswerThird.isHidden = false
+        buttonAnswerFourth.isHidden = false
+        
+        UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut) {
+            self.imageFlagSpring.constant -= self.view.bounds.width
+            self.buttonFirstSpring.constant -= self.view.bounds.width
+            self.buttonSecondSpring.constant -= self.view.bounds.width
+            self.buttonThirdSpring.constant -= self.view.bounds.width
+            self.buttonFourthSpring.constant -= self.view.bounds.width
+            self.view.layoutIfNeeded()
         }
     }
     
@@ -342,8 +399,8 @@ class QuizOfFlagsViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             progressView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 26),
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            progressView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            progressView.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
             progressView.heightAnchor.constraint(equalToConstant: 28)
         ])
         
@@ -357,9 +414,12 @@ class QuizOfFlagsViewController: UIViewController {
             labelQuiz.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
+        imageFlagSpring = NSLayoutConstraint(
+            item: imageFlag, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(imageFlagSpring)
         NSLayoutConstraint.activate([
             imageFlag.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 30),
-            imageFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageFlag.widthAnchor.constraint(equalToConstant: 300),
             imageFlag.heightAnchor.constraint(equalToConstant: 180)
         ])
@@ -369,29 +429,45 @@ class QuizOfFlagsViewController: UIViewController {
             labelNumberQuiz.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
+        buttonFirstSpring = NSLayoutConstraint(
+            item: buttonAnswerFirst, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(buttonFirstSpring)
         NSLayoutConstraint.activate([
             buttonAnswerFirst.topAnchor.constraint(equalTo: labelNumberQuiz.bottomAnchor, constant: 30),
-            buttonAnswerFirst.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonAnswerFirst.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            buttonAnswerFirst.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
         ])
         
+        buttonSecondSpring = NSLayoutConstraint(
+            item: buttonAnswerSecond, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(buttonSecondSpring)
         NSLayoutConstraint.activate([
             buttonAnswerSecond.topAnchor.constraint(equalTo: buttonAnswerFirst.bottomAnchor, constant: 8),
-            buttonAnswerSecond.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonAnswerSecond.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            buttonAnswerSecond.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
         ])
         
+        buttonThirdSpring = NSLayoutConstraint(
+            item: buttonAnswerThird, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(buttonThirdSpring)
         NSLayoutConstraint.activate([
             buttonAnswerThird.topAnchor.constraint(equalTo: buttonAnswerSecond.bottomAnchor, constant: 8),
-            buttonAnswerThird.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonAnswerThird.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            buttonAnswerThird.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
         ])
         
+        buttonFourthSpring = NSLayoutConstraint(
+            item: buttonAnswerFourth, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(buttonFourthSpring)
         NSLayoutConstraint.activate([
             buttonAnswerFourth.topAnchor.constraint(equalTo: buttonAnswerThird.bottomAnchor, constant: 8),
-            buttonAnswerFourth.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonAnswerFourth.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            buttonAnswerFourth.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
         ])
+    }
+    
+    private func setupWidthConstraint() -> CGFloat {
+        view.bounds.width - 40
     }
     
     private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
@@ -404,6 +480,10 @@ class QuizOfFlagsViewController: UIViewController {
     
     @objc private func exitToMenu() {
         dismiss(animated: true)
+    }
+    
+    @objc private func firstButtonPress() {
+        
     }
 }
 // MARK: - Setup view

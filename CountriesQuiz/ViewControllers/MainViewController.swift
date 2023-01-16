@@ -217,6 +217,7 @@ class MainViewController: UIViewController {
         let quizOfFlagsVC = QuizOfFlagsViewController()
         quizOfFlagsVC.modalPresentationStyle = .custom
         quizOfFlagsVC.transitioningDelegate = self
+        quizOfFlagsVC.setting = settingDefault
         present(quizOfFlagsVC, animated: true)
     }
     

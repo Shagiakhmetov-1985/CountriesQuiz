@@ -138,7 +138,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private lazy var labelNumberQuiz: UILabel = {
         let label = setLabel(
-            title: "Вопрос 1 из 20",
+            title: "Вопрос \(currentQuestion) из \(setting.countQuestions)",
             size: 30,
             style: "mr_fontick",
             color: UIColor(
@@ -292,6 +292,10 @@ class QuizOfFlagsViewController: UIViewController {
     private var buttonFourthSpring: NSLayoutConstraint!
     
     private var timer = Timer()
+    private var currentQuestion = 1
+    private var countries: [Countries] = []
+    
+    var setting: Setting!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -316,6 +320,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        fetchData()
         startGame()
     }
     
@@ -343,11 +348,18 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func hideSubviews() {
+        labelQuiz.layer.opacity = 0
+        labelNumberQuiz.layer.opacity = 0
+        
         imageFlag.isHidden = true
         buttonAnswerFirst.isHidden = true
         buttonAnswerSecond.isHidden = true
         buttonAnswerThird.isHidden = true
         buttonAnswerFourth.isHidden = true
+    }
+    
+    private func fetchData() {
+        countries = Countries.getRandomCountries()
     }
     
     private func startGame() {
@@ -364,6 +376,11 @@ class QuizOfFlagsViewController: UIViewController {
         buttonAnswerSecond.isHidden = false
         buttonAnswerThird.isHidden = false
         buttonAnswerFourth.isHidden = false
+        
+        UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) {
+            self.labelQuiz.layer.opacity = 1
+            self.labelNumberQuiz.layer.opacity = 1
+        }
         
         UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut) {
             self.imageFlagSpring.constant -= self.view.bounds.width

@@ -120,4 +120,65 @@ extension Countries {
         
         return countries
     }
+    
+    static func getRandomCountries() -> [Countries] {
+        var randomCountries = randomCountries()
+        let setting = StorageManager.shared.fetchSetting()
+        
+        var getCountries: [Countries] = []
+        for index in 0..<setting.countQuestions {
+            getCountries.append(randomCountries[index])
+        }
+        randomCountries.removeAll()
+        
+        return getCountries
+    }
+    
+    static func randomCountries() -> [Countries] {
+        var countries: [Countries] = []
+        let setting = StorageManager.shared.fetchSetting()
+        
+        countries = allCountries(toggle: setting.allCountries) +
+        americanContinent(toggle: setting.americaContinent) +
+        europeContinent(toggle: setting.europeContinent) +
+        africaContinent(toggle: setting.africaContinent) +
+        asiaContinent(toggle: setting.asiaContinent) +
+        oceanContinent(toggle: setting.oceaniaContinent)
+        
+        countries.shuffle()
+        
+        return countries
+    }
+    
+    static func allCountries(toggle: Bool) -> [Countries] {
+        toggle ? Countries.getCountries() : []
+    }
+    
+    static func americanContinent(toggle: Bool) -> [Countries] {
+        toggle ? Countries.getAmericanContinent() : []
+    }
+    
+    static func europeContinent(toggle: Bool) -> [Countries] {
+        toggle ? Countries.getEuropeanContinent() : []
+    }
+    
+    static func africaContinent(toggle: Bool) -> [Countries] {
+        toggle ? Countries.getAfricanContinent() : []
+    }
+    
+    static func asiaContinent(toggle: Bool) -> [Countries] {
+        toggle ? Countries.getAsianContinent() : []
+    }
+    
+    static func oceanContinent(toggle: Bool) -> [Countries] {
+        toggle ? Countries.getOceanContinent() : []
+    }
+    
+    static func getAnswers(correctAnswers: [Countries]) -> [Countries] {
+        var answers: [Countries] = []
+        let randomCountries = randomCountries()
+        
+        
+        return answers
+    }
 }

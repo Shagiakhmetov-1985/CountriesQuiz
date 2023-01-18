@@ -123,7 +123,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private lazy var imageFlag: UIImageView = {
         var image = UIImageView()
-        image.image = UIImage(named: "afghanistan")
+        image.image = UIImage(named: questions.questions[currentQuestion].flag)
         image.clipsToBounds = true
         image.layer.borderWidth = 2
         image.layer.borderColor = UIColor(
@@ -138,7 +138,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private lazy var labelNumberQuiz: UILabel = {
         let label = setLabel(
-            title: "Вопрос \(currentQuestion) из \(setting.countQuestions)",
+            title: "Вопрос \(currentQuestion + 1) из \(setting.countQuestions)",
             size: 30,
             style: "mr_fontick",
             color: UIColor(
@@ -162,7 +162,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private lazy var buttonAnswerFirst: UIButton = {
         let button = setButton(
-            title: "Ответ 1",
+            title: questions.buttonFirst[currentQuestion].name,
             style: "mr_fontick",
             size: 18,
             colorTitle: UIColor(
@@ -186,15 +186,16 @@ class QuizOfFlagsViewController: UIViewController {
             ).cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
-            shadowOffsetHeight: 2.5
+            shadowOffsetHeight: 2.5,
+            isEnabled: false
         )
-        button.addTarget(self, action: #selector(firstButtonPress), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonPress), for: .touchUpInside)
         return button
     }()
     
     private lazy var buttonAnswerSecond: UIButton = {
         let button = setButton(
-            title: "Ответ 2",
+            title: questions.buttonSecond[currentQuestion].name,
             style: "mr_fontick",
             size: 18,
             colorTitle: UIColor(
@@ -218,14 +219,15 @@ class QuizOfFlagsViewController: UIViewController {
             ).cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
-            shadowOffsetHeight: 2.5
+            shadowOffsetHeight: 2.5,
+            isEnabled: false
         )
         return button
     }()
     
     private lazy var buttonAnswerThird: UIButton = {
         let button = setButton(
-            title: "Ответ 3",
+            title: questions.buttonThird[currentQuestion].name,
             style: "mr_fontick",
             size: 18,
             colorTitle: UIColor(
@@ -249,14 +251,15 @@ class QuizOfFlagsViewController: UIViewController {
             ).cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
-            shadowOffsetHeight: 2.5
+            shadowOffsetHeight: 2.5,
+            isEnabled: false
         )
         return button
     }()
     
     private lazy var buttonAnswerFourth: UIButton = {
         let button = setButton(
-            title: "Ответ 4",
+            title: questions.buttonFourth[currentQuestion].name,
             style: "mr_fontick",
             size: 18,
             colorTitle: UIColor(
@@ -280,7 +283,8 @@ class QuizOfFlagsViewController: UIViewController {
             ).cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
-            shadowOffsetHeight: 2.5
+            shadowOffsetHeight: 2.5,
+            isEnabled: false
         )
         return button
     }()
@@ -292,8 +296,9 @@ class QuizOfFlagsViewController: UIViewController {
     private var buttonFourthSpring: NSLayoutConstraint!
     
     private var timer = Timer()
-    private var currentQuestion = 1
-    private var countries: [Countries] = []
+    private var timerForEnabled = Timer()
+    private var currentQuestion = 0
+    private var questions = Countries.getQuestions()
     
     var setting: Setting!
     
@@ -320,7 +325,6 @@ class QuizOfFlagsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchData()
         startGame()
     }
     
@@ -358,13 +362,12 @@ class QuizOfFlagsViewController: UIViewController {
         buttonAnswerFourth.isHidden = true
     }
     
-    private func fetchData() {
-        countries = Countries.getRandomCountries()
-    }
-    
     private func startGame() {
         timer = Timer.scheduledTimer(
             timeInterval: 1, target: self, selector: #selector(showSubviews),
+            userInfo: nil, repeats: false)
+        timerForEnabled = Timer.scheduledTimer(
+            timeInterval: 2, target: self, selector: #selector(isEnabledButton),
             userInfo: nil, repeats: false)
     }
     
@@ -390,6 +393,14 @@ class QuizOfFlagsViewController: UIViewController {
             self.buttonFourthSpring.constant -= self.view.bounds.width
             self.view.layoutIfNeeded()
         }
+    }
+    
+    @objc private func isEnabledButton() {
+        timerForEnabled.invalidate()
+        buttonAnswerFirst.isEnabled = true
+        buttonAnswerSecond.isEnabled = true
+        buttonAnswerThird.isEnabled = true
+        buttonAnswerFourth.isEnabled = true
     }
     
     // MARK: - Setup constraints
@@ -499,7 +510,7 @@ class QuizOfFlagsViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    @objc private func firstButtonPress() {
+    @objc private func buttonPress() {
         
     }
 }

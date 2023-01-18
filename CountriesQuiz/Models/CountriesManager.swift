@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Countries {
+struct Countries: Equatable {
     let flag: String
     let name: String
 }
@@ -122,19 +122,6 @@ extension Countries {
     }
     
     static func getRandomCountries() -> [Countries] {
-        var randomCountries = randomCountries()
-        let setting = StorageManager.shared.fetchSetting()
-        
-        var getCountries: [Countries] = []
-        for index in 0..<setting.countQuestions {
-            getCountries.append(randomCountries[index])
-        }
-        randomCountries.removeAll()
-        
-        return getCountries
-    }
-    
-    static func randomCountries() -> [Countries] {
         var countries: [Countries] = []
         let setting = StorageManager.shared.fetchSetting()
         
@@ -174,11 +161,86 @@ extension Countries {
         toggle ? Countries.getOceanContinent() : []
     }
     
-    static func getAnswers(correctAnswers: [Countries]) -> [Countries] {
-        var answers: [Countries] = []
-        let randomCountries = randomCountries()
+    static func getRandomQuestions(countries: [Countries]) -> [Countries] {
+        var getCountries: [Countries] = []
+        let setting = StorageManager.shared.fetchSetting()
         
+        for index in 0..<setting.countQuestions {
+            getCountries.append(countries[index])
+        }
         
-        return answers
+        return getCountries
+    }
+    
+    static func getChoosingAnswers(question: [Countries], randomCountries: [Countries]) -> [Countries] {
+        var choosingAnswers: [Countries] = []
+        
+        for index in 0..<question.count {
+            var fourAnswers: [Countries] = []
+            var answers = randomCountries
+            fourAnswers.append(answers[index])
+            answers.remove(at: index)
+            
+            let threeAnswers = wrongAnswers(answers: answers)
+            fourAnswers += threeAnswers
+            fourAnswers.shuffle()
+            choosingAnswers += fourAnswers
+        }
+        
+        return choosingAnswers
+    }
+    
+    static func wrongAnswers(answers: [Countries]) -> [Countries] {
+        var threeAnswers: [Countries] = []
+        var wrongAnswers = answers
+        var counter = 0
+        
+        while(counter < 3) {
+            let index = Int.random(in: 0..<wrongAnswers.count)
+            let wrongAnswer = wrongAnswers[index]
+            threeAnswers.append(wrongAnswer)
+            wrongAnswers.remove(at: index)
+            counter += 1
+        }
+        
+        return threeAnswers
+    }
+    
+    static func getAnswers(answers: [Countries]) -> (buttonFirst: [Countries],
+                                                     buttonSecond: [Countries],
+                                                     buttonThird: [Countries],
+                                                     buttonFourth: [Countries]) {
+        let setting = StorageManager.shared.fetchSetting()
+        var first: [Countries] = []
+        var second: [Countries] = []
+        var third: [Countries] = []
+        var fourth: [Countries] = []
+        var counter = 0
+        
+        while(counter < setting.countQuestions * 4) {
+            first.append(answers[counter])
+            second.append(answers[counter + 1])
+            third.append(answers[counter + 2])
+            fourth.append(answers[counter + 3])
+            counter += 4
+        }
+        
+        return (first, second, third, fourth)
+    }
+    
+    static func getQuestions() -> (questions: [Countries],
+                                   buttonFirst: [Countries],
+                                   buttonSecond: [Countries],
+                                   buttonThird: [Countries],
+                                   buttonFourth: [Countries]) {
+        let randomCountries = getRandomCountries()
+        
+        let questions = getRandomQuestions(countries: randomCountries)
+        
+        let choosingAnswers = getChoosingAnswers(question: questions, randomCountries: randomCountries)
+        
+        let answers = getAnswers(answers: choosingAnswers)
+        
+        return (questions, answers.buttonFirst, answers.buttonSecond, answers.buttonThird, answers.buttonFourth)
     }
 }

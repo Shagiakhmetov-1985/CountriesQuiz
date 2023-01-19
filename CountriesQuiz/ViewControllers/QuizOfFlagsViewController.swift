@@ -14,8 +14,7 @@ class QuizOfFlagsViewController: UIViewController {
             red: 102/255,
             green: 153/255,
             blue: 255/255,
-            alpha: 1
-        ))
+            alpha: 1))
         return view
     }()
     
@@ -28,25 +27,21 @@ class QuizOfFlagsViewController: UIViewController {
                 red: 54/255,
                 green: 55/255,
                 blue: 252/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorBackgroud: UIColor(
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             radiusCorner: 14,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
-            shadowOffsetHeight: 2.5
-        )
+            shadowOffsetHeight: 2.5)
         button.addTarget(self, action: #selector(exitToMenu), for: .touchUpInside)
         return button
     }()
@@ -63,23 +58,19 @@ class QuizOfFlagsViewController: UIViewController {
                 red: 51/255,
                 green: 81/255,
                 blue: 204/255,
-                alpha: 1
-            ),
+                alpha: 1),
             trackColor: UIColor(
                 red: 51/255,
                 green: 81/255,
                 blue: 204/255,
-                alpha: 0.3
-            ),
+                alpha: 0.3),
             borderWidth: 2.5,
             borderColor: UIColor(
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
-            progress: 0.9
-        )
+                alpha: 1),
+            progress: 0.9)
         return progressView
     }()
     
@@ -92,8 +83,7 @@ class QuizOfFlagsViewController: UIViewController {
             colorOfShadow: UIColor.white.cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 0.3,
-            shadowOffsetHeight: 0.3
-        )
+            shadowOffsetHeight: 0.3)
         return label
     }()
     
@@ -106,18 +96,15 @@ class QuizOfFlagsViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return label
     }()
     
@@ -130,8 +117,7 @@ class QuizOfFlagsViewController: UIViewController {
             red: 153/255,
             green: 204/255,
             blue: 255/255,
-            alpha: 1
-        ).cgColor
+            alpha: 1).cgColor
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
@@ -145,18 +131,15 @@ class QuizOfFlagsViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return label
     }()
     
@@ -169,26 +152,23 @@ class QuizOfFlagsViewController: UIViewController {
                 red: 54/255,
                 green: 55/255,
                 blue: 252/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorBackgroud: UIColor(
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             radiusCorner: 16,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5,
-            isEnabled: false
-        )
+            isEnabled: false,
+            tag: 1)
         button.addTarget(self, action: #selector(buttonPress), for: .touchUpInside)
         return button
     }()
@@ -202,26 +182,24 @@ class QuizOfFlagsViewController: UIViewController {
                 red: 54/255,
                 green: 55/255,
                 blue: 252/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorBackgroud: UIColor(
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             radiusCorner: 16,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5,
-            isEnabled: false
-        )
+            isEnabled: false,
+            tag: 2)
+        button.addTarget(self, action: #selector(buttonPress), for: .touchUpInside)
         return button
     }()
     
@@ -234,26 +212,24 @@ class QuizOfFlagsViewController: UIViewController {
                 red: 54/255,
                 green: 55/255,
                 blue: 252/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorBackgroud: UIColor(
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             radiusCorner: 16,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5,
-            isEnabled: false
-        )
+            isEnabled: false,
+            tag: 3)
+        button.addTarget(self, action: #selector(buttonPress), for: .touchUpInside)
         return button
     }()
     
@@ -266,26 +242,24 @@ class QuizOfFlagsViewController: UIViewController {
                 red: 54/255,
                 green: 55/255,
                 blue: 252/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorBackgroud: UIColor(
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             radiusCorner: 16,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5,
-            isEnabled: false
-        )
+            isEnabled: false,
+            tag: 4)
+        button.addTarget(self, action: #selector(buttonPress), for: .touchUpInside)
         return button
     }()
     
@@ -316,11 +290,10 @@ class QuizOfFlagsViewController: UIViewController {
                       buttonAnswerFirst,
                       buttonAnswerSecond,
                       buttonAnswerThird,
-                      buttonAnswerFourth
-        )
+                      buttonAnswerFourth)
         setConstraints()
-        setupHideSubviews()
-        hideSubviews()
+        setupMoveSubviews()
+        startHideSubviews()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -333,8 +306,7 @@ class QuizOfFlagsViewController: UIViewController {
             red: 54/255,
             green: 55/255,
             blue: 215/255,
-            alpha: 1
-        )
+            alpha: 1)
     }
     
     private func setupSubviews(subviews: UIView...) {
@@ -343,23 +315,37 @@ class QuizOfFlagsViewController: UIViewController {
         }
     }
     
-    private func setupHideSubviews() {
-        imageFlagSpring.constant += view.bounds.width
-        buttonFirstSpring.constant += view.bounds.width
-        buttonSecondSpring.constant += view.bounds.width
-        buttonThirdSpring.constant += view.bounds.width
-        buttonFourthSpring.constant += view.bounds.width
+    private func setupMoveSubviews() {
+        let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
+        imageFlagSpring.constant += view.bounds.width * pointX
+        buttonFirstSpring.constant += view.bounds.width * pointX
+        buttonSecondSpring.constant += view.bounds.width * pointX
+        buttonThirdSpring.constant += view.bounds.width * pointX
+        buttonFourthSpring.constant += view.bounds.width * pointX
     }
     
-    private func hideSubviews() {
-        labelQuiz.layer.opacity = 0
-        labelNumberQuiz.layer.opacity = 0
-        
-        imageFlag.isHidden = true
-        buttonAnswerFirst.isHidden = true
-        buttonAnswerSecond.isHidden = true
-        buttonAnswerThird.isHidden = true
-        buttonAnswerFourth.isHidden = true
+    private func startHideSubviews() {
+        setupOpacityLabels(labels: labelQuiz, labelNumberQuiz, opacity: 0)
+        setupHiddenSubviews(views: imageFlag, buttonAnswerFirst, buttonAnswerSecond,
+                            buttonAnswerThird, buttonAnswerFourth, isHidden: true)
+    }
+    
+    private func setupOpacityLabels(labels: UILabel..., opacity: Float) {
+        labels.forEach { label in
+            label.layer.opacity = opacity
+        }
+    }
+    
+    private func setupHiddenSubviews(views: UIView..., isHidden: Bool) {
+        views.forEach { view in
+            view.isHidden = isHidden
+        }
+    }
+    
+    private func setupEnabledSubviews(controls: UIControl..., isEnabled: Bool) {
+        controls.forEach { control in
+            control.isEnabled = isEnabled
+        }
     }
     
     private func startGame() {
@@ -374,17 +360,22 @@ class QuizOfFlagsViewController: UIViewController {
     @objc private func showSubviews() {
         timer.invalidate()
         
-        imageFlag.isHidden = false
-        buttonAnswerFirst.isHidden = false
-        buttonAnswerSecond.isHidden = false
-        buttonAnswerThird.isHidden = false
-        buttonAnswerFourth.isHidden = false
-        
-        UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) {
-            self.labelQuiz.layer.opacity = 1
-            self.labelNumberQuiz.layer.opacity = 1
+        setupHiddenSubviews(views: imageFlag, buttonAnswerFirst, buttonAnswerSecond,
+                            buttonAnswerThird, buttonAnswerFourth, isHidden: false)
+        if currentQuestion > 0 {
+            UIView.animate(withDuration: 0.6, delay: 0, options: .curveLinear) { [self] in
+                labelNumberQuiz.text = "Вопрос \(currentQuestion + 1) из \(setting.countQuestions)"
+            }
+        } else {
+            UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) { [self] in
+                setupOpacityLabels(labels: labelQuiz, labelNumberQuiz, opacity: 1)
+            }
         }
         
+        animationSubviews()
+    }
+    
+    private func animationSubviews() {
         UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut) {
             self.imageFlagSpring.constant -= self.view.bounds.width
             self.buttonFirstSpring.constant -= self.view.bounds.width
@@ -397,10 +388,8 @@ class QuizOfFlagsViewController: UIViewController {
     
     @objc private func isEnabledButton() {
         timerForEnabled.invalidate()
-        buttonAnswerFirst.isEnabled = true
-        buttonAnswerSecond.isEnabled = true
-        buttonAnswerThird.isEnabled = true
-        buttonAnswerFourth.isEnabled = true
+        setupEnabledSubviews(controls: buttonAnswerFirst, buttonAnswerSecond,
+                             buttonAnswerThird, buttonAnswerFourth, isEnabled: true)
     }
     
     // MARK: - Setup constraints
@@ -510,8 +499,100 @@ class QuizOfFlagsViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    @objc private func buttonPress() {
+    @objc private func buttonPress(button: UIButton) {
+        let darkGreen = UIColor(red: 51/255, green: 83/255, blue: 51/255, alpha: 1)
+        let green = UIColor(red: 51/255, green: 103/255, blue: 51/255, alpha: 1)
+        let lightGreen = UIColor(red: 152/255, green: 255/255, blue: 51/255, alpha: 1)
+        let darkRed = UIColor(red: 113/255, green: 0, blue: 0, alpha: 1)
+        let red = UIColor(red: 153/255, green: 0, blue: 0, alpha: 1)
+        let lightRed = UIColor(red: 255/255, green: 102/255, blue: 102/255, alpha: 1)
         
+        let tag = button.tag
+        
+        if checkAnswer(tag: tag) {
+            button.setTitleColor(green, for: .normal)
+            button.backgroundColor = lightGreen
+            button.layer.shadowColor = darkGreen.cgColor
+        } else {
+            button.setTitleColor(red, for: .normal)
+            button.backgroundColor = lightRed
+            button.layer.shadowColor = darkRed.cgColor
+        }
+        
+        disableButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                      buttonAnswerThird, buttonAnswerFourth, tag: tag)
+    }
+    
+    private func checkAnswer(tag: Int) -> Bool {
+        switch tag {
+        case 1:
+            return questions.questions[currentQuestion] == questions.buttonFirst[currentQuestion] ? true : false
+        case 2:
+            return questions.questions[currentQuestion] == questions.buttonSecond[currentQuestion] ? true : false
+        case 3:
+            return questions.questions[currentQuestion] == questions.buttonThird[currentQuestion] ? true : false
+        default:
+            return questions.questions[currentQuestion] == questions.buttonFourth[currentQuestion] ? true : false
+        }
+    }
+    
+    private func disableButton(buttons: UIButton..., tag: Int) {
+        let darkGray = UIColor(red: 72/255, green: 72/255, blue: 72/255, alpha: 1)
+        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        timer = Timer.scheduledTimer(
+            timeInterval: 5, target: self, selector: #selector(hideSubviews),
+            userInfo: nil, repeats: false)
+        
+        buttons.forEach { button in
+            if !(button.tag == tag) {
+                button.setTitleColor(gray, for: .normal)
+                button.backgroundColor = lightGray
+                button.layer.shadowColor = darkGray.cgColor
+            }
+            button.isEnabled = false
+        }
+    }
+    
+    private func showNewDataForNextQuestion() {
+        imageFlag.image = UIImage(named: questions.questions[currentQuestion].flag)
+        
+        buttonAnswerFirst.setTitle(questions.buttonFirst[currentQuestion].name, for: .normal)
+        buttonAnswerSecond.setTitle(questions.buttonSecond[currentQuestion].name, for: .normal)
+        buttonAnswerThird.setTitle(questions.buttonThird[currentQuestion].name, for: .normal)
+        buttonAnswerFourth.setTitle(questions.buttonFourth[currentQuestion].name, for: .normal)
+    }
+    
+    private func resetColorButton(buttons: UIButton...) {
+        let darkBlue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
+        let blue = UIColor(red: 54/255, green: 55/255, blue: 252/255, alpha: 1)
+        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        
+        buttons.forEach { button in
+            button.setTitleColor(blue, for: .normal)
+            button.backgroundColor = lightBlue
+            button.layer.shadowColor = darkBlue.cgColor
+        }
+    }
+    
+    @objc private func hideSubviews() {
+        timer.invalidate()
+        animationSubviews()
+        
+        timer = Timer.scheduledTimer(
+            timeInterval: 1, target: self, selector: #selector(nextQuestion),
+            userInfo: nil, repeats: false)
+    }
+    
+    @objc private func nextQuestion() {
+        timer.invalidate()
+        
+        currentQuestion += 1
+        setupMoveSubviews()
+        showNewDataForNextQuestion()
+        resetColorButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                         buttonAnswerThird, buttonAnswerFourth)
+        startGame()
     }
 }
 // MARK: - Setup view
@@ -562,7 +643,8 @@ extension QuizOfFlagsViewController {
                            radiusShadow: CGFloat? = nil,
                            shadowOffsetWidth: CGFloat? = nil,
                            shadowOffsetHeight: CGFloat? = nil,
-                           isEnabled: Bool? = nil) -> UIButton {
+                           isEnabled: Bool? = nil,
+                           tag: Int? = nil) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
         button.setTitleColor(colorTitle, for: .normal)
@@ -575,9 +657,9 @@ extension QuizOfFlagsViewController {
         button.layer.shadowOpacity = 1
         button.layer.shadowRadius = radiusShadow ?? 0
         button.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                           height: shadowOffsetHeight ?? 0
-        )
+                                           height: shadowOffsetHeight ?? 0)
         button.isEnabled = isEnabled ?? true
+        button.tag = tag ?? 0
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
@@ -602,8 +684,7 @@ extension QuizOfFlagsViewController {
         label.layer.shadowRadius = radiusOfShadow ?? 0
         label.layer.shadowOpacity = 1
         label.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                          height: shadowOffsetHeight ?? 0
-        )
+                                          height: shadowOffsetHeight ?? 0)
         label.numberOfLines = numberOfLines ?? 0
         label.textAlignment = textAlignment ?? .natural
         label.translatesAutoresizingMaskIntoConstraints = false

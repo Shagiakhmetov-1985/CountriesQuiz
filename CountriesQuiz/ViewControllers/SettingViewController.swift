@@ -14,8 +14,7 @@ class SettingViewController: UIViewController {
             red: 102/255,
             green: 153/255,
             blue: 255/255,
-            alpha: 1
-        ))
+            alpha: 1))
         return view
     }()
     
@@ -28,34 +27,32 @@ class SettingViewController: UIViewController {
                 red: 54/255,
                 green: 55/255,
                 blue: 252/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorBackgroud: UIColor(
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             radiusCorner: 14,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
-            shadowOffsetHeight: 2.5
-        )
+            shadowOffsetHeight: 2.5)
         button.addTarget(self, action: #selector(backToMenu), for: .touchUpInside)
         return button
     }()
     
     private lazy var buttonDefaultSetting: UIButton = {
         let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
-        let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
+        let blue = UIColor(red: 54/255, green: 55/255, blue: 252/255, alpha: 1)
+        let darkBlue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
         let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
         let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+        let darkGray = UIColor(red: 72/255, green: 72/255, blue: 72/255, alpha: 1)
         let button = setButton(
             title: "Сброс",
             style: "mr_fontick",
@@ -63,12 +60,11 @@ class SettingViewController: UIViewController {
             colorTitle: conditions() ? blue : gray,
             colorBackgroud: conditions() ? lightBlue : lightGray,
             radiusCorner: 14,
-            shadowColor: conditions() ? blue.cgColor : gray.cgColor,
+            shadowColor: conditions() ? darkBlue.cgColor : darkGray.cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5,
-            isEnabled: conditions() ? true : false
-        )
+            isEnabled: conditions() ? true : false)
         button.addTarget(self, action: #selector(defaultSetting), for: .touchUpInside)
         return button
     }()
@@ -99,20 +95,17 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
             numberOfLines: 1,
-            textAlignment: .right
-        )
+            textAlignment: .right)
         return label
     }()
     
@@ -125,19 +118,16 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
-            textAlignment: .center
-        )
+            textAlignment: .center)
         return label
     }()
     
@@ -154,12 +144,10 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             cornerRadius: 13,
             tag: 1,
-            isEnabled: true
-        )
+            isEnabled: true)
         return pickerView
     }()
     
@@ -175,18 +163,15 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return label
     }()
     
@@ -196,33 +181,28 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             onColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ),
+                alpha: 1),
             isOn: settingDefault.allCountries,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             shadowRadius: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return toggle
     }()
     
     private lazy var stackViewAllCountries: UIStackView = {
         let stackView = setStackView(autoresizingConstraints: false,
                                      label: labelAllCountries,
-                                     toggle: toggleAllCountries
-        )
+                                     toggle: toggleAllCountries)
         return stackView
     }()
     
@@ -238,18 +218,15 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return label
     }()
     
@@ -259,33 +236,28 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             onColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ),
+                alpha: 1),
             isOn: settingDefault.americaContinent,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             shadowRadius: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return toggle
     }()
     
     private lazy var stackViewAmericaContinent: UIStackView = {
         let stackView = setStackView(autoresizingConstraints: false,
                                      label: labelAmericaContinent,
-                                     toggle: toggleAmericaContinent
-        )
+                                     toggle: toggleAmericaContinent)
         return stackView
     }()
     
@@ -301,18 +273,15 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return label
     }()
     
@@ -322,33 +291,28 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             onColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ),
+                alpha: 1),
             isOn: settingDefault.europeContinent,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             shadowRadius: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return toggle
     }()
     
     private lazy var stackViewEuropeContinent: UIStackView = {
         let stackView = setStackView(autoresizingConstraints: false,
                                      label: labelEuropeContinent,
-                                     toggle: toggleEuropeContinent
-        )
+                                     toggle: toggleEuropeContinent)
         return stackView
     }()
     
@@ -364,18 +328,15 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return label
     }()
     
@@ -385,33 +346,28 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             onColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ),
+                alpha: 1),
             isOn: settingDefault.africaContinent,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             shadowRadius: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return toggle
     }()
     
     private lazy var stackViewAfricaContinent: UIStackView = {
         let stackView = setStackView(autoresizingConstraints: false,
                                      label: labelAfricaContinent,
-                                     toggle: toggleAfricaContinent
-        )
+                                     toggle: toggleAfricaContinent)
         return stackView
     }()
     
@@ -427,18 +383,15 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return label
     }()
     
@@ -448,33 +401,28 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             onColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ),
+                alpha: 1),
             isOn: settingDefault.asiaContinent,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             shadowRadius: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return toggle
     }()
     
     private lazy var stackViewAsiaContinent: UIStackView = {
         let stackView = setStackView(autoresizingConstraints: false,
                                      label: labelAsiaContinent,
-                                     toggle: toggleAsiaContinent
-        )
+                                     toggle: toggleAsiaContinent)
         return stackView
     }()
     
@@ -490,18 +438,15 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return label
     }()
     
@@ -511,33 +456,28 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             onColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ),
+                alpha: 1),
             isOn: settingDefault.oceaniaContinent,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             shadowRadius: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return toggle
     }()
     
     private lazy var stackViewOceaniaContinent: UIStackView = {
         let stackView = setStackView(autoresizingConstraints: false,
                                      label: labelOceaniaContinent,
-                                     toggle: toggleOceaniaContinent
-        )
+                                     toggle: toggleOceaniaContinent)
         return stackView
     }()
     
@@ -550,18 +490,15 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return label
     }()
     
@@ -571,33 +508,28 @@ class SettingViewController: UIViewController {
                 red: 153/255,
                 green: 204/255,
                 blue: 255/255,
-                alpha: 1
-            ),
+                alpha: 1),
             onColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ),
+                alpha: 1),
             isOn: settingDefault.timeElapsed.timeElapsed,
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
                 blue: 215/255,
-                alpha: 1
-            ).cgColor,
+                alpha: 1).cgColor,
             shadowRadius: 2,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return toggle
     }()
     
     private lazy var stackViewTimeElapsed: UIStackView = {
         let stackView = setStackView(autoresizingConstraints: false,
                                      label: labelTimeElapsed,
-                                     toggle: toggleTimeElapsed
-        )
+                                     toggle: toggleTimeElapsed)
         return stackView
     }()
     
@@ -616,8 +548,7 @@ class SettingViewController: UIViewController {
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
             numberOfLines: 1,
-            textAlignment: .right
-        )
+            textAlignment: .right)
         return label
     }()
     
@@ -635,16 +566,14 @@ class SettingViewController: UIViewController {
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
-            textAlignment: .center
-        )
+            textAlignment: .center)
         return label
     }()
     
     private lazy var stackViewLabelTimeElapsed: UIStackView = {
         let stackView = setStackViewLabels(autoresizingConstraints: false,
                                            labelFirst: labelTimeElapsedQuestion,
-                                           labelSecond: labelTimeElapsedNumber
-        )
+                                           labelSecond: labelTimeElapsedNumber)
         return stackView
     }()
     
@@ -660,8 +589,7 @@ class SettingViewController: UIViewController {
             titleSelectedColor: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
             titleNormalColor: settingDefault.timeElapsed.timeElapsed ? blue : gray,
             setIndex: settingDefault.timeElapsed.questionSelect.oneQuestion ? 0 : 1,
-            isEnabled: settingDefault.timeElapsed.timeElapsed ? true : false
-        )
+            isEnabled: settingDefault.timeElapsed.timeElapsed ? true : false)
         return segment
     }()
     
@@ -671,8 +599,7 @@ class SettingViewController: UIViewController {
             backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 2) : lightGray,
             cornerRadius: 13,
             tag: 2,
-            isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 2) : false
-        )
+            isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 2) : false)
         return pickerView
     }()
     
@@ -682,16 +609,14 @@ class SettingViewController: UIViewController {
             backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 3) : lightGray,
             cornerRadius: 13,
             tag: 3,
-            isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 3) : false
-        )
+            isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 3) : false)
         return pickerView
     }()
     
     private lazy var stackViewPickerViews: UIStackView = {
         let stackView = setStackViewPickerViews(autoresizingConstraints: false,
                                                 pickerViewFirst: pickerViewOneQuestion,
-                                                pickerViewSecond: pickerViewAllQuestions
-        )
+                                                pickerViewSecond: pickerViewAllQuestions)
         return stackView
     }()
     
@@ -705,8 +630,7 @@ class SettingViewController: UIViewController {
         setupSubviews(subviews: viewPanel,
                       buttonBackMenu,
                       buttonDefaultSetting,
-                      contentView
-        )
+                      contentView)
         setupSubviewsOnContentView(subviews: scrollView)
         setupSubviewsOnScrollView(subviews: stackViewNumberQuestion,
                                   pickerViewNumberQuestion,
@@ -719,8 +643,7 @@ class SettingViewController: UIViewController {
                                   stackViewTimeElapsed,
                                   stackViewLabelTimeElapsed,
                                   segmentedControl,
-                                  stackViewPickerViews
-        )
+                                  stackViewPickerViews)
         setConstraints()
     }
     // MARK: - Private methods
@@ -729,8 +652,7 @@ class SettingViewController: UIViewController {
             red: 54/255,
             green: 55/255,
             blue: 215/255,
-            alpha: 1
-        )
+            alpha: 1)
         
         let countQuestion = settingDefault.countQuestions
         let currentRowCountQuestion = countQuestion - 10
@@ -1004,7 +926,6 @@ class SettingViewController: UIViewController {
             titleColor: gray,
             backgroundColor: lightGray,
             shadowColor: gray.cgColor)
-        
     }
     
     private func toggleOff(toggles: UISwitch...) {
@@ -1116,8 +1037,7 @@ class SettingViewController: UIViewController {
                 pickerView: pickerViewAllQuestions,
                 oneQuestion: true,
                 timeElapsedQuestion: "Время одного вопроса:",
-                timeElapsedNumber: "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
-            )
+                timeElapsedNumber: "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)")
         } else {
             let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime
             let currentRow = currentTime - 6
@@ -1130,8 +1050,7 @@ class SettingViewController: UIViewController {
                 pickerView: pickerViewOneQuestion,
                 oneQuestion: false,
                 timeElapsedQuestion: "Время всех вопросов:",
-                timeElapsedNumber: "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
-            )
+                timeElapsedNumber: "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime)")
         }
     }
     
@@ -1307,8 +1226,7 @@ extension SettingViewController {
         button.layer.shadowOpacity = 1
         button.layer.shadowRadius = radiusShadow ?? 0
         button.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                           height: shadowOffsetHeight ?? 0
-        )
+                                           height: shadowOffsetHeight ?? 0)
         button.isEnabled = isEnabled ?? true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -1334,8 +1252,7 @@ extension SettingViewController {
         label.layer.shadowRadius = radiusOfShadow ?? 0
         label.layer.shadowOpacity = 1
         label.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                          height: shadowOffsetHeight ?? 0
-        )
+                                          height: shadowOffsetHeight ?? 0)
         label.numberOfLines = numberOfLines ?? 0
         label.textAlignment = textAlignment ?? .natural
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -1509,8 +1426,7 @@ extension SettingViewController {
         toggle.layer.shadowRadius = shadowRadius ?? 0
         toggle.layer.shadowOpacity = 1
         toggle.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                           height: shadowOffsetHeight ?? 0
-        )
+                                           height: shadowOffsetHeight ?? 0)
         toggle.isOn = isOn
         toggle.addTarget(self, action: #selector(toggleAction), for: .valueChanged)
         toggle.translatesAutoresizingMaskIntoConstraints = false
@@ -1583,8 +1499,7 @@ extension SettingViewController {
         let alert = AlertController(
             title: title,
             message: "Вы действительно хотите скинуть все настройки до заводских?",
-            preferredStyle: .alert
-        )
+            preferredStyle: .alert)
         
         alert.action(setting: setting) {
             self.resetSetting()

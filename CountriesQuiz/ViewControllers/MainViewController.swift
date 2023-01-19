@@ -22,18 +22,15 @@ class MainViewController: UIViewController {
                 red: 184/255,
                 green: 227/255,
                 blue: 252/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: CGColor(
                 red: 10/255,
                 green: 10/255,
                 blue: 10/255,
-                alpha: 1
-            ),
+                alpha: 1),
             radiusOfShadow: 4,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return label
     }()
     
@@ -46,18 +43,15 @@ class MainViewController: UIViewController {
                 red: 184/255,
                 green: 227/255,
                 blue: 252/255,
-                alpha: 1
-            ),
+                alpha: 1),
             colorOfShadow: CGColor(
                 red: 10/255,
                 green: 10/255,
                 blue: 10/255,
-                alpha: 1
-            ),
+                alpha: 1),
             radiusOfShadow: 4,
             shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2
-        )
+            shadowOffsetHeight: 2)
         return label
     }()
     
@@ -69,73 +63,67 @@ class MainViewController: UIViewController {
     }()
     
     private lazy var buttonQuizOfFlags: UIButton = {
-        let button = setButton(title: "Quiz of flags",
-                               size: 22,
-                               colorTitle: UIColor(
-                                red: 184/255,
-                                green: 247/255,
-                                blue: 252/255,
-                                alpha: 1
-                               ),
-                               colorBackgroud: UIColor(
-                                red: 125/255,
-                                green: 222/255,
-                                blue: 255/255,
-                                alpha: 0.15
-                               ),
-                               radiusCorner: 10,
-                               borderWidth: 3,
-                               borderColor: UIColor(
-                                red: 184/255,
-                                green: 247/255,
-                                blue: 252/255,
-                                alpha: 1).cgColor,
-                               shadowColor: UIColor(
-                                red: 54/255,
-                                green: 55/255,
-                                blue: 252/255,
-                                alpha: 1
-                               ).cgColor,
-                               radiusShadow: 3,
-                               shadowOffsetWidth: 2,
-                               shadowOffsetHeight: 2
-        )
+        let button = setButton(
+            title: "Quiz of flags",
+            size: 22,
+            colorTitle: UIColor(
+                red: 184/255,
+                green: 247/255,
+                blue: 252/255,
+                alpha: 1),
+            colorBackgroud: UIColor(
+                red: 125/255,
+                green: 222/255,
+                blue: 255/255,
+                alpha: 0.15),
+            radiusCorner: 10,
+            borderWidth: 3,
+            borderColor: UIColor(
+                red: 184/255,
+                green: 247/255,
+                blue: 252/255,
+                alpha: 1).cgColor,
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 252/255,
+                alpha: 1).cgColor,
+            radiusShadow: 3,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2)
         button.addTarget(self, action: #selector(startQuizOfFlags), for: .touchUpInside)
         return button
     }()
     
     private lazy var buttonSetting: UIButton = {
-        let button = setButton(title: "Setting",
-                               size: 22,
-                               colorTitle: UIColor(
-                                red: 184/255,
-                                green: 247/255,
-                                blue: 252/255,
-                                alpha: 1
-                               ),
-                               colorBackgroud: UIColor(
-                                red: 125/255,
-                                green: 222/255,
-                                blue: 255/255,
-                                alpha: 0.15
-                               ),
-                               radiusCorner: 10,
-                               borderWidth: 3,
-                               borderColor: UIColor(
-                                red: 184/255,
-                                green: 247/255,
-                                blue: 252/255,
-                                alpha: 1).cgColor,
-                               shadowColor: UIColor(
-                                red: 54/255,
-                                green: 55/255,
-                                blue: 252/255,
-                                alpha: 1
-                               ).cgColor,
-                               radiusShadow: 3,
-                               shadowOffsetWidth: 2,
-                               shadowOffsetHeight: 2
-        )
+        let button = setButton(
+            title: "Setting",
+            size: 22,
+            colorTitle: UIColor(
+                red: 184/255,
+                green: 247/255,
+                blue: 252/255,
+                alpha: 1),
+            colorBackgroud: UIColor(
+                red: 125/255,
+                green: 222/255,
+                blue: 255/255,
+                alpha: 0.15),
+            radiusCorner: 10,
+            borderWidth: 3,
+            borderColor: UIColor(
+                red: 184/255,
+                green: 247/255,
+                blue: 252/255,
+                alpha: 1).cgColor,
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 252/255,
+                alpha: 1).cgColor,
+            radiusShadow: 3,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2)
         button.addTarget(self, action: #selector(setting), for: .touchUpInside)
         return button
     }()
@@ -149,9 +137,7 @@ class MainViewController: UIViewController {
                 red: 184/255,
                 green: 227/255,
                 blue: 252/255,
-                alpha: 1
-            )
-        )
+                alpha: 1))
         return label
     }()
     
@@ -164,8 +150,7 @@ class MainViewController: UIViewController {
                       labelMainCountries,
                       labelMainQuiz,
                       buttonQuizOfFlags,
-                      buttonSetting
-        )
+                      buttonSetting)
         setConstraints()
     }
     
@@ -247,8 +232,7 @@ extension MainViewController {
         label.layer.shadowRadius = radiusOfShadow ?? 0
         label.layer.shadowOpacity = 1
         label.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                          height: shadowOffsetHeight ?? 0
-        )
+                                          height: shadowOffsetHeight ?? 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
@@ -278,8 +262,7 @@ extension MainViewController {
         button.layer.shadowOpacity = 1
         button.layer.shadowRadius = radiusShadow ?? 0
         button.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                           height: shadowOffsetHeight ?? 0
-        )
+                                           height: shadowOffsetHeight ?? 0)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }

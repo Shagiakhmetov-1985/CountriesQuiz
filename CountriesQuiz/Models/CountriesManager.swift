@@ -172,10 +172,10 @@ extension Countries {
         return getCountries
     }
     
-    static func getChoosingAnswers(question: [Countries], randomCountries: [Countries]) -> [Countries] {
+    static func getChoosingAnswers(questions: [Countries], randomCountries: [Countries]) -> [Countries] {
         var choosingAnswers: [Countries] = []
         
-        for index in 0..<question.count {
+        for index in 0..<questions.count {
             var fourAnswers: [Countries] = []
             var answers = randomCountries
             fourAnswers.append(answers[index])
@@ -237,7 +237,7 @@ extension Countries {
         
         let questions = getRandomQuestions(countries: randomCountries)
         
-        let choosingAnswers = getChoosingAnswers(question: questions, randomCountries: randomCountries)
+        let choosingAnswers = getChoosingAnswers(questions: questions, randomCountries: randomCountries)
         
         let answers = getAnswers(answers: choosingAnswers)
         

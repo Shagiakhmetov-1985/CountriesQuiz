@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MainViewController.swift
 //  CountriesQuiz
 //
 //  Created by Marat Shagiakhmetov on 01.12.2022.

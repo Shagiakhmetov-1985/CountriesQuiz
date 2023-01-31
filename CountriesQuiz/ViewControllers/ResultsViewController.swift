@@ -41,7 +41,7 @@ class ResultsViewController: UIViewController {
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5)
-//        button.addTarget(self, action: #selector(exitToMenu), for: .touchUpInside)
+        button.addTarget(self, action: #selector(exitToMenu), for: .touchUpInside)
         return button
     }()
     
@@ -112,6 +112,13 @@ class ResultsViewController: UIViewController {
             buttonBackMenu.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 245),
             buttonBackMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
+        
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 1),
+            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
     
     private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
@@ -120,6 +127,10 @@ class ResultsViewController: UIViewController {
     
     private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
         return view.frame.height > 736 ? 60 : 30
+    }
+    
+    @objc private func exitToMenu() {
+        dismiss(animated: true)
     }
 }
 

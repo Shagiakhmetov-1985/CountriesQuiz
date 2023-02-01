@@ -76,7 +76,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private lazy var labelTimer: UILabel = {
         let label = setLabel(
-            title: "\(setting.timeElapsed.questionSelect.questionTime.oneQuestionTime)",
+            title: "\(oneQuestionSeconds())",
             size: 20,
             style: "mr_fontick",
             color: .black,
@@ -299,6 +299,7 @@ class QuizOfFlagsViewController: UIViewController {
     private var currentQuestion = 0
     private var seconds = 0
     private var questions = Countries.getQuestions()
+    private var answerSelect = false
     
     private var results: [Results] = []
     
@@ -510,26 +511,49 @@ class QuizOfFlagsViewController: UIViewController {
         setupEnabledSubviews(controls: buttonAnswerFirst, buttonAnswerSecond,
                              buttonAnswerThird, buttonAnswerFourth, isEnabled: true)
         
-        seconds = setting.timeElapsed.questionSelect.questionTime.oneQuestionTime
+        if !oneQuestionCheck(), currentQuestion < 1 {
+            seconds = oneQuestionSeconds() * 10
+        } else if oneQuestionCheck() {
+            seconds = oneQuestionSeconds() * 10
+        }
+        
         timerFirst = Timer.scheduledTimer(
             timeInterval: 0.1, target: self, selector: #selector(timeElapsed),
             userInfo: nil, repeats: true)
         timerSecond = Timer.scheduledTimer(
-            timeInterval: 1, target: self, selector: #selector(timeElapsedText),
+            timeInterval: 0.1, target: self, selector: #selector(timeElapsedText),
             userInfo: nil, repeats: true)
     }
     
+    private func oneQuestionSeconds() -> Int {
+        let seconds: Int
+        if oneQuestionCheck() {
+            seconds = setting.timeElapsed.questionSelect.questionTime.oneQuestionTime
+        } else {
+            seconds = setting.timeElapsed.questionSelect.questionTime.allQuestionsTime
+        }
+        return seconds
+    }
+    
+    private func oneQuestionCheck() -> Bool {
+        setting.timeElapsed.questionSelect.oneQuestion ? true : false
+    }
+    
     @objc private func timeElapsed() {
-        let timeQuestion = TimeInterval(setting.timeElapsed.questionSelect.questionTime.oneQuestionTime)
+        let timeQuestion = TimeInterval(oneQuestionSeconds())
         let interval = (1 / timeQuestion) * 0.1
         let progress = progressView.progress - Float(interval)
         
-        UIView.animate(withDuration: 0.2) {
+        UIView.animate(withDuration: 0.3) {
             self.progressView.setProgress(progress, animated: true)
         }
         
         if progressView.progress <= 0 {
             timerFirst.invalidate()
+            answerSelect.toggle()
+            if !oneQuestionCheck() {
+                currentQuestion = questions.questions.count - 1
+            }
             disableButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
                           buttonAnswerThird, buttonAnswerFourth, tag: 0)
             endQuestion()
@@ -538,7 +562,11 @@ class QuizOfFlagsViewController: UIViewController {
     
     @objc private func timeElapsedText() {
         seconds -= 1
-        labelTimer.text = "\(seconds)"
+        if seconds.isMultiple(of: 10) {
+            let text = seconds / 10
+            labelTimer.text = "\(text)"
+        }
+        
         if seconds == 0 {
             timerSecond.invalidate()
         }
@@ -562,7 +590,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     @objc private func buttonPress(button: UIButton) {
         let darkGreen = UIColor(red: 51/255, green: 83/255, blue: 51/255, alpha: 1)
-        let green = UIColor(red: 51/255, green: 103/255, blue: 51/255, alpha: 1)
+        let green = UIColor(red: 51/255, green: 133/255, blue: 51/255, alpha: 1)
         let lightGreen = UIColor(red: 152/255, green: 255/255, blue: 51/255, alpha: 1)
         
         let darkRed = UIColor(red: 113/255, green: 0, blue: 0, alpha: 1)
@@ -573,6 +601,7 @@ class QuizOfFlagsViewController: UIViewController {
         
         timerFirst.invalidate()
         timerSecond.invalidate()
+        answerSelect.toggle()
         
         if checkAnswer(tag: tag) {
             button.setTitleColor(green, for: .normal)
@@ -625,14 +654,16 @@ class QuizOfFlagsViewController: UIViewController {
         
         if currentQuestion + 1 < questions.questions.count {
             timerFirst = Timer.scheduledTimer(
-                timeInterval: 2, target: self, selector: #selector(hideSubviews),
+                timeInterval: 5, target: self, selector: #selector(hideSubviews),
                 userInfo: nil, repeats: false)
         }
     }
     
     private func showNewDataForNextQuestion() {
-        let seconds = setting.timeElapsed.questionSelect.questionTime.oneQuestionTime
-        labelTimer.text = "\(seconds)"
+        if oneQuestionCheck() {
+            let seconds = setting.timeElapsed.questionSelect.questionTime.oneQuestionTime
+            labelTimer.text = "\(seconds)"
+        }
         
         imageFlag.image = UIImage(named: questions.questions[currentQuestion].flag)
         
@@ -648,11 +679,13 @@ class QuizOfFlagsViewController: UIViewController {
         UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) {
             self.labelNumberQuiz.layer.opacity = 1
         }
-        UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear) {
-            self.labelDescription.layer.opacity = 0
-        }
-        UIView.animate(withDuration: 0.5) {
-            self.progressView.setProgress(1, animated: true)
+        
+        labelDescription.layer.opacity = 0
+        
+        if oneQuestionCheck() {
+            UIView.animate(withDuration: 0.5) {
+                self.progressView.setProgress(1, animated: true)
+            }
         }
     }
     
@@ -670,6 +703,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     @objc private func hideSubviews() {
         timerFirst.invalidate()
+        answerSelect.toggle()
         
         animationSubviews()
         timerFirst = Timer.scheduledTimer(
@@ -721,11 +755,15 @@ extension QuizOfFlagsViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         
-        if currentQuestion + 1 == questions.questions.count {
-            let resultsVC = ResultsViewController()
-            resultsVC.modalPresentationStyle = .fullScreen
-            resultsVC.results = results
-            present(resultsVC, animated: true)
+        if answerSelect {
+            if currentQuestion + 1 < questions.questions.count {
+                hideSubviews()
+            } else {
+                let resultsVC = ResultsViewController()
+                resultsVC.modalPresentationStyle = .fullScreen
+                resultsVC.results = results
+                present(resultsVC, animated: true)
+            }
         }
     }
 }

@@ -10,9 +10,9 @@ import UIKit
 class ResultsViewController: UIViewController {
     private lazy var viewPanel: UIView = {
         let view = setView(color: UIColor(
-            red: 102/255,
-            green: 153/255,
-            blue: 255/255,
+            red: 153/255,
+            green: 215/255,
+            blue: 102/255,
             alpha: 1))
         return view
     }()
@@ -23,20 +23,20 @@ class ResultsViewController: UIViewController {
             style: "mr_fontick",
             size: 15,
             colorTitle: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
+                red: 51/255,
+                green: 133/255,
+                blue: 51/255,
                 alpha: 1),
             colorBackgroud: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
+                red: 224/255,
+                green: 255/255,
+                blue: 224/255,
                 alpha: 1),
             radiusCorner: 14,
             shadowColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
+                red: 51/255,
+                green: 83/255,
+                blue: 51/255,
                 alpha: 1).cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
@@ -75,9 +75,9 @@ class ResultsViewController: UIViewController {
     
     private func setupSettingVC() {
         view.backgroundColor = UIColor(
-            red: 54/255,
-            green: 55/255,
-            blue: 215/255,
+            red: 51/255,
+            green: 83/255,
+            blue: 51/255,
             alpha: 1)
     }
     
@@ -161,10 +161,10 @@ extension ResultsViewController {
     
     private func setGradient(content: UIView) {
         let gradientLayer = CAGradientLayer()
-        let colorBlue = UIColor(red: 30/255, green: 113/255, blue: 204/255, alpha: 1)
-        let colorLightBlue = UIColor(red: 102/255, green: 153/255, blue: 204/255, alpha: 1)
+        let colorGreen = UIColor(red: 102/255, green: 255/255, blue: 102/255, alpha: 1)
+        let colorLightGreen = UIColor(red: 204/255, green: 255/255, blue: 204/255, alpha: 1)
         gradientLayer.frame = view.bounds
-        gradientLayer.colors = [colorLightBlue.cgColor, colorBlue.cgColor]
+        gradientLayer.colors = [colorLightGreen.cgColor, colorGreen.cgColor]
         content.layer.addSublayer(gradientLayer)
     }
 }

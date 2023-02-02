@@ -10,11 +10,12 @@ import UIKit
 class QuizOfFlagsViewController: UIViewController {
     // MARK: - Setup subviews
     private lazy var viewPanel: UIView = {
-        let view = setView(color: UIColor(
-            red: 102/255,
-            green: 153/255,
-            blue: 255/255,
-            alpha: 1))
+        let view = setView(
+            color: UIColor(
+                red: 102/255,
+                green: 153/255,
+                blue: 255/255,
+                alpha: 1))
         return view
     }()
     
@@ -112,11 +113,11 @@ class QuizOfFlagsViewController: UIViewController {
         var image = UIImageView()
         image.image = UIImage(named: questions.questions[currentQuestion].flag)
         image.clipsToBounds = true
-        image.layer.borderWidth = 2
+        image.layer.borderWidth = 1
         image.layer.borderColor = UIColor(
-            red: 153/255,
-            green: 204/255,
-            blue: 255/255,
+            red: 54/255,
+            green: 55/255,
+            blue: 215/255,
             alpha: 1).cgColor
         image.translatesAutoresizingMaskIntoConstraints = false
         return image

@@ -10,11 +10,12 @@ import UIKit
 class SettingViewController: UIViewController {
     // MARK: - Subviews
     private lazy var viewPanel: UIView = {
-        let view = setView(color: UIColor(
-            red: 102/255,
-            green: 153/255,
-            blue: 255/255,
-            alpha: 1))
+        let view = setView(
+            color: UIColor(
+                red: 102/255,
+                green: 153/255,
+                blue: 255/255,
+                alpha: 1))
         return view
     }()
     

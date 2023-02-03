@@ -763,6 +763,7 @@ extension QuizOfFlagsViewController {
                 let resultsVC = ResultsViewController()
                 resultsVC.modalPresentationStyle = .fullScreen
                 resultsVC.results = results
+                resultsVC.countries = questions.questions
                 present(resultsVC, animated: true)
             }
         }

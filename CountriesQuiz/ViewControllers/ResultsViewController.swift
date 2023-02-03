@@ -116,7 +116,9 @@ class ResultsViewController: UIViewController {
         return image
     }()
     
-    private lazy var labelButtonFirst: UILabel = {
+    private lazy var labelButtonFirst: UIView = {
+        let view = setViewForLabel()
+        
         let label = setLabel(
             title: "Ответ 1",
             size: 15,
@@ -127,10 +129,16 @@ class ResultsViewController: UIViewController {
                 blue: 252/255,
                 alpha: 1),
             textAlignment: .center)
-        return label
+        
+        view.addSubview(label)
+        
+        setConstraintsForLabel(label: label, view: view)
+        return view
     }()
     
-    private lazy var labelButtonSecond: UILabel = {
+    private lazy var labelButtonSecond: UIView = {
+        let view = setViewForLabel()
+        
         let label = setLabel(
             title: "Ответ 2",
             size: 15,
@@ -141,10 +149,16 @@ class ResultsViewController: UIViewController {
                 blue: 252/255,
                 alpha: 1),
             textAlignment: .center)
-        return label
+        
+        view.addSubview(label)
+        
+        setConstraintsForLabel(label: label, view: view)
+        return view
     }()
     
-    private lazy var labelButtonThird: UILabel = {
+    private lazy var labelButtonThird: UIView = {
+        let view = setViewForLabel()
+        
         let label = setLabel(
             title: "Ответ 3",
             size: 15,
@@ -155,10 +169,16 @@ class ResultsViewController: UIViewController {
                 blue: 252/255,
                 alpha: 1),
             textAlignment: .center)
-        return label
+        
+        view.addSubview(label)
+        
+        setConstraintsForLabel(label: label, view: view)
+        return view
     }()
     
-    private lazy var labelButtonFourth: UILabel = {
+    private lazy var labelButtonFourth: UIView = {
+        let view = setViewForLabel()
+        
         let label = setLabel(
             title: "Ответ 4",
             size: 15,
@@ -169,12 +189,39 @@ class ResultsViewController: UIViewController {
                 blue: 252/255,
                 alpha: 1),
             textAlignment: .center)
+        
+        view.addSubview(label)
+        
+        setConstraintsForLabel(label: label, view: view)
+        return view
+    }()
+    
+    private lazy var labelTimeUp: UILabel = {
+        let label = setLabel(
+            title: "Время вышло!",
+            size: 20,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 255/255,
+                green: 102/255,
+                blue: 102/255,
+                alpha: 1),
+            colorOfShadow: UIColor(
+                red: 113/255,
+                green: 0,
+                blue: 0,
+                alpha: 1).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2,
+            textAlignment: .center)
         return label
     }()
     
     var results: [Results]!
+    var countries: [Countries]!
     
-    private let shadowView = ShadowView()
+    private var views: [UIView] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -182,15 +229,9 @@ class ResultsViewController: UIViewController {
         setupSubviews(subviews: viewPanel,
                       buttonBackMenu,
                       contentView)
-        setupSubviewsOnMiniViewController(subviews: labelNumberQuiz,
-                                          imageFlag,
-                                          labelButtonFirst,
-                                          labelButtonSecond,
-                                          labelButtonThird,
-                                          labelButtonFourth)
-        setupSubviewsOnContentView(subviews: scrollView)
-        setupSubviewsOnScrollView(subviews: miniViewController)
+        checkResults()
         setConstraints()
+        setConstraintsForView()
     }
     
     private func setupSettingVC() {
@@ -213,17 +254,54 @@ class ResultsViewController: UIViewController {
         }
     }
     
-    private func setupSubviewsOnMiniViewController(subviews: UIView...) {
-        subviews.forEach { subview in
-            miniViewController.addSubview(subview)
-        }
-    }
-    
     private func setupSubviewsOnScrollView(subviews: UIView...) {
         subviews.forEach { subview in
             scrollView.addSubview(subview)
         }
     }
+    
+    private func setupSubviewsOnView(view: UIView, subviews: UIView...) {
+        subviews.forEach { subview in
+            view.addSubview(subview)
+        }
+    }
+    
+    private func checkResults() {
+        switch results.count {
+        case 0:
+            print("all correct answers")
+        case ..<3:
+            print("less than 3 wrong answers")
+            lessThanThreeWrongAnswers()
+        default:
+            print("more than 2 wrong answers")
+        }
+    }
+    
+    private func lessThanThreeWrongAnswers() {
+        results.forEach { result in
+            let view = setViewForResults()
+            
+            let label = setLabelForResults(text: result.currentQuestion)
+            
+            let imageFlag = setImageFlagForResults(imageFlag: result.question.flag)
+            
+            let buttonFirst = setButtonForResults(text: result.buttonFirst.name)
+            let buttonSecond = setButtonForResults(text: result.buttonSecond.name)
+            let buttonThird = setButtonForResults(text: result.buttonThird.name)
+            let buttonFourth = setButtonForResults(text: result.buttonFourth.name)
+            
+            setupSubviewsOnView(view: view, subviews: label, imageFlag, buttonFirst,
+                                buttonSecond, buttonThird, buttonFourth)
+            
+            setConstraintsOnView(view: view, label: label, imageFlag: imageFlag,
+                                 buttonFirst: buttonFirst, buttonSecond: buttonSecond,
+                                 buttonThird: buttonThird, buttonFourth: buttonFourth)
+            
+            views.append(view)
+        }
+    }
+    
     // MARK: - Setup constraints
     private func setConstraints() {
         NSLayoutConstraint.activate([
@@ -245,66 +323,103 @@ class ResultsViewController: UIViewController {
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        
+        /*
         NSLayoutConstraint.activate([
-            miniViewController.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 30),
-            miniViewController.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            miniViewController.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
-            miniViewController.heightAnchor.constraint(equalToConstant: setupHeightConstraint())
+            labelTimeUp.topAnchor.constraint(equalTo: labelButtonFourth.bottomAnchor, constant: 6),
+            labelTimeUp.centerXAnchor.constraint(equalTo: miniViewController.centerXAnchor),
+            labelTimeUp.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
         ])
+        */
+    }
+    
+    private func setConstraintsForLabel(label: UILabel, view: UIView) {
+        label.translatesAutoresizingMaskIntoConstraints = false
         
-        NSLayoutConstraint.activate([
-            labelNumberQuiz.topAnchor.constraint(equalTo: miniViewController.topAnchor, constant: 12),
-            labelNumberQuiz.centerXAnchor.constraint(equalTo: miniViewController.centerXAnchor),
-            labelNumberQuiz.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
-        
-        NSLayoutConstraint.activate([
-            imageFlag.topAnchor.constraint(equalTo: labelNumberQuiz.bottomAnchor, constant: 12),
-            imageFlag.centerXAnchor.constraint(equalTo: miniViewController.centerXAnchor),
-            imageFlag.widthAnchor.constraint(equalToConstant: 180),
-            imageFlag.heightAnchor.constraint(equalToConstant: 110)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelButtonFirst.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 16),
-            labelButtonFirst.centerXAnchor.constraint(equalTo: miniViewController.centerXAnchor),
-            labelButtonFirst.heightAnchor.constraint(equalToConstant: 22),
-            labelButtonFirst.leadingAnchor.constraint(equalTo: miniViewController.leadingAnchor, constant: 30),
-            labelButtonFirst.trailingAnchor.constraint(equalTo: miniViewController.trailingAnchor, constant: -30)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelButtonSecond.topAnchor.constraint(equalTo: labelButtonFirst.bottomAnchor, constant: 6),
-            labelButtonSecond.centerXAnchor.constraint(equalTo: miniViewController.centerXAnchor),
-            labelButtonSecond.heightAnchor.constraint(equalToConstant: 22),
-            labelButtonSecond.leadingAnchor.constraint(equalTo: miniViewController.leadingAnchor, constant: 30),
-            labelButtonSecond.trailingAnchor.constraint(equalTo: miniViewController.trailingAnchor, constant: -30)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelButtonThird.topAnchor.constraint(equalTo: labelButtonSecond.bottomAnchor, constant: 6),
-            labelButtonThird.centerXAnchor.constraint(equalTo: miniViewController.centerXAnchor),
-            labelButtonThird.heightAnchor.constraint(equalToConstant: 22),
-            labelButtonThird.leadingAnchor.constraint(equalTo: miniViewController.leadingAnchor, constant: 30),
-            labelButtonThird.trailingAnchor.constraint(equalTo: miniViewController.trailingAnchor, constant: -30)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelButtonFourth.topAnchor.constraint(equalTo: labelButtonThird.bottomAnchor, constant: 6),
-            labelButtonFourth.centerXAnchor.constraint(equalTo: miniViewController.centerXAnchor),
-            labelButtonFourth.heightAnchor.constraint(equalToConstant: 22),
-            labelButtonFourth.leadingAnchor.constraint(equalTo: miniViewController.leadingAnchor, constant: 30),
-            labelButtonFourth.trailingAnchor.constraint(equalTo: miniViewController.trailingAnchor, constant: -30)
-        ])
+        label.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        label.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        label.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        label.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+    }
+    
+    private func setConstraintsOnView(
+        view: UIView, label: UILabel, imageFlag: UIImageView, buttonFirst: UIView,
+        buttonSecond: UIView, buttonThird: UIView, buttonFourth: UIView) {
+            NSLayoutConstraint.activate([
+                label.topAnchor.constraint(equalTo: view.topAnchor, constant: 12),
+                label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                label.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+            ])
+            
+            NSLayoutConstraint.activate([
+                imageFlag.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 12),
+                imageFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                imageFlag.widthAnchor.constraint(equalToConstant: 180),
+                imageFlag.heightAnchor.constraint(equalToConstant: 110)
+            ])
+            
+            NSLayoutConstraint.activate([
+                buttonFirst.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 16),
+                buttonFirst.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                buttonFirst.heightAnchor.constraint(equalToConstant: 22),
+                buttonFirst.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+                buttonFirst.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
+            ])
+            
+            NSLayoutConstraint.activate([
+                buttonSecond.topAnchor.constraint(equalTo: buttonFirst.bottomAnchor, constant: 6),
+                buttonSecond.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                buttonSecond.heightAnchor.constraint(equalToConstant: 22),
+                buttonSecond.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+                buttonSecond.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
+            ])
+            
+            NSLayoutConstraint.activate([
+                buttonThird.topAnchor.constraint(equalTo: buttonSecond.bottomAnchor, constant: 6),
+                buttonThird.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                buttonThird.heightAnchor.constraint(equalToConstant: 22),
+                buttonThird.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+                buttonThird.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
+            ])
+            
+            NSLayoutConstraint.activate([
+                buttonFourth.topAnchor.constraint(equalTo: buttonThird.bottomAnchor, constant: 6),
+                buttonFourth.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                buttonFourth.heightAnchor.constraint(equalToConstant: 22),
+                buttonFourth.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+                buttonFourth.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
+            ])
+    }
+    
+    private func setConstraintsForView() {
+        if views.isEmpty {
+            print("Все вопросы отвечены правильно!")
+        } else {
+            setupSubviewsOnContentView(subviews: scrollView)
+            var height: CGFloat = 0
+            var multiplier: CGFloat = 1
+            views.forEach { subview in
+                setupSubviewsOnScrollView(subviews: subview)
+                let constraint = 30 * multiplier + setupHeightConstraint() * height
+                
+                NSLayoutConstraint.activate([
+                    subview.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: constraint),
+                    subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                    subview.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
+                    subview.heightAnchor.constraint(equalToConstant: setupHeightConstraint())
+                ])
+                
+                height += 1
+                multiplier += 1
+            }
+        }
     }
     
     private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
-        return view.frame.height > 736 ? 110 : 70
+        view.frame.height > 736 ? 110 : 70
     }
     
     private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
-        return view.frame.height > 736 ? 60 : 30
+        view.frame.height > 736 ? 60 : 30
     }
     
     private func setupWidthConstraint() -> CGFloat {
@@ -312,7 +427,7 @@ class ResultsViewController: UIViewController {
     }
     
     private func setupHeightConstraint() -> CGFloat {
-        300
+        315
     }
     
     private func radiusMiniViewController() -> CGFloat {
@@ -375,6 +490,61 @@ extension ResultsViewController {
         gradientLayer.colors = [colorLightGreen.cgColor, colorGreen.cgColor]
         content.layer.addSublayer(gradientLayer)
     }
+    
+    private func setViewForResults() -> UIView {
+        let view = setView(
+            cornerRadius: radiusMiniViewController(),
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1),
+            shadowRadius: 3.5,
+            shadowOffsetWidth: 3.5,
+            shadowOffsetHeight: 3.5,
+            tag: 3)
+        return view
+    }
+    
+    private func setButtonForResults(text: String) -> UIView {
+        let view = setViewForLabel()
+        
+        let label = setLabel(
+            title: text,
+            size: 15,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 252/255,
+                alpha: 1),
+            textAlignment: .center)
+        
+        view.addSubview(label)
+        
+        setConstraintsForLabel(label: label, view: view)
+        return view
+    }
+    
+    private func setViewForLabel() -> UIView {
+        let view = setView(
+            color: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1),
+            cornerRadius: 5,
+            shadowColor: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1),
+            shadowRadius: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2,
+            tag: 1)
+        return view
+    }
 }
 // MARK: - Setup button
 extension ResultsViewController {
@@ -430,8 +600,6 @@ extension ResultsViewController {
         label.text = title
         label.font = UIFont(name: style, size: size)
         label.textColor = color
-        label.backgroundColor = backgroundColor ?? .clear
-        label.layer.cornerRadius = radiusCorner ?? 0
         label.layer.shadowColor = colorOfShadow
         label.layer.shadowRadius = radiusOfShadow ?? 0
         label.layer.shadowOpacity = 1
@@ -441,7 +609,44 @@ extension ResultsViewController {
         label.textAlignment = textAlignment ?? .natural
         label.layer.opacity = opacity ?? 1
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.clipsToBounds = true
         return label
+    }
+    
+    private func setLabelForResults(text: Int) -> UILabel {
+        let label = setLabel(
+            title: "Вопрос \(text) из \(countries.count)",
+            size: 25,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 153/255,
+                green: 204/255,
+                blue: 255/255,
+                alpha: 1),
+            colorOfShadow: UIColor(
+                red: 54/255,
+                green: 55/255,
+                blue: 215/255,
+                alpha: 1).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2,
+            textAlignment: .center)
+        return label
+    }
+}
+// MARK: - Setup image flag
+extension ResultsViewController {
+    private func setImageFlagForResults(imageFlag: String) -> UIImageView {
+        let image = UIImageView()
+        image.image = UIImage(named: imageFlag)
+        image.clipsToBounds = true
+        image.layer.borderWidth = 1
+        image.layer.borderColor = UIColor(
+            red: 54/255,
+            green: 55/255,
+            blue: 215/255,
+            alpha: 1).cgColor
+        image.translatesAutoresizingMaskIntoConstraints = false
+        return image
     }
 }

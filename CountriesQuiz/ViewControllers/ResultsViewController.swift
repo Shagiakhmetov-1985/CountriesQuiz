@@ -65,137 +65,6 @@ class ResultsViewController: UIViewController {
         CGSize(width: view.frame.width, height: view.frame.height + 150)
     }
     
-    private lazy var miniViewController: UIView = {
-        let view = setView(
-            cornerRadius: radiusMiniViewController(),
-            shadowColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1),
-            shadowRadius: 3.5,
-            shadowOffsetWidth: 3.5,
-            shadowOffsetHeight: 3.5,
-            tag: 3)
-        return view
-    }()
-    
-    private lazy var labelNumberQuiz: UILabel = {
-        let label = setLabel(
-            title: "Вопрос 1 из 20",
-            size: 25,
-            style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2,
-            textAlignment: .center)
-        return label
-    }()
-    
-    private lazy var imageFlag: UIImageView = {
-        var image = UIImageView()
-        image.image = UIImage(named: "australia")
-        image.clipsToBounds = true
-        image.layer.borderWidth = 1
-        image.layer.borderColor = UIColor(
-            red: 54/255,
-            green: 55/255,
-            blue: 215/255,
-            alpha: 1).cgColor
-        image.translatesAutoresizingMaskIntoConstraints = false
-        return image
-    }()
-    
-    private lazy var labelButtonFirst: UIView = {
-        let view = setViewForLabel()
-        
-        let label = setLabel(
-            title: "Ответ 1",
-            size: 15,
-            style: "mr_fontick",
-            color: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1),
-            textAlignment: .center)
-        
-        view.addSubview(label)
-        
-        setConstraintsForLabel(label: label, view: view)
-        return view
-    }()
-    
-    private lazy var labelButtonSecond: UIView = {
-        let view = setViewForLabel()
-        
-        let label = setLabel(
-            title: "Ответ 2",
-            size: 15,
-            style: "mr_fontick",
-            color: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1),
-            textAlignment: .center)
-        
-        view.addSubview(label)
-        
-        setConstraintsForLabel(label: label, view: view)
-        return view
-    }()
-    
-    private lazy var labelButtonThird: UIView = {
-        let view = setViewForLabel()
-        
-        let label = setLabel(
-            title: "Ответ 3",
-            size: 15,
-            style: "mr_fontick",
-            color: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1),
-            textAlignment: .center)
-        
-        view.addSubview(label)
-        
-        setConstraintsForLabel(label: label, view: view)
-        return view
-    }()
-    
-    private lazy var labelButtonFourth: UIView = {
-        let view = setViewForLabel()
-        
-        let label = setLabel(
-            title: "Ответ 4",
-            size: 15,
-            style: "mr_fontick",
-            color: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1),
-            textAlignment: .center)
-        
-        view.addSubview(label)
-        
-        setConstraintsForLabel(label: label, view: view)
-        return view
-    }()
-    
     private lazy var labelTimeUp: UILabel = {
         let label = setLabel(
             title: "Время вышло!",
@@ -271,7 +140,6 @@ class ResultsViewController: UIViewController {
         case 0:
             print("all correct answers")
         case ..<3:
-            print("less than 3 wrong answers")
             lessThanThreeWrongAnswers()
         default:
             print("more than 2 wrong answers")
@@ -282,21 +150,28 @@ class ResultsViewController: UIViewController {
         results.forEach { result in
             let view = setViewForResults()
             
-            let label = setLabelForResults(text: result.currentQuestion)
+            let label = setLabelForResults(text: result.currentQuestion, tag: 1)
             
             let imageFlag = setImageFlagForResults(imageFlag: result.question.flag)
             
-            let buttonFirst = setButtonForResults(text: result.buttonFirst.name)
-            let buttonSecond = setButtonForResults(text: result.buttonSecond.name)
-            let buttonThird = setButtonForResults(text: result.buttonThird.name)
-            let buttonFourth = setButtonForResults(text: result.buttonFourth.name)
+            let buttonFirst = setButtonForResults(
+                question: result.question, answer: result.buttonFirst, tag: 1, select: result.tag)
+            let buttonSecond = setButtonForResults(
+                question: result.question, answer: result.buttonSecond, tag: 2, select: result.tag)
+            let buttonThird = setButtonForResults(
+                question: result.question, answer: result.buttonThird, tag: 3, select: result.tag)
+            let buttonFourth = setButtonForResults(
+                question: result.question, answer: result.buttonFourth, tag: 4, select: result.tag)
+            
+            let labelTimeUp = setLabelForResults(tag: 2)
             
             setupSubviewsOnView(view: view, subviews: label, imageFlag, buttonFirst,
-                                buttonSecond, buttonThird, buttonFourth)
+                                buttonSecond, buttonThird, buttonFourth, labelTimeUp)
             
             setConstraintsOnView(view: view, label: label, imageFlag: imageFlag,
                                  buttonFirst: buttonFirst, buttonSecond: buttonSecond,
-                                 buttonThird: buttonThird, buttonFourth: buttonFourth)
+                                 buttonThird: buttonThird, buttonFourth: buttonFourth,
+                                 labelTimeUp: labelTimeUp)
             
             views.append(view)
         }
@@ -323,13 +198,6 @@ class ResultsViewController: UIViewController {
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        /*
-        NSLayoutConstraint.activate([
-            labelTimeUp.topAnchor.constraint(equalTo: labelButtonFourth.bottomAnchor, constant: 6),
-            labelTimeUp.centerXAnchor.constraint(equalTo: miniViewController.centerXAnchor),
-            labelTimeUp.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
-        */
     }
     
     private func setConstraintsForLabel(label: UILabel, view: UIView) {
@@ -343,7 +211,7 @@ class ResultsViewController: UIViewController {
     
     private func setConstraintsOnView(
         view: UIView, label: UILabel, imageFlag: UIImageView, buttonFirst: UIView,
-        buttonSecond: UIView, buttonThird: UIView, buttonFourth: UIView) {
+        buttonSecond: UIView, buttonThird: UIView, buttonFourth: UIView, labelTimeUp: UILabel) {
             NSLayoutConstraint.activate([
                 label.topAnchor.constraint(equalTo: view.topAnchor, constant: 12),
                 label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -388,6 +256,12 @@ class ResultsViewController: UIViewController {
                 buttonFourth.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
                 buttonFourth.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
             ])
+            
+            NSLayoutConstraint.activate([
+                labelTimeUp.topAnchor.constraint(equalTo: buttonFourth.bottomAnchor, constant: 6),
+                labelTimeUp.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                labelTimeUp.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+            ])
     }
     
     private func setConstraintsForView() {
@@ -395,8 +269,10 @@ class ResultsViewController: UIViewController {
             print("Все вопросы отвечены правильно!")
         } else {
             setupSubviewsOnContentView(subviews: scrollView)
+            
             var height: CGFloat = 0
             var multiplier: CGFloat = 1
+            
             views.forEach { subview in
                 setupSubviewsOnScrollView(subviews: subview)
                 let constraint = 30 * multiplier + setupHeightConstraint() * height
@@ -430,7 +306,7 @@ class ResultsViewController: UIViewController {
         315
     }
     
-    private func radiusMiniViewController() -> CGFloat {
+    private func radiusView() -> CGFloat {
         15
     }
     
@@ -486,14 +362,14 @@ extension ResultsViewController {
         let colorLightGreen = UIColor(red: 102/255, green: 153/255, blue: 204/255, alpha: 1)
         gradientLayer.frame.size.width = setupWidthConstraint()
         gradientLayer.frame.size.height = setupHeightConstraint()
-        gradientLayer.cornerRadius = radiusMiniViewController()
+        gradientLayer.cornerRadius = radiusView()
         gradientLayer.colors = [colorLightGreen.cgColor, colorGreen.cgColor]
         content.layer.addSublayer(gradientLayer)
     }
     
     private func setViewForResults() -> UIView {
         let view = setView(
-            cornerRadius: radiusMiniViewController(),
+            cornerRadius: radiusView(),
             shadowColor: UIColor(
                 red: 54/255,
                 green: 55/255,
@@ -506,44 +382,93 @@ extension ResultsViewController {
         return view
     }
     
-    private func setButtonForResults(text: String) -> UIView {
-        let view = setViewForLabel()
+    private func setButtonForResults(question: Countries, answer: Countries,
+                                     tag: Int, select: Int) -> UIView {
+        let view = setViewForLabel(question: question, answer: answer,
+                                   tag: tag, select: select)
         
         let label = setLabel(
-            title: text,
+            title: answer.name,
             size: 15,
             style: "mr_fontick",
-            color: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1),
+            color: textColor(question: question, answer: answer, tag: tag,
+                             select: select),
             textAlignment: .center)
         
         view.addSubview(label)
+        view.tag = tag
         
         setConstraintsForLabel(label: label, view: view)
         return view
     }
     
-    private func setViewForLabel() -> UIView {
+    private func setViewForLabel(question: Countries, answer: Countries,
+                                 tag: Int, select: Int) -> UIView {
         let view = setView(
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
+            color: backgroundColor(question: question, answer: answer, tag: tag,
+                                   select: select),
             cornerRadius: 5,
-            shadowColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1),
+            shadowColor: shadowColor(question: question, answer: answer, tag: tag,
+                                     select: select),
             shadowRadius: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
             tag: 1)
         return view
+    }
+    
+    private func backgroundColor(question: Countries, answer: Countries,
+                                 tag: Int, select: Int) -> UIColor {
+        let lightGreen = UIColor(red: 152/255, green: 255/255, blue: 51/255, alpha: 1)
+        let lightRed = UIColor(red: 255/255, green: 102/255, blue: 102/255, alpha: 1)
+        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        
+        switch true {
+        case question == answer && tag == select:
+            return lightGreen
+        case question == answer && !(tag == select):
+            return lightGreen
+        case !(question == answer) && tag == select:
+            return lightRed
+        default:
+            return lightGray
+        }
+    }
+    
+    private func shadowColor(question: Countries, answer: Countries,
+                             tag: Int, select: Int) -> UIColor {
+        let darkGreen = UIColor(red: 51/255, green: 83/255, blue: 51/255, alpha: 1)
+        let darkRed = UIColor(red: 113/255, green: 0, blue: 0, alpha: 1)
+        let darkGray = UIColor(red: 72/255, green: 72/255, blue: 72/255, alpha: 1)
+        
+        switch true {
+        case question == answer && tag == select:
+            return darkGreen
+        case question == answer && !(tag == select):
+            return darkGreen
+        case !(question == answer) && tag == select:
+            return darkRed
+        default:
+            return darkGray
+        }
+    }
+    
+    private func textColor(question: Countries, answer: Countries,
+                           tag: Int, select: Int) -> UIColor {
+        let green = UIColor(red: 51/255, green: 133/255, blue: 51/255, alpha: 1)
+        let red = UIColor(red: 153/255, green: 0, blue: 0, alpha: 1)
+        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+        
+        switch true {
+        case question == answer && tag == select:
+            return green
+        case question == answer && !(tag == select):
+            return green
+        case !(question == answer) && tag == select:
+            return red
+        default:
+            return gray
+        }
     }
 }
 // MARK: - Setup button
@@ -612,26 +537,42 @@ extension ResultsViewController {
         return label
     }
     
-    private func setLabelForResults(text: Int) -> UILabel {
+    private func setLabelForResults(text: Int? = nil, tag: Int) -> UILabel {
         let label = setLabel(
-            title: "Вопрос \(text) из \(countries.count)",
-            size: 25,
+            title: title(text: text),
+            size: size(tag: tag),
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
+            color: titleColor(tag: tag),
+            colorOfShadow: shadowColor(tag: tag),
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
             textAlignment: .center)
         return label
+    }
+    
+    private func title(text: Int? = nil) -> String {
+        if let text = text {
+            return "Вопрос \(text) из \(countries.count)"
+        } else {
+            return "Время вышло!"
+        }
+    }
+    
+    private func size(tag: Int) -> CGFloat {
+        tag == 1 ? 25 : 20
+    }
+    
+    private func titleColor(tag: Int) -> UIColor {
+        tag == 1 ?
+        UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1) :
+        UIColor(red: 255/255, green: 102/255, blue: 102/255, alpha: 1)
+    }
+    
+    private func shadowColor(tag: Int) -> CGColor {
+        tag == 1 ?
+        UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1).cgColor :
+        UIColor(red: 113/255, green: 0, blue: 0, alpha: 1).cgColor
     }
 }
 // MARK: - Setup image flag

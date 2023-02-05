@@ -148,7 +148,7 @@ class QuizOfFlagsViewController: UIViewController {
     private lazy var labelDescription: UILabel = {
         let label = setLabel(
             title: "Коснитесь экрана, чтобы продолжить",
-            size: 20,
+            size: size(),
             style: "mr_fontick",
             color: UIColor(
                 red: 153/255,
@@ -552,12 +552,22 @@ class QuizOfFlagsViewController: UIViewController {
         if progressView.progress <= 0 {
             timerFirst.invalidate()
             answerSelect.toggle()
+            
             if !oneQuestionCheck() {
                 currentQuestion = questions.questions.count - 1
             }
+            
+            endQuestion()
             disableButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
                           buttonAnswerThird, buttonAnswerFourth, tag: 0)
-            endQuestion()
+            
+            setupResults(numberQuestion: currentQuestion + 1, tag: 0,
+                         question: questions.questions[currentQuestion],
+                         buttonFirst: questions.buttonFirst[currentQuestion],
+                         buttonSecond: questions.buttonSecond[currentQuestion],
+                         buttonThird: questions.buttonThird[currentQuestion],
+                         buttonFourth: questions.buttonFourth[currentQuestion],
+                         timeUp: true)
         }
     }
     
@@ -578,15 +588,19 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
-        return view.frame.height > 736 ? 110 : 70
+        view.frame.height > 736 ? 110 : 70
     }
     
     private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
-        return view.frame.height > 736 ? 60 : 30
+        view.frame.height > 736 ? 60 : 30
     }
     
     @objc private func exitToMenu() {
         dismiss(animated: true)
+    }
+    
+    private func size() -> CGFloat {
+        view.frame.width > 375 ? 20 : 19
     }
     
     @objc private func buttonPress(button: UIButton) {
@@ -614,11 +628,12 @@ class QuizOfFlagsViewController: UIViewController {
             button.layer.shadowColor = darkRed.cgColor
             
             setupResults(numberQuestion: currentQuestion + 1, tag: tag,
-                       question: questions.questions[currentQuestion],
-                       buttonFirst: questions.buttonFirst[currentQuestion],
-                       buttonSecond: questions.buttonSecond[currentQuestion],
-                       buttonThird: questions.buttonThird[currentQuestion],
-                       buttonFourth: questions.buttonFourth[currentQuestion])
+                         question: questions.questions[currentQuestion],
+                         buttonFirst: questions.buttonFirst[currentQuestion],
+                         buttonSecond: questions.buttonSecond[currentQuestion],
+                         buttonThird: questions.buttonThird[currentQuestion],
+                         buttonFourth: questions.buttonFourth[currentQuestion],
+                         timeUp: false)
         }
         
         endQuestion()
@@ -714,11 +729,12 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func setupResults(numberQuestion: Int, tag: Int, question: Countries,
                               buttonFirst: Countries, buttonSecond: Countries,
-                              buttonThird: Countries, buttonFourth: Countries) {
+                              buttonThird: Countries, buttonFourth: Countries,
+                              timeUp: Bool) {
         let result = Results(currentQuestion: numberQuestion, tag: tag,
                              question: question, buttonFirst: buttonFirst,
                              buttonSecond: buttonSecond, buttonThird: buttonThird,
-                             buttonFourth: buttonFourth)
+                             buttonFourth: buttonFourth, timeUp: timeUp)
         results.append(result)
     }
     

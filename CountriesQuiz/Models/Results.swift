@@ -16,4 +16,6 @@ struct Results {
     let buttonSecond: Countries
     let buttonThird: Countries
     let buttonFourth: Countries
+    
+    let timeUp: Bool
 }

@@ -61,34 +61,12 @@ class ResultsViewController: UIViewController {
         return view
     }()
     
-    private var contentSize: CGSize {
-        CGSize(width: view.frame.width, height: view.frame.height + 150)
-    }
-    
-    private lazy var labelTimeUp: UILabel = {
-        let label = setLabel(
-            title: "Время вышло!",
-            size: 20,
-            style: "mr_fontick",
-            color: UIColor(
-                red: 255/255,
-                green: 102/255,
-                blue: 102/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 113/255,
-                green: 0,
-                blue: 0,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2,
-            textAlignment: .center)
-        return label
-    }()
-    
     var results: [Results]!
     var countries: [Countries]!
+    
+    private var contentSize: CGSize {
+        CGSize(width: view.frame.width, height: view.frame.height + heightContentSize())
+    }
     
     private var views: [UIView] = []
     
@@ -136,17 +114,14 @@ class ResultsViewController: UIViewController {
     }
     
     private func checkResults() {
-        switch results.count {
-        case 0:
-            print("all correct answers")
-        case ..<3:
-            lessThanThreeWrongAnswers()
-        default:
-            print("more than 2 wrong answers")
+        if !results.isEmpty {
+            showWrongAnswers()
+        } else {
+            
         }
     }
     
-    private func lessThanThreeWrongAnswers() {
+    private func showWrongAnswers() {
         results.forEach { result in
             let view = setViewForResults()
             
@@ -163,15 +138,22 @@ class ResultsViewController: UIViewController {
             let buttonFourth = setButtonForResults(
                 question: result.question, answer: result.buttonFourth, tag: 4, select: result.tag)
             
-            let labelTimeUp = setLabelForResults(tag: 2)
-            
-            setupSubviewsOnView(view: view, subviews: label, imageFlag, buttonFirst,
-                                buttonSecond, buttonThird, buttonFourth, labelTimeUp)
-            
-            setConstraintsOnView(view: view, label: label, imageFlag: imageFlag,
-                                 buttonFirst: buttonFirst, buttonSecond: buttonSecond,
-                                 buttonThird: buttonThird, buttonFourth: buttonFourth,
-                                 labelTimeUp: labelTimeUp)
+            if result.timeUp {
+                let labelTimeUp = setLabelForResults(tag: 2)
+                
+                setupSubviewsOnView(view: view, subviews: label, imageFlag, buttonFirst,
+                                    buttonSecond, buttonThird, buttonFourth, labelTimeUp)
+                setConstraintsOnView(view: view, label: label, imageFlag: imageFlag,
+                                     buttonFirst: buttonFirst, buttonSecond: buttonSecond,
+                                     buttonThird: buttonThird, buttonFourth: buttonFourth,
+                                     labelTimeUp: labelTimeUp)
+            } else {
+                setupSubviewsOnView(view: view, subviews: label, imageFlag, buttonFirst,
+                                    buttonSecond, buttonThird, buttonFourth)
+                setConstraintsOnView(view: view, label: label, imageFlag: imageFlag,
+                                     buttonFirst: buttonFirst, buttonSecond: buttonSecond,
+                                     buttonThird: buttonThird, buttonFourth: buttonFourth)
+            }
             
             views.append(view)
         }
@@ -201,8 +183,6 @@ class ResultsViewController: UIViewController {
     }
     
     private func setConstraintsForLabel(label: UILabel, view: UIView) {
-        label.translatesAutoresizingMaskIntoConstraints = false
-        
         label.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         label.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         label.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -211,7 +191,7 @@ class ResultsViewController: UIViewController {
     
     private func setConstraintsOnView(
         view: UIView, label: UILabel, imageFlag: UIImageView, buttonFirst: UIView,
-        buttonSecond: UIView, buttonThird: UIView, buttonFourth: UIView, labelTimeUp: UILabel) {
+        buttonSecond: UIView, buttonThird: UIView, buttonFourth: UIView, labelTimeUp: UILabel? = nil) {
             NSLayoutConstraint.activate([
                 label.topAnchor.constraint(equalTo: view.topAnchor, constant: 12),
                 label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -257,11 +237,13 @@ class ResultsViewController: UIViewController {
                 buttonFourth.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
             ])
             
-            NSLayoutConstraint.activate([
-                labelTimeUp.topAnchor.constraint(equalTo: buttonFourth.bottomAnchor, constant: 6),
-                labelTimeUp.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                labelTimeUp.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-            ])
+            if let labelTimeUp = labelTimeUp {
+                NSLayoutConstraint.activate([
+                    labelTimeUp.topAnchor.constraint(equalTo: buttonFourth.bottomAnchor, constant: 6),
+                    labelTimeUp.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                    labelTimeUp.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+                ])
+            }
     }
     
     private func setConstraintsForView() {
@@ -310,6 +292,43 @@ class ResultsViewController: UIViewController {
         15
     }
     
+    private func heightContentSize() -> CGFloat {
+        let answers = CGFloat(views.count)
+        let multiplierOne: CGFloat = answers > 2 ? 1 : 0
+        let multiplierTwo: CGFloat = answers > 2 ? answers - 2 : 0
+        let multiplierThree: CGFloat = answers > 1 ? 1 : 0
+        
+        switch view.frame.height {
+        case 667:
+            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            multiplierOne * multiplierTwo + 133 * multiplierThree
+        case 736:
+            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            multiplierOne * multiplierTwo + 64 * multiplierThree
+        case 812:
+            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            multiplierOne * multiplierTwo - 12
+        case 844:
+            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            multiplierOne * multiplierTwo - 44
+        case 852:
+            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            multiplierOne * multiplierTwo - 52
+        case 896:
+            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            multiplierOne * multiplierTwo - 96
+        case 926:
+            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            multiplierOne * multiplierTwo - 126
+        case 932:
+            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            multiplierOne * multiplierTwo - 132
+        default:
+            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            multiplierOne * multiplierTwo + 232 * multiplierThree
+        }
+    }
+    
     @objc private func exitToMenu() {
         dismiss(animated: true)
     }
@@ -341,7 +360,7 @@ extension ResultsViewController {
         case 2:
             setGradient(content: view)
         default:
-            setGradientMiniViewController(content: view)
+            setGradientView(content: view)
         }
         
         return view
@@ -356,7 +375,7 @@ extension ResultsViewController {
         content.layer.addSublayer(gradientLayer)
     }
     
-    private func setGradientMiniViewController(content: UIView) {
+    private func setGradientView(content: UIView) {
         let gradientLayer = CAGradientLayer()
         let colorGreen = UIColor(red: 30/255, green: 113/255, blue: 204/255, alpha: 1)
         let colorLightGreen = UIColor(red: 102/255, green: 153/255, blue: 204/255, alpha: 1)

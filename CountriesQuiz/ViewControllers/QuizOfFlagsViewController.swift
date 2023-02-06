@@ -299,6 +299,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private var currentQuestion = 0
     private var seconds = 0
+    private var spendTime: [Float] = []
     private var questions = Countries.getQuestions()
     private var answerSelect = false
     
@@ -553,14 +554,6 @@ class QuizOfFlagsViewController: UIViewController {
             timerFirst.invalidate()
             answerSelect.toggle()
             
-            if !oneQuestionCheck() {
-                currentQuestion = questions.questions.count - 1
-            }
-            
-            endQuestion()
-            disableButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
-                          buttonAnswerThird, buttonAnswerFourth, tag: 0)
-            
             setupResults(numberQuestion: currentQuestion + 1, tag: 0,
                          question: questions.questions[currentQuestion],
                          buttonFirst: questions.buttonFirst[currentQuestion],
@@ -568,6 +561,14 @@ class QuizOfFlagsViewController: UIViewController {
                          buttonThird: questions.buttonThird[currentQuestion],
                          buttonFourth: questions.buttonFourth[currentQuestion],
                          timeUp: true)
+            
+            if !oneQuestionCheck() {
+                currentQuestion = questions.questions.count - 1
+            }
+            
+            endQuestion()
+            disableButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                          buttonAnswerThird, buttonAnswerFourth, tag: 0)
         }
     }
     
@@ -639,6 +640,12 @@ class QuizOfFlagsViewController: UIViewController {
         endQuestion()
         disableButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
                       buttonAnswerThird, buttonAnswerFourth, tag: tag)
+        
+        if oneQuestionCheck() {
+            setAverageTime()
+        } else if !oneQuestionCheck(), currentQuestion + 1 == questions.questions.count {
+            setTimeSpent()
+        }
     }
     
     private func checkAnswer(tag: Int) -> Bool {
@@ -673,6 +680,20 @@ class QuizOfFlagsViewController: UIViewController {
                 timeInterval: 5, target: self, selector: #selector(hideSubviews),
                 userInfo: nil, repeats: false)
         }
+    }
+    
+    private func setAverageTime() {
+        let progressViewSpent = 1 - progressView.progress
+        let seconds = setting.timeElapsed.questionSelect.questionTime.oneQuestionTime
+        let timeSpent = progressViewSpent * Float(seconds)
+        spendTime.append(timeSpent)
+    }
+    
+    private func setTimeSpent() {
+        let progressViewSpent = 1 - progressView.progress
+        let seconds = setting.timeElapsed.questionSelect.questionTime.allQuestionsTime
+        let timeSpent = progressViewSpent * Float(seconds)
+        spendTime.append(timeSpent)
     }
     
     private func showNewDataForNextQuestion() {
@@ -780,6 +801,8 @@ extension QuizOfFlagsViewController {
                 resultsVC.modalPresentationStyle = .fullScreen
                 resultsVC.results = results
                 resultsVC.countries = questions.questions
+                resultsVC.setting = setting
+                resultsVC.spendTime = spendTime
                 present(resultsVC, animated: true)
             }
         }

@@ -63,6 +63,8 @@ class ResultsViewController: UIViewController {
     
     var results: [Results]!
     var countries: [Countries]!
+    var setting: Setting!
+    var spendTime: [Float]!
     
     private var contentSize: CGSize {
         CGSize(width: view.frame.width, height: view.frame.height + heightContentSize())
@@ -117,11 +119,36 @@ class ResultsViewController: UIViewController {
         if !results.isEmpty {
             showWrongAnswers()
         } else {
-            
+            showCongratulation()
         }
     }
     
     private func showWrongAnswers() {
+        let labelStats = setLabel(
+            title: """
+            Всего вопросов: \(countries.count)
+            \(checkAnswers())
+            \(checkSpendTime())
+            """,
+            size: 21,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 214/255,
+                green: 245/255,
+                blue: 214/255,
+                alpha: 1),
+            colorOfShadow: UIColor(
+                red: 51/255,
+                green: 83/255,
+                blue: 51/255,
+                alpha: 1).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2,
+            textAlignment: .left)
+        
+        views.append(labelStats)
+        
         results.forEach { result in
             let view = setViewForResults()
             
@@ -159,6 +186,121 @@ class ResultsViewController: UIViewController {
         }
     }
     
+    private func checkAnswers() -> String {
+        var text = String()
+        
+        if oneQuestionCheck() {
+            text = """
+            Правильных ответов: \(countries.count - results.count)
+            Неправильных ответов: \(results.count)
+            """
+        } else {
+            text = checkAnswersTime()
+        }
+        
+        return text
+    }
+    
+    private func checkAnswersTime() -> String {
+        var text = String()
+        
+        if spendTime.isEmpty {
+            let wrongAnswers = countries.count - (results.last?.currentQuestion ?? 0)
+            let correctAnswers = countries.count - wrongAnswers
+            text = """
+            Правильных ответов: \(correctAnswers)
+            Неправильных ответов: \(wrongAnswers)
+            """
+        } else {
+            text = """
+            Правильных ответов: \(countries.count - results.count)
+            Неправильных ответов: \(results.count)
+            """
+        }
+        
+        return text
+    }
+    
+    private func showCongratulation() {
+        let labelOne = setLabel(
+            title: "Поздравляем!",
+            size: 24,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 214/255,
+                green: 245/255,
+                blue: 214/255,
+                alpha: 1),
+            colorOfShadow: UIColor(
+                red: 51/255,
+                green: 83/255,
+                blue: 51/255,
+                alpha: 1).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2,
+            textAlignment: .center)
+        
+        let labelTwo = setLabel(
+            title: """
+            Вы ответили на все вопросы правильно!
+            Всего вопросов: \(countries.count)
+            \(checkSpendTime())
+            """,
+            size: 21,
+            style: "mr_fontick",
+            color: UIColor(
+                red: 214/255,
+                green: 245/255,
+                blue: 214/255,
+                alpha: 1),
+            colorOfShadow: UIColor(
+                red: 51/255,
+                green: 83/255,
+                blue: 51/255,
+                alpha: 1).cgColor,
+            radiusOfShadow: 2,
+            shadowOffsetWidth: 2,
+            shadowOffsetHeight: 2,
+            textAlignment: .left)
+        
+        setupSubviews(subviews: labelOne, labelTwo)
+        setConstraintsCongratulation(labelOne: labelOne, labelTwo: labelTwo)
+    }
+    
+    private func checkSpendTime() -> String {
+        var text = String()
+        
+        if oneQuestionCheck() {
+            let averageTime = spendTime.reduce(0.0, +) / Float(spendTime.count)
+            text = "Среднее время потраченное на вопрос: \(string(seconds: averageTime)) секунд"
+        } else {
+            text = checkTime()
+        }
+        return text
+    }
+    
+    private func checkTime() -> String {
+        var text = String()
+        
+        if spendTime.isEmpty {
+            text = "Вы не успели ответить на все вопросы за заданное время!"
+        } else {
+            let seconds = setting.timeElapsed.questionSelect.questionTime.allQuestionsTime
+            let spendTime = Float(seconds) - (spendTime.first ?? 0)
+            text = "На все вопросы вы потратили \(string(seconds: spendTime)) секунд"
+        }
+        
+        return text
+    }
+    
+    private func oneQuestionCheck() -> Bool {
+        setting.timeElapsed.questionSelect.oneQuestion ? true : false
+    }
+    
+    private func string(seconds: Float) -> String {
+        String(format: "%.2f", seconds)
+    }
     // MARK: - Setup constraints
     private func setConstraints() {
         NSLayoutConstraint.activate([
@@ -246,29 +388,49 @@ class ResultsViewController: UIViewController {
             }
     }
     
+    private func setConstraintsLabelStats(labelStats: UILabel) {
+        NSLayoutConstraint.activate([
+            labelStats.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 30),
+            labelStats.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            labelStats.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+        ])
+    }
+    
+    private func setConstraintsCongratulation(labelOne: UILabel, labelTwo: UILabel) {
+        NSLayoutConstraint.activate([
+            labelOne.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 30),
+            labelOne.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            labelOne.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+        ])
+        
+        NSLayoutConstraint.activate([
+            labelTwo.topAnchor.constraint(equalTo: labelOne.bottomAnchor, constant: 20),
+            labelTwo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            labelTwo.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+        ])
+    }
+    
     private func setConstraintsForView() {
-        if views.isEmpty {
-            print("Все вопросы отвечены правильно!")
-        } else {
-            setupSubviewsOnContentView(subviews: scrollView)
+        guard !views.isEmpty else { return }
+        
+        setupSubviewsOnContentView(subviews: scrollView)
+        
+        var height: CGFloat = 0
+        var multiplier: CGFloat = 1
+        
+        views.forEach { subview in
+            setupSubviewsOnScrollView(subviews: subview)
+            let constraint = 30 * multiplier + setupHeightConstraint() * height
             
-            var height: CGFloat = 0
-            var multiplier: CGFloat = 1
+            NSLayoutConstraint.activate([
+                subview.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: constraint),
+                subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                subview.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
+                subview.heightAnchor.constraint(equalToConstant: setupHeightConstraint())
+            ])
             
-            views.forEach { subview in
-                setupSubviewsOnScrollView(subviews: subview)
-                let constraint = 30 * multiplier + setupHeightConstraint() * height
-                
-                NSLayoutConstraint.activate([
-                    subview.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: constraint),
-                    subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                    subview.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
-                    subview.heightAnchor.constraint(equalToConstant: setupHeightConstraint())
-                ])
-                
-                height += 1
-                multiplier += 1
-            }
+            height += 1
+            multiplier += 1
         }
     }
     
@@ -368,8 +530,8 @@ extension ResultsViewController {
     
     private func setGradient(content: UIView) {
         let gradientLayer = CAGradientLayer()
-        let colorGreen = UIColor(red: 102/255, green: 255/255, blue: 102/255, alpha: 1)
-        let colorLightGreen = UIColor(red: 204/255, green: 255/255, blue: 204/255, alpha: 1)
+        let colorGreen = UIColor(red: 71/255, green: 160/255, blue: 36/255, alpha: 1)
+        let colorLightGreen = UIColor(red: 103/255, green: 200/255, blue: 51/255, alpha: 1)
         gradientLayer.frame = view.bounds
         gradientLayer.colors = [colorLightGreen.cgColor, colorGreen.cgColor]
         content.layer.addSublayer(gradientLayer)

@@ -130,7 +130,7 @@ class ResultsViewController: UIViewController {
             \(checkAnswers())
             \(checkSpendTime())
             """,
-            size: 21,
+            size: 23,
             style: "mr_fontick",
             color: UIColor(
                 red: 214/255,
@@ -205,7 +205,7 @@ class ResultsViewController: UIViewController {
         var text = String()
         
         if spendTime.isEmpty {
-            let wrongAnswers = countries.count - (results.last?.currentQuestion ?? 0)
+            let wrongAnswers = countries.count - (results.last?.currentQuestion ?? 0) + 1
             let correctAnswers = countries.count - wrongAnswers
             text = """
             Правильных ответов: \(correctAnswers)
@@ -247,7 +247,7 @@ class ResultsViewController: UIViewController {
             Всего вопросов: \(countries.count)
             \(checkSpendTime())
             """,
-            size: 21,
+            size: 23,
             style: "mr_fontick",
             color: UIColor(
                 red: 214/255,
@@ -388,14 +388,6 @@ class ResultsViewController: UIViewController {
             }
     }
     
-    private func setConstraintsLabelStats(labelStats: UILabel) {
-        NSLayoutConstraint.activate([
-            labelStats.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 30),
-            labelStats.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            labelStats.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
-    }
-    
     private func setConstraintsCongratulation(labelOne: UILabel, labelTwo: UILabel) {
         NSLayoutConstraint.activate([
             labelOne.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 30),
@@ -415,23 +407,38 @@ class ResultsViewController: UIViewController {
         
         setupSubviewsOnContentView(subviews: scrollView)
         
+        setConstraintsForLabelStats()
+        
         var height: CGFloat = 0
-        var multiplier: CGFloat = 1
+        var multiplier: CGFloat = 2
         
         views.forEach { subview in
             setupSubviewsOnScrollView(subviews: subview)
-            let constraint = 30 * multiplier + setupHeightConstraint() * height
+            let constraint = heightLabelStatsConstraint() + 30 * multiplier + heightViewConstraint() * height
             
-            NSLayoutConstraint.activate([
-                subview.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: constraint),
-                subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                subview.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
-                subview.heightAnchor.constraint(equalToConstant: setupHeightConstraint())
-            ])
+            constraints(subview: subview, constant: constraint)
             
             height += 1
             multiplier += 1
         }
+    }
+    
+    private func setConstraintsForLabelStats() {
+        if let labelStats = views.first {
+            setupSubviewsOnScrollView(subviews: labelStats)
+            
+            constraints(subview: labelStats, constant: 20)
+            
+            views.removeFirst()
+        }
+    }
+    
+    private func constraints(subview: UIView, constant: CGFloat) {
+        NSLayoutConstraint.activate([
+            subview.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: constant),
+            subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            subview.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+        ])
     }
     
     private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
@@ -446,8 +453,16 @@ class ResultsViewController: UIViewController {
         view.frame.width - 60
     }
     
-    private func setupHeightConstraint() -> CGFloat {
+    private func heightViewConstraint() -> CGFloat {
         315
+    }
+    
+    private func heightLabelStatsConstraint() -> CGFloat {
+        115
+    }
+    
+    private func heightConstraint() -> CGFloat {
+        30 + heightLabelStatsConstraint()
     }
     
     private func radiusView() -> CGFloat {
@@ -455,38 +470,38 @@ class ResultsViewController: UIViewController {
     }
     
     private func heightContentSize() -> CGFloat {
-        let answers = CGFloat(views.count)
+        let answers = CGFloat(views.count - 1)
         let multiplierOne: CGFloat = answers > 2 ? 1 : 0
         let multiplierTwo: CGFloat = answers > 2 ? answers - 2 : 0
         let multiplierThree: CGFloat = answers > 1 ? 1 : 0
         
         switch view.frame.height {
         case 667:
-            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
-            multiplierOne * multiplierTwo + 133 * multiplierThree
+            return heightConstraint() + 30 * multiplierOne * multiplierTwo +
+            315 * multiplierOne * multiplierTwo + 133 * multiplierThree
         case 736:
-            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
             multiplierOne * multiplierTwo + 64 * multiplierThree
         case 812:
-            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
             multiplierOne * multiplierTwo - 12
         case 844:
-            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
             multiplierOne * multiplierTwo - 44
         case 852:
-            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
             multiplierOne * multiplierTwo - 52
         case 896:
-            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
             multiplierOne * multiplierTwo - 96
         case 926:
-            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
             multiplierOne * multiplierTwo - 126
         case 932:
-            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
             multiplierOne * multiplierTwo - 132
         default:
-            return 30 * multiplierOne * multiplierTwo + setupHeightConstraint() *
+            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
             multiplierOne * multiplierTwo + 232 * multiplierThree
         }
     }
@@ -542,7 +557,7 @@ extension ResultsViewController {
         let colorGreen = UIColor(red: 30/255, green: 113/255, blue: 204/255, alpha: 1)
         let colorLightGreen = UIColor(red: 102/255, green: 153/255, blue: 204/255, alpha: 1)
         gradientLayer.frame.size.width = setupWidthConstraint()
-        gradientLayer.frame.size.height = setupHeightConstraint()
+        gradientLayer.frame.size.height = heightViewConstraint()
         gradientLayer.cornerRadius = radiusView()
         gradientLayer.colors = [colorLightGreen.cgColor, colorGreen.cgColor]
         content.layer.addSublayer(gradientLayer)

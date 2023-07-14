@@ -1,5 +1,5 @@
 //
-//  MainViewController.swift
+//  MenuViewController.swift
 //  CountriesQuiz
 //
 //  Created by Marat Shagiakhmetov on 01.12.2022.
@@ -11,7 +11,7 @@ protocol RewriteSettingDelegate {
     func rewriteSetting(setting: Setting)
 }
 
-class MainViewController: UIViewController {
+class MenuViewController: UIViewController {
     // MARK: - Private properties
     private lazy var labelMainCountries: UILabel = {
         let label = setLabel(
@@ -75,7 +75,7 @@ class MainViewController: UIViewController {
                 red: 125/255,
                 green: 222/255,
                 blue: 255/255,
-                alpha: 0.15),
+                alpha: 0.2),
             radiusCorner: 10,
             borderWidth: 3,
             borderColor: UIColor(
@@ -108,7 +108,7 @@ class MainViewController: UIViewController {
                 red: 125/255,
                 green: 222/255,
                 blue: 255/255,
-                alpha: 0.15),
+                alpha: 0.2),
             radiusCorner: 10,
             borderWidth: 3,
             borderColor: UIColor(
@@ -128,16 +128,17 @@ class MainViewController: UIViewController {
         return button
     }()
     
-    private lazy var labelQuizOfFlags: UILabel = {
+    private lazy var labelGameMode: UILabel = {
         let label = setLabel(
-            title: "Quiz of flags",
-            size: 16,
-            style: "Apple SD Gothic Neo",
+            title: "",
+            size: 20,
+            style: "mr_fontick",
             color: UIColor(
                 red: 184/255,
-                green: 227/255,
+                green: 247/255,
                 blue: 252/255,
-                alpha: 1))
+                alpha: 1),
+            alignment: .center)
         return label
     }()
     
@@ -146,23 +147,89 @@ class MainViewController: UIViewController {
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupSubviews(subviews: imageMain,
-                      labelMainCountries,
-                      labelMainQuiz,
-                      buttonQuizOfFlags,
-                      buttonSetting)
+        setupDesign()
         setConstraints()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         settingDefault = StorageManager.shared.fetchSetting()
+        gameMode()
     }
     // MARK: - Private methods
+    private func setupDesign() {
+        setupSubviews(subviews: imageMain, labelMainCountries, labelMainQuiz,
+                      buttonQuizOfFlags, buttonSetting, labelGameMode)
+    }
+    
     private func setupSubviews(subviews: UIView...) {
         subviews.forEach { subview in
             view.addSubview(subview)
         }
+    }
+    
+    private func gameMode() {
+        let countQuestions = settingDefault.countQuestions
+        let continents = checkAllCountries() + checkAmericanContinent() +
+        comma(check: settingDefault.europeContinent) + checkEuropeanContinent() +
+        comma(check: settingDefault.africaContinent) + checkAfricanContinent() +
+        comma(check: settingDefault.asiaContinent) + checkAsianContinent() +
+        comma(check: settingDefault.oceaniaContinent) + checkOceanContinent()
+        let timeElapsed = settingDefault.timeElapsed.timeElapsed ? "Да" : "Нет"
+        let questionTime = questionTime()
+        
+        showGameMode(countQuestions: countQuestions, continents: continents,
+                     timeElapsed: timeElapsed, questionTime: questionTime)
+    }
+    
+    private func checkAllCountries() -> String {
+        settingDefault.allCountries ? "Все страны" : ""
+    }
+    
+    private func checkAmericanContinent() -> String {
+        settingDefault.americaContinent ? "Америка" : ""
+    }
+    
+    private func checkEuropeanContinent() -> String {
+        settingDefault.europeContinent ? "Европа" : ""
+    }
+    
+    private func checkAfricanContinent() -> String {
+        settingDefault.africaContinent ? "Африка" : ""
+    }
+    
+    private func checkAsianContinent() -> String {
+        settingDefault.asiaContinent ? "Азия" : ""
+    }
+    
+    private func checkOceanContinent() -> String {
+        settingDefault.oceaniaContinent ? "Океания" : ""
+    }
+    
+    private func comma(check: Bool) -> String {
+        check ? ", " : ""
+    }
+    
+    private func questionTime() -> String {
+        guard settingDefault.timeElapsed.timeElapsed else { return "" }
+        let time = settingDefault.timeElapsed.questionSelect.oneQuestion
+        let questionTime = time ? "Время одного вопроса:" : "Время всех вопросов:"
+        return "\(questionTime) \(checkQuestionTime(check: time))"
+    }
+    
+    private func checkQuestionTime(check: Bool) -> String {
+        check ?
+        "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)" :
+        "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
+    }
+    
+    private func showGameMode(countQuestions: Int, continents: String, timeElapsed: String, questionTime: String) {
+        labelGameMode.text = """
+        Количество вопросов: \(countQuestions)
+        Континенты: \(continents)
+        Обратный отсчет: \(timeElapsed)
+        \(questionTime)
+        """
     }
     // MARK: - Set constraints
     private func setConstraints() {
@@ -196,6 +263,13 @@ class MainViewController: UIViewController {
             buttonSetting.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             buttonSetting.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
         ])
+        
+        NSLayoutConstraint.activate([
+            labelGameMode.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            labelGameMode.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            labelGameMode.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
+            labelGameMode.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -40)
+        ])
     }
     
     @objc private func startQuizOfFlags() {
@@ -215,19 +289,18 @@ class MainViewController: UIViewController {
     }
 }
 // MARK: - Setup label
-extension MainViewController {
-    private func setLabel(title: String,
-                          size: CGFloat,
-                          style: String,
-                          color: UIColor,
-                          colorOfShadow: CGColor? = nil,
-                          radiusOfShadow: CGFloat? = nil,
+extension MenuViewController {
+    private func setLabel(title: String, size: CGFloat, style: String, color: UIColor,
+                          colorOfShadow: CGColor? = nil, radiusOfShadow: CGFloat? = nil,
                           shadowOffsetWidth: CGFloat? = nil,
-                          shadowOffsetHeight: CGFloat? = nil) -> UILabel {
+                          shadowOffsetHeight: CGFloat? = nil,
+                          alignment: NSTextAlignment? = nil) -> UILabel {
         let label = UILabel()
         label.text = title
         label.font = UIFont(name: style, size: size)
         label.textColor = color
+        label.textAlignment = alignment ?? .left
+        label.numberOfLines = 0
         label.layer.shadowColor = colorOfShadow
         label.layer.shadowRadius = radiusOfShadow ?? 0
         label.layer.shadowOpacity = 1
@@ -238,16 +311,11 @@ extension MainViewController {
     }
 }
 // MARK: - Setup button
-extension MainViewController {
-    private func setButton(title: String,
-                           size: CGFloat,
-                           colorTitle: UIColor? = nil,
-                           colorBackgroud: UIColor? = nil,
-                           radiusCorner: CGFloat,
-                           borderWidth: CGFloat? = nil,
-                           borderColor: CGColor? = nil,
-                           shadowColor: CGColor? = nil,
-                           radiusShadow: CGFloat? = nil,
+extension MenuViewController {
+    private func setButton(title: String, size: CGFloat, colorTitle: UIColor? = nil,
+                           colorBackgroud: UIColor? = nil, radiusCorner: CGFloat,
+                           borderWidth: CGFloat? = nil, borderColor: CGColor? = nil,
+                           shadowColor: CGColor? = nil, radiusShadow: CGFloat? = nil,
                            shadowOffsetWidth: CGFloat? = nil,
                            shadowOffsetHeight: CGFloat? = nil) -> UIButton {
         let button = UIButton(type: .system)
@@ -268,13 +336,13 @@ extension MainViewController {
     }
 }
 // MARK: - Delegate rewrite user defaults
-extension MainViewController: RewriteSettingDelegate {
+extension MenuViewController: RewriteSettingDelegate {
     func rewriteSetting(setting: Setting) {
         StorageManager.shared.rewriteSetting(setting: setting)
     }
 }
 // MARK: - UIViewControllerTransitioningDelegate
-extension MainViewController: UIViewControllerTransitioningDelegate {
+extension MenuViewController: UIViewControllerTransitioningDelegate {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         transition.transitionMode = .present
         transition.startingPoint = buttonQuizOfFlags.center

@@ -18,10 +18,8 @@
 		C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D292EA293F5F0900786752 /* SettingViewController.swift */; };
 		C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */; };
 		C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */; };
-		C3E2EB342938E7F300AB40AD /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB332938E7F300AB40AD /* MainViewController.swift */; };
-		C3E2EB372938E7F300AB40AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3E2EB352938E7F300AB40AD /* Main.storyboard */; };
+		C3E2EB342938E7F300AB40AD /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB332938E7F300AB40AD /* MenuViewController.swift */; };
 		C3E2EB392938E7F400AB40AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3E2EB382938E7F400AB40AD /* Assets.xcassets */; };
-		C3E2EB3C2938E7F400AB40AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3E2EB3A2938E7F400AB40AD /* LaunchScreen.storyboard */; };
 		C3E2EB4B2938EA6800AB40AD /* FlagsOfCountries.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB4A2938EA6800AB40AD /* FlagsOfCountries.swift */; };
 		C3E2EB4D2938ED6800AB40AD /* CountriesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB4C2938ED6800AB40AD /* CountriesManager.swift */; };
 		C3E3C2DA295B602900054A1F /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E3C2D9295B602900054A1F /* AlertController.swift */; };
@@ -40,10 +38,8 @@
 		C3E2EB2C2938E7F300AB40AD /* CountriesQuiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CountriesQuiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		C3E2EB332938E7F300AB40AD /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
-		C3E2EB362938E7F300AB40AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C3E2EB332938E7F300AB40AD /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 		C3E2EB382938E7F400AB40AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C3E2EB3B2938E7F400AB40AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C3E2EB3D2938E7F400AB40AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C3E2EB4A2938EA6800AB40AD /* FlagsOfCountries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagsOfCountries.swift; sourceTree = "<group>"; };
 		C3E2EB4C2938ED6800AB40AD /* CountriesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountriesManager.swift; sourceTree = "<group>"; };
@@ -105,6 +101,7 @@
 		C3E2EB2E2938E7F300AB40AD /* CountriesQuiz */ = {
 			isa = PBXGroup;
 			children = (
+				C3F983132A6026CD0084FAD3 /* Applications */,
 				C38139E7293C9A1E0067D374 /* Fonts */,
 				C3E2EB492938E92600AB40AD /* StorageManager */,
 				C3E2EB472938E90D00AB40AD /* Models */,
@@ -112,25 +109,15 @@
 				C3E2EB442938E88100AB40AD /* ViewControllers */,
 				C3A5B9A12974258D000F15F0 /* Alert controller */,
 				C36773F4296D541E0096BCC5 /* AnimatedTransition */,
-				C3E2EB432938E87000AB40AD /* Storyboards */,
 				C3E2EB462938E8D100AB40AD /* Resources */,
 			);
 			path = CountriesQuiz;
 			sourceTree = "<group>";
 		};
-		C3E2EB432938E87000AB40AD /* Storyboards */ = {
-			isa = PBXGroup;
-			children = (
-				C3E2EB352938E7F300AB40AD /* Main.storyboard */,
-				C3E2EB3A2938E7F400AB40AD /* LaunchScreen.storyboard */,
-			);
-			path = Storyboards;
-			sourceTree = "<group>";
-		};
 		C3E2EB442938E88100AB40AD /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				C3E2EB332938E7F300AB40AD /* MainViewController.swift */,
+				C3E2EB332938E7F300AB40AD /* MenuViewController.swift */,
 				C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */,
 				C3D292EA293F5F0900786752 /* SettingViewController.swift */,
 				C38C023E2981025C008C2202 /* ResultsViewController.swift */,
@@ -141,8 +128,6 @@
 		C3E2EB452938E8C800AB40AD /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
-				C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */,
-				C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */,
 				C3E2EB3D2938E7F400AB40AD /* Info.plist */,
 			);
 			path = Supporting;
@@ -173,6 +158,15 @@
 				C376AC0829474EB400DE5E86 /* StorageManager.swift */,
 			);
 			path = StorageManager;
+			sourceTree = "<group>";
+		};
+		C3F983132A6026CD0084FAD3 /* Applications */ = {
+			isa = PBXGroup;
+			children = (
+				C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */,
+				C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */,
+			);
+			path = Applications;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -234,9 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C38139EB293C9A890067D374 /* echorevival.otf in Resources */,
-				C3E2EB3C2938E7F400AB40AD /* LaunchScreen.storyboard in Resources */,
 				C3E2EB392938E7F400AB40AD /* Assets.xcassets in Resources */,
-				C3E2EB372938E7F300AB40AD /* Main.storyboard in Resources */,
 				C3B35F20293FADC300A8493F /* fontick.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -248,7 +240,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3E2EB342938E7F300AB40AD /* MainViewController.swift in Sources */,
+				C3E2EB342938E7F300AB40AD /* MenuViewController.swift in Sources */,
 				C36773F1296BF9E10096BCC5 /* QuizOfFlagsViewController.swift in Sources */,
 				C3E3C2DA295B602900054A1F /* AlertController.swift in Sources */,
 				C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */,
@@ -265,25 +257,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		C3E2EB352938E7F300AB40AD /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C3E2EB362938E7F300AB40AD /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		C3E2EB3A2938E7F400AB40AD /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C3E2EB3B2938E7F400AB40AD /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		C3E2EB3E2938E7F400AB40AD /* Debug */ = {
@@ -412,7 +385,6 @@
 				INFOPLIST_FILE = CountriesQuiz/Supporting/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -442,7 +414,6 @@
 				INFOPLIST_FILE = CountriesQuiz/Supporting/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

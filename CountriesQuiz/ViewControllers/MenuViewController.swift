@@ -170,11 +170,9 @@ class MenuViewController: UIViewController {
     
     private func gameMode() {
         let countQuestions = settingDefault.countQuestions
-        let continents = checkAllCountries() + checkAmericanContinent() +
-        comma(check: settingDefault.europeContinent) + checkEuropeanContinent() +
-        comma(check: settingDefault.africaContinent) + checkAfricanContinent() +
-        comma(check: settingDefault.asiaContinent) + checkAsianContinent() +
-        comma(check: settingDefault.oceaniaContinent) + checkOceanContinent()
+        let continents = comma(continents: settingDefault.allCountries, settingDefault.americaContinent,
+                               settingDefault.europeContinent, settingDefault.africaContinent,
+                               settingDefault.asiaContinent, settingDefault.oceaniaContinent)
         let timeElapsed = settingDefault.timeElapsed.timeElapsed ? "Да" : "Нет"
         let questionTime = questionTime()
         
@@ -182,32 +180,29 @@ class MenuViewController: UIViewController {
                      timeElapsed: timeElapsed, questionTime: questionTime)
     }
     
-    private func checkAllCountries() -> String {
-        settingDefault.allCountries ? "Все страны" : ""
+    private func comma(continents: Bool...) -> String {
+        var text = ""
+        var number = 0
+        continents.forEach { continent in
+            number += 1
+            if continent {
+                text += text == "" ? checkContinent(continent: number) : ", " + checkContinent(continent: number)
+            }
+        }
+        return text
     }
     
-    private func checkAmericanContinent() -> String {
-        settingDefault.americaContinent ? "Америка" : ""
-    }
-    
-    private func checkEuropeanContinent() -> String {
-        settingDefault.europeContinent ? "Европа" : ""
-    }
-    
-    private func checkAfricanContinent() -> String {
-        settingDefault.africaContinent ? "Африка" : ""
-    }
-    
-    private func checkAsianContinent() -> String {
-        settingDefault.asiaContinent ? "Азия" : ""
-    }
-    
-    private func checkOceanContinent() -> String {
-        settingDefault.oceaniaContinent ? "Океания" : ""
-    }
-    
-    private func comma(check: Bool) -> String {
-        check ? ", " : ""
+    private func checkContinent(continent: Int) -> String {
+        var text = ""
+        switch continent {
+        case 1: text = "Все страны"
+        case 2: text = "Америка"
+        case 3: text = "Европа"
+        case 4: text = "Африка"
+        case 5: text = "Азия"
+        default: text = "Океания"
+        }
+        return text
     }
     
     private func questionTime() -> String {

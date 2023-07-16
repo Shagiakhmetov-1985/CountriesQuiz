@@ -106,7 +106,7 @@ class SettingViewController: UIViewController {
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
             numberOfLines: 1,
-            textAlignment: .right)
+            textAlignment: .center)
         return label
     }()
     
@@ -128,14 +128,13 @@ class SettingViewController: UIViewController {
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
-            textAlignment: .center)
+            textAlignment: .left)
         return label
     }()
     
     private lazy var stackViewNumberQuestion: UIStackView = {
-        let stackView = setStackViewLabels(autoresizingConstraints: false,
-                                           labelFirst: labelNumberQuestions,
-                                           labelSecond: labelNumber)
+        let stackView = setStackViewLabels(labelFirst: labelNumberQuestions,
+                                           labelSecond: labelNumber, spacing: 10)
         return stackView
     }()
     
@@ -201,8 +200,7 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var stackViewAllCountries: UIStackView = {
-        let stackView = setStackView(autoresizingConstraints: false,
-                                     label: labelAllCountries,
+        let stackView = setStackView(label: labelAllCountries,
                                      toggle: toggleAllCountries)
         return stackView
     }()
@@ -256,8 +254,7 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var stackViewAmericaContinent: UIStackView = {
-        let stackView = setStackView(autoresizingConstraints: false,
-                                     label: labelAmericaContinent,
+        let stackView = setStackView(label: labelAmericaContinent,
                                      toggle: toggleAmericaContinent)
         return stackView
     }()
@@ -311,8 +308,7 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var stackViewEuropeContinent: UIStackView = {
-        let stackView = setStackView(autoresizingConstraints: false,
-                                     label: labelEuropeContinent,
+        let stackView = setStackView(label: labelEuropeContinent,
                                      toggle: toggleEuropeContinent)
         return stackView
     }()
@@ -366,8 +362,7 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var stackViewAfricaContinent: UIStackView = {
-        let stackView = setStackView(autoresizingConstraints: false,
-                                     label: labelAfricaContinent,
+        let stackView = setStackView(label: labelAfricaContinent,
                                      toggle: toggleAfricaContinent)
         return stackView
     }()
@@ -421,8 +416,7 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var stackViewAsiaContinent: UIStackView = {
-        let stackView = setStackView(autoresizingConstraints: false,
-                                     label: labelAsiaContinent,
+        let stackView = setStackView(label: labelAsiaContinent,
                                      toggle: toggleAsiaContinent)
         return stackView
     }()
@@ -476,8 +470,7 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var stackViewOceaniaContinent: UIStackView = {
-        let stackView = setStackView(autoresizingConstraints: false,
-                                     label: labelOceaniaContinent,
+        let stackView = setStackView(label: labelOceaniaContinent,
                                      toggle: toggleOceaniaContinent)
         return stackView
     }()
@@ -528,8 +521,7 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var stackViewTimeElapsed: UIStackView = {
-        let stackView = setStackView(autoresizingConstraints: false,
-                                     label: labelTimeElapsed,
+        let stackView = setStackView(label: labelTimeElapsed,
                                      toggle: toggleTimeElapsed)
         return stackView
     }()
@@ -548,8 +540,7 @@ class SettingViewController: UIViewController {
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
-            numberOfLines: 1,
-            textAlignment: .right)
+            numberOfLines: 1)
         return label
     }()
     
@@ -567,14 +558,14 @@ class SettingViewController: UIViewController {
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
-            textAlignment: .center)
+            textAlignment: .left)
         return label
     }()
     
     private lazy var stackViewLabelTimeElapsed: UIStackView = {
-        let stackView = setStackViewLabels(autoresizingConstraints: false,
-                                           labelFirst: labelTimeElapsedQuestion,
-                                           labelSecond: labelTimeElapsedNumber)
+        let stackView = setStackViewLabels(labelFirst: labelTimeElapsedQuestion,
+                                           labelSecond: labelTimeElapsedNumber,
+                                           spacing: 10)
         return stackView
     }()
     
@@ -615,8 +606,7 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var stackViewPickerViews: UIStackView = {
-        let stackView = setStackViewPickerViews(autoresizingConstraints: false,
-                                                pickerViewFirst: pickerViewOneQuestion,
+        let stackView = setStackViewPickerViews(pickerViewFirst: pickerViewOneQuestion,
                                                 pickerViewSecond: pickerViewAllQuestions)
         return stackView
     }()
@@ -714,9 +704,8 @@ class SettingViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             stackViewNumberQuestion.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 14),
-            stackViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            labelNumber.widthAnchor.constraint(equalToConstant: 55)
+            stackViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width / 8),
+            stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
         NSLayoutConstraint.activate([
@@ -770,10 +759,8 @@ class SettingViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             stackViewLabelTimeElapsed.topAnchor.constraint(equalTo: stackViewTimeElapsed.bottomAnchor, constant: 15),
-            stackViewLabelTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewLabelTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            labelTimeElapsedQuestion.widthAnchor.constraint(equalToConstant: 285),
-            labelTimeElapsedNumber.widthAnchor.constraint(equalToConstant: 50)
+            stackViewLabelTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width / 8),
+            stackViewLabelTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
         NSLayoutConstraint.activate([
@@ -794,15 +781,15 @@ class SettingViewController: UIViewController {
     }
     
     private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
-        return view.frame.height > 736 ? 110 : 70
+        view.frame.height > 736 ? 110 : 70
     }
     
     private func fixSizeForContentViewBySizeIphone() -> CGFloat {
-        return view.frame.height > 736 ? 140 : 280
+        view.frame.height > 736 ? 140 : 280
     }
     
     private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
-        return view.frame.height > 736 ? 60 : 30
+        view.frame.height > 736 ? 60 : 30
     }
     // MARK: - Activating buttons
     @objc private func backToMenu() {
@@ -1190,7 +1177,9 @@ extension SettingViewController {
         }
         return view
     }
-    
+}
+// MARK: - Gradient
+extension SettingViewController {
     private func setGradient(content: UIView) {
         let gradientLayer = CAGradientLayer()
         let colorBlue = UIColor(red: 30/255, green: 113/255, blue: 204/255, alpha: 1)
@@ -1202,17 +1191,11 @@ extension SettingViewController {
 }
 // MARK: - Setup button
 extension SettingViewController {
-    private func setButton(title: String,
-                           style: String? = nil,
-                           size: CGFloat,
-                           colorTitle: UIColor? = nil,
-                           colorBackgroud: UIColor? = nil,
-                           radiusCorner: CGFloat,
-                           borderWidth: CGFloat? = nil,
-                           borderColor: CGColor? = nil,
-                           shadowColor: CGColor? = nil,
-                           radiusShadow: CGFloat? = nil,
-                           shadowOffsetWidth: CGFloat? = nil,
+    private func setButton(title: String, style: String? = nil, size: CGFloat,
+                           colorTitle: UIColor? = nil, colorBackgroud: UIColor? = nil,
+                           radiusCorner: CGFloat, borderWidth: CGFloat? = nil,
+                           borderColor: CGColor? = nil, shadowColor: CGColor? = nil,
+                           radiusShadow: CGFloat? = nil, shadowOffsetWidth: CGFloat? = nil,
                            shadowOffsetHeight: CGFloat? = nil,
                            isEnabled: Bool? = nil) -> UIButton {
         let button = UIButton(type: .system)
@@ -1235,14 +1218,9 @@ extension SettingViewController {
 }
 // MARK: - Setup label
 extension SettingViewController {
-    private func setLabel(title: String,
-                          size: CGFloat,
-                          style: String,
-                          color: UIColor,
-                          colorOfShadow: CGColor? = nil,
-                          radiusOfShadow: CGFloat? = nil,
-                          shadowOffsetWidth: CGFloat? = nil,
-                          shadowOffsetHeight: CGFloat? = nil,
+    private func setLabel(title: String, size: CGFloat, style: String, color: UIColor,
+                          colorOfShadow: CGColor? = nil, radiusOfShadow: CGFloat? = nil,
+                          shadowOffsetWidth: CGFloat? = nil, shadowOffsetHeight: CGFloat? = nil,
                           numberOfLines: Int? = nil,
                           textAlignment: NSTextAlignment? = nil) -> UILabel {
         let label = UILabel()
@@ -1413,11 +1391,8 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
 }
 // MARK: - Setup toggle
 extension SettingViewController {
-    private func setToggle(toggleColor: UIColor,
-                           onColor: UIColor,
-                           isOn: Bool,
-                           shadowColor: CGColor? = nil,
-                           shadowRadius: CGFloat? = nil,
+    private func setToggle(toggleColor: UIColor, onColor: UIColor, isOn: Bool,
+                           shadowColor: CGColor? = nil, shadowRadius: CGFloat? = nil,
                            shadowOffsetWidth: CGFloat? = nil,
                            shadowOffsetHeight: CGFloat? = nil) -> UISwitch {
         let toggle = UISwitch()
@@ -1436,40 +1411,34 @@ extension SettingViewController {
 }
 // MARK: - Setup stack view
 extension SettingViewController {
-    private func setStackViewLabels(autoresizingConstraints: Bool,
-                                    labelFirst: UILabel,
-                                    labelSecond: UILabel) -> UIStackView {
+    private func setStackViewLabels(labelFirst: UILabel, labelSecond: UILabel,
+                                    spacing: CGFloat? = nil) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [labelFirst, labelSecond])
-        stackView.translatesAutoresizingMaskIntoConstraints = autoresizingConstraints
+        stackView.spacing = spacing ?? 0
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
     
-    private func setStackView(autoresizingConstraints: Bool,
-                              label: UILabel,
-                              toggle: UISwitch) -> UIStackView {
+    private func setStackView(label: UILabel, toggle: UISwitch) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [label, toggle])
-        stackView.translatesAutoresizingMaskIntoConstraints = autoresizingConstraints
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.alignment = .center
         return stackView
     }
     
-    private func setStackViewPickerViews(autoresizingConstraints: Bool,
-                                         pickerViewFirst: UIPickerView,
+    private func setStackViewPickerViews(pickerViewFirst: UIPickerView,
                                          pickerViewSecond: UIPickerView) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [pickerViewFirst, pickerViewSecond])
-        stackView.translatesAutoresizingMaskIntoConstraints = autoresizingConstraints
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.distribution = .equalSpacing
         return stackView
     }
 }
 // MARK: - Setup segmented control
 extension SettingViewController {
-    private func setSegmentedControl(background: UIColor,
-                                     segmentColor: UIColor,
-                                     elements: [Any],
-                                     titleSelectedColor: UIColor,
-                                     titleNormalColor: UIColor,
-                                     setIndex: Int,
+    private func setSegmentedControl(background: UIColor, segmentColor: UIColor,
+                                     elements: [Any], titleSelectedColor: UIColor,
+                                     titleNormalColor: UIColor, setIndex: Int,
                                      isEnabled: Bool) -> UISegmentedControl {
         let segment = UISegmentedControl(items: elements)
         let font = UIFont(name: "mr_fontick", size: 26)

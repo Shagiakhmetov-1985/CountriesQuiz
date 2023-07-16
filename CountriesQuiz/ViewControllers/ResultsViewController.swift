@@ -507,7 +507,13 @@ class ResultsViewController: UIViewController {
     }
     
     @objc private func exitToMenu() {
-        dismiss(animated: true)
+        exit(viewControllers: ResultsViewController(), QuizOfFlagsViewController())
+    }
+    
+    private func exit(viewControllers: UIViewController...) {
+        viewControllers.forEach { viewController in
+            dismiss(animated: true)
+        }
     }
 }
 

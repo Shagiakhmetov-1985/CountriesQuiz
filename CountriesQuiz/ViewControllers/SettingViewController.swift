@@ -612,15 +612,13 @@ class SettingViewController: UIViewController {
     }()
     
     var settingDefault: Setting!
-    var delegate: RewriteSettingDelegate!
+    var delegate: SettingViewControllerDelegate!
     
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSettingVC()
-        setupSubviews(subviews: viewPanel,
-                      buttonBackMenu,
-                      buttonDefaultSetting,
+        setupSubviews(subviews: viewPanel, buttonBackMenu, buttonDefaultSetting,
                       contentView)
         setupSubviewsOnContentView(subviews: scrollView)
         setupSubviewsOnScrollView(subviews: stackViewNumberQuestion,
@@ -674,125 +672,9 @@ class SettingViewController: UIViewController {
             scrollView.addSubview(subview)
         }
     }
-    // MARK: - Setup constraints
-    private func setConstraints() {
-        NSLayoutConstraint.activate([
-            viewPanel.topAnchor.constraint(equalTo: view.topAnchor),
-            viewPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            viewPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            viewPanel.heightAnchor.constraint(equalToConstant: fixConstraintsForViewPanelBySizeIphone())
-        ])
-        
-        NSLayoutConstraint.activate([
-            buttonBackMenu.topAnchor.constraint(equalTo: view.topAnchor, constant: fixConstraintsForButtonBySizeIphone()),
-            buttonBackMenu.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonBackMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -245)
-        ])
-        
-        NSLayoutConstraint.activate([
-            buttonDefaultSetting.topAnchor.constraint(equalTo: view.topAnchor, constant: fixConstraintsForButtonBySizeIphone()),
-            buttonDefaultSetting.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 245),
-            buttonDefaultSetting.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 1),
-            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewNumberQuestion.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 14),
-            stackViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width / 8),
-            stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            pickerViewNumberQuestion.topAnchor.constraint(equalTo: stackViewNumberQuestion.bottomAnchor, constant: 12),
-            pickerViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            pickerViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            pickerViewNumberQuestion.heightAnchor.constraint(equalToConstant: 110)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewAllCountries.topAnchor.constraint(equalTo: pickerViewNumberQuestion.bottomAnchor, constant: 15),
-            stackViewAllCountries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAllCountries.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewAmericaContinent.topAnchor.constraint(equalTo: stackViewAllCountries.bottomAnchor, constant: 15),
-            stackViewAmericaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAmericaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewEuropeContinent.topAnchor.constraint(equalTo: stackViewAmericaContinent.bottomAnchor, constant: 15),
-            stackViewEuropeContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewEuropeContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewAfricaContinent.topAnchor.constraint(equalTo: stackViewEuropeContinent.bottomAnchor, constant: 15),
-            stackViewAfricaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAfricaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewAsiaContinent.topAnchor.constraint(equalTo: stackViewAfricaContinent.bottomAnchor, constant: 15),
-            stackViewAsiaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAsiaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewOceaniaContinent.topAnchor.constraint(equalTo: stackViewAsiaContinent.bottomAnchor, constant: 15),
-            stackViewOceaniaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewOceaniaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewTimeElapsed.topAnchor.constraint(equalTo: stackViewOceaniaContinent.bottomAnchor, constant: 30),
-            stackViewTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewLabelTimeElapsed.topAnchor.constraint(equalTo: stackViewTimeElapsed.bottomAnchor, constant: 15),
-            stackViewLabelTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width / 8),
-            stackViewLabelTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            segmentedControl.topAnchor.constraint(equalTo: stackViewLabelTimeElapsed.bottomAnchor, constant: 15),
-            segmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            segmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewPickerViews.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 15),
-            stackViewPickerViews.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewPickerViews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            pickerViewOneQuestion.widthAnchor.constraint(equalToConstant: 160),
-            pickerViewOneQuestion.heightAnchor.constraint(equalToConstant: 110),
-            pickerViewAllQuestions.widthAnchor.constraint(equalToConstant: 160),
-            pickerViewAllQuestions.heightAnchor.constraint(equalToConstant: 110)
-        ])
-    }
-    
-    private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 110 : 70
-    }
-    
-    private func fixSizeForContentViewBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 140 : 280
-    }
-    
-    private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 60 : 30
-    }
     // MARK: - Activating buttons
     @objc private func backToMenu() {
+        delegate.sendDataOfSetting(setting: settingDefault)
         dismiss(animated: true)
     }
     
@@ -853,7 +735,7 @@ class SettingViewController: UIViewController {
         default:
             
             settingDefault.timeElapsed.timeElapsed = target.isOn ? true : false
-            delegate.rewriteSetting(setting: settingDefault)
+            StorageManager.shared.rewriteSetting(setting: settingDefault)
             
             let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
             let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
@@ -940,7 +822,7 @@ class SettingViewController: UIViewController {
         settingDefault.africaContinent = africaContinent
         settingDefault.asiaContinent = asiaContinent
         settingDefault.oceaniaContinent = oceaniaContinent
-        delegate.rewriteSetting(setting: settingDefault)
+        StorageManager.shared.rewriteSetting(setting: settingDefault)
     }
     
     private func setupRowsPickerView(allCountries: Bool,
@@ -981,7 +863,7 @@ class SettingViewController: UIViewController {
             pickerViewNumberQuestion.reloadAllComponents()
         }
         
-        delegate.rewriteSetting(setting: settingDefault)
+        StorageManager.shared.rewriteSetting(setting: settingDefault)
     }
     
     private func checkAllCountries(toggle: Bool) -> Int {
@@ -1062,7 +944,7 @@ class SettingViewController: UIViewController {
         labelTimeElapsedQuestion.text = timeElapsedQuestion
         labelTimeElapsedNumber.text = timeElapsedNumber
         
-        delegate.rewriteSetting(setting: settingDefault)
+        StorageManager.shared.rewriteSetting(setting: settingDefault)
     }
     // MARK: - Enabled or disabled picker view and color
     private func isEnabled(tag: Int) -> Bool {
@@ -1162,7 +1044,7 @@ class SettingViewController: UIViewController {
             backgroundColor: lightGray,
             shadowColor: gray.cgColor)
         
-        delegate.rewriteSetting(setting: settingDefault)
+        StorageManager.shared.rewriteSetting(setting: settingDefault)
     }
 }
 // MARK: - Setup view
@@ -1306,21 +1188,21 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                 backgroundColor: lightGray,
                 shadowColor: gray.cgColor)
             
-            delegate.rewriteSetting(setting: settingDefault)
+            StorageManager.shared.rewriteSetting(setting: settingDefault)
             
         case 2:
             
             let oneQuestionTime = row + 6
             labelTimeElapsedNumber.text = "\(oneQuestionTime)"
             settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime = oneQuestionTime
-            delegate.rewriteSetting(setting: settingDefault)
+            StorageManager.shared.rewriteSetting(setting: settingDefault)
             
         default:
             
             let allQuestionTime = row + (4 * settingDefault.countQuestions)
             labelTimeElapsedNumber.text = "\(allQuestionTime)"
             settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime = allQuestionTime
-            delegate.rewriteSetting(setting: settingDefault)
+            StorageManager.shared.rewriteSetting(setting: settingDefault)
             
         }
     }
@@ -1459,6 +1341,125 @@ extension SettingViewController {
         segment.addTarget(self, action: #selector(segmentedControlAction), for: .valueChanged)
         segment.translatesAutoresizingMaskIntoConstraints = false
         return segment
+    }
+}
+// MARK: - Setup constraints
+extension SettingViewController {
+    private func setConstraints() {
+        NSLayoutConstraint.activate([
+            viewPanel.topAnchor.constraint(equalTo: view.topAnchor),
+            viewPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            viewPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            viewPanel.heightAnchor.constraint(equalToConstant: fixConstraintsForViewPanelBySizeIphone())
+        ])
+        
+        NSLayoutConstraint.activate([
+            buttonBackMenu.topAnchor.constraint(equalTo: view.topAnchor, constant: fixConstraintsForButtonBySizeIphone()),
+            buttonBackMenu.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            buttonBackMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -245)
+        ])
+        
+        NSLayoutConstraint.activate([
+            buttonDefaultSetting.topAnchor.constraint(equalTo: view.topAnchor, constant: fixConstraintsForButtonBySizeIphone()),
+            buttonDefaultSetting.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 245),
+            buttonDefaultSetting.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 1),
+            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewNumberQuestion.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 14),
+            stackViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width / 8),
+            stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            pickerViewNumberQuestion.topAnchor.constraint(equalTo: stackViewNumberQuestion.bottomAnchor, constant: 12),
+            pickerViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            pickerViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            pickerViewNumberQuestion.heightAnchor.constraint(equalToConstant: 110)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewAllCountries.topAnchor.constraint(equalTo: pickerViewNumberQuestion.bottomAnchor, constant: 15),
+            stackViewAllCountries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAllCountries.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewAmericaContinent.topAnchor.constraint(equalTo: stackViewAllCountries.bottomAnchor, constant: 15),
+            stackViewAmericaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAmericaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewEuropeContinent.topAnchor.constraint(equalTo: stackViewAmericaContinent.bottomAnchor, constant: 15),
+            stackViewEuropeContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewEuropeContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewAfricaContinent.topAnchor.constraint(equalTo: stackViewEuropeContinent.bottomAnchor, constant: 15),
+            stackViewAfricaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAfricaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewAsiaContinent.topAnchor.constraint(equalTo: stackViewAfricaContinent.bottomAnchor, constant: 15),
+            stackViewAsiaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAsiaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewOceaniaContinent.topAnchor.constraint(equalTo: stackViewAsiaContinent.bottomAnchor, constant: 15),
+            stackViewOceaniaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewOceaniaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewTimeElapsed.topAnchor.constraint(equalTo: stackViewOceaniaContinent.bottomAnchor, constant: 30),
+            stackViewTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewLabelTimeElapsed.topAnchor.constraint(equalTo: stackViewTimeElapsed.bottomAnchor, constant: 15),
+            stackViewLabelTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width / 8),
+            stackViewLabelTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            segmentedControl.topAnchor.constraint(equalTo: stackViewLabelTimeElapsed.bottomAnchor, constant: 15),
+            segmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            segmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewPickerViews.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 15),
+            stackViewPickerViews.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewPickerViews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            pickerViewOneQuestion.widthAnchor.constraint(equalToConstant: 160),
+            pickerViewOneQuestion.heightAnchor.constraint(equalToConstant: 110),
+            pickerViewAllQuestions.widthAnchor.constraint(equalToConstant: 160),
+            pickerViewAllQuestions.heightAnchor.constraint(equalToConstant: 110)
+        ])
+    }
+    
+    private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
+        view.frame.height > 736 ? 110 : 70
+    }
+    
+    private func fixSizeForContentViewBySizeIphone() -> CGFloat {
+        view.frame.height > 736 ? 140 : 280
+    }
+    
+    private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
+        view.frame.height > 736 ? 60 : 30
     }
 }
 // MARK: - Alert controller

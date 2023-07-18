@@ -7,8 +7,8 @@
 
 import UIKit
 // MARK: - Protocol of delegate rewrite user defaults
-protocol RewriteSettingDelegate {
-    func rewriteSetting(setting: Setting)
+protocol SettingViewControllerDelegate {
+    func sendDataOfSetting(setting: Setting)
 }
 
 class MenuViewController: UIViewController {
@@ -149,17 +149,14 @@ class MenuViewController: UIViewController {
         super.viewDidLoad()
         setupDesign()
         setConstraints()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        settingDefault = StorageManager.shared.fetchSetting()
         gameMode()
     }
+    
     // MARK: - Private methods
     private func setupDesign() {
         setupSubviews(subviews: imageMain, labelMainCountries, labelMainQuiz,
                       buttonQuizOfFlags, buttonSetting, labelGameMode)
+        settingDefault = StorageManager.shared.fetchSetting()
     }
     
     private func setupSubviews(subviews: UIView...) {
@@ -269,15 +266,14 @@ class MenuViewController: UIViewController {
     
     @objc private func startQuizOfFlags() {
         let quizOfFlagsVC = QuizOfFlagsViewController()
-        quizOfFlagsVC.modalPresentationStyle = .custom
-        quizOfFlagsVC.transitioningDelegate = self
         quizOfFlagsVC.setting = settingDefault
-        present(quizOfFlagsVC, animated: true)
+        navigationController?.pushViewController(quizOfFlagsVC, animated: true)
     }
     
     @objc private func setting() {
         let settingVC = SettingViewController()
-        settingVC.modalPresentationStyle = .fullScreen
+        settingVC.modalPresentationStyle = .custom
+        settingVC.transitioningDelegate = self
         settingVC.settingDefault = settingDefault
         settingVC.delegate = self
         present(settingVC, animated: true)
@@ -331,9 +327,10 @@ extension MenuViewController {
     }
 }
 // MARK: - Delegate rewrite user defaults
-extension MenuViewController: RewriteSettingDelegate {
-    func rewriteSetting(setting: Setting) {
-        StorageManager.shared.rewriteSetting(setting: setting)
+extension MenuViewController: SettingViewControllerDelegate {
+    func sendDataOfSetting(setting: Setting) {
+        settingDefault = setting
+        gameMode()
     }
 }
 // MARK: - UIViewControllerTransitioningDelegate

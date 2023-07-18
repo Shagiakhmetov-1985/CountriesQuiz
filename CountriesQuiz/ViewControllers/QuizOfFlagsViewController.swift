@@ -288,6 +288,8 @@ class QuizOfFlagsViewController: UIViewController {
         return button
     }()
     
+    var setting: Setting!
+    
     private var imageFlagSpring: NSLayoutConstraint!
     private var buttonFirstSpring: NSLayoutConstraint!
     private var buttonSecondSpring: NSLayoutConstraint!
@@ -305,42 +307,42 @@ class QuizOfFlagsViewController: UIViewController {
     
     private var results: [Results] = []
     
-    var setting: Setting!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupQuizOfFlagsVC()
-        setupSubviews(subviews: viewPanel,
-                      buttonBackMenu,
-                      contentView,
-                      progressView,
-                      labelTimer,
-                      labelQuiz,
-                      imageFlag,
-                      labelNumberQuiz,
-                      labelDescription,
-                      buttonAnswerFirst,
-                      buttonAnswerSecond,
-                      buttonAnswerThird,
-                      buttonAnswerFourth)
+        setupDesign()
+        setupSubviews()
         setConstraints()
+        setupBarButton()
         setupMoveSubviews()
         startHideSubviews()
         startGame()
     }
     
-    private func setupQuizOfFlagsVC() {
+    private func setupDesign() {
         view.backgroundColor = UIColor(
             red: 54/255,
             green: 55/255,
             blue: 215/255,
             alpha: 1)
+        navigationItem.hidesBackButton = true
+    }
+    
+    private func setupSubviews() {
+        setupSubviews(subviews: viewPanel, contentView, progressView,
+                      labelTimer, labelQuiz, imageFlag, labelNumberQuiz,
+                      labelDescription, buttonAnswerFirst, buttonAnswerSecond,
+                      buttonAnswerThird, buttonAnswerFourth)
     }
     
     private func setupSubviews(subviews: UIView...) {
         subviews.forEach { subview in
             view.addSubview(subview)
         }
+    }
+    
+    private func setupBarButton() {
+        let barButton = UIBarButtonItem(customView: buttonBackMenu)
+        navigationItem.leftBarButtonItem = barButton
     }
     
     // MARK: - Setup constraints
@@ -353,9 +355,7 @@ class QuizOfFlagsViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            buttonBackMenu.topAnchor.constraint(equalTo: view.topAnchor, constant: fixConstraintsForButtonBySizeIphone()),
-            buttonBackMenu.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonBackMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -245)
+            buttonBackMenu.widthAnchor.constraint(equalToConstant: view.frame.width - 265)
         ])
         
         NSLayoutConstraint.activate([
@@ -597,7 +597,7 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     @objc private func exitToMenu() {
-        dismiss(animated: true)
+        navigationController?.popViewController(animated: true)
     }
     
     private func size() -> CGFloat {
@@ -798,12 +798,11 @@ extension QuizOfFlagsViewController {
                 hideSubviews()
             } else {
                 let resultsVC = ResultsViewController()
-                resultsVC.modalPresentationStyle = .fullScreen
                 resultsVC.results = results
                 resultsVC.countries = questions.questions
                 resultsVC.setting = setting
                 resultsVC.spendTime = spendTime
-                present(resultsVC, animated: true)
+                navigationController?.pushViewController(resultsVC, animated: true)
             }
         }
     }
@@ -844,19 +843,12 @@ extension QuizOfFlagsViewController {
 }
 // MARK: - Setup button
 extension QuizOfFlagsViewController {
-    private func setButton(title: String,
-                           style: String? = nil,
-                           size: CGFloat,
-                           colorTitle: UIColor? = nil,
-                           colorBackgroud: UIColor? = nil,
-                           radiusCorner: CGFloat,
-                           borderWidth: CGFloat? = nil,
-                           borderColor: CGColor? = nil,
-                           shadowColor: CGColor? = nil,
-                           radiusShadow: CGFloat? = nil,
-                           shadowOffsetWidth: CGFloat? = nil,
-                           shadowOffsetHeight: CGFloat? = nil,
-                           isEnabled: Bool? = nil,
+    private func setButton(title: String, style: String? = nil, size: CGFloat,
+                           colorTitle: UIColor? = nil, colorBackgroud: UIColor? = nil,
+                           radiusCorner: CGFloat, borderWidth: CGFloat? = nil,
+                           borderColor: CGColor? = nil, shadowColor: CGColor? = nil,
+                           radiusShadow: CGFloat? = nil, shadowOffsetWidth: CGFloat? = nil,
+                           shadowOffsetHeight: CGFloat? = nil, isEnabled: Bool? = nil,
                            tag: Int? = nil) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
@@ -879,16 +871,10 @@ extension QuizOfFlagsViewController {
 }
 // MARK: - Setup label
 extension QuizOfFlagsViewController {
-    private func setLabel(title: String,
-                          size: CGFloat,
-                          style: String,
-                          color: UIColor,
-                          colorOfShadow: CGColor? = nil,
-                          radiusOfShadow: CGFloat? = nil,
-                          shadowOffsetWidth: CGFloat? = nil,
-                          shadowOffsetHeight: CGFloat? = nil,
-                          numberOfLines: Int? = nil,
-                          textAlignment: NSTextAlignment? = nil,
+    private func setLabel(title: String, size: CGFloat, style: String, color: UIColor,
+                          colorOfShadow: CGColor? = nil, radiusOfShadow: CGFloat? = nil,
+                          shadowOffsetWidth: CGFloat? = nil, shadowOffsetHeight: CGFloat? = nil,
+                          numberOfLines: Int? = nil, textAlignment: NSTextAlignment? = nil,
                           opacity: Float? = nil) -> UILabel {
         let label = UILabel()
         label.text = title

@@ -328,10 +328,24 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func setupSubviews() {
+        if setting.timeElapsed.timeElapsed {
+            setupSubviewsWithTimer()
+        } else {
+            setupSubviewsWithoutTimer()
+        }
+    }
+    
+    private func setupSubviewsWithTimer() {
         setupSubviews(subviews: viewPanel, contentView, progressView,
                       labelTimer, labelQuiz, imageFlag, labelNumberQuiz,
                       labelDescription, buttonAnswerFirst, buttonAnswerSecond,
                       buttonAnswerThird, buttonAnswerFourth)
+    }
+    
+    private func setupSubviewsWithoutTimer() {
+        setupSubviews(subviews: viewPanel, contentView, labelQuiz, imageFlag,
+                      labelNumberQuiz, labelDescription, buttonAnswerFirst,
+                      buttonAnswerSecond, buttonAnswerThird, buttonAnswerFourth)
     }
     
     private func setupSubviews(subviews: UIView...) {
@@ -343,102 +357,6 @@ class QuizOfFlagsViewController: UIViewController {
     private func setupBarButton() {
         let barButton = UIBarButtonItem(customView: buttonBackMenu)
         navigationItem.leftBarButtonItem = barButton
-    }
-    
-    // MARK: - Setup constraints
-    private func setConstraints() {
-        NSLayoutConstraint.activate([
-            viewPanel.topAnchor.constraint(equalTo: view.topAnchor),
-            viewPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            viewPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            viewPanel.heightAnchor.constraint(equalToConstant: fixConstraintsForViewPanelBySizeIphone())
-        ])
-        
-        NSLayoutConstraint.activate([
-            buttonBackMenu.widthAnchor.constraint(equalToConstant: view.frame.width - 265)
-        ])
-        
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 1),
-            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 26),
-            progressView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            progressView.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
-            progressView.heightAnchor.constraint(equalToConstant: 28)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelTimer.topAnchor.constraint(equalTo: progressView.topAnchor, constant: 4),
-            labelTimer.trailingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: -30)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelQuiz.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 30),
-            labelQuiz.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-        
-        imageFlagSpring = NSLayoutConstraint(
-            item: imageFlag, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(imageFlagSpring)
-        NSLayoutConstraint.activate([
-            imageFlag.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 30),
-            imageFlag.widthAnchor.constraint(equalToConstant: 300),
-            imageFlag.heightAnchor.constraint(equalToConstant: 180)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelNumberQuiz.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 30),
-            labelNumberQuiz.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            labelNumberQuiz.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelDescription.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 34),
-            labelDescription.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            labelDescription.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
-        
-        buttonFirstSpring = NSLayoutConstraint(
-            item: buttonAnswerFirst, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(buttonFirstSpring)
-        NSLayoutConstraint.activate([
-            buttonAnswerFirst.topAnchor.constraint(equalTo: labelNumberQuiz.bottomAnchor, constant: 30),
-            buttonAnswerFirst.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
-        
-        buttonSecondSpring = NSLayoutConstraint(
-            item: buttonAnswerSecond, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(buttonSecondSpring)
-        NSLayoutConstraint.activate([
-            buttonAnswerSecond.topAnchor.constraint(equalTo: buttonAnswerFirst.bottomAnchor, constant: 8),
-            buttonAnswerSecond.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
-        
-        buttonThirdSpring = NSLayoutConstraint(
-            item: buttonAnswerThird, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(buttonThirdSpring)
-        NSLayoutConstraint.activate([
-            buttonAnswerThird.topAnchor.constraint(equalTo: buttonAnswerSecond.bottomAnchor, constant: 8),
-            buttonAnswerThird.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
-        
-        buttonFourthSpring = NSLayoutConstraint(
-            item: buttonAnswerFourth, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(buttonFourthSpring)
-        NSLayoutConstraint.activate([
-            buttonAnswerFourth.topAnchor.constraint(equalTo: buttonAnswerThird.bottomAnchor, constant: 8),
-            buttonAnswerFourth.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
     }
     
     private func setupMoveSubviews() {
@@ -513,12 +431,21 @@ class QuizOfFlagsViewController: UIViewController {
         setupEnabledSubviews(controls: buttonAnswerFirst, buttonAnswerSecond,
                              buttonAnswerThird, buttonAnswerFourth, isEnabled: true)
         
+        if setting.timeElapsed.timeElapsed {
+            checkSeconds()
+            runTimer()
+        }
+    }
+    
+    private func checkSeconds() {
         if !oneQuestionCheck(), currentQuestion < 1 {
             seconds = oneQuestionSeconds() * 10
         } else if oneQuestionCheck() {
             seconds = oneQuestionSeconds() * 10
         }
-        
+    }
+    
+    private func runTimer() {
         timerFirst = Timer.scheduledTimer(
             timeInterval: 0.1, target: self, selector: #selector(timeElapsed),
             userInfo: nil, repeats: true)
@@ -584,24 +511,8 @@ class QuizOfFlagsViewController: UIViewController {
         }
     }
     
-    private func setupWidthConstraint() -> CGFloat {
-        view.bounds.width - 40
-    }
-    
-    private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 110 : 70
-    }
-    
-    private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 60 : 30
-    }
-    
     @objc private func exitToMenu() {
         navigationController?.popViewController(animated: true)
-    }
-    
-    private func size() -> CGFloat {
-        view.frame.width > 375 ? 20 : 19
     }
     
     @objc private func buttonPress(button: UIButton) {
@@ -697,9 +608,8 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func showNewDataForNextQuestion() {
-        if oneQuestionCheck() {
-            let seconds = setting.timeElapsed.questionSelect.questionTime.oneQuestionTime
-            labelTimer.text = "\(seconds)"
+        if setting.timeElapsed.timeElapsed {
+            restorationLabelTimer()
         }
         
         imageFlag.image = UIImage(named: questions.questions[currentQuestion].flag)
@@ -712,6 +622,13 @@ class QuizOfFlagsViewController: UIViewController {
         buttonAnswerFourth.setTitle(questions.buttonFourth[currentQuestion].name, for: .normal)
     }
     
+    private func restorationLabelTimer() {
+        if oneQuestionCheck() {
+            let seconds = setting.timeElapsed.questionSelect.questionTime.oneQuestionTime
+            labelTimer.text = "\(seconds)"
+        }
+    }
+    
     private func showSubviewsWithAnimation() {
         UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) {
             self.labelNumberQuiz.layer.opacity = 1
@@ -719,6 +636,12 @@ class QuizOfFlagsViewController: UIViewController {
         
         labelDescription.layer.opacity = 0
         
+        if setting.timeElapsed.timeElapsed {
+            restorationProgressView()
+        }
+    }
+    
+    private func restorationProgressView() {
         if oneQuestionCheck() {
             UIView.animate(withDuration: 0.5) {
                 self.progressView.setProgress(1, animated: true)
@@ -907,5 +830,134 @@ extension QuizOfFlagsViewController {
         progressView.progress = progress
         progressView.translatesAutoresizingMaskIntoConstraints = false
         return progressView
+    }
+}
+// MARK: - Setup constraints
+extension QuizOfFlagsViewController {
+    private func setConstraints() {
+        NSLayoutConstraint.activate([
+            viewPanel.topAnchor.constraint(equalTo: view.topAnchor),
+            viewPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            viewPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            viewPanel.heightAnchor.constraint(equalToConstant: fixConstraintsForViewPanelBySizeIphone())
+        ])
+        
+        NSLayoutConstraint.activate([
+            buttonBackMenu.widthAnchor.constraint(equalToConstant: view.frame.width - 265)
+        ])
+        
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 1),
+            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        if setting.timeElapsed.timeElapsed {
+            constraintsProgressView()
+        }
+        
+        NSLayoutConstraint.activate([
+            constraintsLabelQuiz(),
+            labelQuiz.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+        
+        imageFlagSpring = NSLayoutConstraint(
+            item: imageFlag, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(imageFlagSpring)
+        NSLayoutConstraint.activate([
+            imageFlag.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 30),
+            imageFlag.widthAnchor.constraint(equalToConstant: 300),
+            imageFlag.heightAnchor.constraint(equalToConstant: 180)
+        ])
+        
+        NSLayoutConstraint.activate([
+            labelNumberQuiz.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 30),
+            labelNumberQuiz.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            labelNumberQuiz.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+        ])
+        
+        NSLayoutConstraint.activate([
+            labelDescription.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 34),
+            labelDescription.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            labelDescription.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+        ])
+        
+        buttonFirstSpring = NSLayoutConstraint(
+            item: buttonAnswerFirst, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(buttonFirstSpring)
+        NSLayoutConstraint.activate([
+            buttonAnswerFirst.topAnchor.constraint(equalTo: labelNumberQuiz.bottomAnchor, constant: 30),
+            buttonAnswerFirst.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+        ])
+        
+        buttonSecondSpring = NSLayoutConstraint(
+            item: buttonAnswerSecond, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(buttonSecondSpring)
+        NSLayoutConstraint.activate([
+            buttonAnswerSecond.topAnchor.constraint(equalTo: buttonAnswerFirst.bottomAnchor, constant: 8),
+            buttonAnswerSecond.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+        ])
+        
+        buttonThirdSpring = NSLayoutConstraint(
+            item: buttonAnswerThird, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(buttonThirdSpring)
+        NSLayoutConstraint.activate([
+            buttonAnswerThird.topAnchor.constraint(equalTo: buttonAnswerSecond.bottomAnchor, constant: 8),
+            buttonAnswerThird.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+        ])
+        
+        buttonFourthSpring = NSLayoutConstraint(
+            item: buttonAnswerFourth, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(buttonFourthSpring)
+        NSLayoutConstraint.activate([
+            buttonAnswerFourth.topAnchor.constraint(equalTo: buttonAnswerThird.bottomAnchor, constant: 8),
+            buttonAnswerFourth.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
+        ])
+    }
+    
+    private func constraintsProgressView() {
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 26),
+            progressView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            progressView.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
+            progressView.heightAnchor.constraint(equalToConstant: 28)
+        ])
+        
+        NSLayoutConstraint.activate([
+            labelTimer.topAnchor.constraint(equalTo: progressView.topAnchor, constant: 4),
+            labelTimer.trailingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: -30)
+        ])
+    }
+    
+    private func constraintsLabelQuiz() -> NSLayoutConstraint {
+        var constraint = NSLayoutConstraint()
+        if setting.timeElapsed.timeElapsed {
+            constraint = labelQuiz.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 30)
+        } else {
+            constraint = labelQuiz.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 30)
+        }
+        return constraint
+    }
+    
+    private func setupWidthConstraint() -> CGFloat {
+        view.bounds.width - 40
+    }
+    
+    private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
+        view.frame.height > 736 ? 110 : 70
+    }
+    
+    private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
+        view.frame.height > 736 ? 60 : 30
+    }
+    
+    private func size() -> CGFloat {
+        view.frame.width > 375 ? 20 : 19
     }
 }

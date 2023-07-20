@@ -10,12 +10,7 @@ import UIKit
 class SettingViewController: UIViewController {
     // MARK: - Subviews
     private lazy var viewPanel: UIView = {
-        let view = setView(
-            color: UIColor(
-                red: 102/255,
-                green: 153/255,
-                blue: 255/255,
-                alpha: 1))
+        let view = setView(color: UIColor.panelViewLight)
         return view
     }()
     
@@ -24,22 +19,10 @@ class SettingViewController: UIViewController {
             title: "Главное меню",
             style: "mr_fontick",
             size: 15,
-            colorTitle: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1),
-            colorBackgroud: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
+            colorTitle: UIColor.blueLight,
+            colorBackgroud: UIColor.cyanLight,
             radiusCorner: 14,
-            shadowColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
+            shadowColor: UIColor.shadowBlueLight.cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5)
@@ -48,12 +31,12 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var buttonDefaultSetting: UIButton = {
-        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
-        let blue = UIColor(red: 54/255, green: 55/255, blue: 252/255, alpha: 1)
-        let darkBlue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
-        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
-        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
-        let darkGray = UIColor(red: 72/255, green: 72/255, blue: 72/255, alpha: 1)
+        let lightBlue = UIColor.cyanLight
+        let blue = UIColor.blueLight
+        let darkBlue = UIColor.shadowBlueLight
+        let lightGray = UIColor.skyGrayLight
+        let gray = UIColor.grayLight
+        let darkGray = UIColor.shadowGrayLight
         let button = setButton(
             title: "Сброс",
             style: "mr_fontick",
@@ -78,7 +61,7 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var contentView: UIView = {
-        let view = setView()
+        let view = setView(color: UIColor.contentLight)
         view.frame.size = contentSize
         return view
     }()
@@ -92,19 +75,7 @@ class SettingViewController: UIViewController {
             title: "Количество вопросов:",
             size: 26,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2,
+            color: UIColor.blueLight,
             numberOfLines: 1,
             textAlignment: .center)
         return label
@@ -115,19 +86,7 @@ class SettingViewController: UIViewController {
             title: "\(settingDefault.countQuestions)",
             size: 26,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2,
+            color: UIColor.blueLight,
             textAlignment: .left)
         return label
     }()
@@ -140,41 +99,56 @@ class SettingViewController: UIViewController {
     
     private lazy var pickerViewNumberQuestion: UIPickerView = {
         let pickerView = setPickerView(
-            backgroundColor: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            cornerRadius: 13,
+            backgroundColor: UIColor.skyCyanLight,
             tag: 1,
             isEnabled: true)
         return pickerView
     }()
     
+    private lazy var viewAllCountries: UIView = {
+        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
+                           addButton: buttonAllCountries)
+        return view
+    }()
+    
+    private lazy var buttonAllCountries: UIButton = {
+        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        return button
+    }()
+    
     private lazy var labelAllCountries: UILabel = {
         let label = setLabel(
-            title: """
-            Все страны мира
-            Количество стран: \(FlagsOfCountries.shared.countries.count)
-            """,
+            title: "Все страны мира",
             size: 26,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2)
+            color: UIColor.blueLight)
         return label
     }()
     
+    private lazy var labelCountAllCountries: UILabel = {
+        let label = setLabel(
+            title: "Количество стран: \(FlagsOfCountries.shared.countries.count)",
+            size: 20,
+            style: "mr_fontick",
+            color: UIColor.blueLight)
+        return label
+    }()
+    
+    private lazy var stackViewLabelsAllCountries: UIStackView = {
+        let stackView = setStackViewLabels(labelFirst: labelAllCountries,
+                                           labelSecond: labelCountAllCountries,
+                                           axis: .vertical,
+                                           distribution: .fillEqually,
+                                           alignment: .center)
+        return stackView
+    }()
+    
+    private lazy var stackViewAllCountries: UIStackView = {
+        let stackView = setStackViewCheckmark(view: viewAllCountries,
+                                              stackView: stackViewLabelsAllCountries)
+        return stackView
+    }()
+    /*
     private lazy var toggleAllCountries: UISwitch = {
         let toggle = setToggle(
             toggleColor: UIColor(
@@ -204,31 +178,51 @@ class SettingViewController: UIViewController {
                                      toggle: toggleAllCountries)
         return stackView
     }()
+    */
+    private lazy var viewAmericaContinent: UIView = {
+        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
+                           addButton: buttonAmericaContinent)
+        return view
+    }()
+    
+    private lazy var buttonAmericaContinent: UIButton = {
+        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        return button
+    }()
     
     private lazy var labelAmericaContinent: UILabel = {
         let label = setLabel(
-            title: """
-            Континент Америки
-            Количество стран: \(FlagsOfCountries.shared.countriesOfAmericanContinent.count)
-            """,
+            title: "Континент Америки",
             size: 26,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2)
+            color: UIColor.blueLight)
         return label
     }()
     
+    private lazy var labelCountAmericaContinent: UILabel = {
+        let label = setLabel(
+            title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAmericanContinent.count)",
+            size: 20,
+            style: "mr_fontick",
+            color: UIColor.blueLight)
+        return label
+    }()
+    
+    private lazy var stackViewLabelsAmericaContinent: UIStackView = {
+        let stackView = setStackViewLabels(labelFirst: labelAmericaContinent,
+                                           labelSecond: labelCountAmericaContinent,
+                                           axis: .vertical,
+                                           distribution: .fillEqually,
+                                           alignment: .center)
+        return stackView
+    }()
+    
+    private lazy var stackViewAmericaContinent: UIStackView = {
+        let stackView = setStackViewCheckmark(view: viewAmericaContinent,
+                                              stackView: stackViewLabelsAmericaContinent)
+        return stackView
+    }()
+    /*
     private lazy var toggleAmericaContinent: UISwitch = {
         let toggle = setToggle(
             toggleColor: UIColor(
@@ -258,31 +252,51 @@ class SettingViewController: UIViewController {
                                      toggle: toggleAmericaContinent)
         return stackView
     }()
+    */
+    private lazy var viewEuropeContinent: UIView = {
+        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
+                           addButton: buttonEuropeContinent)
+        return view
+    }()
+    
+    private lazy var buttonEuropeContinent: UIButton = {
+        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        return button
+    }()
     
     private lazy var labelEuropeContinent: UILabel = {
         let label = setLabel(
-            title: """
-            Континент Европы
-            Количество стран: \(FlagsOfCountries.shared.countriesOfEuropeanContinent.count)
-            """,
+            title: "Континент Европы",
             size: 26,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2)
+            color: UIColor.blueLight)
         return label
     }()
     
+    private lazy var labelCountEuropeContinent: UILabel = {
+        let label = setLabel(
+            title: "Количество стран: \(FlagsOfCountries.shared.countriesOfEuropeanContinent.count)",
+            size: 20,
+            style: "mr_fontick",
+            color: UIColor.blueLight)
+        return label
+    }()
+    
+    private lazy var stackViewLabelsEuropeContinent: UIStackView = {
+        let stackView = setStackViewLabels(labelFirst: labelEuropeContinent,
+                                           labelSecond: labelCountEuropeContinent,
+                                           axis: .vertical,
+                                           distribution: .fillEqually,
+                                           alignment: .center)
+        return stackView
+    }()
+    
+    private lazy var stackViewEuropeContinent: UIStackView = {
+        let stackView = setStackViewCheckmark(view: viewEuropeContinent,
+                                              stackView: stackViewLabelsEuropeContinent)
+        return stackView
+    }()
+    /*
     private lazy var toggleEuropeContinent: UISwitch = {
         let toggle = setToggle(
             toggleColor: UIColor(
@@ -312,31 +326,51 @@ class SettingViewController: UIViewController {
                                      toggle: toggleEuropeContinent)
         return stackView
     }()
+    */
+    private lazy var viewAfricaContinent: UIView = {
+        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
+                           addButton: buttonAfricaContinent)
+        return view
+    }()
+    
+    private lazy var buttonAfricaContinent: UIButton = {
+        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        return button
+    }()
     
     private lazy var labelAfricaContinent: UILabel = {
         let label = setLabel(
-            title: """
-            Континент Африки
-            Количество стран: \(FlagsOfCountries.shared.countriesOfAfricanContinent.count)
-            """,
+            title: "Континент Африки",
             size: 26,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2)
+            color: UIColor.blueLight)
         return label
     }()
     
+    private lazy var labelCountAfricaContinent: UILabel = {
+        let label = setLabel(
+            title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAfricanContinent.count)",
+            size: 20,
+            style: "mr_fontick",
+            color: UIColor.blueLight)
+        return label
+    }()
+    
+    private lazy var stackViewLabelsAfricaContinent: UIStackView = {
+        let stackView = setStackViewLabels(labelFirst: labelAfricaContinent,
+                                           labelSecond: labelCountAfricaContinent,
+                                           axis: .vertical,
+                                           distribution: .fillEqually,
+                                           alignment: .center)
+        return stackView
+    }()
+    
+    private lazy var stackViewAfricaContinent: UIStackView = {
+        let stackView = setStackViewCheckmark(view: viewAfricaContinent,
+                                              stackView: stackViewLabelsAfricaContinent)
+        return stackView
+    }()
+    /*
     private lazy var toggleAfricaContinent: UISwitch = {
         let toggle = setToggle(
             toggleColor: UIColor(
@@ -366,31 +400,51 @@ class SettingViewController: UIViewController {
                                      toggle: toggleAfricaContinent)
         return stackView
     }()
+    */
+    private lazy var viewAsiaContinent: UIView = {
+        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
+                           addButton: buttonAsiaContinent)
+        return view
+    }()
+    
+    private lazy var buttonAsiaContinent: UIButton = {
+        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        return button
+    }()
     
     private lazy var labelAsiaContinent: UILabel = {
         let label = setLabel(
-            title: """
-            Континент Азии
-            Количество стран: \(FlagsOfCountries.shared.countriesOfAsianContinent.count)
-            """,
+            title: "Континент Азии",
             size: 26,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2)
+            color: UIColor.blueLight)
         return label
     }()
     
+    private lazy var labelCountAsiaContinent: UILabel = {
+        let label = setLabel(
+            title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAsianContinent.count)",
+            size: 20,
+            style: "mr_fontick",
+            color: UIColor.blueLight)
+        return label
+    }()
+    
+    private lazy var stackViewLabelsAsiaContinent: UIStackView = {
+        let stackView = setStackViewLabels(labelFirst: labelAsiaContinent,
+                                           labelSecond: labelCountAsiaContinent,
+                                           axis: .vertical,
+                                           distribution: .fillEqually,
+                                           alignment: .center)
+        return stackView
+    }()
+    
+    private lazy var stackViewAsiaContinent: UIStackView = {
+        let stackView = setStackViewCheckmark(view: viewAsiaContinent,
+                                              stackView: stackViewLabelsAsiaContinent)
+        return stackView
+    }()
+    /*
     private lazy var toggleAsiaContinent: UISwitch = {
         let toggle = setToggle(
             toggleColor: UIColor(
@@ -420,31 +474,51 @@ class SettingViewController: UIViewController {
                                      toggle: toggleAsiaContinent)
         return stackView
     }()
+    */
+    private lazy var viewOceaniaContinent: UIView = {
+        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
+                           addButton: buttonOceaniaContinent)
+        return view
+    }()
+    
+    private lazy var buttonOceaniaContinent: UIButton = {
+        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        return button
+    }()
     
     private lazy var labelOceaniaContinent: UILabel = {
         let label = setLabel(
-            title: """
-            Континент Океании
-            Количество стран: \(FlagsOfCountries.shared.countriesOfOceanContinent.count)
-            """,
+            title: "Континент Океании",
             size: 26,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2)
+            color: UIColor.blueLight)
         return label
     }()
     
+    private lazy var labelCountOceaniaContinent: UILabel = {
+        let label = setLabel(
+            title: "Количество стран: \(FlagsOfCountries.shared.countriesOfOceanContinent.count)",
+            size: 20,
+            style: "mr_fontick",
+            color: UIColor.blueLight)
+        return label
+    }()
+    
+    private lazy var stackViewLabelsOceaniaContinent: UIStackView = {
+        let stackView = setStackViewLabels(labelFirst: labelOceaniaContinent,
+                                           labelSecond: labelCountOceaniaContinent,
+                                           axis: .vertical,
+                                           distribution: .fillEqually,
+                                           alignment: .center)
+        return stackView
+    }()
+    
+    private lazy var stackViewOceaniaContinent: UIStackView = {
+        let stackView = setStackViewCheckmark(view: viewOceaniaContinent,
+                                              stackView: stackViewLabelsOceaniaContinent)
+        return stackView
+    }()
+    /*
     private lazy var toggleOceaniaContinent: UISwitch = {
         let toggle = setToggle(
             toggleColor: UIColor(
@@ -474,28 +548,34 @@ class SettingViewController: UIViewController {
                                      toggle: toggleOceaniaContinent)
         return stackView
     }()
+    */
+    private lazy var viewTimeElapsed: UIView = {
+        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
+                           addButton: buttonTimeElapsed)
+        return view
+    }()
+    
+    private lazy var buttonTimeElapsed: UIButton = {
+        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        return button
+    }()
     
     private lazy var labelTimeElapsed: UILabel = {
         let label = setLabel(
             title: "Обратный отсчет",
             size: 26,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2)
+            color: UIColor.blueLight,
+            textAlignment: .center)
         return label
     }()
     
+    private lazy var stackViewTimeElapsed: UIStackView = {
+        let stackView = setStackViewCheckmark(view: viewTimeElapsed,
+                                              label: labelTimeElapsed)
+        return stackView
+    }()
+    /*
     private lazy var toggleTimeElapsed: UISwitch = {
         let toggle = setToggle(
             toggleColor: UIColor(
@@ -525,39 +605,27 @@ class SettingViewController: UIViewController {
                                      toggle: toggleTimeElapsed)
         return stackView
     }()
-    
+    */
     private lazy var labelTimeElapsedQuestion: UILabel = {
-        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
-        let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1).cgColor
-        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
-        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1).cgColor
+        let blue = UIColor.blueLight
+        let gray = UIColor.grayLight
         let label = setLabel(
             title: isEnabledText(),
             size: 26,
             style: "mr_fontick",
-            color: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
-            colorOfShadow: settingDefault.timeElapsed.timeElapsed ? blue : gray,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2,
+            color: settingDefault.timeElapsed.timeElapsed ? blue : gray,
             numberOfLines: 1)
         return label
     }()
     
     private lazy var labelTimeElapsedNumber: UILabel = {
-        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
-        let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1).cgColor
-        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
-        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1).cgColor
+        let blue = UIColor.blueLight
+        let gray = UIColor.grayLight
         let label = setLabel(
             title: setLabelNumberQuestions(),
             size: 26,
             style: "mr_fontick",
-            color: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
-            colorOfShadow: settingDefault.timeElapsed.timeElapsed ? blue : gray,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2,
+            color: settingDefault.timeElapsed.timeElapsed ? blue : gray,
             textAlignment: .left)
         return label
     }()
@@ -570,10 +638,10 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var segmentedControl: UISegmentedControl = {
-        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
-        let blue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
-        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
-        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+        let lightBlue = UIColor.skyCyanLight
+        let blue = UIColor.blueLight
+        let lightGray = UIColor.skyGrayLight
+        let gray = UIColor.grayLight
         let segment = setSegmentedControl(
             background: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
             segmentColor: settingDefault.timeElapsed.timeElapsed ? blue : gray,
@@ -589,7 +657,6 @@ class SettingViewController: UIViewController {
         let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
         let pickerView = setPickerView(
             backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 2) : lightGray,
-            cornerRadius: 13,
             tag: 2,
             isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 2) : false)
         return pickerView
@@ -599,7 +666,6 @@ class SettingViewController: UIViewController {
         let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
         let pickerView = setPickerView(
             backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 3) : lightGray,
-            cornerRadius: 13,
             tag: 3,
             isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 3) : false)
         return pickerView
@@ -631,17 +697,15 @@ class SettingViewController: UIViewController {
                                   stackViewOceaniaContinent,
                                   stackViewTimeElapsed,
                                   stackViewLabelTimeElapsed,
-                                  segmentedControl,
-                                  stackViewPickerViews)
+                                  segmentedControl)
+//                                  segmentedControl,
+//                                  stackViewPickerViews)
+//        setupButtonOnView(button: buttonAllCountries, view: viewAllCountries)
         setConstraints()
     }
     // MARK: - Private methods
     private func setupSettingVC() {
-        view.backgroundColor = UIColor(
-            red: 54/255,
-            green: 55/255,
-            blue: 215/255,
-            alpha: 1)
+        view.backgroundColor = UIColor.backgroundLight
         
         let countQuestion = settingDefault.countQuestions
         let currentRowCountQuestion = countQuestion - 10
@@ -704,6 +768,7 @@ class SettingViewController: UIViewController {
         return text
     }
     // MARK: - Setting of toggles
+    /*
     @objc private func toggleAction(target: UISwitch) {
         switch target {
             
@@ -797,7 +862,7 @@ class SettingViewController: UIViewController {
             backgroundColor: lightGray,
             shadowColor: gray.cgColor)
     }
-    
+    */
     private func toggleOff(toggles: UISwitch...) {
         toggles.forEach { toggle in
             toggle.setOn(false, animated: true)
@@ -808,6 +873,20 @@ class SettingViewController: UIViewController {
         toggles.forEach { toggle in
             toggle.setOn(true, animated: true)
         }
+    }
+    
+    @objc private func buttonCheckmark(sender: UIButton) {
+        switch sender {
+        case buttonAllCountries:
+            buttonCheckmarkOnOff(button: sender, image: "circle")
+        default: print("other")
+        }
+    }
+    
+    private func buttonCheckmarkOnOff(button: UIButton, image: String) {
+        let configuration = UIImage.SymbolConfiguration(pointSize: 25)
+        let image = UIImage(systemName: image, withConfiguration: configuration)
+        button.configuration?.image = image
     }
     
     private func toggleRewrite(allCountries: Bool,
@@ -891,8 +970,8 @@ class SettingViewController: UIViewController {
     }
     // MARK: - Setting of segmented control
     @objc private func segmentedControlAction() {
-        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
-        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        let lightBlue = UIColor.skyCyanLight
+        let lightGray = UIColor.skyGrayLight
         
         if segmentedControl.selectedSegmentIndex == 0 {
             let countQuestion = settingDefault.countQuestions
@@ -1022,11 +1101,11 @@ class SettingViewController: UIViewController {
         
         labelNumber.text = "\(settingDefault.countQuestions)"
         labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
-        
+        /*
         toggleOn(toggles: toggleAllCountries, toggleTimeElapsed)
         toggleOff(toggles: toggleAmericaContinent, toggleEuropeContinent,
                   toggleAfricaContinent, toggleAsiaContinent, toggleOceaniaContinent)
-        
+        */
         segmentedControl.selectedSegmentIndex = 0
         
         pickerViewNumberQuestion.reloadAllComponents()
@@ -1049,11 +1128,16 @@ class SettingViewController: UIViewController {
 }
 // MARK: - Setup view
 extension SettingViewController {
-    private func setView(color: UIColor? = nil) -> UIView {
+    private func setView(color: UIColor? = nil, radiusCorner: CGFloat? = nil,
+                         addButton: UIButton? = nil) -> UIView {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         if let color = color {
             view.backgroundColor = color
+            view.layer.cornerRadius = radiusCorner ?? 0
+            if let button = addButton {
+                view.addSubview(button)
+            }
         } else {
             setGradient(content: view)
         }
@@ -1064,10 +1148,10 @@ extension SettingViewController {
 extension SettingViewController {
     private func setGradient(content: UIView) {
         let gradientLayer = CAGradientLayer()
-        let colorBlue = UIColor(red: 30/255, green: 113/255, blue: 204/255, alpha: 1)
-        let colorLightBlue = UIColor(red: 102/255, green: 153/255, blue: 204/255, alpha: 1)
+        let colorGrayOne = UIColor.colorGradientOneLight
+        let colorGrayTwo = UIColor.colorGradientTwoLight
         gradientLayer.frame = view.bounds
-        gradientLayer.colors = [colorLightBlue.cgColor, colorBlue.cgColor]
+        gradientLayer.colors = [colorGrayOne.cgColor, colorGrayTwo.cgColor, colorGrayOne.cgColor]
         content.layer.addSublayer(gradientLayer)
     }
 }
@@ -1075,7 +1159,7 @@ extension SettingViewController {
 extension SettingViewController {
     private func setButton(title: String, style: String? = nil, size: CGFloat,
                            colorTitle: UIColor? = nil, colorBackgroud: UIColor? = nil,
-                           radiusCorner: CGFloat, borderWidth: CGFloat? = nil,
+                           radiusCorner: CGFloat? = nil, borderWidth: CGFloat? = nil,
                            borderColor: CGColor? = nil, shadowColor: CGColor? = nil,
                            radiusShadow: CGFloat? = nil, shadowOffsetWidth: CGFloat? = nil,
                            shadowOffsetHeight: CGFloat? = nil,
@@ -1085,7 +1169,7 @@ extension SettingViewController {
         button.setTitleColor(colorTitle, for: .normal)
         button.titleLabel?.font = UIFont(name: style ?? "", size: size)
         button.backgroundColor = colorBackgroud
-        button.layer.cornerRadius = radiusCorner
+        button.layer.cornerRadius = radiusCorner ?? 0
         button.layer.borderWidth = borderWidth ?? 0
         button.layer.borderColor = borderColor
         button.layer.shadowColor = shadowColor
@@ -1095,6 +1179,19 @@ extension SettingViewController {
                                            height: shadowOffsetHeight ?? 0)
         button.isEnabled = isEnabled ?? true
         button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }
+    
+    private func setButtonCheckmark(image: String) -> UIButton {
+        let button = UIButton(type: .system)
+        let configuration = UIImage.SymbolConfiguration(pointSize: 25)
+        let image = UIImage(systemName: image, withConfiguration: configuration)
+        button.configuration = UIButton.Configuration.filled()
+        button.configuration?.baseBackgroundColor = .clear
+        button.configuration?.baseForegroundColor = UIColor.blueLight
+        button.configuration?.image = image
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(buttonCheckmark), for: .touchUpInside)
         return button
     }
 }
@@ -1219,12 +1316,11 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     private func setPickerView(backgroundColor: UIColor,
-                               cornerRadius: CGFloat,
                                tag: Int,
                                isEnabled: Bool) -> UIPickerView {
         let pickerView = UIPickerView()
         pickerView.backgroundColor = backgroundColor
-        pickerView.layer.cornerRadius = cornerRadius
+        pickerView.layer.cornerRadius = 13
         pickerView.tag = tag
         pickerView.isUserInteractionEnabled = isEnabled
         pickerView.translatesAutoresizingMaskIntoConstraints = false
@@ -1286,7 +1382,7 @@ extension SettingViewController {
         toggle.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
                                            height: shadowOffsetHeight ?? 0)
         toggle.isOn = isOn
-        toggle.addTarget(self, action: #selector(toggleAction), for: .valueChanged)
+//        toggle.addTarget(self, action: #selector(toggleAction), for: .valueChanged)
         toggle.translatesAutoresizingMaskIntoConstraints = false
         return toggle
     }
@@ -1294,9 +1390,15 @@ extension SettingViewController {
 // MARK: - Setup stack view
 extension SettingViewController {
     private func setStackViewLabels(labelFirst: UILabel, labelSecond: UILabel,
-                                    spacing: CGFloat? = nil) -> UIStackView {
+                                    spacing: CGFloat? = nil,
+                                    axis: NSLayoutConstraint.Axis? = nil,
+                                    distribution: UIStackView.Distribution? = nil,
+                                    alignment: UIStackView.Alignment? = nil) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [labelFirst, labelSecond])
         stackView.spacing = spacing ?? 0
+        stackView.axis = axis ?? .horizontal
+        stackView.distribution = distribution ?? .fill
+        stackView.alignment = alignment ?? .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
@@ -1305,6 +1407,20 @@ extension SettingViewController {
         let stackView = UIStackView(arrangedSubviews: [label, toggle])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.alignment = .center
+        return stackView
+    }
+    
+    private func setStackViewCheckmark(view: UIView, stackView: UIStackView) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [view, stackView])
+        stackView.spacing = 15
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    private func setStackViewCheckmark(view: UIView, label: UILabel) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [view, label])
+        stackView.spacing = 15
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
     
@@ -1338,6 +1454,8 @@ extension SettingViewController {
         ], for: .normal)
         segment.selectedSegmentIndex = setIndex
         segment.isUserInteractionEnabled = isEnabled
+        segment.layer.borderWidth = 5
+        segment.layer.borderColor = UIColor.skyCyanLight.cgColor
         segment.addTarget(self, action: #selector(segmentedControlAction), for: .valueChanged)
         segment.translatesAutoresizingMaskIntoConstraints = false
         return segment
@@ -1385,6 +1503,82 @@ extension SettingViewController {
             pickerViewNumberQuestion.heightAnchor.constraint(equalToConstant: 110)
         ])
         
+        NSLayoutConstraint.activate([
+            stackViewAllCountries.topAnchor.constraint(equalTo: pickerViewNumberQuestion.bottomAnchor, constant: 15),
+            stackViewAllCountries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAllCountries.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        setupSquareOfView(subview: viewAllCountries, size: 60)
+        setupConstraintsCentersOnView(button: buttonAllCountries, on: viewAllCountries)
+        setupSquareOfView(subview: buttonAllCountries, size: 50)
+        
+        NSLayoutConstraint.activate([
+            stackViewAmericaContinent.topAnchor.constraint(equalTo: stackViewAllCountries.bottomAnchor, constant: 15),
+            stackViewAmericaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAmericaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        setupSquareOfView(subview: viewAmericaContinent, size: 60)
+        setupConstraintsCentersOnView(button: buttonAmericaContinent, on: viewAmericaContinent)
+        setupSquareOfView(subview: buttonAmericaContinent, size: 50)
+        
+        NSLayoutConstraint.activate([
+            stackViewEuropeContinent.topAnchor.constraint(equalTo: stackViewAmericaContinent.bottomAnchor, constant: 15),
+            stackViewEuropeContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewEuropeContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        setupSquareOfView(subview: viewEuropeContinent, size: 60)
+        setupConstraintsCentersOnView(button: buttonEuropeContinent, on: viewEuropeContinent)
+        setupSquareOfView(subview: buttonEuropeContinent, size: 50)
+        
+        NSLayoutConstraint.activate([
+            stackViewAfricaContinent.topAnchor.constraint(equalTo: stackViewEuropeContinent.bottomAnchor, constant: 15),
+            stackViewAfricaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAfricaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        setupSquareOfView(subview: viewAfricaContinent, size: 60)
+        setupConstraintsCentersOnView(button: buttonAfricaContinent, on: viewAfricaContinent)
+        setupSquareOfView(subview: buttonAfricaContinent, size: 50)
+        
+        NSLayoutConstraint.activate([
+            stackViewAsiaContinent.topAnchor.constraint(equalTo: stackViewAfricaContinent.bottomAnchor, constant: 15),
+            stackViewAsiaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewAsiaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        setupSquareOfView(subview: viewAsiaContinent, size: 60)
+        setupConstraintsCentersOnView(button: buttonAsiaContinent, on: viewAsiaContinent)
+        setupSquareOfView(subview: buttonAsiaContinent, size: 50)
+        
+        NSLayoutConstraint.activate([
+            stackViewOceaniaContinent.topAnchor.constraint(equalTo: stackViewAsiaContinent.bottomAnchor, constant: 15),
+            stackViewOceaniaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewOceaniaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        setupSquareOfView(subview: viewOceaniaContinent, size: 60)
+        setupConstraintsCentersOnView(button: buttonOceaniaContinent, on: viewOceaniaContinent)
+        setupSquareOfView(subview: buttonOceaniaContinent, size: 50)
+        
+        NSLayoutConstraint.activate([
+            stackViewTimeElapsed.topAnchor.constraint(equalTo: stackViewOceaniaContinent.bottomAnchor, constant: 15),
+            stackViewTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        setupSquareOfView(subview: viewTimeElapsed, size: 60)
+        setupConstraintsCentersOnView(button: buttonTimeElapsed, on: viewTimeElapsed)
+        setupSquareOfView(subview: buttonTimeElapsed, size: 50)
+        
+        NSLayoutConstraint.activate([
+            stackViewLabelTimeElapsed.topAnchor.constraint(equalTo: stackViewTimeElapsed.bottomAnchor, constant: 15),
+            stackViewLabelTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width / 8),
+            stackViewLabelTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            segmentedControl.topAnchor.constraint(equalTo: stackViewLabelTimeElapsed.bottomAnchor, constant: 15),
+            segmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            segmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            segmentedControl.heightAnchor.constraint(equalToConstant: 40)
+        ])
+        /*
         NSLayoutConstraint.activate([
             stackViewAllCountries.topAnchor.constraint(equalTo: pickerViewNumberQuestion.bottomAnchor, constant: 15),
             stackViewAllCountries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -1447,6 +1641,21 @@ extension SettingViewController {
             pickerViewOneQuestion.heightAnchor.constraint(equalToConstant: 110),
             pickerViewAllQuestions.widthAnchor.constraint(equalToConstant: 160),
             pickerViewAllQuestions.heightAnchor.constraint(equalToConstant: 110)
+        ])
+         */
+    }
+    
+    private func setupSquareOfView(subview: UIView, size: CGFloat) {
+        NSLayoutConstraint.activate([
+            subview.heightAnchor.constraint(equalToConstant: size),
+            subview.widthAnchor.constraint(equalToConstant: size)
+        ])
+    }
+    
+    private func setupConstraintsCentersOnView(button: UIButton, on view: UIView) {
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */; };
 		C34EC0702986694900300585 /* Results.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34EC06F2986694900300585 /* Results.swift */; };
 		C36773F1296BF9E10096BCC5 /* QuizOfFlagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */; };
 		C36773F3296C3B880096BCC5 /* Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36773F2296C3B880096BCC5 /* Transition.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorManager.swift; sourceTree = "<group>"; };
 		C34EC06F2986694900300585 /* Results.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Results.swift; sourceTree = "<group>"; };
 		C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfFlagsViewController.swift; sourceTree = "<group>"; };
 		C36773F2296C3B880096BCC5 /* Transition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transition.swift; sourceTree = "<group>"; };
@@ -57,6 +59,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C34072392A690F3500E5C9A4 /* Extensions + UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */,
+			);
+			path = "Extensions + UIKit";
+			sourceTree = "<group>";
+		};
 		C36773F4296D541E0096BCC5 /* AnimatedTransition */ = {
 			isa = PBXGroup;
 			children = (
@@ -109,6 +119,7 @@
 				C3E2EB442938E88100AB40AD /* ViewControllers */,
 				C3A5B9A12974258D000F15F0 /* Alert controller */,
 				C36773F4296D541E0096BCC5 /* AnimatedTransition */,
+				C34072392A690F3500E5C9A4 /* Extensions + UIKit */,
 				C3E2EB462938E8D100AB40AD /* Resources */,
 			);
 			path = CountriesQuiz;
@@ -253,6 +264,7 @@
 				C376AC072947261D00DE5E86 /* Setting.swift in Sources */,
 				C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */,
 				C376AC0929474EB400DE5E86 /* StorageManager.swift in Sources */,
+				C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

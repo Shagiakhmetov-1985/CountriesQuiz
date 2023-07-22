@@ -9,11 +9,11 @@ import UIKit
 
 extension UIColor {
     // MARK: - For panel and backgroung setting view controller
-    static var panelViewLight: UIColor {
+    static var panelViewLightBlueLight: UIColor {
         #colorLiteral(red: 0.405766964, green: 0.6143494248, blue: 1, alpha: 1)
     }
     
-    static var backgroundLight: UIColor {
+    static var backgroundBlueLight: UIColor {
         #colorLiteral(red: 0.2117647059, green: 0.2156862745, blue: 0.9882352941, alpha: 1)
     }
     

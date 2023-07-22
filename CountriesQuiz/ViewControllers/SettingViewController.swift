@@ -10,7 +10,7 @@ import UIKit
 class SettingViewController: UIViewController {
     // MARK: - Subviews
     private lazy var viewPanel: UIView = {
-        let view = setView(color: UIColor.panelViewLight)
+        let view = setView(color: UIColor.panelViewLightBlueLight)
         return view
     }()
     
@@ -112,7 +112,8 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var buttonAllCountries: UIButton = {
-        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        let button = setButtonCheckmark(
+            image: checkmark(isOn: settingDefault.allCountries), tag: 1)
         return button
     }()
     
@@ -186,7 +187,8 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var buttonAmericaContinent: UIButton = {
-        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        let button = setButtonCheckmark(
+            image: checkmark(isOn: settingDefault.americaContinent), tag: 2)
         return button
     }()
     
@@ -260,7 +262,8 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var buttonEuropeContinent: UIButton = {
-        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        let button = setButtonCheckmark(
+            image: checkmark(isOn: settingDefault.europeContinent), tag: 3)
         return button
     }()
     
@@ -334,7 +337,8 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var buttonAfricaContinent: UIButton = {
-        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        let button = setButtonCheckmark(
+            image: checkmark(isOn: settingDefault.africaContinent), tag: 4)
         return button
     }()
     
@@ -408,7 +412,8 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var buttonAsiaContinent: UIButton = {
-        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        let button = setButtonCheckmark(
+            image: checkmark(isOn: settingDefault.asiaContinent), tag: 5)
         return button
     }()
     
@@ -482,7 +487,8 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var buttonOceaniaContinent: UIButton = {
-        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        let button = setButtonCheckmark(
+            image: checkmark(isOn: settingDefault.oceaniaContinent), tag: 6)
         return button
     }()
     
@@ -556,7 +562,8 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var buttonTimeElapsed: UIButton = {
-        let button = setButtonCheckmark(image: "checkmark.circle.fill")
+        let button = setButtonCheckmark(
+            image: checkmark(isOn: settingDefault.timeElapsed.timeElapsed), tag: 7)
         return button
     }()
     
@@ -649,23 +656,24 @@ class SettingViewController: UIViewController {
             titleSelectedColor: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
             titleNormalColor: settingDefault.timeElapsed.timeElapsed ? blue : gray,
             setIndex: settingDefault.timeElapsed.questionSelect.oneQuestion ? 0 : 1,
-            isEnabled: settingDefault.timeElapsed.timeElapsed ? true : false)
+            isEnabled: settingDefault.timeElapsed.timeElapsed ? true : false,
+            borderColor: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray)
         return segment
     }()
     
     private lazy var pickerViewOneQuestion: UIPickerView = {
-        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        let gray = UIColor.skyGrayLight
         let pickerView = setPickerView(
-            backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 2) : lightGray,
+            backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 2) : gray,
             tag: 2,
             isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 2) : false)
         return pickerView
     }()
     
     private lazy var pickerViewAllQuestions: UIPickerView = {
-        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        let gray = UIColor.skyGrayLight
         let pickerView = setPickerView(
-            backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 3) : lightGray,
+            backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 3) : gray,
             tag: 3,
             isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 3) : false)
         return pickerView
@@ -683,10 +691,47 @@ class SettingViewController: UIViewController {
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupSettingVC()
+        setupDesign()
+        setupSubviewsOnView()
+        setupSubviewsOnContentView()
+        setupSubviewsOnScrollView()
+        setupConstraints()
+    }
+    // MARK: - Private methods
+    private func setupDesign() {
+        view.backgroundColor = UIColor.backgroundBlueLight
+        setupPickerViewNumberQuestions()
+        setupPickerViewOneQuestion()
+    }
+    
+    private func setupPickerViewNumberQuestions() {
+        let countQuestions = settingDefault.countQuestions
+        let currentRowCountQuestions = countQuestions - 10
+        pickerViewNumberQuestion.selectRow(currentRowCountQuestions, inComponent: 0, animated: false)
+        setupPickerViewAllQuestions(countQuestions: countQuestions)
+    }
+    
+    private func setupPickerViewOneQuestion() {
+        let currentRowOneQuestion = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
+        pickerViewOneQuestion.selectRow(currentRowOneQuestion, inComponent: 0, animated: false)
+    }
+    
+    private func setupPickerViewAllQuestions(countQuestions: Int) {
+        let currentTimeAllQuestions = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime
+        let currentRowAllQuestions = currentTimeAllQuestions - (4 * countQuestions)
+        pickerViewAllQuestions.selectRow(currentRowAllQuestions, inComponent: 0, animated: false)
+    }
+    
+    private func setupSubviewsOnView() {
         setupSubviews(subviews: viewPanel, buttonBackMenu, buttonDefaultSetting,
                       contentView)
+    }
+    
+    private func setupSubviewsOnContentView() {
         setupSubviewsOnContentView(subviews: scrollView)
+    }
+    
+    private func setupSubviewsOnScrollView() {
         setupSubviewsOnScrollView(subviews: stackViewNumberQuestion,
                                   pickerViewNumberQuestion,
                                   stackViewAllCountries,
@@ -697,26 +742,8 @@ class SettingViewController: UIViewController {
                                   stackViewOceaniaContinent,
                                   stackViewTimeElapsed,
                                   stackViewLabelTimeElapsed,
-                                  segmentedControl)
-//                                  segmentedControl,
-//                                  stackViewPickerViews)
-//        setupButtonOnView(button: buttonAllCountries, view: viewAllCountries)
-        setConstraints()
-    }
-    // MARK: - Private methods
-    private func setupSettingVC() {
-        view.backgroundColor = UIColor.backgroundLight
-        
-        let countQuestion = settingDefault.countQuestions
-        let currentRowCountQuestion = countQuestion - 10
-        pickerViewNumberQuestion.selectRow(currentRowCountQuestion, inComponent: 0, animated: false)
-        
-        let currentRowOneQuestion = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
-        pickerViewOneQuestion.selectRow(currentRowOneQuestion, inComponent: 0, animated: false)
-        
-        let currentTimeAllQuestion = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime
-        let currentRowAllQuestion = currentTimeAllQuestion - (4 * countQuestion)
-        pickerViewAllQuestions.selectRow(currentRowAllQuestion, inComponent: 0, animated: false)
+                                  segmentedControl,
+                                  stackViewPickerViews)
     }
     
     private func setupSubviews(subviews: UIView...) {
@@ -768,6 +795,143 @@ class SettingViewController: UIViewController {
         return text
     }
     // MARK: - Setting of toggles
+    @objc private func buttonCheckmark(sender: UIButton) {
+        switch sender {
+        case buttonAllCountries:
+            checkmarkOnAllCountries()
+            settingOnAllCountries()
+        case buttonAmericaContinent:
+            settingDefault.americaContinent.toggle()
+            checkmarkContinents(button: sender, isOn: settingDefault.americaContinent)
+        case buttonEuropeContinent:
+            settingDefault.europeContinent.toggle()
+            checkmarkContinents(button: sender, isOn: settingDefault.europeContinent)
+        case buttonAfricaContinent:
+            settingDefault.africaContinent.toggle()
+            checkmarkContinents(button: sender, isOn: settingDefault.africaContinent)
+        case buttonAsiaContinent:
+            settingDefault.asiaContinent.toggle()
+            checkmarkContinents(button: sender, isOn: settingDefault.asiaContinent)
+        case buttonOceaniaContinent:
+            settingDefault.oceaniaContinent.toggle()
+            checkmarkContinents(button: sender, isOn: settingDefault.oceaniaContinent)
+        default:
+            checkmarkTimeElapsed(button: sender)
+        }
+    }
+    
+    private func checkmarkOnAllCountries() {
+        checkmarkOnOff(buttons: buttonAllCountries, image: "checkmark.circle.fill")
+        checkmarkOnOff(buttons: buttonAmericaContinent, buttonEuropeContinent,
+                       buttonAfricaContinent, buttonAsiaContinent,
+                       buttonOceaniaContinent, image: "circle")
+    }
+    
+    private func settingOnAllCountries() {
+        checkmarkSettingOnOff(buttons: buttonAllCountries, bool: true)
+        checkmarkSettingOnOff(buttons: buttonAmericaContinent, buttonEuropeContinent,
+                              buttonAfricaContinent, buttonAsiaContinent,
+                              buttonOceaniaContinent, bool: false)
+    }
+    
+    private func checkmarkOnOff(buttons: UIButton..., image: String) {
+        buttons.forEach { button in
+            let configuration = UIImage.SymbolConfiguration(pointSize: 25)
+            let image = UIImage(systemName: image, withConfiguration: configuration)
+            button.configuration?.image = image
+        }
+    }
+    
+    private func checkmarkSettingOnOff(buttons: UIButton..., bool: Bool) {
+        buttons.forEach { button in
+            switch button.tag {
+            case 1: settingDefault.allCountries = bool
+            case 2: settingDefault.americaContinent = bool
+            case 3: settingDefault.europeContinent = bool
+            case 4: settingDefault.africaContinent = bool
+            case 5: settingDefault.asiaContinent = bool
+            default: settingDefault.oceaniaContinent = bool
+            }
+        }
+    }
+    
+    private func checkmarkContinents(button: UIButton, isOn: Bool) {
+        if settingDefault.americaContinent, settingDefault.europeContinent,
+           settingDefault.africaContinent, settingDefault.asiaContinent,
+           settingDefault.oceaniaContinent {
+            checkmarkOnAllCountries()
+            settingOnAllCountries()
+        } else if !settingDefault.allCountries, !settingDefault.americaContinent,
+                  !settingDefault.europeContinent, !settingDefault.africaContinent,
+                  !settingDefault.asiaContinent, !settingDefault.oceaniaContinent {
+            checkmarkOnAllCountries()
+            settingOnAllCountries()
+        } else {
+            checkmarkOnOff(buttons: buttonAllCountries, image: "circle")
+            checkmarkOnOff(buttons: button, image: isOn ? "checkmark.circle.fill" : "circle")
+            checkmarkSettingOnOff(buttons: buttonAllCountries, bool: false)
+        }
+    }
+    
+    private func checkmarkTimeElapsed(button: UIButton) {
+        settingDefault.timeElapsed.timeElapsed.toggle()
+        let isOn = settingDefault.timeElapsed.timeElapsed
+        checkmarkOnOff(buttons: button,
+                       image: isOn ? "checkmark.circle.fill" : "circle")
+        checkmarkColors(isOn: isOn)
+    }
+    
+    private func checkmarkColors(isOn: Bool) {
+        let blue = UIColor.blueLight
+        let gray = UIColor.grayLight
+        checkmarkLabels(blue: blue, gray: gray, isOn: isOn)
+        checkmarkSegmentedControl(blue: blue, gray: gray, isOn: isOn)
+        checkmarkPickerViews(isOn: isOn)
+    }
+    
+    private func checkmarkLabels(blue: UIColor, gray: UIColor, isOn: Bool) {
+        labelTimeElapsedQuestion.textColor = isOn ? blue : gray
+        labelTimeElapsedNumber.textColor = isOn ? blue : gray
+    }
+    
+    private func checkmarkSegmentedControl(blue: UIColor, gray: UIColor, isOn: Bool) {
+        let lightBlue = UIColor.skyCyanLight
+        let lightGray = UIColor.skyGrayLight
+        segmentedControl.isUserInteractionEnabled = isOn ? true : false
+        segmentedControl.backgroundColor = isOn ? lightBlue : lightGray
+        segmentedControl.selectedSegmentTintColor = isOn ? blue : gray
+        segmentedControl.layer.borderColor = isOn ? lightBlue.cgColor : lightGray.cgColor
+        segmentSelectColors(blue: blue, gray: gray, lightBlue: lightBlue,
+                            lightGray: lightGray, isOn: isOn)
+    }
+    
+    private func segmentSelectColors(blue: UIColor, gray: UIColor, lightBlue: UIColor,
+                                     lightGray: UIColor, isOn: Bool) {
+        let font = UIFont(name: "mr_fontick", size: 26)
+        let titleSelectedColor: UIColor = isOn ? lightBlue : lightGray
+        segmentedControl.setTitleTextAttributes([
+            NSAttributedString.Key
+                .font: font ?? "",
+                .foregroundColor: titleSelectedColor
+        ], for: .selected)
+        
+        let titleNormalColor: UIColor = isOn ? blue : gray
+        segmentedControl.setTitleTextAttributes([
+            NSAttributedString.Key
+                .font: font ?? "",
+                .foregroundColor: titleNormalColor
+        ], for: .normal)
+    }
+    
+    private func checkmarkPickerViews(isOn: Bool) {
+        let lightGray = UIColor.skyGrayLight
+        pickerViewOneQuestion.isUserInteractionEnabled = isOn ? isEnabled(tag: 2) : false
+        pickerViewOneQuestion.backgroundColor = isOn ? isEnabledColor(tag: 2) : lightGray
+        pickerViewOneQuestion.reloadAllComponents()
+        pickerViewAllQuestions.isUserInteractionEnabled = isOn ? isEnabled(tag: 3) : false
+        pickerViewAllQuestions.backgroundColor = isOn ? isEnabledColor(tag: 3) : lightGray
+        pickerViewAllQuestions.reloadAllComponents()
+    }
     /*
     @objc private func toggleAction(target: UISwitch) {
         switch target {
@@ -862,7 +1026,7 @@ class SettingViewController: UIViewController {
             backgroundColor: lightGray,
             shadowColor: gray.cgColor)
     }
-    */
+    
     private func toggleOff(toggles: UISwitch...) {
         toggles.forEach { toggle in
             toggle.setOn(false, animated: true)
@@ -874,19 +1038,9 @@ class SettingViewController: UIViewController {
             toggle.setOn(true, animated: true)
         }
     }
-    
-    @objc private func buttonCheckmark(sender: UIButton) {
-        switch sender {
-        case buttonAllCountries:
-            buttonCheckmarkOnOff(button: sender, image: "circle")
-        default: print("other")
-        }
-    }
-    
-    private func buttonCheckmarkOnOff(button: UIButton, image: String) {
-        let configuration = UIImage.SymbolConfiguration(pointSize: 25)
-        let image = UIImage(systemName: image, withConfiguration: configuration)
-        button.configuration?.image = image
+    */
+    private func checkmark(isOn: Bool) -> String {
+        isOn ? "checkmark.circle.fill" : "circle"
     }
     
     private func toggleRewrite(allCountries: Bool,
@@ -1025,7 +1179,7 @@ class SettingViewController: UIViewController {
         
         StorageManager.shared.rewriteSetting(setting: settingDefault)
     }
-    // MARK: - Enabled or disabled picker view and color
+    // MARK: - Enabled or disabled picker view and color and label
     private func isEnabled(tag: Int) -> Bool {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
@@ -1044,8 +1198,8 @@ class SettingViewController: UIViewController {
     }
     
     private func isEnabledColor(tag: Int) -> UIColor {
-        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
-        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        let lightBlue = UIColor.skyCyanLight
+        let lightGray = UIColor.skyGrayLight
         switch segmentedControl.selectedSegmentIndex {
         case 0:
             if tag == 2 {
@@ -1063,8 +1217,8 @@ class SettingViewController: UIViewController {
     }
     
     private func isEnabledTextColor(tag: Int) -> UIColor {
-        let blue = UIColor(red: 54/255, green: 55/255, blue: 252/255, alpha: 1)
-        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
+        let blue = UIColor.blueLight
+        let gray = UIColor.grayLight
         switch segmentedControl.selectedSegmentIndex {
         case 0:
             if tag == 2 {
@@ -1182,7 +1336,7 @@ extension SettingViewController {
         return button
     }
     
-    private func setButtonCheckmark(image: String) -> UIButton {
+    private func setButtonCheckmark(image: String, tag: Int) -> UIButton {
         let button = UIButton(type: .system)
         let configuration = UIImage.SymbolConfiguration(pointSize: 25)
         let image = UIImage(systemName: image, withConfiguration: configuration)
@@ -1190,6 +1344,7 @@ extension SettingViewController {
         button.configuration?.baseBackgroundColor = .clear
         button.configuration?.baseForegroundColor = UIColor.blueLight
         button.configuration?.image = image
+        button.tag = tag
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(buttonCheckmark), for: .touchUpInside)
         return button
@@ -1427,8 +1582,9 @@ extension SettingViewController {
     private func setStackViewPickerViews(pickerViewFirst: UIPickerView,
                                          pickerViewSecond: UIPickerView) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [pickerViewFirst, pickerViewSecond])
+        stackView.spacing = 15
+        stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.distribution = .equalSpacing
         return stackView
     }
 }
@@ -1437,7 +1593,7 @@ extension SettingViewController {
     private func setSegmentedControl(background: UIColor, segmentColor: UIColor,
                                      elements: [Any], titleSelectedColor: UIColor,
                                      titleNormalColor: UIColor, setIndex: Int,
-                                     isEnabled: Bool) -> UISegmentedControl {
+                                     isEnabled: Bool, borderColor: UIColor) -> UISegmentedControl {
         let segment = UISegmentedControl(items: elements)
         let font = UIFont(name: "mr_fontick", size: 26)
         segment.backgroundColor = background
@@ -1455,7 +1611,7 @@ extension SettingViewController {
         segment.selectedSegmentIndex = setIndex
         segment.isUserInteractionEnabled = isEnabled
         segment.layer.borderWidth = 5
-        segment.layer.borderColor = UIColor.skyCyanLight.cgColor
+        segment.layer.borderColor = borderColor.cgColor
         segment.addTarget(self, action: #selector(segmentedControlAction), for: .valueChanged)
         segment.translatesAutoresizingMaskIntoConstraints = false
         return segment
@@ -1463,7 +1619,7 @@ extension SettingViewController {
 }
 // MARK: - Setup constraints
 extension SettingViewController {
-    private func setConstraints() {
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             viewPanel.topAnchor.constraint(equalTo: view.topAnchor),
             viewPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -1496,153 +1652,88 @@ extension SettingViewController {
             stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
+        setupStartConstraints(subviewFirst: pickerViewNumberQuestion,
+                              to: stackViewNumberQuestion,
+                              leadingConstant: 20, constant: 12)
         NSLayoutConstraint.activate([
-            pickerViewNumberQuestion.topAnchor.constraint(equalTo: stackViewNumberQuestion.bottomAnchor, constant: 12),
-            pickerViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            pickerViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             pickerViewNumberQuestion.heightAnchor.constraint(equalToConstant: 110)
         ])
         
-        NSLayoutConstraint.activate([
-            stackViewAllCountries.topAnchor.constraint(equalTo: pickerViewNumberQuestion.bottomAnchor, constant: 15),
-            stackViewAllCountries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAllCountries.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+        setupStartConstraints(subviewFirst: stackViewAllCountries,
+                              to: pickerViewNumberQuestion,
+                              leadingConstant: 20, constant: 15)
         setupSquareOfView(subview: viewAllCountries, size: 60)
         setupConstraintsCentersOnView(button: buttonAllCountries, on: viewAllCountries)
         setupSquareOfView(subview: buttonAllCountries, size: 50)
         
-        NSLayoutConstraint.activate([
-            stackViewAmericaContinent.topAnchor.constraint(equalTo: stackViewAllCountries.bottomAnchor, constant: 15),
-            stackViewAmericaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAmericaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+        setupStartConstraints(subviewFirst: stackViewAmericaContinent,
+                              to: stackViewAllCountries,
+                              leadingConstant: 20, constant: 15)
         setupSquareOfView(subview: viewAmericaContinent, size: 60)
         setupConstraintsCentersOnView(button: buttonAmericaContinent, on: viewAmericaContinent)
         setupSquareOfView(subview: buttonAmericaContinent, size: 50)
         
-        NSLayoutConstraint.activate([
-            stackViewEuropeContinent.topAnchor.constraint(equalTo: stackViewAmericaContinent.bottomAnchor, constant: 15),
-            stackViewEuropeContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewEuropeContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+        setupStartConstraints(subviewFirst: stackViewEuropeContinent,
+                              to: stackViewAmericaContinent,
+                              leadingConstant: 20, constant: 15)
         setupSquareOfView(subview: viewEuropeContinent, size: 60)
         setupConstraintsCentersOnView(button: buttonEuropeContinent, on: viewEuropeContinent)
         setupSquareOfView(subview: buttonEuropeContinent, size: 50)
         
-        NSLayoutConstraint.activate([
-            stackViewAfricaContinent.topAnchor.constraint(equalTo: stackViewEuropeContinent.bottomAnchor, constant: 15),
-            stackViewAfricaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAfricaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+        setupStartConstraints(subviewFirst: stackViewAfricaContinent,
+                              to: stackViewEuropeContinent,
+                              leadingConstant: 20, constant: 15)
         setupSquareOfView(subview: viewAfricaContinent, size: 60)
         setupConstraintsCentersOnView(button: buttonAfricaContinent, on: viewAfricaContinent)
         setupSquareOfView(subview: buttonAfricaContinent, size: 50)
         
-        NSLayoutConstraint.activate([
-            stackViewAsiaContinent.topAnchor.constraint(equalTo: stackViewAfricaContinent.bottomAnchor, constant: 15),
-            stackViewAsiaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAsiaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+        setupStartConstraints(subviewFirst: stackViewAsiaContinent,
+                              to: stackViewAfricaContinent,
+                              leadingConstant: 20, constant: 15)
         setupSquareOfView(subview: viewAsiaContinent, size: 60)
         setupConstraintsCentersOnView(button: buttonAsiaContinent, on: viewAsiaContinent)
         setupSquareOfView(subview: buttonAsiaContinent, size: 50)
         
-        NSLayoutConstraint.activate([
-            stackViewOceaniaContinent.topAnchor.constraint(equalTo: stackViewAsiaContinent.bottomAnchor, constant: 15),
-            stackViewOceaniaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewOceaniaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+        setupStartConstraints(subviewFirst: stackViewOceaniaContinent,
+                              to: stackViewAsiaContinent,
+                              leadingConstant: 20, constant: 15)
         setupSquareOfView(subview: viewOceaniaContinent, size: 60)
         setupConstraintsCentersOnView(button: buttonOceaniaContinent, on: viewOceaniaContinent)
         setupSquareOfView(subview: buttonOceaniaContinent, size: 50)
         
-        NSLayoutConstraint.activate([
-            stackViewTimeElapsed.topAnchor.constraint(equalTo: stackViewOceaniaContinent.bottomAnchor, constant: 15),
-            stackViewTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+        setupStartConstraints(subviewFirst: stackViewTimeElapsed,
+                              to: stackViewOceaniaContinent,
+                              leadingConstant: 20, constant: 15)
         setupSquareOfView(subview: viewTimeElapsed, size: 60)
         setupConstraintsCentersOnView(button: buttonTimeElapsed, on: viewTimeElapsed)
         setupSquareOfView(subview: buttonTimeElapsed, size: 50)
         
-        NSLayoutConstraint.activate([
-            stackViewLabelTimeElapsed.topAnchor.constraint(equalTo: stackViewTimeElapsed.bottomAnchor, constant: 15),
-            stackViewLabelTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width / 8),
-            stackViewLabelTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+        setupStartConstraints(subviewFirst: stackViewLabelTimeElapsed,
+                              to: stackViewTimeElapsed,
+                              leadingConstant: view.frame.width / 8, constant: 15)
         
+        setupStartConstraints(subviewFirst: segmentedControl,
+                              to: stackViewLabelTimeElapsed,
+                              leadingConstant: 20, constant: 15)
         NSLayoutConstraint.activate([
-            segmentedControl.topAnchor.constraint(equalTo: stackViewLabelTimeElapsed.bottomAnchor, constant: 15),
-            segmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            segmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             segmentedControl.heightAnchor.constraint(equalToConstant: 40)
         ])
-        /*
-        NSLayoutConstraint.activate([
-            stackViewAllCountries.topAnchor.constraint(equalTo: pickerViewNumberQuestion.bottomAnchor, constant: 15),
-            stackViewAllCountries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAllCountries.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
         
+        setupStartConstraints(subviewFirst: stackViewPickerViews,
+                              to: segmentedControl,
+                              leadingConstant: 20, constant: 15)
         NSLayoutConstraint.activate([
-            stackViewAmericaContinent.topAnchor.constraint(equalTo: stackViewAllCountries.bottomAnchor, constant: 15),
-            stackViewAmericaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAmericaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            stackViewPickerViews.heightAnchor.constraint(equalToConstant: 110)
         ])
-        
+    }
+    
+    private func setupStartConstraints(subviewFirst: UIView, to subviewSecond: UIView,
+                                       leadingConstant: CGFloat, constant: CGFloat) {
         NSLayoutConstraint.activate([
-            stackViewEuropeContinent.topAnchor.constraint(equalTo: stackViewAmericaContinent.bottomAnchor, constant: 15),
-            stackViewEuropeContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewEuropeContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            subviewFirst.topAnchor.constraint(equalTo: subviewSecond.bottomAnchor, constant: constant),
+            subviewFirst.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leadingConstant),
+            subviewFirst.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
-        
-        NSLayoutConstraint.activate([
-            stackViewAfricaContinent.topAnchor.constraint(equalTo: stackViewEuropeContinent.bottomAnchor, constant: 15),
-            stackViewAfricaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAfricaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewAsiaContinent.topAnchor.constraint(equalTo: stackViewAfricaContinent.bottomAnchor, constant: 15),
-            stackViewAsiaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewAsiaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewOceaniaContinent.topAnchor.constraint(equalTo: stackViewAsiaContinent.bottomAnchor, constant: 15),
-            stackViewOceaniaContinent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewOceaniaContinent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewTimeElapsed.topAnchor.constraint(equalTo: stackViewOceaniaContinent.bottomAnchor, constant: 30),
-            stackViewTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewLabelTimeElapsed.topAnchor.constraint(equalTo: stackViewTimeElapsed.bottomAnchor, constant: 15),
-            stackViewLabelTimeElapsed.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width / 8),
-            stackViewLabelTimeElapsed.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            segmentedControl.topAnchor.constraint(equalTo: stackViewLabelTimeElapsed.bottomAnchor, constant: 15),
-            segmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            segmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackViewPickerViews.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 15),
-            stackViewPickerViews.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewPickerViews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            pickerViewOneQuestion.widthAnchor.constraint(equalToConstant: 160),
-            pickerViewOneQuestion.heightAnchor.constraint(equalToConstant: 110),
-            pickerViewAllQuestions.widthAnchor.constraint(equalToConstant: 160),
-            pickerViewAllQuestions.heightAnchor.constraint(equalToConstant: 110)
-        ])
-         */
     }
     
     private func setupSquareOfView(subview: UIView, size: CGFloat) {
@@ -1664,7 +1755,8 @@ extension SettingViewController {
     }
     
     private func fixSizeForContentViewBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 140 : 280
+        view.frame.height > 736 ? 180 : 320
+        
     }
     
     private func fixConstraintsForButtonBySizeIphone() -> CGFloat {

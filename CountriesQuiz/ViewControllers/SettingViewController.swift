@@ -818,6 +818,10 @@ class SettingViewController: UIViewController {
         default:
             checkmarkTimeElapsed(button: sender)
         }
+        
+        setupCountCountries(continents: settingDefault.allCountries, settingDefault.americaContinent,
+                            settingDefault.europeContinent, settingDefault.africaContinent,
+                            settingDefault.asiaContinent, settingDefault.oceaniaContinent)
     }
     
     private func checkmarkOnAllCountries() {
@@ -932,6 +936,8 @@ class SettingViewController: UIViewController {
         pickerViewAllQuestions.backgroundColor = isOn ? isEnabledColor(tag: 3) : lightGray
         pickerViewAllQuestions.reloadAllComponents()
     }
+    
+    
     /*
     @objc private func toggleAction(target: UISwitch) {
         switch target {
@@ -1057,7 +1063,7 @@ class SettingViewController: UIViewController {
         settingDefault.oceaniaContinent = oceaniaContinent
         StorageManager.shared.rewriteSetting(setting: settingDefault)
     }
-    
+    /*
     private func setupRowsPickerView(allCountries: Bool,
                                      americaContinent: Bool,
                                      europeContinent: Bool,
@@ -1098,7 +1104,62 @@ class SettingViewController: UIViewController {
         
         StorageManager.shared.rewriteSetting(setting: settingDefault)
     }
+    */
+    private func setupCountCountries(continents: Bool...) {
+        var count = 0
+        var number = 0
+        continents.forEach { continent in
+            number += 1
+            if continent {
+                count += checkCountQuestions(continent: number)
+                count = count > DefaultSetting.countRows.rawValue ?
+                DefaultSetting.countRows.rawValue : count
+            }
+        }
+        print("count: \(count)")
+        setupRowsPickerView(countRows: count)
+    }
     
+    private func checkCountQuestions(continent: Int) -> Int {
+        var count: Int
+        switch continent {
+        case 1: count = FlagsOfCountries.shared.countries.count
+        case 2: count = FlagsOfCountries.shared.countriesOfAmericanContinent.count
+        case 3: count = FlagsOfCountries.shared.countriesOfEuropeanContinent.count
+        case 4: count = FlagsOfCountries.shared.countriesOfAfricanContinent.count
+        case 5: count = FlagsOfCountries.shared.countriesOfAsianContinent.count
+        default: count = FlagsOfCountries.shared.countriesOfOceanContinent.count
+        }
+        return count
+    }
+    
+    private func setupRowsPickerView(countRows: Int) {
+        if countRows < settingDefault.countRows {
+            let countQuestions = countRows + 9
+            
+            print("countRows: \(countRows)")
+            settingDefault.countRows = countRows
+            pickerViewNumberQuestion.reloadAllComponents()
+            pickerViewNumberQuestion.selectRow(countRows, inComponent: 0, animated: false)
+            checkCountQuestions(countQuestions: countQuestions)
+        } else {
+            settingDefault.countRows = countRows
+            pickerViewNumberQuestion.reloadAllComponents()
+        }
+    }
+    
+    private func checkCountQuestions(countQuestions: Int) {
+        if countQuestions < settingDefault.countQuestions {
+            let averageQuestionTime = 5 * countQuestions
+            let currentRow = averageQuestionTime - (4 * countQuestions)
+            
+            setupDataFromPickerView(countQuestion: countQuestions,
+                                    averageTime: averageQuestionTime,
+                                    currentRow: currentRow)
+            
+        }
+    }
+    /*
     private func checkAllCountries(toggle: Bool) -> Int {
         toggle ? FlagsOfCountries.shared.countries.count : 0
     }
@@ -1122,6 +1183,7 @@ class SettingViewController: UIViewController {
     private func checkOceaniaContinent(toggle: Bool) -> Int {
         toggle ? FlagsOfCountries.shared.countriesOfOceanContinent.count : 0
     }
+     */
     // MARK: - Setting of segmented control
     @objc private func segmentedControlAction() {
         let lightBlue = UIColor.skyCyanLight
@@ -1458,7 +1520,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             
         }
     }
-    
+    /*
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
         switch pickerView.tag {
         case 1:
@@ -1469,7 +1531,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             return 150
         }
     }
-    
+    */
     private func setPickerView(backgroundColor: UIColor,
                                tag: Int,
                                isEnabled: Bool) -> UIPickerView {

@@ -104,19 +104,7 @@ class SettingViewController: UIViewController {
             isEnabled: true)
         return pickerView
     }()
-    /*
-    private lazy var viewAllCountries: UIView = {
-        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
-                           addButton: buttonAllCountries)
-        return view
-    }()
     
-    private lazy var buttonAllCountries: UIButton = {
-        let button = setButtonCheckmark(
-            image: checkmark(isOn: settingDefault.allCountries), tag: 1)
-        return button
-    }()
-    */
     private lazy var labelAllCountries: UILabel = {
         let label = setLabel(
             title: "Все страны мира",
@@ -134,17 +122,7 @@ class SettingViewController: UIViewController {
             color: UIColor.blueLight)
         return label
     }()
-    /*
-    private lazy var stackViewLabelsAllCountries: UIStackView = {
-        let stackView = setStackViewLabels(
-            labelFirst: labelAllCountries,
-            labelSecond: labelCountAllCountries,
-            axis: .vertical,
-            distribution: .fillEqually,
-            alignment: .center)
-        return stackView
-    }()
-    */
+    
     private lazy var buttonAllCountries: UIButton = {
         let button = setButtonContinents(
             color: select(isOn: settingDefault.allCountries).0,
@@ -154,25 +132,7 @@ class SettingViewController: UIViewController {
             addLabelSecond: labelCountAllCountries)
         return button
     }()
-    /*
-    private lazy var stackViewAllCountries: UIStackView = {
-        let stackView = setStackViewCheckmark(view: viewAllCountries,
-                                              stackView: stackViewLabelsAllCountries)
-        return stackView
-    }()
     
-    private lazy var viewAmericaContinent: UIView = {
-        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
-                           addButton: buttonAmericaContinent)
-        return view
-    }()
-    
-    private lazy var buttonAmericaContinent: UIButton = {
-        let button = setButtonCheckmark(
-            image: checkmark(isOn: settingDefault.americaContinent), tag: 2)
-        return button
-    }()
-    */
     private lazy var labelAmericaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Америки",
@@ -190,17 +150,7 @@ class SettingViewController: UIViewController {
             color: UIColor.blueLight)
         return label
     }()
-    /*
-    private lazy var stackViewLabelsAmericaContinent: UIStackView = {
-        let stackView = setStackViewLabels(
-            labelFirst: labelAmericaContinent,
-            labelSecond: labelCountAmericaContinent,
-            axis: .vertical,
-            distribution: .fillEqually,
-            alignment: .center)
-        return stackView
-    }()
-    */
+    
     private lazy var buttonAmericaContinent: UIButton = {
         let button = setButtonContinents(
             color: select(isOn: settingDefault.americaContinent).0,
@@ -210,25 +160,7 @@ class SettingViewController: UIViewController {
             addLabelSecond: labelCountAmericaContinent)
         return button
     }()
-    /*
-    private lazy var stackViewAmericaContinent: UIStackView = {
-        let stackView = setStackViewCheckmark(view: viewAmericaContinent,
-                                              stackView: stackViewLabelsAmericaContinent)
-        return stackView
-    }()
     
-    private lazy var viewEuropeContinent: UIView = {
-        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
-                           addButton: buttonEuropeContinent)
-        return view
-    }()
-    
-    private lazy var buttonEuropeContinent: UIButton = {
-        let button = setButtonCheckmark(
-            image: checkmark(isOn: settingDefault.europeContinent), tag: 3)
-        return button
-    }()
-    */
     private lazy var labelEuropeContinent: UILabel = {
         let label = setLabel(
             title: "Континент Европы",
@@ -246,17 +178,7 @@ class SettingViewController: UIViewController {
             color: UIColor.blueLight)
         return label
     }()
-    /*
-    private lazy var stackViewLabelsEuropeContinent: UIStackView = {
-        let stackView = setStackViewLabels(
-            labelFirst: labelEuropeContinent,
-            labelSecond: labelCountEuropeContinent,
-            axis: .vertical,
-            distribution: .fillEqually,
-            alignment: .center)
-        return stackView
-    }()
-    */
+    
     private lazy var buttonEuropeContinent: UIButton = {
         let button = setButtonContinents(
             color: select(isOn: settingDefault.europeContinent).0,
@@ -266,25 +188,7 @@ class SettingViewController: UIViewController {
             addLabelSecond: labelCountEuropeContinent)
         return button
     }()
-    /*
-    private lazy var stackViewEuropeContinent: UIStackView = {
-        let stackView = setStackViewCheckmark(view: viewEuropeContinent,
-                                              stackView: stackViewLabelsEuropeContinent)
-        return stackView
-    }()
     
-    private lazy var viewAfricaContinent: UIView = {
-        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
-                           addButton: buttonAfricaContinent)
-        return view
-    }()
-    
-    private lazy var buttonAfricaContinent: UIButton = {
-        let button = setButtonCheckmark(
-            image: checkmark(isOn: settingDefault.africaContinent), tag: 4)
-        return button
-    }()
-    */
     private lazy var labelAfricaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Африки",
@@ -302,17 +206,7 @@ class SettingViewController: UIViewController {
             color: UIColor.blueLight)
         return label
     }()
-    /*
-    private lazy var stackViewLabelsAfricaContinent: UIStackView = {
-        let stackView = setStackViewLabels(
-            labelFirst: labelAfricaContinent,
-            labelSecond: labelCountAfricaContinent,
-            axis: .vertical,
-            distribution: .fillEqually,
-            alignment: .center)
-        return stackView
-    }()
-    */
+    
     private lazy var buttonAfricaContinent: UIButton = {
         let button = setButtonContinents(
             color: select(isOn: settingDefault.africaContinent).0,
@@ -322,25 +216,7 @@ class SettingViewController: UIViewController {
             addLabelSecond: labelCountAfricaContinent)
         return button
     }()
-    /*
-    private lazy var stackViewAfricaContinent: UIStackView = {
-        let stackView = setStackViewCheckmark(view: viewAfricaContinent,
-                                              stackView: stackViewLabelsAfricaContinent)
-        return stackView
-    }()
     
-    private lazy var viewAsiaContinent: UIView = {
-        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
-                           addButton: buttonAsiaContinent)
-        return view
-    }()
-    
-    private lazy var buttonAsiaContinent: UIButton = {
-        let button = setButtonCheckmark(
-            image: checkmark(isOn: settingDefault.asiaContinent), tag: 5)
-        return button
-    }()
-    */
     private lazy var labelAsiaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Азии",
@@ -358,17 +234,7 @@ class SettingViewController: UIViewController {
             color: UIColor.blueLight)
         return label
     }()
-    /*
-    private lazy var stackViewLabelsAsiaContinent: UIStackView = {
-        let stackView = setStackViewLabels(
-            labelFirst: labelAsiaContinent,
-            labelSecond: labelCountAsiaContinent,
-            axis: .vertical,
-            distribution: .fillEqually,
-            alignment: .center)
-        return stackView
-    }()
-    */
+    
     private lazy var buttonAsiaContinent: UIButton = {
         let button = setButtonContinents(
             color: select(isOn: settingDefault.asiaContinent).0,
@@ -378,25 +244,7 @@ class SettingViewController: UIViewController {
             addLabelSecond: labelCountAsiaContinent)
         return button
     }()
-    /*
-    private lazy var stackViewAsiaContinent: UIStackView = {
-        let stackView = setStackViewCheckmark(view: viewAsiaContinent,
-                                              stackView: stackViewLabelsAsiaContinent)
-        return stackView
-    }()
     
-    private lazy var viewOceaniaContinent: UIView = {
-        let view = setView(color: UIColor.skyCyanLight, radiusCorner: 13,
-                           addButton: buttonOceaniaContinent)
-        return view
-    }()
-    
-    private lazy var buttonOceaniaContinent: UIButton = {
-        let button = setButtonCheckmark(
-            image: checkmark(isOn: settingDefault.oceaniaContinent), tag: 6)
-        return button
-    }()
-    */
     private lazy var labelOceaniaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Океании",
@@ -414,17 +262,7 @@ class SettingViewController: UIViewController {
             color: UIColor.blueLight)
         return label
     }()
-    /*
-    private lazy var stackViewLabelsOceaniaContinent: UIStackView = {
-        let stackView = setStackViewLabels(
-            labelFirst: labelOceaniaContinent,
-            labelSecond: labelCountOceaniaContinent,
-            axis: .vertical,
-            distribution: .fillEqually,
-            alignment: .center)
-        return stackView
-    }()
-    */
+    
     private lazy var buttonOceaniaContinent: UIButton = {
         let button = setButtonContinents(
             color: select(isOn: settingDefault.oceaniaContinent).0,
@@ -434,13 +272,7 @@ class SettingViewController: UIViewController {
             addLabelSecond: labelCountOceaniaContinent)
         return button
     }()
-    /*
-    private lazy var stackViewOceaniaContinent: UIStackView = {
-        let stackView = setStackViewCheckmark(view: viewOceaniaContinent,
-                                              stackView: stackViewLabelsOceaniaContinent)
-        return stackView
-    }()
-    */
+    
     private lazy var viewTimeElapsed: UIView = {
         let view = setView(
             color: UIColor.skyCyanLight,
@@ -586,26 +418,20 @@ class SettingViewController: UIViewController {
     
     private func setupSubviewsOnView() {
         setupSubviews(subviews: viewPanel, buttonBackMenu, buttonDefaultSetting,
-                      contentView)
+                      contentView, on: view)
     }
     
     private func setupSubviewsOnContentView() {
-        setupSubviewsOnContentView(subviews: scrollView)
+        setupSubviews(subviews: scrollView, on: contentView)
     }
     
     private func setupSubviewsOnScrollView() {
-        setupSubviewsOnScrollView(subviews: stackViewNumberQuestion,
-                                  pickerViewNumberQuestion,
-                                  buttonAllCountries,
-                                  buttonAmericaContinent,
-                                  buttonEuropeContinent,
-                                  buttonAfricaContinent,
-                                  buttonAsiaContinent,
-                                  buttonOceaniaContinent,
-                                  stackViewTimeElapsed,
-                                  stackViewLabelTimeElapsed,
-                                  segmentedControl,
-                                  stackViewPickerViews)
+        setupSubviews(subviews: stackViewNumberQuestion, pickerViewNumberQuestion,
+                      buttonAllCountries, buttonAmericaContinent,
+                      buttonEuropeContinent, buttonAfricaContinent,
+                      buttonAsiaContinent, buttonOceaniaContinent,
+                      stackViewTimeElapsed, stackViewLabelTimeElapsed,
+                      segmentedControl, stackViewPickerViews, on: scrollView)
     }
     
     private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -613,27 +439,10 @@ class SettingViewController: UIViewController {
             subviewOther.addSubview(subview)
         }
     }
-    
-    private func setupSubviews(subviews: UIView...) {
-        subviews.forEach { subview in
-            view.addSubview(subview)
-        }
-    }
-    
-    private func setupSubviewsOnContentView(subviews: UIView...) {
-        subviews.forEach { subview in
-            contentView.addSubview(subview)
-        }
-    }
-    
-    private func setupSubviewsOnScrollView(subviews: UIView...) {
-        subviews.forEach { subview in
-            scrollView.addSubview(subview)
-        }
-    }
     // MARK: - Activating buttons
     @objc private func backToMenu() {
         delegate.sendDataOfSetting(setting: settingDefault)
+        StorageManager.shared.saveSetting(setting: settingDefault)
         dismiss(animated: true)
     }
     
@@ -700,12 +509,6 @@ class SettingViewController: UIViewController {
                     buttonAfricaContinent, buttonAsiaContinent,
                     buttonOceaniaContinent, color: UIColor.skyCyanLight,
                     borderColor: UIColor.skyCyanLight)
-        /*
-        checkmarkOnOff(buttons: buttonAllCountries, image: "checkmark.circle.fill")
-        checkmarkOnOff(buttons: buttonAmericaContinent, buttonEuropeContinent,
-                       buttonAfricaContinent, buttonAsiaContinent,
-                       buttonOceaniaContinent, image: "circle")
-         */
     }
     
     private func settingOnAllCountries() {
@@ -717,8 +520,10 @@ class SettingViewController: UIViewController {
     
     private func buttonOnOff(buttons: UIButton..., color: UIColor, borderColor: UIColor) {
         buttons.forEach { button in
-            button.backgroundColor = color
-            button.layer.borderColor = borderColor.cgColor
+            UIView.animate(withDuration: 0.3) {
+                button.backgroundColor = color
+                button.layer.borderColor = borderColor.cgColor
+            }
         }
     }
     
@@ -755,10 +560,6 @@ class SettingViewController: UIViewController {
             checkmarkOnAllCountries()
             settingOnAllCountries()
         } else {
-            /*
-            checkmarkOnOff(buttons: buttonAllCountries, image: "circle")
-            checkmarkOnOff(buttons: button, image: isOn ? "checkmark.circle.fill" : "circle")
-             */
             buttonOnOff(buttons: buttonAllCountries, color: UIColor.skyCyanLight,
                         borderColor: UIColor.skyCyanLight)
             buttonOnOff(buttons: button, color: select(isOn: isOn).0,
@@ -783,17 +584,21 @@ class SettingViewController: UIViewController {
     }
     
     private func checkmarkLabels(blue: UIColor, gray: UIColor, isOn: Bool) {
-        labelTimeElapsedQuestion.textColor = isOn ? blue : gray
-        labelTimeElapsedNumber.textColor = isOn ? blue : gray
+        UIView.animate(withDuration: 0.3) {
+            self.labelTimeElapsedQuestion.textColor = isOn ? blue : gray
+            self.labelTimeElapsedNumber.textColor = isOn ? blue : gray
+        }
     }
     
     private func checkmarkSegmentedControl(blue: UIColor, gray: UIColor, isOn: Bool) {
         let lightBlue = UIColor.skyCyanLight
         let lightGray = UIColor.skyGrayLight
-        segmentedControl.isUserInteractionEnabled = isOn ? true : false
-        segmentedControl.backgroundColor = isOn ? lightBlue : lightGray
-        segmentedControl.selectedSegmentTintColor = isOn ? blue : gray
-        segmentedControl.layer.borderColor = isOn ? lightBlue.cgColor : lightGray.cgColor
+        UIView.animate(withDuration: 0.3) {
+            self.segmentedControl.isUserInteractionEnabled = isOn ? true : false
+            self.segmentedControl.backgroundColor = isOn ? lightBlue : lightGray
+            self.segmentedControl.selectedSegmentTintColor = isOn ? blue : gray
+            self.segmentedControl.layer.borderColor = isOn ? lightBlue.cgColor : lightGray.cgColor
+        }
         segmentSelectColors(blue: blue, gray: gray, lightBlue: lightBlue,
                             lightGray: lightGray, isOn: isOn)
     }
@@ -805,25 +610,29 @@ class SettingViewController: UIViewController {
         segmentedControl.setTitleTextAttributes([
             NSAttributedString.Key
                 .font: font ?? "",
-                .foregroundColor: titleSelectedColor
+            .foregroundColor: titleSelectedColor
         ], for: .selected)
         
         let titleNormalColor: UIColor = isOn ? blue : gray
         segmentedControl.setTitleTextAttributes([
             NSAttributedString.Key
                 .font: font ?? "",
-                .foregroundColor: titleNormalColor
+            .foregroundColor: titleNormalColor
         ], for: .normal)
     }
-    // MARK: - исправить дублирование кода
+    // MARK: - Setting checkmarks and buttons for select continents and picker views
     private func checkmarkPickerViews(isOn: Bool) {
+        pickerViewOnOff(pickerView: pickerViewOneQuestion, isOn: isOn, tag: 2)
+        pickerViewOnOff(pickerView: pickerViewAllQuestions, isOn: isOn, tag: 3)
+    }
+    
+    private func pickerViewOnOff(pickerView: UIPickerView, isOn: Bool, tag: Int) {
         let lightGray = UIColor.skyGrayLight
-        pickerViewOneQuestion.isUserInteractionEnabled = isOn ? isEnabled(tag: 2) : false
-        pickerViewOneQuestion.backgroundColor = isOn ? isEnabledColor(tag: 2) : lightGray
-        pickerViewOneQuestion.reloadAllComponents()
-        pickerViewAllQuestions.isUserInteractionEnabled = isOn ? isEnabled(tag: 3) : false
-        pickerViewAllQuestions.backgroundColor = isOn ? isEnabledColor(tag: 3) : lightGray
-        pickerViewAllQuestions.reloadAllComponents()
+        UIView.animate(withDuration: 0.3) { [self] in
+            pickerView.isUserInteractionEnabled = isOn ? isEnabled(tag: tag) : false
+            pickerView.backgroundColor = isOn ? isEnabledColor(tag: tag) : lightGray
+        }
+        pickerView.reloadAllComponents()
     }
     
     private func checkmark(isOn: Bool) -> String {
@@ -927,7 +736,9 @@ class SettingViewController: UIViewController {
                                isEnabled: Bool,
                                backgroundColor: UIColor) {
         pickerView.isUserInteractionEnabled = isEnabled
-        pickerView.backgroundColor = backgroundColor
+        UIView.animate(withDuration: 0.3) {
+            pickerView.backgroundColor = backgroundColor
+        }
         pickerView.reloadAllComponents()
     }
     
@@ -1117,7 +928,7 @@ extension SettingViewController {
     private func setButtonContinents(color: UIColor, borderColor: UIColor, tag: Int,
                                      addLabelFirst: UILabel,
                                      addLabelSecond: UILabel) -> UIButton {
-        let button = UIButton(type: .system)
+        let button = UIButton(type: .custom)
         button.backgroundColor = color
         button.layer.borderColor = borderColor.cgColor
         button.layer.borderWidth = 3
@@ -1236,8 +1047,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     private func attributedString(title: String) -> NSAttributedString {
         NSAttributedString(string: title, attributes: [
             .font: UIFont(name: "mr_fontick", size: 26) ?? "",
-            .foregroundColor:
-                UIColor.blueLight
+            .foregroundColor: UIColor.blueLight
         ])
     }
     
@@ -1362,79 +1172,84 @@ extension SettingViewController {
             stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
-        
-        setupStartConstraints(subviewFirst: pickerViewNumberQuestion,
-                              to: stackViewNumberQuestion,
-                              leadingConstant: 20, constant: 12)
+        setupConstraints(subviewFirst: pickerViewNumberQuestion,
+                         to: stackViewNumberQuestion,
+                         leadingConstant: 20, constant: 12)
         setupHeightSubview(subview: pickerViewNumberQuestion, height: 110)
         
-        setupStartConstraints(
+        setupConstraints(
             subviewFirst: buttonAllCountries, to: pickerViewNumberQuestion,
             leadingConstant: 20, constant: 15)
-//        setupConstraintsCentersOnView(viewFirst: stackViewLabelsAllCountries,
-//                                      on: buttonAllCountries)
+        setupConstraintsOnbutton(
+            labelFirst: labelAllCountries, and: labelCountAllCountries,
+            button: buttonAllCountries)
         setupHeightSubview(subview: buttonAllCountries, height: 60)
         
-        setupStartConstraints(
+        setupConstraints(
             subviewFirst: buttonAmericaContinent, to: buttonAllCountries,
             leadingConstant: 20, constant: 15)
-//        setupConstraintsCentersOnView(viewFirst: stackViewLabelsAmericaContinent,
-//                                      on: buttonAmericaContinent)
+        setupConstraintsOnbutton(
+            labelFirst: labelAmericaContinent, and: labelCountAmericaContinent,
+            button: buttonAmericaContinent)
         setupHeightSubview(subview: buttonAmericaContinent, height: 60)
         
-        setupStartConstraints(
+        setupConstraints(
             subviewFirst: buttonEuropeContinent, to: buttonAmericaContinent,
             leadingConstant: 20, constant: 15)
-//        setupConstraintsCentersOnView(viewFirst: stackViewLabelsEuropeContinent,
-//                                      on: buttonEuropeContinent)
+        setupConstraintsOnbutton(
+            labelFirst: labelEuropeContinent, and: labelCountEuropeContinent,
+            button: buttonEuropeContinent)
         setupHeightSubview(subview: buttonEuropeContinent, height: 60)
         
-        setupStartConstraints(
+        setupConstraints(
             subviewFirst: buttonAfricaContinent, to: buttonEuropeContinent,
             leadingConstant: 20, constant: 15)
-//        setupConstraintsCentersOnView(viewFirst: stackViewLabelsAfricaContinent,
-//                                      on: buttonAfricaContinent)
+        setupConstraintsOnbutton(
+            labelFirst: labelAfricaContinent, and: labelCountAfricaContinent,
+            button: buttonAfricaContinent)
         setupHeightSubview(subview: buttonAfricaContinent, height: 60)
         
-        setupStartConstraints(
+        setupConstraints(
             subviewFirst: buttonAsiaContinent, to: buttonAfricaContinent,
             leadingConstant: 20, constant: 15)
-//        setupConstraintsCentersOnView(viewFirst: stackViewLabelsAsiaContinent,
-//                                      on: buttonAsiaContinent)
+        setupConstraintsOnbutton(
+            labelFirst: labelAsiaContinent, and: labelCountAsiaContinent,
+            button: buttonAsiaContinent)
         setupHeightSubview(subview: buttonAsiaContinent, height: 60)
         
-        setupStartConstraints(
+        setupConstraints(
             subviewFirst: buttonOceaniaContinent, to: buttonAsiaContinent,
             leadingConstant: 20, constant: 15)
-//        setupConstraintsCentersOnView(viewFirst: stackViewLabelsOceaniaContinent,
-//                                      on: buttonOceaniaContinent)
+        setupConstraintsOnbutton(
+            labelFirst: labelOceaniaContinent, and: labelCountOceaniaContinent,
+            button: buttonOceaniaContinent)
         setupHeightSubview(subview: buttonOceaniaContinent, height: 60)
         
-        setupStartConstraints(subviewFirst: stackViewTimeElapsed,
-                              to: buttonOceaniaContinent,
-                              leadingConstant: 20, constant: 15)
+        setupConstraints(subviewFirst: stackViewTimeElapsed,
+                         to: buttonOceaniaContinent,
+                         leadingConstant: 20, constant: 15)
         setupSizesSubview(subview: viewTimeElapsed, sizes: 60)
         setupConstraintsCentersOnView(viewFirst: buttonTimeElapsed, on: viewTimeElapsed)
         setupSizesSubview(subview: buttonTimeElapsed, sizes: 50)
         
-        setupStartConstraints(subviewFirst: stackViewLabelTimeElapsed,
-                              to: stackViewTimeElapsed,
-                              leadingConstant: view.frame.width / 8,
-                              constant: 15)
+        setupConstraints(subviewFirst: stackViewLabelTimeElapsed,
+                         to: stackViewTimeElapsed,
+                         leadingConstant: view.frame.width / 8,
+                         constant: 15)
         
-        setupStartConstraints(subviewFirst: segmentedControl,
-                              to: stackViewLabelTimeElapsed,
-                              leadingConstant: 20, constant: 15)
+        setupConstraints(subviewFirst: segmentedControl,
+                         to: stackViewLabelTimeElapsed,
+                         leadingConstant: 20, constant: 15)
         setupHeightSubview(subview: segmentedControl, height: 40)
         
-        setupStartConstraints(subviewFirst: stackViewPickerViews,
-                              to: segmentedControl,
-                              leadingConstant: 20, constant: 15)
+        setupConstraints(subviewFirst: stackViewPickerViews,
+                         to: segmentedControl,
+                         leadingConstant: 20, constant: 15)
         setupHeightSubview(subview: stackViewPickerViews, height: 110)
     }
     
-    private func setupStartConstraints(subviewFirst: UIView, to subviewSecond: UIView,
-                                       leadingConstant: CGFloat, constant: CGFloat) {
+    private func setupConstraints(subviewFirst: UIView, to subviewSecond: UIView,
+                                  leadingConstant: CGFloat, constant: CGFloat) {
         NSLayoutConstraint.activate([
             subviewFirst.topAnchor.constraint(equalTo: subviewSecond.bottomAnchor, constant: constant),
             subviewFirst.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leadingConstant),
@@ -1459,6 +1274,16 @@ extension SettingViewController {
         NSLayoutConstraint.activate([
             viewFirst.centerXAnchor.constraint(equalTo: viewSecond.centerXAnchor),
             viewFirst.centerYAnchor.constraint(equalTo: viewSecond.centerYAnchor)
+        ])
+    }
+    
+    private func setupConstraintsOnbutton(labelFirst: UILabel, and labelSecond: UILabel,
+                                          button: UIButton) {
+        NSLayoutConstraint.activate([
+            labelFirst.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            labelFirst.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: -12.5),
+            labelSecond.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            labelSecond.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: 12.5)
         ])
     }
     

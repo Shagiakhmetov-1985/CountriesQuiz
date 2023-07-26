@@ -10,12 +10,7 @@ import UIKit
 class QuizOfFlagsViewController: UIViewController {
     // MARK: - Setup subviews
     private lazy var viewPanel: UIView = {
-        let view = setView(
-            color: UIColor(
-                red: 102/255,
-                green: 153/255,
-                blue: 255/255,
-                alpha: 1))
+        let view = setView(color: UIColor.panelViewLightBlueLight)
         return view
     }()
     
@@ -24,22 +19,10 @@ class QuizOfFlagsViewController: UIViewController {
             title: "Главное меню",
             style: "mr_fontick",
             size: 15,
-            colorTitle: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1),
-            colorBackgroud: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
+            colorTitle: UIColor.blueLight,
+            colorBackgroud: UIColor.cyanLight,
             radiusCorner: 14,
-            shadowColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
+            shadowColor: UIColor.shadowBlueLight.cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5)
@@ -55,22 +38,10 @@ class QuizOfFlagsViewController: UIViewController {
     private lazy var progressView: UIProgressView = {
         let progressView = setProgressView(
             radius: 7,
-            progressColor: UIColor(
-                red: 51/255,
-                green: 81/255,
-                blue: 204/255,
-                alpha: 1),
-            trackColor: UIColor(
-                red: 51/255,
-                green: 81/255,
-                blue: 204/255,
-                alpha: 0.3),
+            progressColor: UIColor.progressColor,
+            trackColor: UIColor.trackColor,
             borderWidth: 2.5,
-            borderColor: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
+            borderColor: UIColor.cyanLight,
             progress: 1)
         return progressView
     }()
@@ -93,16 +64,8 @@ class QuizOfFlagsViewController: UIViewController {
             title: "Флаг страны?",
             size: 30,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
+            color: UIColor.cyanLight,
+            colorOfShadow: UIColor.shadowBlueLight.cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2)
@@ -114,11 +77,7 @@ class QuizOfFlagsViewController: UIViewController {
         image.image = UIImage(named: questions.questions[currentQuestion].flag)
         image.clipsToBounds = true
         image.layer.borderWidth = 1
-        image.layer.borderColor = UIColor(
-            red: 54/255,
-            green: 55/255,
-            blue: 215/255,
-            alpha: 1).cgColor
+        image.layer.borderColor = UIColor.shadowBlueLight.cgColor
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
@@ -128,16 +87,8 @@ class QuizOfFlagsViewController: UIViewController {
             title: "Вопрос \(currentQuestion + 1) из \(setting.countQuestions)",
             size: 30,
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
+            color: UIColor.cyanLight,
+            colorOfShadow: UIColor.shadowBlueLight.cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
@@ -150,16 +101,8 @@ class QuizOfFlagsViewController: UIViewController {
             title: "Коснитесь экрана, чтобы продолжить",
             size: size(),
             style: "mr_fontick",
-            color: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
+            color: UIColor.cyanLight,
+            colorOfShadow: UIColor.shadowBlueLight.cgColor,
             radiusOfShadow: 2,
             shadowOffsetWidth: 2,
             shadowOffsetHeight: 2,
@@ -173,22 +116,10 @@ class QuizOfFlagsViewController: UIViewController {
             title: questions.buttonFirst[currentQuestion].name,
             style: "mr_fontick",
             size: 18,
-            colorTitle: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1),
-            colorBackgroud: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
+            colorTitle: UIColor.blueLight,
+            colorBackgroud: UIColor.cyanLight,
             radiusCorner: 7,
-            shadowColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
+            shadowColor: UIColor.shadowBlueLight.cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5,
@@ -203,22 +134,10 @@ class QuizOfFlagsViewController: UIViewController {
             title: questions.buttonSecond[currentQuestion].name,
             style: "mr_fontick",
             size: 18,
-            colorTitle: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1),
-            colorBackgroud: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
+            colorTitle: UIColor.blueLight,
+            colorBackgroud: UIColor.cyanLight,
             radiusCorner: 7,
-            shadowColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
+            shadowColor: UIColor.shadowBlueLight.cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5,
@@ -233,22 +152,10 @@ class QuizOfFlagsViewController: UIViewController {
             title: questions.buttonThird[currentQuestion].name,
             style: "mr_fontick",
             size: 18,
-            colorTitle: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1),
-            colorBackgroud: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
+            colorTitle: UIColor.blueLight,
+            colorBackgroud: UIColor.cyanLight,
             radiusCorner: 7,
-            shadowColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
+            shadowColor: UIColor.shadowBlueLight.cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5,
@@ -263,22 +170,10 @@ class QuizOfFlagsViewController: UIViewController {
             title: questions.buttonFourth[currentQuestion].name,
             style: "mr_fontick",
             size: 18,
-            colorTitle: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 252/255,
-                alpha: 1),
-            colorBackgroud: UIColor(
-                red: 153/255,
-                green: 204/255,
-                blue: 255/255,
-                alpha: 1),
+            colorTitle: UIColor.blueLight,
+            colorBackgroud: UIColor.cyanLight,
             radiusCorner: 7,
-            shadowColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1).cgColor,
+            shadowColor: UIColor.shadowBlueLight.cgColor,
             radiusShadow: 2.5,
             shadowOffsetWidth: 2.5,
             shadowOffsetHeight: 2.5,
@@ -319,11 +214,7 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func setupDesign() {
-        view.backgroundColor = UIColor(
-            red: 54/255,
-            green: 55/255,
-            blue: 215/255,
-            alpha: 1)
+        view.backgroundColor = UIColor.shadowBlueLight
         navigationItem.hidesBackButton = true
     }
     
@@ -516,13 +407,13 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     @objc private func buttonPress(button: UIButton) {
-        let darkGreen = UIColor(red: 51/255, green: 83/255, blue: 51/255, alpha: 1)
-        let green = UIColor(red: 51/255, green: 133/255, blue: 51/255, alpha: 1)
-        let lightGreen = UIColor(red: 152/255, green: 255/255, blue: 51/255, alpha: 1)
+        let darkGreen = UIColor.darkGreen
+        let green = UIColor.green
+        let lightGreen = UIColor.lightGreen
         
-        let darkRed = UIColor(red: 113/255, green: 0, blue: 0, alpha: 1)
-        let red = UIColor(red: 153/255, green: 0, blue: 0, alpha: 1)
-        let lightRed = UIColor(red: 255/255, green: 102/255, blue: 102/255, alpha: 1)
+        let darkRed = UIColor.darkRed
+        let red = UIColor.red
+        let lightRed = UIColor.lightRed
         
         let tag = button.tag
         
@@ -573,9 +464,9 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func disableButton(buttons: UIButton..., tag: Int) {
-        let darkGray = UIColor(red: 72/255, green: 72/255, blue: 72/255, alpha: 1)
-        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
-        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
+        let darkGray = UIColor.darkGray
+        let gray = UIColor.gray
+        let lightGray = UIColor.lightGray
         
         buttons.forEach { button in
             if !(button.tag == tag) {
@@ -650,9 +541,9 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func resetColorButton(buttons: UIButton...) {
-        let darkBlue = UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1)
-        let blue = UIColor(red: 54/255, green: 55/255, blue: 252/255, alpha: 1)
-        let lightBlue = UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1)
+        let darkBlue = UIColor.shadowBlueLight
+        let blue = UIColor.blueLight
+        let lightBlue = UIColor.cyanLight
         
         buttons.forEach { button in
             button.setTitleColor(blue, for: .normal)
@@ -684,8 +575,8 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func endQuestion() {
         if currentQuestion == questions.questions.count - 1 {
-            let darkRed = UIColor(red: 113/255, green: 0, blue: 0, alpha: 1)
-            let lightRed = UIColor(red: 255/255, green: 102/255, blue: 102/255, alpha: 1)
+            let darkRed = UIColor.darkRed
+            let lightRed = UIColor.lightRed
             labelDescription.text = "Коснитесь экрана, чтобы завершить"
             labelDescription.textColor = lightRed
             labelDescription.layer.shadowColor = darkRed.cgColor
@@ -757,8 +648,8 @@ extension QuizOfFlagsViewController {
     
     private func setGradient(content: UIView) {
         let gradientLayer = CAGradientLayer()
-        let colorBlue = UIColor(red: 30/255, green: 113/255, blue: 204/255, alpha: 1)
-        let colorLightBlue = UIColor(red: 102/255, green: 153/255, blue: 204/255, alpha: 1)
+        let colorBlue = UIColor.blueFirst
+        let colorLightBlue = UIColor.blueSecond
         gradientLayer.frame = view.bounds
         gradientLayer.colors = [colorLightBlue.cgColor, colorBlue.cgColor]
         content.layer.addSublayer(gradientLayer)

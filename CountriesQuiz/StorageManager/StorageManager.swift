@@ -15,7 +15,7 @@ class StorageManager {
     
     private init() {}
     
-    func rewriteSetting(setting: Setting) {
+    func saveSetting(setting: Setting) {
         guard let data = try? JSONEncoder().encode(setting) else { return }
         userDefaults.set(data, forKey: settingKey)
     }

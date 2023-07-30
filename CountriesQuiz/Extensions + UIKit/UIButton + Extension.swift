@@ -16,7 +16,7 @@ class Button: UIButton {
                 withDuration: self.isHighlighted ? 0 : 0.25,
                 delay: 0,
                 options: [.beginFromCurrentState, .allowUserInteraction]) {
-                    self.backgroundColor = color.withAlphaComponent(self.isHighlighted ? 0.1 : 0.3)
+                    self.backgroundColor = color.withAlphaComponent(self.isHighlighted ? 0.4 : 1)
             }
         }
     }

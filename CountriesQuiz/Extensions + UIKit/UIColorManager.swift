@@ -9,16 +9,16 @@ import UIKit
 
 extension UIColor {
     // MARK: - MenuViewController
-    static var lightCyanButton: UIColor {
-        #colorLiteral(red: 0.7215686275, green: 0.968627451, blue: 0.9882352941, alpha: 1)
+    static var blueBlackSea: UIColor {
+        #colorLiteral(red: 0.1019607843, green: 0.2784313725, blue: 0.5019607843, alpha: 1)
     }
     
-    static var transparentCyanBackground: UIColor {
-        #colorLiteral(red: 0.4901960784, green: 0.8705882353, blue: 1, alpha: 0.3)
+    static var cyanDark: UIColor {
+        #colorLiteral(red: 0.231372549, green: 0.5137254902, blue: 0.7411764706, alpha: 1)
     }
     
-    static var darkBlueShadowButton: UIColor {
-        #colorLiteral(red: 0.2117647059, green: 0.2156862745, blue: 0.9882352941, alpha: 1)
+    static var blueMiddlePersian: UIColor {
+        #colorLiteral(red: 0, green: 0.4039215686, blue: 0.6470588235, alpha: 1)
     }
     // MARK: - For panel and backgroung setting view controller
     static var panelViewLightBlueLight: UIColor {

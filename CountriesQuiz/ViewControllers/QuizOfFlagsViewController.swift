@@ -320,7 +320,8 @@ class QuizOfFlagsViewController: UIViewController {
     @objc private func isEnabledButton() {
         timerSecond.invalidate()
         setupEnabledSubviews(controls: buttonAnswerFirst, buttonAnswerSecond,
-                             buttonAnswerThird, buttonAnswerFourth, isEnabled: true)
+                             buttonAnswerThird, buttonAnswerFourth,
+                             isEnabled: true)
         
         if setting.timeElapsed.timeElapsed {
             checkSeconds()

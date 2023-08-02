@@ -63,7 +63,7 @@ class QuizOfFlagsDetailsViewController: UIViewController {
         return stackView
     }()
     
-    var setting: Setting!
+    var mode: Setting!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,7 +93,7 @@ class QuizOfFlagsDetailsViewController: UIViewController {
     
     @objc private func startGame() {
         let quizOfFlagsVC = QuizOfFlagsViewController()
-        quizOfFlagsVC.setting = setting
+        quizOfFlagsVC.mode = mode
         navigationController?.pushViewController(quizOfFlagsVC, animated: true)
     }
 }

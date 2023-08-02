@@ -20,6 +20,22 @@ extension UIColor {
     static var blueMiddlePersian: UIColor {
         #colorLiteral(red: 0, green: 0.4039215686, blue: 0.6470588235, alpha: 1)
     }
+    
+    static var greenHarlequin: UIColor {
+        #colorLiteral(red: 0.2666666667, green: 0.5803921569, blue: 0.2901960784, alpha: 1)
+    }
+    
+    static var redYellowBrown: UIColor {
+        #colorLiteral(red: 0.5019607843, green: 0.2745098039, blue: 0.1058823529, alpha: 1)
+    }
+    
+    static var indigo: UIColor {
+        #colorLiteral(red: 0.2941176471, green: 0, blue: 0.5098039216, alpha: 1)
+    }
+    
+    static var redTangerineTango: UIColor {
+        #colorLiteral(red: 0.8823529412, green: 0.3215686275, blue: 0.2392156863, alpha: 1)
+    }
     // MARK: - For panel and backgroung setting view controller
     static var panelViewLightBlueLight: UIColor {
         #colorLiteral(red: 0.405766964, green: 0.6143494248, blue: 1, alpha: 1)

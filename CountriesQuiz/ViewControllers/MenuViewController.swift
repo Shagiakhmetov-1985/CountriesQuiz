@@ -13,67 +13,268 @@ protocol SettingViewControllerDelegate {
 
 class MenuViewController: UIViewController {
     // MARK: - Private properties
-    private lazy var viewMiddlePanel: UIView = {
-        let view = setupView(color: .skyCyanLight, radius: 45)
-        return view
-    }()
-    
-    private lazy var viewTopPanel: UIView = {
-        let view = setupView(color: .cyanDark, radius: 45)
-        return view
-    }()
-    
-    private lazy var viewQuizOfFlags: UIView = {
-        let view = setupView(
-            color: .panelViewLightBlueLight,
-            radius: 12,
-            image: imageQuizOfFlags,
-            label: labelQuizOfFlags,
-            stackView: stackViewQuizOfFlags)
-        return view
-    }()
-    
-    private lazy var labelMenuCountries: UILabel = {
+    private lazy var labelMenu: UILabel = {
         let label = setLabel(
-            title: "Countries",
-            size: 55,
+            title: "Countries Quiz",
+            size: 40,
             style: "echorevival",
-            color: .white)
+            color: .blueBlackSea)
         return label
     }()
     
-    private lazy var labelMenuQuiz: UILabel = {
-        let label = setLabel(
-            title: "Quiz",
-            size: 50,
-            style: "echorevival",
-            color: .white)
-        return label
-    }()
-    
-    private lazy var buttonStart: UIButton = {
+    private lazy var buttonSettings: UIButton = {
         let button = setButton(
-            color: .blueBlackSea,
-            image: imageStart,
-            label: labelStart,
-            action: #selector(start))
+            color: .grayLight,
+            image: imageSettings,
+            action: #selector(setting))
         return button
+    }()
+    
+    private lazy var imageSettings: UIImageView = {
+        let imageView = setImage(
+            image: "gear",
+            color: .white,
+            size: 26)
+        return imageView
+    }()
+    
+    private lazy var stackViewMenu: UIStackView = {
+        let stackView = setupStackView(
+            label: labelMenu,
+            button: buttonSettings)
+        return stackView
+    }()
+    
+    private lazy var contentView: UIView = {
+        let view = setupView(color: .white)
+        return view
+    }()
+    
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.frame = view.bounds
+        scrollView.contentSize = contentSize
+        return scrollView
     }()
     
     private lazy var buttonQuizOfFlags: UIButton = {
         let button = setButton(
-            color: .systemBlue,
-            image: imageStart,
+            color: .cyanDark,
+            image: imageFlag,
+            label: labelQuizOfFlags,
+            view: viewQuizOfFlags,
+            imageGame: imageQuizOfFlags,
             action: #selector(start))
         return button
     }()
     
-    private lazy var buttonQuizOfFlagsDetails: UIButton = {
+    private lazy var imageFlag: UIImageView = {
+        let imageView = setImage(
+            image: "flag",
+            color: .white,
+            size: 20)
+        return imageView
+    }()
+    
+    private lazy var labelQuizOfFlags: UILabel = {
+        let label = setLabel(
+            title: "Викторина флагов",
+            size: 26,
+            style: "Gill Sans",
+            color: .white,
+            alignment: .left)
+        return label
+    }()
+    
+    private lazy var viewQuizOfFlags: UIView = {
+        let view = setupView(
+            color: .white.withAlphaComponent(0.8),
+            radius: radius())
+        return view
+    }()
+    
+    private lazy var imageQuizOfFlags: UIImageView = {
+        let imageView = setImage(
+            image: "filemenu.and.selection",
+            color: .cyanDark,
+            size: 60)
+        return imageView
+    }()
+    
+    private lazy var buttonQuestionnaire: UIButton = {
         let button = setButton(
-            color: .systemBlue,
-            image: imageQuizOfFlagsDetails,
-            action: #selector(quizOfFlagsDetails))
+            color: .greenHarlequin,
+            image: imageCheckmark,
+            label: labelQuestionnaire,
+            view: viewQuestionnaire,
+            imageGame: imageQuestionnaire,
+            action: #selector(start))
         return button
+    }()
+    
+    private lazy var imageCheckmark: UIImageView = {
+        let imageView = setImage(
+            image: "checkmark.circle.badge.questionmark",
+            color: .white,
+            size: 20)
+        return imageView
+    }()
+    
+    private lazy var labelQuestionnaire: UILabel = {
+        let label = setLabel(
+            title: "Опрос",
+            size: 26,
+            style: "Gill Sans",
+            color: .white,
+            alignment: .left)
+        return label
+    }()
+    
+    private lazy var viewQuestionnaire: UIView = {
+        let view = setupView(
+            color: .white.withAlphaComponent(0.8),
+            radius: radius())
+        return view
+    }()
+    
+    private lazy var imageQuestionnaire: UIImageView = {
+        let imageView = setImage(
+            image: "checklist",
+            color: .greenHarlequin,
+            size: 60)
+        return imageView
+    }()
+    
+    private lazy var buttonQuizOfMaps: UIButton = {
+        let button = setButton(
+            color: .redYellowBrown,
+            image: imageMap,
+            label: labelQuizOfMaps,
+            view: viewQuizOfMaps,
+            imageGame: imageQuizOfMaps,
+            action: #selector(start))
+        return button
+    }()
+    
+    private lazy var imageMap: UIImageView = {
+        let imageView = setImage(
+            image: "map",
+            color: .white,
+            size: 20)
+        return imageView
+    }()
+    
+    private lazy var labelQuizOfMaps: UILabel = {
+        let label = setLabel(
+            title: "Викторина карт",
+            size: 26,
+            style: "Gill Sans",
+            color: .white,
+            alignment: .left)
+        return label
+    }()
+    
+    private lazy var viewQuizOfMaps: UIView = {
+        let view = setupView(
+            color: .white.withAlphaComponent(0.8),
+            radius: radius())
+        return view
+    }()
+    
+    private lazy var imageQuizOfMaps: UIImageView = {
+        let imageView = setImage(
+            image: "globe.desk",
+            color: .redYellowBrown,
+            size: 60)
+        return imageView
+    }()
+    
+    private lazy var buttonScrabble: UIButton = {
+        let button = setButton(
+            color: .indigo,
+            image: imageText,
+            label: labelScrabble,
+            view: viewScrabble,
+            imageGame: imageScrabble,
+            action: #selector(start))
+        return button
+    }()
+    
+    private lazy var imageText: UIImageView = {
+        let imageView = setImage(
+            image: "textformat.abc",
+            color: .white,
+            size: 20)
+        return imageView
+    }()
+    
+    private lazy var labelScrabble: UILabel = {
+        let label = setLabel(
+            title: "Эрудит",
+            size: 26,
+            style: "Gill Sans",
+            color: .white,
+            alignment: .left)
+        return label
+    }()
+    
+    private lazy var viewScrabble: UIView = {
+        let view = setupView(
+            color: .white.withAlphaComponent(0.8),
+            radius: radius())
+        return view
+    }()
+    
+    private lazy var imageScrabble: UIImageView = {
+        let imageView = setImage(
+            image: "a.square",
+            color: .indigo,
+            size: 60)
+        return imageView
+    }()
+    
+    private lazy var buttonQuizOfCapitals: UIButton = {
+        let button = setButton(
+            color: .redTangerineTango,
+            image: imageHouse,
+            label: labelQuizOfCapitals,
+            view: viewQuizOfCapitals,
+            imageGame: imageQuizOfCapitals,
+            action: #selector(start))
+        return button
+    }()
+    
+    private lazy var imageHouse: UIImageView = {
+        let imageView = setImage(
+            image: "house.and.flag",
+            color: .white,
+            size: 20)
+        return imageView
+    }()
+    
+    private lazy var labelQuizOfCapitals: UILabel = {
+        let label = setLabel(
+            title: "Викторина столиц",
+            size: 26,
+            style: "Gill Sans",
+            color: .white,
+            alignment: .left)
+        return label
+    }()
+    
+    private lazy var viewQuizOfCapitals: UIView = {
+        let view = setupView(
+            color: .white.withAlphaComponent(0.8),
+            radius: radius())
+        return view
+    }()
+    
+    private lazy var imageQuizOfCapitals: UIImageView = {
+        let imageView = setImage(
+            image: "building.2",
+            color: .redTangerineTango,
+            size: 60)
+        return imageView
     }()
     
     private lazy var buttonBack: UIButton = {
@@ -86,99 +287,6 @@ class MenuViewController: UIViewController {
         return button
     }()
     
-    private lazy var imageStart: UIImageView = {
-        let imageView = setImage(
-            image: "play",
-            color: .white,
-            size: 24)
-        return imageView
-    }()
-    
-    private lazy var imageMenu: UIImageView = {
-        let imageView = setImage(
-            image: "globe.desk",
-            color: .blueMiddlePersian,
-            size: 80)
-        return imageView
-    }()
-    
-    private lazy var imageQuizOfFlags: UIImageView = {
-        let imageView = setImage(
-            image: "filemenu.and.selection",
-            color: .white,
-            size: 45)
-        return imageView
-    }()
-    
-    private lazy var imageQuizOfFlagsDetails: UIImageView = {
-        let imageView = setImage(
-            image: "questionmark",
-            color: .white,
-            size: 20)
-        return imageView
-    }()
-    
-    private lazy var imageBack: UIImageView = {
-        let imageView = setImage(
-            image: "arrowshape.backward",
-            color: .white,
-            size: 28)
-        return imageView
-    }()
-    
-    private lazy var labelStart: UILabel = {
-        let label = setLabel(
-            title: "Начать",
-            size: 23,
-            style: "mr_fontick",
-            color: .white,
-            alignment: .center)
-        return label
-    }()
-    
-    private lazy var labelQuizOfFlags: UILabel = {
-        let label = setLabel(
-            title: "Викторина флагов",
-            size: 24,
-            style: "mr_fontick",
-            color: .white,
-            alignment: .center)
-        return label
-    }()
-    
-    private lazy var stackViewQuizOfFlags: UIStackView = {
-        let stackView = setupStackView(
-            buttonFirst: buttonQuizOfFlags,
-            buttonSecond: buttonQuizOfFlagsDetails)
-        return stackView
-    }()
-    
-    private lazy var buttonSettings: UIButton = {
-        let button = setButton(
-            color: UIColor.gray,
-            image: imageSettings,
-            action: #selector(setting))
-        return button
-    }()
-    
-    private lazy var imageSettings: UIImageView = {
-        let imageView = setImage(
-            image: "gear",
-            color: .white,
-            size: 32)
-        return imageView
-    }()
-    
-    private lazy var labelSettings: UILabel = {
-        let label = setLabel(
-            title: "Настройки",
-            size: 23,
-            style: "mr_fontick",
-            color: .white,
-            alignment: .center)
-        return label
-    }()
-    
     private lazy var labelGameMode: UILabel = {
         let label = setLabel(
             title: "",
@@ -189,26 +297,37 @@ class MenuViewController: UIViewController {
         return label
     }()
     
-    private var heightTopPanel: NSLayoutConstraint!
-    private var timer: Timer!
-    
-    private var settingDefault: Setting!
+    private var mode: Setting!
     private var transition = Transition()
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDesign()
-        setConstraints()
+        setupSubviews()
+        setupSubviewOnContentView()
+        setupSubviewsOnScrollView()
+        setupConstraints()
         gameMode()
     }
     
     // MARK: - Private methods
     private func setupDesign() {
-        view.backgroundColor = UIColor.blueBlackSea
-        setupSubviews(subviews: viewMiddlePanel, viewTopPanel, labelMenuCountries,
-                      labelMenuQuiz, imageMenu, viewQuizOfFlags, labelGameMode,
-                      on: view)
-        settingDefault = StorageManager.shared.fetchSetting()
+        view.backgroundColor = .white
+        mode = StorageManager.shared.fetchSetting()
+    }
+    
+    private func setupSubviews() {
+        setupSubviews(subviews: stackViewMenu, contentView, on: view)
+    }
+    
+    private func setupSubviewOnContentView() {
+        setupSubviews(subviews: scrollView, on: contentView)
+    }
+    
+    private func setupSubviewsOnScrollView() {
+        setupSubviews(subviews: buttonQuizOfFlags, buttonQuestionnaire,
+                      buttonQuizOfMaps, buttonScrabble, buttonQuizOfCapitals,
+                      on: scrollView)
     }
     
     private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -224,11 +343,11 @@ class MenuViewController: UIViewController {
     }
     
     private func gameMode() {
-        let countQuestions = settingDefault.countQuestions
-        let continents = comma(continents: settingDefault.allCountries, settingDefault.americaContinent,
-                               settingDefault.europeContinent, settingDefault.africaContinent,
-                               settingDefault.asiaContinent, settingDefault.oceaniaContinent)
-        let timeElapsed = settingDefault.timeElapsed.timeElapsed ? "Да" : "Нет"
+        let countQuestions = mode.countQuestions
+        let continents = comma(continents: mode.allCountries, mode.americaContinent,
+                               mode.europeContinent, mode.africaContinent,
+                               mode.asiaContinent, mode.oceaniaContinent)
+        let timeElapsed = mode.timeElapsed.timeElapsed ? "Да" : "Нет"
         let questionTime = questionTime()
         
         showGameMode(countQuestions: countQuestions, continents: continents,
@@ -261,16 +380,16 @@ class MenuViewController: UIViewController {
     }
     
     private func questionTime() -> String {
-        guard settingDefault.timeElapsed.timeElapsed else { return "" }
-        let time = settingDefault.timeElapsed.questionSelect.oneQuestion
+        guard mode.timeElapsed.timeElapsed else { return "" }
+        let time = mode.timeElapsed.questionSelect.oneQuestion
         let questionTime = time ? "Время одного вопроса:" : "Время всех вопросов:"
         return "\(questionTime) \(checkQuestionTime(check: time))"
     }
     
     private func checkQuestionTime(check: Bool) -> String {
         check ?
-        "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)" :
-        "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
+        "\(mode.timeElapsed.questionSelect.questionTime.oneQuestionTime)" :
+        "\(mode.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
     }
     
     private func showGameMode(countQuestions: Int, continents: String,
@@ -283,48 +402,15 @@ class MenuViewController: UIViewController {
         """
     }
     
-    private func setOpacity(subviews: UIView..., duration: CGFloat, opacity: Float) {
-        subviews.forEach { subview in
-            UIView.animate(withDuration: duration) {
-                subview.layer.opacity = opacity
-            }
-        }
-    }
-    
-    private func setOpacity(subviews: UIView..., opacity: Float) {
-        subviews.forEach { subview in
-            subview.layer.opacity = opacity
-        }
-    }
-    
-    private func changeConstraints(subviews: NSLayoutConstraint...,
-                                   change size: CGFloat, duration: CGFloat) {
-        subviews.forEach { subview in
-            UIView.animate(withDuration: duration) {
-                subview.constant = size
-                self.view.layoutIfNeeded()
-            }
-        }
-    }
-    
     @objc private func start() {
         let quizOfFlagsVC = QuizOfFlagsViewController()
-        quizOfFlagsVC.setting = settingDefault
+        quizOfFlagsVC.mode = mode
         navigationController?.pushViewController(quizOfFlagsVC, animated: true)
     }
-    /*
-    private func addSubviews() {
-        setupSubviews(subviews: buttonBack, on: view)
-        setOpacity(subviews: buttonBack, opacity: 0)
-        setupBarButton()
-        setupConstraintForAddSubviews()
-        setOpacity(subviews: buttonBack, duration: 0.5, opacity: 1)
-    }
-    */
     
     @objc private func quizOfFlagsDetails() {
         let quizOfFlagsDetailsVC = QuizOfFlagsDetailsViewController()
-        quizOfFlagsDetailsVC.setting = settingDefault
+        quizOfFlagsDetailsVC.mode = mode
         navigationController?.pushViewController(quizOfFlagsDetailsVC, animated: true)
     }
     
@@ -332,7 +418,7 @@ class MenuViewController: UIViewController {
         let settingVC = SettingViewController()
         settingVC.modalPresentationStyle = .custom
         settingVC.transitioningDelegate = self
-        settingVC.settingDefault = settingDefault
+        settingVC.mode = mode
         settingVC.delegate = self
         present(settingVC, animated: true)
     }
@@ -362,16 +448,17 @@ extension MenuViewController {
 // MARK: - Setup button
 extension MenuViewController {
     private func setButton(color: UIColor, image: UIView, label: UILabel? = nil,
+                           view: UIView? = nil, imageGame: UIView? = nil,
                            action: Selector) -> UIButton {
         let button = Button(type: .custom)
         button.backgroundColor = color
-        button.layer.cornerRadius = 15
+        button.layer.cornerRadius = 12
         button.layer.shadowOpacity = 0.4
         button.layer.shadowColor = color.cgColor
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.translatesAutoresizingMaskIntoConstraints = false
-        if let label = label {
-            setupSubviews(subviews: image, label, on: button)
+        if let label = label, let view = view, let imageGame = imageGame {
+            setupSubviews(subviews: image, label, view, imageGame, on: button)
         } else {
             setupSubviews(subviews: image, on: button)
         }
@@ -399,6 +486,12 @@ extension MenuViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
+    
+    private func setupStackView(label: UILabel, button: UIButton) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [label, button])
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
 }
 // MARK: - Setup view
 extension MenuViewController {
@@ -413,11 +506,23 @@ extension MenuViewController {
         }
         return view
     }
+    
+    private func setupView(color: UIColor) -> UIView {
+        let view = UIView()
+        view.backgroundColor = color
+        view.frame.size = contentSize
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }
+    
+    private var contentSize: CGSize {
+        CGSize(width: view.frame.width, height: view.frame.height + 10)
+    }
 }
 // MARK: - Delegate rewrite user defaults
 extension MenuViewController: SettingViewControllerDelegate {
     func sendDataOfSetting(setting: Setting) {
-        settingDefault = setting
+        mode = setting
         gameMode()
     }
 }
@@ -437,100 +542,65 @@ extension MenuViewController: UIViewControllerTransitioningDelegate {
 }
 // MARK: - Set constraints
 extension MenuViewController {
-    private func setConstraints() {
-        heightTopPanel = viewTopPanel.heightAnchor.constraint(equalToConstant: 200)
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            stackViewMenu.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            stackViewMenu.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        setupSquare(subview: buttonSettings, sizes: 40)
+        setupCenterSubview(subview: imageSettings, on: buttonSettings)
         
         NSLayoutConstraint.activate([
-            viewMiddlePanel.topAnchor.constraint(equalTo: view.topAnchor),
-            viewMiddlePanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            viewMiddlePanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            viewMiddlePanel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -130)
+            contentView.topAnchor.constraint(equalTo: stackViewMenu.bottomAnchor, constant: 10),
+            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
+        setConstraintsList(button: buttonQuizOfFlags, image: imageFlag,
+                           label: labelQuizOfFlags, viewGame: viewQuizOfFlags,
+                           imageGame: imageQuizOfFlags, layout: scrollView.topAnchor)
+        setConstraintsList(button: buttonQuestionnaire, image: imageCheckmark,
+                           label: labelQuestionnaire, viewGame: viewQuestionnaire,
+                           imageGame: imageQuestionnaire, layout: buttonQuizOfFlags.bottomAnchor)
+        setConstraintsList(button: buttonQuizOfMaps, image: imageMap,
+                           label: labelQuizOfMaps, viewGame: viewQuizOfMaps,
+                           imageGame: imageQuizOfMaps, layout: buttonQuestionnaire.bottomAnchor)
+        setConstraintsList(button: buttonScrabble, image: imageText,
+                           label: labelScrabble, viewGame: viewScrabble,
+                           imageGame: imageScrabble, layout: buttonQuizOfMaps.bottomAnchor)
+        setConstraintsList(button: buttonQuizOfCapitals, image: imageHouse,
+                           label: labelQuizOfCapitals, viewGame: viewQuizOfCapitals,
+                           imageGame: imageQuizOfCapitals, layout: buttonScrabble.bottomAnchor)
+    }
+    
+    private func setConstraintsList(button: UIButton, image: UIImageView,
+                                    label: UILabel, viewGame: UIView,
+                                    imageGame: UIImageView, layout: NSLayoutYAxisAnchor) {
         NSLayoutConstraint.activate([
-            viewTopPanel.topAnchor.constraint(equalTo: view.topAnchor, constant: -45),
-            viewTopPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            viewTopPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            heightTopPanel
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelMenuCountries.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
-            labelMenuCountries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            labelMenuCountries.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelMenuQuiz.topAnchor.constraint(equalTo: labelMenuCountries.topAnchor, constant: 45),
-            labelMenuQuiz.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 240),
-            labelMenuQuiz.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            imageMenu.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageMenu.topAnchor.constraint(equalTo: labelMenuQuiz.bottomAnchor, constant: 25)
-        ])
-        
-        NSLayoutConstraint.activate([
-            viewQuizOfFlags.topAnchor.constraint(equalTo: imageMenu.bottomAnchor, constant: 25),
-            viewQuizOfFlags.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-        setupSize(subview: viewQuizOfFlags, width: view.frame.width - 60, height: 90)
-        
-        NSLayoutConstraint.activate([
-            imageQuizOfFlags.centerYAnchor.constraint(equalTo: viewQuizOfFlags.centerYAnchor),
-            imageQuizOfFlags.leadingAnchor.constraint(equalTo: viewQuizOfFlags.leadingAnchor, constant: 15)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelQuizOfFlags.topAnchor.constraint(equalTo: viewQuizOfFlags.topAnchor, constant: 15),
-            labelQuizOfFlags.leadingAnchor.constraint(equalTo: imageQuizOfFlags.trailingAnchor, constant: 15)
+            button.topAnchor.constraint(equalTo: layout, constant: 15),
+            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            button.heightAnchor.constraint(equalToConstant: 120)
         ])
         
         NSLayoutConstraint.activate([
-            stackViewQuizOfFlags.topAnchor.constraint(equalTo: labelQuizOfFlags.bottomAnchor, constant: 5),
-            stackViewQuizOfFlags.centerXAnchor.constraint(equalTo: labelQuizOfFlags.centerXAnchor)
-        ])
-        setupSize(subview: stackViewQuizOfFlags, width: 165, height: 30)
-        
-        NSLayoutConstraint.activate([
-            imageStart.centerXAnchor.constraint(equalTo: buttonQuizOfFlags.centerXAnchor),
-            imageStart.centerYAnchor.constraint(equalTo: buttonQuizOfFlags.centerYAnchor)
+            image.topAnchor.constraint(equalTo: button.topAnchor, constant: 20),
+            image.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 20)
         ])
         
         NSLayoutConstraint.activate([
-            imageQuizOfFlagsDetails.centerXAnchor.constraint(equalTo: buttonQuizOfFlagsDetails.centerXAnchor),
-            imageQuizOfFlagsDetails.centerYAnchor.constraint(equalTo: buttonQuizOfFlagsDetails.centerYAnchor)
-        ])
-        /*
-        NSLayoutConstraint.activate([
-            stackViewMenu.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            stackViewMenu.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            stackViewMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
-        ])
-        setupSquare(subview: buttonSettings, sizes: 50)
-        
-        NSLayoutConstraint.activate([
-            imageStart.leadingAnchor.constraint(equalTo: buttonStart.leadingAnchor, constant: 20),
-            imageStart.centerYAnchor.constraint(equalTo: buttonStart.centerYAnchor)
+            label.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 20),
+            label.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -20)
         ])
         
         NSLayoutConstraint.activate([
-            labelStart.centerXAnchor.constraint(equalTo: buttonStart.centerXAnchor, constant: 15),
-            labelStart.centerYAnchor.constraint(equalTo: buttonStart.centerYAnchor)
+            viewGame.topAnchor.constraint(equalTo: button.topAnchor, constant: 10),
+            viewGame.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -10)
         ])
-        
-        NSLayoutConstraint.activate([
-            imageSettings.centerXAnchor.constraint(equalTo: buttonSettings.centerXAnchor),
-            imageSettings.centerYAnchor.constraint(equalTo: buttonSettings.centerYAnchor)
-        ])
-        */
-        NSLayoutConstraint.activate([
-            labelGameMode.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            labelGameMode.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
-            labelGameMode.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
-            labelGameMode.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
-        ])
+        setupSquare(subview: viewGame, sizes: radius() * 2)
+        setupCenterSubview(subview: imageGame, on: viewGame)
     }
     
     private func setupSquare(subview: UIView, sizes: CGFloat) {
@@ -547,13 +617,15 @@ extension MenuViewController {
         ])
     }
     
-    private func setupConstraintForAddSubviews() {
-        setupSize(subview: buttonBack, width: 80, height: 25)
-        
-//        NSLayoutConstraint.activate([
-//            imageBack.centerXAnchor.constraint(equalTo: buttonBack.centerXAnchor),
-//            imageBack.centerYAnchor.constraint(equalTo: buttonBack.centerYAnchor)
-//        ])
+    private func setupCenterSubview(subview: UIView, on subviewOther: UIView) {
+        NSLayoutConstraint.activate([
+            subview.centerXAnchor.constraint(equalTo: subviewOther.centerXAnchor),
+            subview.centerYAnchor.constraint(equalTo: subviewOther.centerYAnchor)
+        ])
+    }
+    
+    private func radius() -> CGFloat {
+        50
     }
     
     private func fixConstraintsForButtonBySizeIphone() -> CGFloat {

@@ -63,7 +63,7 @@ class ResultsViewController: UIViewController {
     
     var results: [Results]!
     var countries: [Countries]!
-    var setting: Setting!
+    var mode: Setting!
     var spendTime: [Float]!
     
     private var contentSize: CGSize {
@@ -295,7 +295,7 @@ class ResultsViewController: UIViewController {
         if spendTime.isEmpty {
             text = "Вы не успели ответить на все вопросы за заданное время!"
         } else {
-            let seconds = setting.timeElapsed.questionSelect.questionTime.allQuestionsTime
+            let seconds = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
             let spendTime = Float(seconds) - (spendTime.first ?? 0)
             text = "На все вопросы вы потратили \(string(seconds: spendTime)) секунд"
         }
@@ -304,7 +304,7 @@ class ResultsViewController: UIViewController {
     }
     
     private func oneQuestionCheck() -> Bool {
-        setting.timeElapsed.questionSelect.oneQuestion ? true : false
+        mode.timeElapsed.questionSelect.oneQuestion ? true : false
     }
     
     private func string(seconds: Float) -> String {

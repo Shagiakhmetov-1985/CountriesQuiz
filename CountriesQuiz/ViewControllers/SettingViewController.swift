@@ -83,7 +83,7 @@ class SettingViewController: UIViewController {
     
     private lazy var labelNumber: UILabel = {
         let label = setLabel(
-            title: "\(settingDefault.countQuestions)",
+            title: "\(mode.countQuestions)",
             size: 26,
             style: "mr_fontick",
             color: UIColor.blueLight,
@@ -125,8 +125,8 @@ class SettingViewController: UIViewController {
     
     private lazy var buttonAllCountries: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: settingDefault.allCountries).0,
-            borderColor: select(isOn: settingDefault.allCountries).1,
+            color: select(isOn: mode.allCountries).0,
+            borderColor: select(isOn: mode.allCountries).1,
             tag: 1,
             addLabelFirst: labelAllCountries,
             addLabelSecond: labelCountAllCountries)
@@ -153,8 +153,8 @@ class SettingViewController: UIViewController {
     
     private lazy var buttonAmericaContinent: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: settingDefault.americaContinent).0,
-            borderColor: select(isOn: settingDefault.americaContinent).1,
+            color: select(isOn: mode.americaContinent).0,
+            borderColor: select(isOn: mode.americaContinent).1,
             tag: 2,
             addLabelFirst: labelAmericaContinent,
             addLabelSecond: labelCountAmericaContinent)
@@ -181,8 +181,8 @@ class SettingViewController: UIViewController {
     
     private lazy var buttonEuropeContinent: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: settingDefault.europeContinent).0,
-            borderColor: select(isOn: settingDefault.europeContinent).1,
+            color: select(isOn: mode.europeContinent).0,
+            borderColor: select(isOn: mode.europeContinent).1,
             tag: 3,
             addLabelFirst: labelEuropeContinent,
             addLabelSecond: labelCountEuropeContinent)
@@ -209,8 +209,8 @@ class SettingViewController: UIViewController {
     
     private lazy var buttonAfricaContinent: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: settingDefault.africaContinent).0,
-            borderColor: select(isOn: settingDefault.africaContinent).1,
+            color: select(isOn: mode.africaContinent).0,
+            borderColor: select(isOn: mode.africaContinent).1,
             tag: 4,
             addLabelFirst: labelAfricaContinent,
             addLabelSecond: labelCountAfricaContinent)
@@ -237,8 +237,8 @@ class SettingViewController: UIViewController {
     
     private lazy var buttonAsiaContinent: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: settingDefault.asiaContinent).0,
-            borderColor: select(isOn: settingDefault.asiaContinent).1,
+            color: select(isOn: mode.asiaContinent).0,
+            borderColor: select(isOn: mode.asiaContinent).1,
             tag: 5,
             addLabelFirst: labelAsiaContinent,
             addLabelSecond: labelCountAsiaContinent)
@@ -265,8 +265,8 @@ class SettingViewController: UIViewController {
     
     private lazy var buttonOceaniaContinent: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: settingDefault.oceaniaContinent).0,
-            borderColor: select(isOn: settingDefault.oceaniaContinent).1,
+            color: select(isOn: mode.oceaniaContinent).0,
+            borderColor: select(isOn: mode.oceaniaContinent).1,
             tag: 6,
             addLabelFirst: labelOceaniaContinent,
             addLabelSecond: labelCountOceaniaContinent)
@@ -283,7 +283,7 @@ class SettingViewController: UIViewController {
     
     private lazy var buttonTimeElapsed: UIButton = {
         let button = setButtonCheckmark(
-            image: checkmark(isOn: settingDefault.timeElapsed.timeElapsed),
+            image: checkmark(isOn: mode.timeElapsed.timeElapsed),
             tag: 7)
         return button
     }()
@@ -312,7 +312,7 @@ class SettingViewController: UIViewController {
             title: isEnabledText(),
             size: 26,
             style: "mr_fontick",
-            color: settingDefault.timeElapsed.timeElapsed ? blue : gray,
+            color: mode.timeElapsed.timeElapsed ? blue : gray,
             numberOfLines: 1)
         return label
     }()
@@ -324,7 +324,7 @@ class SettingViewController: UIViewController {
             title: setLabelNumberQuestions(),
             size: 26,
             style: "mr_fontick",
-            color: settingDefault.timeElapsed.timeElapsed ? blue : gray,
+            color: mode.timeElapsed.timeElapsed ? blue : gray,
             textAlignment: .left)
         return label
     }()
@@ -343,32 +343,32 @@ class SettingViewController: UIViewController {
         let lightGray = UIColor.skyGrayLight
         let gray = UIColor.grayLight
         let segment = setSegmentedControl(
-            background: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
-            segmentColor: settingDefault.timeElapsed.timeElapsed ? blue : gray,
+            background: mode.timeElapsed.timeElapsed ? lightBlue : lightGray,
+            segmentColor: mode.timeElapsed.timeElapsed ? blue : gray,
             elements: ["Один вопрос", "Все вопросы"],
-            titleSelectedColor: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray,
-            titleNormalColor: settingDefault.timeElapsed.timeElapsed ? blue : gray,
-            setIndex: settingDefault.timeElapsed.questionSelect.oneQuestion ? 0 : 1,
-            isEnabled: settingDefault.timeElapsed.timeElapsed ? true : false,
-            borderColor: settingDefault.timeElapsed.timeElapsed ? lightBlue : lightGray)
+            titleSelectedColor: mode.timeElapsed.timeElapsed ? lightBlue : lightGray,
+            titleNormalColor: mode.timeElapsed.timeElapsed ? blue : gray,
+            setIndex: mode.timeElapsed.questionSelect.oneQuestion ? 0 : 1,
+            isEnabled: mode.timeElapsed.timeElapsed ? true : false,
+            borderColor: mode.timeElapsed.timeElapsed ? lightBlue : lightGray)
         return segment
     }()
     
     private lazy var pickerViewOneQuestion: UIPickerView = {
         let gray = UIColor.skyGrayLight
         let pickerView = setPickerView(
-            backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 2) : gray,
+            backgroundColor: mode.timeElapsed.timeElapsed ? isEnabledColor(tag: 2) : gray,
             tag: 2,
-            isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 2) : false)
+            isEnabled: mode.timeElapsed.timeElapsed ? isEnabled(tag: 2) : false)
         return pickerView
     }()
     
     private lazy var pickerViewAllQuestions: UIPickerView = {
         let gray = UIColor.skyGrayLight
         let pickerView = setPickerView(
-            backgroundColor: settingDefault.timeElapsed.timeElapsed ? isEnabledColor(tag: 3) : gray,
+            backgroundColor: mode.timeElapsed.timeElapsed ? isEnabledColor(tag: 3) : gray,
             tag: 3,
-            isEnabled: settingDefault.timeElapsed.timeElapsed ? isEnabled(tag: 3) : false)
+            isEnabled: mode.timeElapsed.timeElapsed ? isEnabled(tag: 3) : false)
         return pickerView
     }()
     
@@ -379,7 +379,7 @@ class SettingViewController: UIViewController {
         return stackView
     }()
     
-    var settingDefault: Setting!
+    var mode: Setting!
     var delegate: SettingViewControllerDelegate!
     
     // MARK: - Override methods
@@ -399,19 +399,19 @@ class SettingViewController: UIViewController {
     }
     
     private func setupPickerViewNumberQuestions() {
-        let countQuestions = settingDefault.countQuestions
+        let countQuestions = mode.countQuestions
         let rowCountQuestions = countQuestions - 10
         pickerViewNumberQuestion.selectRow(rowCountQuestions, inComponent: 0, animated: false)
         setupPickerViewAllQuestions(countQuestions: countQuestions)
     }
     
     private func setupPickerViewOneQuestion() {
-        let rowOneQuestion = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
+        let rowOneQuestion = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
         pickerViewOneQuestion.selectRow(rowOneQuestion, inComponent: 0, animated: false)
     }
     
     private func setupPickerViewAllQuestions(countQuestions: Int) {
-        let timeAllQuestions = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime
+        let timeAllQuestions = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
         let rowAllQuestions = timeAllQuestions - (4 * countQuestions)
         pickerViewAllQuestions.selectRow(rowAllQuestions, inComponent: 0, animated: false)
     }
@@ -441,13 +441,13 @@ class SettingViewController: UIViewController {
     }
     // MARK: - Activating buttons
     @objc private func backToMenu() {
-        delegate.sendDataOfSetting(setting: settingDefault)
-        StorageManager.shared.saveSetting(setting: settingDefault)
+        delegate.sendDataOfSetting(setting: mode)
+        StorageManager.shared.saveSetting(setting: mode)
         dismiss(animated: true)
     }
     
     @objc private func defaultSetting() {
-        showAlert(setting: settingDefault)
+        showAlert(setting: mode)
     }
     
     private func buttonIsEnabled(isEnabled: Bool, titleColor: UIColor,
@@ -459,15 +459,15 @@ class SettingViewController: UIViewController {
     }
     
     private func conditions() -> Bool {
-        !settingDefault.allCountries && settingDefault.countQuestions > 50
+        !mode.allCountries && mode.countQuestions > 50
     }
     // MARK: - Setting label of number questions
     private func setLabelNumberQuestions() -> String {
         let text: String
         if pickerViewOneQuestion.isUserInteractionEnabled {
-            text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
+            text = "\(mode.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
         } else {
-            text = "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
+            text = "\(mode.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
         }
         return text
     }
@@ -478,27 +478,27 @@ class SettingViewController: UIViewController {
             checkmarkOnAllCountries()
             settingOnAllCountries()
         case buttonAmericaContinent:
-            settingDefault.americaContinent.toggle()
-            checkmarkContinents(button: sender, isOn: settingDefault.americaContinent)
+            mode.americaContinent.toggle()
+            checkmarkContinents(button: sender, isOn: mode.americaContinent)
         case buttonEuropeContinent:
-            settingDefault.europeContinent.toggle()
-            checkmarkContinents(button: sender, isOn: settingDefault.europeContinent)
+            mode.europeContinent.toggle()
+            checkmarkContinents(button: sender, isOn: mode.europeContinent)
         case buttonAfricaContinent:
-            settingDefault.africaContinent.toggle()
-            checkmarkContinents(button: sender, isOn: settingDefault.africaContinent)
+            mode.africaContinent.toggle()
+            checkmarkContinents(button: sender, isOn: mode.africaContinent)
         case buttonAsiaContinent:
-            settingDefault.asiaContinent.toggle()
-            checkmarkContinents(button: sender, isOn: settingDefault.asiaContinent)
+            mode.asiaContinent.toggle()
+            checkmarkContinents(button: sender, isOn: mode.asiaContinent)
         case buttonOceaniaContinent:
-            settingDefault.oceaniaContinent.toggle()
-            checkmarkContinents(button: sender, isOn: settingDefault.oceaniaContinent)
+            mode.oceaniaContinent.toggle()
+            checkmarkContinents(button: sender, isOn: mode.oceaniaContinent)
         default:
             checkmarkTimeElapsed(button: sender)
         }
         
-        setupCountCountries(continents: settingDefault.allCountries, settingDefault.americaContinent,
-                            settingDefault.europeContinent, settingDefault.africaContinent,
-                            settingDefault.asiaContinent, settingDefault.oceaniaContinent)
+        setupCountCountries(continents: mode.allCountries, mode.americaContinent,
+                            mode.europeContinent, mode.africaContinent,
+                            mode.asiaContinent, mode.oceaniaContinent)
         buttonIsEnabled()
     }
     
@@ -538,25 +538,25 @@ class SettingViewController: UIViewController {
     private func checkmarkSettingOnOff(buttons: UIButton..., bool: Bool) {
         buttons.forEach { button in
             switch button.tag {
-            case 1: settingDefault.allCountries = bool
-            case 2: settingDefault.americaContinent = bool
-            case 3: settingDefault.europeContinent = bool
-            case 4: settingDefault.africaContinent = bool
-            case 5: settingDefault.asiaContinent = bool
-            default: settingDefault.oceaniaContinent = bool
+            case 1: mode.allCountries = bool
+            case 2: mode.americaContinent = bool
+            case 3: mode.europeContinent = bool
+            case 4: mode.africaContinent = bool
+            case 5: mode.asiaContinent = bool
+            default: mode.oceaniaContinent = bool
             }
         }
     }
     
     private func checkmarkContinents(button: UIButton, isOn: Bool) {
-        if settingDefault.americaContinent, settingDefault.europeContinent,
-           settingDefault.africaContinent, settingDefault.asiaContinent,
-           settingDefault.oceaniaContinent {
+        if mode.americaContinent, mode.europeContinent,
+           mode.africaContinent, mode.asiaContinent,
+           mode.oceaniaContinent {
             checkmarkOnAllCountries()
             settingOnAllCountries()
-        } else if !settingDefault.allCountries, !settingDefault.americaContinent,
-                  !settingDefault.europeContinent, !settingDefault.africaContinent,
-                  !settingDefault.asiaContinent, !settingDefault.oceaniaContinent {
+        } else if !mode.allCountries, !mode.americaContinent,
+                  !mode.europeContinent, !mode.africaContinent,
+                  !mode.asiaContinent, !mode.oceaniaContinent {
             checkmarkOnAllCountries()
             settingOnAllCountries()
         } else {
@@ -569,8 +569,8 @@ class SettingViewController: UIViewController {
     }
     
     private func checkmarkTimeElapsed(button: UIButton) {
-        settingDefault.timeElapsed.timeElapsed.toggle()
-        let isOn = settingDefault.timeElapsed.timeElapsed
+        mode.timeElapsed.timeElapsed.toggle()
+        let isOn = mode.timeElapsed.timeElapsed
         checkmarkOnOff(buttons: button, image: checkmark(isOn: isOn))
         checkmarkColors(isOn: isOn)
     }
@@ -674,21 +674,21 @@ class SettingViewController: UIViewController {
     }
     
     private func setupRowsPickerView(countRows: Int) {
-        if countRows < settingDefault.countRows {
+        if countRows < mode.countRows {
             let countQuestions = countRows + 9
             
-            settingDefault.countRows = countRows
+            mode.countRows = countRows
             pickerViewNumberQuestion.reloadAllComponents()
             pickerViewNumberQuestion.selectRow(countRows, inComponent: 0, animated: false)
             checkCountQuestions(countQuestions: countQuestions)
         } else {
-            settingDefault.countRows = countRows
+            mode.countRows = countRows
             pickerViewNumberQuestion.reloadAllComponents()
         }
     }
     
     private func checkCountQuestions(countQuestions: Int) {
-        if countQuestions < settingDefault.countQuestions {
+        if countQuestions < mode.countQuestions {
             let averageQuestionTime = 5 * countQuestions
             let currentRow = averageQuestionTime - (4 * countQuestions)
             
@@ -703,8 +703,8 @@ class SettingViewController: UIViewController {
         let lightGray = UIColor.skyGrayLight
         
         if segmentedControl.selectedSegmentIndex == 0 {
-            let countQuestion = settingDefault.countQuestions
-            let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime
+            let countQuestion = mode.countQuestions
+            let currentTime = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
             let currentRow = currentTime - (4 * countQuestion)
             
             segmentAction(pickerView: pickerViewOneQuestion, isEnabled: true, backgroundColor: lightBlue)
@@ -715,9 +715,9 @@ class SettingViewController: UIViewController {
                 pickerView: pickerViewAllQuestions,
                 oneQuestion: true,
                 timeElapsedQuestion: "Время одного вопроса:",
-                timeElapsedNumber: "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)")
+                timeElapsedNumber: "\(mode.timeElapsed.questionSelect.questionTime.oneQuestionTime)")
         } else {
-            let currentTime = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime
+            let currentTime = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
             let currentRow = currentTime - 6
             
             segmentAction(pickerView: pickerViewOneQuestion, isEnabled: false, backgroundColor: lightGray)
@@ -728,7 +728,7 @@ class SettingViewController: UIViewController {
                 pickerView: pickerViewOneQuestion,
                 oneQuestion: false,
                 timeElapsedQuestion: "Время всех вопросов:",
-                timeElapsedNumber: "\(settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime)")
+                timeElapsedNumber: "\(mode.timeElapsed.questionSelect.questionTime.allQuestionsTime)")
         }
     }
     
@@ -749,7 +749,7 @@ class SettingViewController: UIViewController {
                                                timeElapsedNumber: String) {
         pickerView.selectRow(currentRow, inComponent: 0, animated: false)
         
-        settingDefault.timeElapsed.questionSelect.oneQuestion = oneQuestion
+        mode.timeElapsed.questionSelect.oneQuestion = oneQuestion
         
         labelTimeElapsedQuestion.text = timeElapsedQuestion
         labelTimeElapsedNumber.text = timeElapsedNumber
@@ -821,12 +821,12 @@ class SettingViewController: UIViewController {
     }
     // MARK: - Reset setting default
     private func resetSetting() {
-        settingDefault = Setting.getSettingDefault()
+        mode = Setting.getSettingDefault()
         
-        let countQuestions = settingDefault.countQuestions - 10
-        let averageTime = 5 * settingDefault.countQuestions
-        let timeOneQuestion = settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
-        let timeAllQuestions = averageTime - (4 * settingDefault.countQuestions)
+        let countQuestions = mode.countQuestions - 10
+        let averageTime = 5 * mode.countQuestions
+        let timeOneQuestion = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
+        let timeAllQuestions = averageTime - (4 * mode.countQuestions)
         
         setupLabels()
         checkmarkOnAllCountries()
@@ -838,8 +838,8 @@ class SettingViewController: UIViewController {
     }
     
     private func setupLabels() {
-        labelNumber.text = "\(settingDefault.countQuestions)"
-        labelTimeElapsedNumber.text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
+        labelNumber.text = "\(mode.countQuestions)"
+        labelTimeElapsedNumber.text = "\(mode.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
     }
     
     private func setupPickerViews(pickerView: UIPickerView, row: Int) {
@@ -971,11 +971,11 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch pickerView.tag {
         case 1:
-            return settingDefault.countRows
+            return mode.countRows
         case 2:
             return 10
         default:
-            return (6 * settingDefault.countQuestions) - (4 * settingDefault.countQuestions) + 1
+            return (6 * mode.countQuestions) - (4 * mode.countQuestions) + 1
         }
     }
     
@@ -992,7 +992,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             title = "\(row + 6)"
             attributed = attributedStringTimeElapsed(title: title, tag: 2)
         default:
-            let allQuestionTime = 4 * settingDefault.countQuestions
+            let allQuestionTime = 4 * mode.countQuestions
             title = "\(row + allQuestionTime)"
             attributed = attributedStringTimeElapsed(title: title, tag: 3)
         }
@@ -1019,13 +1019,13 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             
             let oneQuestionTime = row + 6
             labelTimeElapsedNumber.text = "\(oneQuestionTime)"
-            settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime = oneQuestionTime
+            mode.timeElapsed.questionSelect.questionTime.oneQuestionTime = oneQuestionTime
             
         default:
             
-            let allQuestionTime = row + (4 * settingDefault.countQuestions)
+            let allQuestionTime = row + (4 * mode.countQuestions)
             labelTimeElapsedNumber.text = "\(allQuestionTime)"
-            settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime = allQuestionTime
+            mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = allQuestionTime
             
         }
     }
@@ -1053,7 +1053,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     private func attributedStringTimeElapsed(title: String, tag: Int) -> NSAttributedString {
         let gray = UIColor.grayLight
-        let currentColor: UIColor = settingDefault.timeElapsed.timeElapsed ? isEnabledTextColor(tag: tag) : gray
+        let currentColor: UIColor = mode.timeElapsed.timeElapsed ? isEnabledTextColor(tag: tag) : gray
         return NSAttributedString(string: title, attributes: [
             .font: UIFont(name: "mr_fontick", size: 26) ?? "",
             .foregroundColor: currentColor
@@ -1061,7 +1061,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     private func checkPickerViewEnabled(time: Int) -> String {
-        let text = "\(settingDefault.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
+        let text = "\(mode.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
         guard pickerViewAllQuestions.isUserInteractionEnabled else { return text }
         return "\(time)"
     }
@@ -1070,8 +1070,8 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         labelNumber.text = "\(countQuestion)"
         labelTimeElapsedNumber.text = checkPickerViewEnabled(time: averageTime)
         
-        settingDefault.countQuestions = countQuestion
-        settingDefault.timeElapsed.questionSelect.questionTime.allQuestionsTime = averageTime
+        mode.countQuestions = countQuestion
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = averageTime
         
         setupPickerViews(pickerView: pickerViewAllQuestions, row: currentRow)
     }

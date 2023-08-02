@@ -84,7 +84,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private lazy var labelNumberQuiz: UILabel = {
         let label = setLabel(
-            title: "Вопрос \(currentQuestion + 1) из \(setting.countQuestions)",
+            title: "Вопрос \(currentQuestion + 1) из \(mode.countQuestions)",
             size: 30,
             style: "mr_fontick",
             color: UIColor.cyanLight,
@@ -183,7 +183,7 @@ class QuizOfFlagsViewController: UIViewController {
         return button
     }()
     
-    var setting: Setting!
+    var mode: Setting!
     
     private var imageFlagSpring: NSLayoutConstraint!
     private var buttonFirstSpring: NSLayoutConstraint!
@@ -219,7 +219,7 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func setupSubviews() {
-        if setting.timeElapsed.timeElapsed {
+        if mode.timeElapsed.timeElapsed {
             setupSubviewsWithTimer()
         } else {
             setupSubviewsWithoutTimer()
@@ -323,7 +323,7 @@ class QuizOfFlagsViewController: UIViewController {
                              buttonAnswerThird, buttonAnswerFourth,
                              isEnabled: true)
         
-        if setting.timeElapsed.timeElapsed {
+        if mode.timeElapsed.timeElapsed {
             checkSeconds()
             runTimer()
         }
@@ -349,15 +349,15 @@ class QuizOfFlagsViewController: UIViewController {
     private func oneQuestionSeconds() -> Int {
         let seconds: Int
         if oneQuestionCheck() {
-            seconds = setting.timeElapsed.questionSelect.questionTime.oneQuestionTime
+            seconds = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
         } else {
-            seconds = setting.timeElapsed.questionSelect.questionTime.allQuestionsTime
+            seconds = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
         }
         return seconds
     }
     
     private func oneQuestionCheck() -> Bool {
-        setting.timeElapsed.questionSelect.oneQuestion ? true : false
+        mode.timeElapsed.questionSelect.oneQuestion ? true : false
     }
     
     @objc private func timeElapsed() {
@@ -487,26 +487,26 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func setAverageTime() {
         let progressViewSpent = 1 - progressView.progress
-        let seconds = setting.timeElapsed.questionSelect.questionTime.oneQuestionTime
+        let seconds = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
         let timeSpent = progressViewSpent * Float(seconds)
         spendTime.append(timeSpent)
     }
     
     private func setTimeSpent() {
         let progressViewSpent = 1 - progressView.progress
-        let seconds = setting.timeElapsed.questionSelect.questionTime.allQuestionsTime
+        let seconds = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
         let timeSpent = progressViewSpent * Float(seconds)
         spendTime.append(timeSpent)
     }
     
     private func showNewDataForNextQuestion() {
-        if setting.timeElapsed.timeElapsed {
+        if mode.timeElapsed.timeElapsed {
             restorationLabelTimer()
         }
         
         imageFlag.image = UIImage(named: questions.questions[currentQuestion].flag)
         
-        labelNumberQuiz.text = "Вопрос \(currentQuestion + 1) из \(setting.countQuestions)"
+        labelNumberQuiz.text = "Вопрос \(currentQuestion + 1) из \(mode.countQuestions)"
         
         buttonAnswerFirst.setTitle(questions.buttonFirst[currentQuestion].name, for: .normal)
         buttonAnswerSecond.setTitle(questions.buttonSecond[currentQuestion].name, for: .normal)
@@ -516,7 +516,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func restorationLabelTimer() {
         if oneQuestionCheck() {
-            let seconds = setting.timeElapsed.questionSelect.questionTime.oneQuestionTime
+            let seconds = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
             labelTimer.text = "\(seconds)"
         }
     }
@@ -528,7 +528,7 @@ class QuizOfFlagsViewController: UIViewController {
         
         labelDescription.layer.opacity = 0
         
-        if setting.timeElapsed.timeElapsed {
+        if mode.timeElapsed.timeElapsed {
             restorationProgressView()
         }
     }
@@ -615,7 +615,7 @@ extension QuizOfFlagsViewController {
                 let resultsVC = ResultsViewController()
                 resultsVC.results = results
                 resultsVC.countries = questions.questions
-                resultsVC.setting = setting
+                resultsVC.mode = mode
                 resultsVC.spendTime = spendTime
                 navigationController?.pushViewController(resultsVC, animated: true)
             }
@@ -745,7 +745,7 @@ extension QuizOfFlagsViewController {
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
-        if setting.timeElapsed.timeElapsed {
+        if mode.timeElapsed.timeElapsed {
             constraintsProgressView()
         }
         
@@ -829,7 +829,7 @@ extension QuizOfFlagsViewController {
     
     private func constraintsLabelQuiz() -> NSLayoutConstraint {
         var constraint = NSLayoutConstraint()
-        if setting.timeElapsed.timeElapsed {
+        if mode.timeElapsed.timeElapsed {
             constraint = labelQuiz.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 30)
         } else {
             constraint = labelQuiz.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 30)

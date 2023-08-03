@@ -64,7 +64,7 @@ class MenuViewController: UIViewController {
             label: labelQuizOfFlags,
             view: viewQuizOfFlags,
             imageGame: imageQuizOfFlags,
-            action: #selector(start))
+            action: #selector(gameType))
         return button
     }()
     
@@ -108,7 +108,7 @@ class MenuViewController: UIViewController {
             label: labelQuestionnaire,
             view: viewQuestionnaire,
             imageGame: imageQuestionnaire,
-            action: #selector(start))
+            action: #selector(gameType))
         return button
     }()
     
@@ -152,7 +152,7 @@ class MenuViewController: UIViewController {
             label: labelQuizOfMaps,
             view: viewQuizOfMaps,
             imageGame: imageQuizOfMaps,
-            action: #selector(start))
+            action: #selector(gameType))
         return button
     }()
     
@@ -196,7 +196,7 @@ class MenuViewController: UIViewController {
             label: labelScrabble,
             view: viewScrabble,
             imageGame: imageScrabble,
-            action: #selector(start))
+            action: #selector(gameType))
         return button
     }()
     
@@ -240,7 +240,7 @@ class MenuViewController: UIViewController {
             label: labelQuizOfCapitals,
             view: viewQuizOfCapitals,
             imageGame: imageQuizOfCapitals,
-            action: #selector(start))
+            action: #selector(gameType))
         return button
     }()
     
@@ -275,16 +275,6 @@ class MenuViewController: UIViewController {
             color: .redTangerineTango,
             size: 60)
         return imageView
-    }()
-    
-    private lazy var buttonBack: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "arrowshape.backward"), for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = .blueBlackSea
-        button.layer.cornerRadius = 12.5
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
     }()
     
     private lazy var labelGameMode: UILabel = {
@@ -333,12 +323,6 @@ class MenuViewController: UIViewController {
     private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
         subviews.forEach { subview in
             subviewOther.addSubview(subview)
-        }
-    }
-    
-    private func removeSubviews(subviews: UIView...) {
-        subviews.forEach { subview in
-            subview.removeFromSuperview()
         }
     }
     
@@ -402,10 +386,10 @@ class MenuViewController: UIViewController {
         """
     }
     
-    @objc private func start() {
-        let quizOfFlagsVC = QuizOfFlagsViewController()
-        quizOfFlagsVC.mode = mode
-        navigationController?.pushViewController(quizOfFlagsVC, animated: true)
+    @objc private func gameType() {
+        let gameTypeVC = GameTypeViewController()
+        gameTypeVC.mode = mode
+        navigationController?.pushViewController(gameTypeVC, animated: true)
     }
     
     @objc private func quizOfFlagsDetails() {
@@ -607,13 +591,6 @@ extension MenuViewController {
         NSLayoutConstraint.activate([
             subview.widthAnchor.constraint(equalToConstant: sizes),
             subview.heightAnchor.constraint(equalToConstant: sizes)
-        ])
-    }
-    
-    private func setupSize(subview: UIView, width: CGFloat, height: CGFloat) {
-        NSLayoutConstraint.activate([
-            subview.widthAnchor.constraint(equalToConstant: width),
-            subview.heightAnchor.constraint(equalToConstant: height)
         ])
     }
     

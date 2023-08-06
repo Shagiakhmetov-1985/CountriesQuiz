@@ -108,6 +108,7 @@ class MenuViewController: UIViewController {
             label: labelQuestionnaire,
             view: viewQuestionnaire,
             imageGame: imageQuestionnaire,
+            tag: 1,
             action: #selector(gameType))
         return button
     }()
@@ -152,6 +153,7 @@ class MenuViewController: UIViewController {
             label: labelQuizOfMaps,
             view: viewQuizOfMaps,
             imageGame: imageQuizOfMaps,
+            tag: 2,
             action: #selector(gameType))
         return button
     }()
@@ -196,6 +198,7 @@ class MenuViewController: UIViewController {
             label: labelScrabble,
             view: viewScrabble,
             imageGame: imageScrabble,
+            tag: 3,
             action: #selector(gameType))
         return button
     }()
@@ -240,6 +243,7 @@ class MenuViewController: UIViewController {
             label: labelQuizOfCapitals,
             view: viewQuizOfCapitals,
             imageGame: imageQuizOfCapitals,
+            tag: 4,
             action: #selector(gameType))
         return button
     }()
@@ -287,6 +291,7 @@ class MenuViewController: UIViewController {
         return label
     }()
     
+    private let games = Games.getGames()
     private var mode: Setting!
     private var transition = Transition()
     // MARK: - Override methods
@@ -386,9 +391,11 @@ class MenuViewController: UIViewController {
         """
     }
     
-    @objc private func gameType() {
+    @objc private func gameType(sender: UIButton) {
+        let tag = sender.tag
         let gameTypeVC = GameTypeViewController()
         gameTypeVC.mode = mode
+        gameTypeVC.game = games[tag]
         navigationController?.pushViewController(gameTypeVC, animated: true)
     }
     
@@ -433,13 +440,14 @@ extension MenuViewController {
 extension MenuViewController {
     private func setButton(color: UIColor, image: UIView, label: UILabel? = nil,
                            view: UIView? = nil, imageGame: UIView? = nil,
-                           action: Selector) -> UIButton {
+                           tag: Int? = nil, action: Selector) -> UIButton {
         let button = Button(type: .custom)
         button.backgroundColor = color
         button.layer.cornerRadius = 12
         button.layer.shadowOpacity = 0.4
         button.layer.shadowColor = color.cgColor
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.tag = tag ?? 0
         button.translatesAutoresizingMaskIntoConstraints = false
         if let label = label, let view = view, let imageGame = imageGame {
             setupSubviews(subviews: image, label, view, imageGame, on: button)

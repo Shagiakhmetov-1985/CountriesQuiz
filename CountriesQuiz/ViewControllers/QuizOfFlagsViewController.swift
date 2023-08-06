@@ -10,23 +10,14 @@ import UIKit
 class QuizOfFlagsViewController: UIViewController {
     // MARK: - Setup subviews
     private lazy var viewPanel: UIView = {
-        let view = setView(color: UIColor.panelViewLightBlueLight)
+        let view = setView(color: .white)
         return view
     }()
     
     private lazy var buttonBackMenu: UIButton = {
         let button = setButton(
-            title: "Главное меню",
-            style: "mr_fontick",
-            size: 15,
-            colorTitle: UIColor.blueLight,
-            colorBackgroud: UIColor.cyanLight,
-            radiusCorner: 14,
-            shadowColor: UIColor.shadowBlueLight.cgColor,
-            radiusShadow: 2.5,
-            shadowOffsetWidth: 2.5,
-            shadowOffsetHeight: 2.5)
-        button.addTarget(self, action: #selector(exitToMenu), for: .touchUpInside)
+            image: "multiply",
+            action: #selector(exitToMenu))
         return button
     }()
     
@@ -214,7 +205,7 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func setupDesign() {
-        view.backgroundColor = UIColor.shadowBlueLight
+        view.backgroundColor = .white
         navigationItem.hidesBackButton = true
     }
     
@@ -683,6 +674,20 @@ extension QuizOfFlagsViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
+    
+    private func setButton(image: String, action: Selector) -> UIButton {
+        let size = UIImage.SymbolConfiguration(pointSize: 20)
+        let image = UIImage(systemName: image, withConfiguration: size)
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.tintColor = .blueBlackSea
+        button.layer.cornerRadius = 12
+        button.layer.borderColor = UIColor.blueBlackSea.cgColor
+        button.layer.borderWidth = 1.5
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
+    }
 }
 // MARK: - Setup label
 extension QuizOfFlagsViewController {
@@ -734,9 +739,7 @@ extension QuizOfFlagsViewController {
             viewPanel.heightAnchor.constraint(equalToConstant: fixConstraintsForViewPanelBySizeIphone())
         ])
         
-        NSLayoutConstraint.activate([
-            buttonBackMenu.widthAnchor.constraint(equalToConstant: view.frame.width - 265)
-        ])
+        setupSquare(subview: buttonBackMenu, sizes: 40)
         
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 1),
@@ -835,6 +838,13 @@ extension QuizOfFlagsViewController {
             constraint = labelQuiz.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 30)
         }
         return constraint
+    }
+    
+    private func setupSquare(subview: UIView, sizes: CGFloat) {
+        NSLayoutConstraint.activate([
+            subview.widthAnchor.constraint(equalToConstant: sizes),
+            subview.heightAnchor.constraint(equalToConstant: sizes)
+        ])
     }
     
     private func setupWidthConstraint() -> CGFloat {

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */; };
 		C34EC0702986694900300585 /* Results.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34EC06F2986694900300585 /* Results.swift */; };
+		C3613A712A7FB82C006C0F1E /* GameTypeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */; };
 		C36773F1296BF9E10096BCC5 /* QuizOfFlagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */; };
 		C36773F3296C3B880096BCC5 /* Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36773F2296C3B880096BCC5 /* Transition.swift */; };
 		C36F58F82A7288FB0023E98F /* UIButton + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36F58F72A7288FB0023E98F /* UIButton + Extension.swift */; };
@@ -33,6 +34,7 @@
 /* Begin PBXFileReference section */
 		C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorManager.swift; sourceTree = "<group>"; };
 		C34EC06F2986694900300585 /* Results.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Results.swift; sourceTree = "<group>"; };
+		C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeManager.swift; sourceTree = "<group>"; };
 		C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfFlagsViewController.swift; sourceTree = "<group>"; };
 		C36773F2296C3B880096BCC5 /* Transition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transition.swift; sourceTree = "<group>"; };
 		C36F58F72A7288FB0023E98F /* UIButton + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton + Extension.swift"; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 				C376AC062947261D00DE5E86 /* Setting.swift */,
 				C34EC06F2986694900300585 /* Results.swift */,
 				C3E7C9952A7C19F80046A883 /* GameType.swift */,
+				C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */,
 				C36F58F82A7288FB0023E98F /* UIButton + Extension.swift in Sources */,
 				C36773F3296C3B880096BCC5 /* Transition.swift in Sources */,
+				C3613A712A7FB82C006C0F1E /* GameTypeManager.swift in Sources */,
 				C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */,
 				C3E2EB4D2938ED6800AB40AD /* CountriesManager.swift in Sources */,
 				C3E2EB4B2938EA6800AB40AD /* FlagsOfCountries.swift in Sources */,

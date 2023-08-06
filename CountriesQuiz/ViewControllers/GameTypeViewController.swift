@@ -15,15 +15,15 @@ class GameTypeViewController: UIViewController {
     
     private lazy var imageGameType: UIImageView = {
         let imageView = setupImage(
-            image: "filemenu.and.selection",
-            color: .cyanDark,
+            image: "\(game.image)",
+            color: game.background,
             size: 60)
         return imageView
     }()
     
     private lazy var labelGameName: UILabel = {
         let label = setupLabel(
-            title: "Викторина флагов",
+            title: "\(game.name)",
             color: .white,
             style: "Gill Sans",
             size: 30)
@@ -32,7 +32,7 @@ class GameTypeViewController: UIViewController {
     
     private lazy var labelDescription: UILabel = {
         let label = setupLabel(
-            title: "Данный тип игры предлагает вам выбрать правильный ответ на заданный вопрос о флаге страны. Вам предоставляются четыре ответа на выбор. Один из четырех ответов - правильный. У вас есть одна попытка для выбора ответа и чтобы перейти к следующему вопросу",
+            title: "\(game.description)",
             color: .white,
             style: "Gill Sans",
             size: 19)
@@ -49,7 +49,7 @@ class GameTypeViewController: UIViewController {
     private lazy var buttonStart: UIButton = {
         let button = setupButton(
             image: "play",
-            color: .panelViewLightBlueLight,
+            color: game.play,
             action: #selector(startGame))
         return button
     }()
@@ -57,7 +57,7 @@ class GameTypeViewController: UIViewController {
     private lazy var buttonFavoutites: UIButton = {
         let button = setupButton(
             image: "star",
-            color: .blueMiddlePersian,
+            color: game.favourite,
             action: #selector(favourites))
         return button
     }()
@@ -65,7 +65,7 @@ class GameTypeViewController: UIViewController {
     private lazy var buttonFlagOrCountry: UIButton = {
         let button = setupButton(
             image: "flag",
-            color: .blueBlackSea,
+            color: game.swap,
             action: #selector(flagOrCountry))
         return button
     }()
@@ -80,7 +80,7 @@ class GameTypeViewController: UIViewController {
     
     private lazy var buttonCountQuestions: UIButton = {
         let button = setupButton(
-            color: .blueBlackSea,
+            color: game.swap,
             labelFirst: labelCountQuestion,
             labelSecond: labelCount,
             action: #selector(changeSetting))
@@ -107,7 +107,7 @@ class GameTypeViewController: UIViewController {
     
     private lazy var buttonContinents: UIButton = {
         let button = setupButton(
-            color: .blueBlackSea,
+            color: game.swap,
             labelFirst: labelContinents,
             labelSecond: labelContinentsDescription,
             action: #selector(changeSetting))
@@ -134,7 +134,7 @@ class GameTypeViewController: UIViewController {
     
     private lazy var buttonTimeElapsed: UIButton = {
         let button = setupButton(
-            color: .blueBlackSea,
+            color: game.swap,
             labelFirst: labelTimeElapsed,
             labelSecond: labelTimeElapsedDesription,
             action: #selector(changeSetting))
@@ -161,7 +161,7 @@ class GameTypeViewController: UIViewController {
     
     private lazy var buttonTime: UIButton = {
         let button = setupButton(
-            color: .blueBlackSea,
+            color: game.swap,
             labelFirst: labelTime,
             labelSecond: labelTimeDesription,
             image: imageInfinity,
@@ -196,6 +196,7 @@ class GameTypeViewController: UIViewController {
     }()
     
     var mode: Setting!
+    var game: Games!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -206,7 +207,7 @@ class GameTypeViewController: UIViewController {
     }
     
     private func setupDesign() {
-        view.backgroundColor = .cyanDark
+        view.backgroundColor = game.background
         imageInfinity.isHidden = mode.timeElapsed.timeElapsed ? true : false
     }
     

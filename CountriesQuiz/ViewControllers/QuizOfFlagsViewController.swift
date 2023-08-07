@@ -40,13 +40,9 @@ class QuizOfFlagsViewController: UIViewController {
     private lazy var labelTimer: UILabel = {
         let label = setLabel(
             title: "\(oneQuestionSeconds())",
-            size: 20,
+            size: 35,
             style: "mr_fontick",
-            color: .black,
-            colorOfShadow: UIColor.white.cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 0.3,
-            shadowOffsetHeight: 0.3)
+            color: .black)
         return label
     }()
     
@@ -66,9 +62,8 @@ class QuizOfFlagsViewController: UIViewController {
     private lazy var imageFlag: UIImageView = {
         var image = UIImageView()
         image.image = UIImage(named: questions.questions[currentQuestion].flag)
-        image.clipsToBounds = true
         image.layer.borderWidth = 1
-        image.layer.borderColor = UIColor.shadowBlueLight.cgColor
+        image.layer.borderColor = UIColor.black.cgColor
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
@@ -184,6 +179,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private var timerFirst = Timer()
     private var timerSecond = Timer()
+    private let shapeLayer = CAShapeLayer()
     
     private var currentQuestion = 0
     private var seconds = 0
@@ -200,8 +196,15 @@ class QuizOfFlagsViewController: UIViewController {
         setConstraints()
         setupBarButton()
         setupMoveSubviews()
-        startHideSubviews()
+//        circular()
+//        startHideSubviews()
         startGame()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        circular()
+        circularShadow()
     }
     
     private func setupDesign() {
@@ -218,19 +221,16 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func setupSubviewsWithTimer() {
-        setupSubviews(subviews: viewPanel, contentView, progressView,
-                      labelTimer, labelQuiz, imageFlag, labelNumberQuiz,
-                      labelDescription, buttonAnswerFirst, buttonAnswerSecond,
-                      buttonAnswerThird, buttonAnswerFourth)
+        setupSubviews(subviews: labelTimer, imageFlag,
+                      on: view)
     }
     
     private func setupSubviewsWithoutTimer() {
-        setupSubviews(subviews: viewPanel, contentView, labelQuiz, imageFlag,
-                      labelNumberQuiz, labelDescription, buttonAnswerFirst,
-                      buttonAnswerSecond, buttonAnswerThird, buttonAnswerFourth)
+        setupSubviews(subviews: imageFlag,
+                      on: view)
     }
     
-    private func setupSubviews(subviews: UIView...) {
+    private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
         subviews.forEach { subview in
             view.addSubview(subview)
         }
@@ -241,13 +241,66 @@ class QuizOfFlagsViewController: UIViewController {
         navigationItem.leftBarButtonItem = barButton
     }
     
+    private func circular() {
+        let center = CGPoint(x: labelTimer.frame.width / 2, y: labelTimer.frame.height / 2)
+        let endAngle = CGFloat.pi / 2
+        let startAngle = 2 * CGFloat.pi + endAngle
+        let circularPath = UIBezierPath(
+            arcCenter: center,
+            radius: 32,
+            startAngle: -startAngle,
+            endAngle: -endAngle,
+            clockwise: true)
+        
+        shapeLayer.path = circularPath.cgPath
+        shapeLayer.lineWidth = 5
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.strokeEnd = 1
+        shapeLayer.lineCap = CAShapeLayerLineCap.round
+        shapeLayer.strokeColor = UIColor.blueBlackSea.cgColor
+        labelTimer.layer.addSublayer(shapeLayer)
+    }
+    
+    private func circularShadow() {
+        let center = CGPoint(x: labelTimer.frame.width / 2, y: labelTimer.frame.height / 2)
+        let endAngle = CGFloat.pi / 2
+        let startAngle = 2 * CGFloat.pi + endAngle
+        let circularPath = UIBezierPath(
+            arcCenter: center,
+            radius: 32,
+            startAngle: -startAngle,
+            endAngle: -endAngle,
+            clockwise: true)
+        
+        let trackShape = CAShapeLayer()
+        trackShape.path = circularPath.cgPath
+        trackShape.lineWidth = 5
+        trackShape.fillColor = UIColor.clear.cgColor
+        trackShape.strokeColor = UIColor.blueBlackSea.withAlphaComponent(0.1).cgColor
+        labelTimer.layer.addSublayer(trackShape)
+    }
+    
+    
+    
+    private func animationCircular() {
+        let timer = oneQuestionSeconds()
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.toValue = 0
+        animation.duration = CFTimeInterval(timer)
+        animation.fillMode = CAMediaTimingFillMode.forwards
+        animation.isRemovedOnCompletion = false
+        shapeLayer.add(animation, forKey: "animation")
+    }
+    
     private func setupMoveSubviews() {
         let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
         imageFlagSpring.constant += view.bounds.width * pointX
+        /*
         buttonFirstSpring.constant += view.bounds.width * pointX
         buttonSecondSpring.constant += view.bounds.width * pointX
         buttonThirdSpring.constant += view.bounds.width * pointX
         buttonFourthSpring.constant += view.bounds.width * pointX
+         */
     }
     
     private func startHideSubviews() {
@@ -286,38 +339,41 @@ class QuizOfFlagsViewController: UIViewController {
     @objc private func showSubviews() {
         timerFirst.invalidate()
         
-        setupHiddenSubviews(views: imageFlag, buttonAnswerFirst, buttonAnswerSecond,
-                            buttonAnswerThird, buttonAnswerFourth, isHidden: false)
+        setupHiddenSubviews(views: imageFlag, isHidden: false)
+        /*
         if currentQuestion < 1 {
             UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) { [self] in
                 setupOpacityLabels(labels: labelQuiz, labelNumberQuiz, opacity: 1)
             }
         }
-        
+        */
         animationSubviews()
     }
     
     private func animationSubviews() {
         UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut) {
             self.imageFlagSpring.constant -= self.view.bounds.width
+            /*
             self.buttonFirstSpring.constant -= self.view.bounds.width
             self.buttonSecondSpring.constant -= self.view.bounds.width
             self.buttonThirdSpring.constant -= self.view.bounds.width
             self.buttonFourthSpring.constant -= self.view.bounds.width
+             */
             self.view.layoutIfNeeded()
         }
     }
     
     @objc private func isEnabledButton() {
         timerSecond.invalidate()
-        setupEnabledSubviews(controls: buttonAnswerFirst, buttonAnswerSecond,
-                             buttonAnswerThird, buttonAnswerFourth,
-                             isEnabled: true)
+        animationCircular()
+//        setupEnabledSubviews(controls: buttonAnswerFirst, buttonAnswerSecond,
+//                             buttonAnswerThird, buttonAnswerFourth,
+//                             isEnabled: true)
         
-        if mode.timeElapsed.timeElapsed {
-            checkSeconds()
-            runTimer()
-        }
+//        if mode.timeElapsed.timeElapsed {
+//            checkSeconds()
+//            runTimer()
+//        }
     }
     
     private func checkSeconds() {
@@ -732,15 +788,20 @@ extension QuizOfFlagsViewController {
 // MARK: - Setup constraints
 extension QuizOfFlagsViewController {
     private func setConstraints() {
+        /*
         NSLayoutConstraint.activate([
             viewPanel.topAnchor.constraint(equalTo: view.topAnchor),
             viewPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             viewPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             viewPanel.heightAnchor.constraint(equalToConstant: fixConstraintsForViewPanelBySizeIphone())
         ])
+        */
+        if mode.timeElapsed.timeElapsed {
+            constraintsTimer()
+        }
         
         setupSquare(subview: buttonBackMenu, sizes: 40)
-        
+        /*
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 1),
             contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -756,17 +817,17 @@ extension QuizOfFlagsViewController {
             constraintsLabelQuiz(),
             labelQuiz.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
-        
+        */
         imageFlagSpring = NSLayoutConstraint(
             item: imageFlag, attribute: .centerX, relatedBy: .equal,
             toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
         view.addConstraint(imageFlagSpring)
         NSLayoutConstraint.activate([
-            imageFlag.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 30),
+            imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
             imageFlag.widthAnchor.constraint(equalToConstant: 300),
             imageFlag.heightAnchor.constraint(equalToConstant: 180)
         ])
-        
+        /*
         NSLayoutConstraint.activate([
             labelNumberQuiz.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 30),
             labelNumberQuiz.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -814,11 +875,19 @@ extension QuizOfFlagsViewController {
             buttonAnswerFourth.topAnchor.constraint(equalTo: buttonAnswerThird.bottomAnchor, constant: 8),
             buttonAnswerFourth.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
         ])
+         */
+    }
+    
+    private func constraintsTimer() {
+        NSLayoutConstraint.activate([
+            labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 70),
+            labelTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
     }
     
     private func constraintsProgressView() {
         NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 26),
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 26),
             progressView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             progressView.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
             progressView.heightAnchor.constraint(equalToConstant: 28)
@@ -835,7 +904,7 @@ extension QuizOfFlagsViewController {
         if mode.timeElapsed.timeElapsed {
             constraint = labelQuiz.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 30)
         } else {
-            constraint = labelQuiz.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 30)
+            constraint = labelQuiz.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30)
         }
         return constraint
     }

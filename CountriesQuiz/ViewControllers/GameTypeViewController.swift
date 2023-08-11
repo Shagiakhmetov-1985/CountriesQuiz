@@ -236,6 +236,7 @@ class GameTypeViewController: UIViewController {
     @objc private func startGame() {
         let startGameVC = QuizOfFlagsViewController()
         startGameVC.mode = mode
+        startGameVC.game = game
         navigationController?.pushViewController(startGameVC, animated: true)
     }
     

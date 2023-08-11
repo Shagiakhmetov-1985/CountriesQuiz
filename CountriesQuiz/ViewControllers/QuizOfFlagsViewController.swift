@@ -27,7 +27,7 @@ class QuizOfFlagsViewController: UIViewController {
         let label = setLabel(
             title: "\(oneQuestionSeconds())",
             size: 35,
-            color: .black)
+            color: .white)
         return label
     }()
     
@@ -43,8 +43,7 @@ class QuizOfFlagsViewController: UIViewController {
     private lazy var progressView: UIProgressView = {
         let progressView = setProgressView(
             radius: radius(),
-            progressColor: .blueMiddlePersian,
-            trackColor: .blueMiddlePersian.withAlphaComponent(0.3),
+            color: .white,
             progress: 0)
         return progressView
     }()
@@ -53,7 +52,7 @@ class QuizOfFlagsViewController: UIViewController {
         let label = setLabel(
             title: "0 / \(mode.countQuestions)",
             size: 23,
-            color: .blueMiddlePersian,
+            color: .white,
             textAlignment: .center)
         return label
     }()
@@ -62,7 +61,7 @@ class QuizOfFlagsViewController: UIViewController {
         let label = setLabel(
             title: "Выберите правильный ответ",
             size: 23,
-            color: .blueBlackSea,
+            color: .white,
             textAlignment: .center)
         return label
     }()
@@ -71,7 +70,7 @@ class QuizOfFlagsViewController: UIViewController {
         let label = setLabel(
             title: "Коснитесь экрана, чтобы продолжить",
             size: 19,
-            color: .blueBlackSea,
+            color: .white,
             textAlignment: .center,
             opacity: 0)
         return label
@@ -80,7 +79,7 @@ class QuizOfFlagsViewController: UIViewController {
     private lazy var buttonAnswerFirst: UIButton = {
         let button = setButton(
             title: questions.buttonFirst[currentQuestion].name,
-            color: .blueBlackSea,
+            color: .white,
             isEnabled: false,
             tag: 1,
             action: #selector(buttonPress))
@@ -90,7 +89,7 @@ class QuizOfFlagsViewController: UIViewController {
     private lazy var buttonAnswerSecond: UIButton = {
         let button = setButton(
             title: questions.buttonSecond[currentQuestion].name,
-            color: .blueBlackSea,
+            color: .white,
             isEnabled: false,
             tag: 2,
             action: #selector(buttonPress))
@@ -100,7 +99,7 @@ class QuizOfFlagsViewController: UIViewController {
     private lazy var buttonAnswerThird: UIButton = {
         let button = setButton(
             title: questions.buttonThird[currentQuestion].name,
-            color: .blueBlackSea,
+            color: .white,
             isEnabled: false,
             tag: 3,
             action: #selector(buttonPress))
@@ -110,7 +109,7 @@ class QuizOfFlagsViewController: UIViewController {
     private lazy var buttonAnswerFourth: UIButton = {
         let button = setButton(
             title: questions.buttonFourth[currentQuestion].name,
-            color: .blueBlackSea,
+            color: .white,
             isEnabled: false,
             tag: 4,
             action: #selector(buttonPress))
@@ -127,6 +126,7 @@ class QuizOfFlagsViewController: UIViewController {
     }()
     
     var mode: Setting!
+    var game: Games!
     
     private var imageFlagSpring: NSLayoutConstraint!
     private var stackViewSpring: NSLayoutConstraint!
@@ -155,12 +155,15 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        circularShadow()
-        circular(strokeEnd: 1)
+        if mode.timeElapsed.timeElapsed {
+            circularShadow()
+            circular(strokeEnd: 0)
+            animationTimeReset()
+        }
     }
     
     private func setupDesign() {
-        view.backgroundColor = .white
+        view.backgroundColor = game.background
         navigationItem.hidesBackButton = true
     }
     
@@ -195,68 +198,6 @@ class QuizOfFlagsViewController: UIViewController {
         let rightBarButton = UIBarButtonItem(customView: buttonBackMenu)
         navigationItem.leftBarButtonItem = leftBarButton
         navigationItem.rightBarButtonItem = rightBarButton
-    }
-    
-    private func circularShadow() {
-        let center = CGPoint(x: labelTimer.center.x, y: labelTimer.center.y)
-        let endAngle = CGFloat.pi / 2
-        let startAngle = 2 * CGFloat.pi + endAngle
-        let circularPath = UIBezierPath(
-            arcCenter: center,
-            radius: 32,
-            startAngle: -startAngle,
-            endAngle: -endAngle,
-            clockwise: true)
-        
-        let trackShape = CAShapeLayer()
-        trackShape.path = circularPath.cgPath
-        trackShape.lineWidth = 5
-        trackShape.fillColor = UIColor.clear.cgColor
-        trackShape.strokeColor = UIColor.skyCyanLight.cgColor
-        view.layer.addSublayer(trackShape)
-    }
-    
-    private func circular(strokeEnd: CGFloat) {
-        let center = CGPoint(x: labelTimer.center.x, y: labelTimer.center.y)
-        let endAngle = CGFloat.pi / 2
-        let startAngle = 2 * CGFloat.pi + endAngle
-        let circularPath = UIBezierPath(
-            arcCenter: center,
-            radius: 32,
-            startAngle: -startAngle,
-            endAngle: -endAngle,
-            clockwise: true)
-        
-        circularStart(bezier: circularPath, strokeEnd: strokeEnd)
-    }
-    
-    private func circularStart(bezier: UIBezierPath, strokeEnd: CGFloat) {
-        shapeLayer.path = bezier.cgPath
-        shapeLayer.lineWidth = 5
-        shapeLayer.fillColor = UIColor.clear.cgColor
-        shapeLayer.strokeEnd = strokeEnd
-        shapeLayer.lineCap = CAShapeLayerLineCap.round
-        shapeLayer.strokeColor = UIColor.blueBlackSea.cgColor
-        view.layer.addSublayer(shapeLayer)
-    }
-    
-    private func animationTimeElapsed() {
-        let timer = oneQuestionSeconds()
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.toValue = 0
-        animation.duration = CFTimeInterval(timer)
-        animation.fillMode = CAMediaTimingFillMode.forwards
-        animation.isRemovedOnCompletion = false
-        shapeLayer.add(animation, forKey: "animation")
-    }
-    
-    private func animationTimeReset() {
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.toValue = 1
-        animation.duration = CFTimeInterval(0.2)
-        animation.fillMode = CAMediaTimingFillMode.forwards
-        animation.isRemovedOnCompletion = false
-        shapeLayer.add(animation, forKey: "animation")
     }
     
     private func setupMoveSubviews() {
@@ -310,6 +251,11 @@ class QuizOfFlagsViewController: UIViewController {
         }
         
         animationSubviews()
+        if oneQuestionCheck() && mode.timeElapsed.timeElapsed {
+            shapeLayer.strokeEnd = 1
+        } else if !oneQuestionCheck() && mode.timeElapsed.timeElapsed && currentQuestion < 1 {
+            shapeLayer.strokeEnd = 1
+        }
     }
     
     private func animationSubviews() {
@@ -354,9 +300,6 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func runTimer() {
-//        timerFirst = Timer.scheduledTimer(
-//            timeInterval: 0.1, target: self, selector: #selector(timeElapsed),
-//            userInfo: nil, repeats: true)
         timerSecond = Timer.scheduledTimer(
             timeInterval: 0.1, target: self, selector: #selector(timeElapsedText),
             userInfo: nil, repeats: true)
@@ -374,37 +317,6 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func oneQuestionCheck() -> Bool {
         mode.timeElapsed.questionSelect.oneQuestion ? true : false
-    }
-    
-    @objc private func timeElapsed() {
-//        let timeQuestion = TimeInterval(oneQuestionSeconds())
-//        let interval = (1 / timeQuestion) * 0.1
-//        let progress = progressView.progress - Float(interval)
-//
-//        UIView.animate(withDuration: 0.3) {
-//            self.progressView.setProgress(progress, animated: true)
-//        }
-        
-        if shapeLayer.strokeEnd <= 0 {
-            timerFirst.invalidate()
-            answerSelect.toggle()
-            
-            setupResults(numberQuestion: currentQuestion + 1, tag: 0,
-                         question: questions.questions[currentQuestion],
-                         buttonFirst: questions.buttonFirst[currentQuestion],
-                         buttonSecond: questions.buttonSecond[currentQuestion],
-                         buttonThird: questions.buttonThird[currentQuestion],
-                         buttonFourth: questions.buttonFourth[currentQuestion],
-                         timeUp: true)
-            
-            if !oneQuestionCheck() {
-                currentQuestion = questions.questions.count - 1
-            }
-            
-            showDescription()
-            disableButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
-                          buttonAnswerThird, buttonAnswerFourth, tag: 0)
-        }
     }
     
     @objc private func timeElapsedText() {
@@ -450,7 +362,9 @@ class QuizOfFlagsViewController: UIViewController {
         showDescription()
         disableButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
                       buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
-        stopAnimationCircleTimer()
+        if mode.timeElapsed.timeElapsed {
+            stopAnimationCircleTimer()
+        }
         
         if oneQuestionCheck() {
             setAverageTime()
@@ -460,20 +374,24 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func checkAnswer(tag: Int, button: UIButton) {
-        let green = UIColor.greenEmerald
-        let red = UIColor.bismarkFuriozo
+        let green = UIColor.greenYellowBrilliant
+        let red = UIColor.redTangerineTango
+        let white = UIColor.white
         
         if checkAnswer(tag: tag) {
-            setButtonColor(button: button, color: green)
+            setButtonColor(button: button, color: green, titleColor: white)
         } else {
-            setButtonColor(button: button, color: red)
+            setButtonColor(button: button, color: red, titleColor: white)
             setupResults(tag: tag)
         }
     }
     
-    private func setButtonColor(button: UIButton, color: UIColor) {
-        button.backgroundColor = color
-        button.layer.shadowColor = color.cgColor
+    private func setButtonColor(button: UIButton, color: UIColor, titleColor: UIColor) {
+        UIView.animate(withDuration: 0.3) {
+            button.backgroundColor = color
+            button.layer.shadowColor = color.cgColor
+            button.setTitleColor(titleColor, for: .normal)
+        }
     }
     
     private func setupResults(tag: Int) {
@@ -511,10 +429,11 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func disableButton(buttons: UIButton..., tag: Int) {
         let gray = UIColor.grayLight
+        let white = UIColor.white.withAlphaComponent(0.95)
         
         buttons.forEach { button in
             if !(button.tag == tag) {
-                setButtonColor(button: button, color: gray)
+                setButtonColor(button: button, color: white, titleColor: gray)
             }
             button.isEnabled = false
         }
@@ -524,14 +443,6 @@ class QuizOfFlagsViewController: UIViewController {
                 timeInterval: 5, target: self, selector: #selector(hideSubviews),
                 userInfo: nil, repeats: false)
         }
-    }
-    
-    private func stopAnimationCircleTimer() {
-        let oneQuestionTime = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime * 10
-        let time = CGFloat(seconds) / CGFloat(oneQuestionTime)
-        let result = round(1000 * time) / 1000
-        shapeLayer.removeAnimation(forKey: "animation")
-        shapeLayer.strokeEnd = result
     }
     
     private func setAverageTime() {
@@ -562,37 +473,34 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func resetTimer() {
-        if oneQuestionCheck() {
-            let seconds = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
-            labelTimer.text = "\(seconds)"
-            shapeLayer.strokeEnd = 1
+        if oneQuestionCheck() && seconds > 0 {
+            resetNumberTimer()
+            animationTimeReset()
+        } else if oneQuestionCheck() && seconds == 0 {
+            resetNumberTimer()
+            circular(strokeEnd: 0)
+            animationTimeReset()
         }
     }
     
-    private func showSubviewsWithAnimation() {
+    private func resetNumberTimer() {
+        let seconds = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
+        labelTimer.text = "\(seconds)"
+    }
+    
+    private func showLabelsWithAnimation() {
         UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) {
             self.labelQuiz.layer.opacity = 1
         }
         
         labelDescription.layer.opacity = 0
-        
-        if mode.timeElapsed.timeElapsed {
-//            restorationProgressView()
-        }
-    }
-    
-    private func restorationProgressView() {
-        if oneQuestionCheck() {
-            UIView.animate(withDuration: 0.5) {
-                self.progressView.setProgress(1, animated: true)
-            }
-        }
     }
     
     private func resetColorButton(buttons: UIButton...) {
+        let white = UIColor.white
         let blue = UIColor.blueBlackSea
         buttons.forEach { button in
-            setButtonColor(button: button, color: blue)
+            setButtonColor(button: button, color: white, titleColor: blue)
         }
     }
     
@@ -639,7 +547,7 @@ class QuizOfFlagsViewController: UIViewController {
         currentQuestion += 1
         setupMoveSubviews()
         showNewDataForNextQuestion()
-        showSubviewsWithAnimation()
+        showLabelsWithAnimation()
         resetColorButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
                          buttonAnswerThird, buttonAnswerFourth)
         startGame()
@@ -664,47 +572,13 @@ extension QuizOfFlagsViewController {
         }
     }
 }
-// MARK: - Setup view
-extension QuizOfFlagsViewController {
-    private func setView(color: UIColor? = nil, cornerRadius: CGFloat? = nil,
-                         borderWidth: CGFloat? = nil, borderColor: UIColor? = nil,
-                         shadowColor: UIColor? = nil, shadowRadius: CGFloat? = nil,
-                         shadowOffsetWidth: CGFloat? = nil,
-                         shadowOffsetHeight: CGFloat? = nil) -> UIView {
-        let view = UIView()
-        view.layer.cornerRadius = cornerRadius ?? 0
-        view.layer.borderWidth = borderWidth ?? 0
-        view.layer.borderColor = borderColor?.cgColor
-        view.layer.shadowColor = shadowColor?.cgColor
-        view.layer.shadowOpacity = 1
-        view.layer.shadowRadius = shadowRadius ?? 0
-        view.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                         height: shadowOffsetHeight ?? 0)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        if let color = color {
-            view.backgroundColor = color
-        } else {
-            setGradient(content: view)
-        }
-        return view
-    }
-    
-    private func setGradient(content: UIView) {
-        let gradientLayer = CAGradientLayer()
-        let colorBlue = UIColor.blueFirst
-        let colorLightBlue = UIColor.blueSecond
-        gradientLayer.frame = view.bounds
-        gradientLayer.colors = [colorLightBlue.cgColor, colorBlue.cgColor]
-        content.layer.addSublayer(gradientLayer)
-    }
-}
 // MARK: - Setup button
 extension QuizOfFlagsViewController {
     private func setButton(title: String, color: UIColor, isEnabled: Bool,
                            tag: Int, action: Selector) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.blueBlackSea, for: .normal)
         button.titleLabel?.font = UIFont(name: "mr_fontick", size: 23)
         button.backgroundColor = color
         button.layer.cornerRadius = 12
@@ -723,9 +597,9 @@ extension QuizOfFlagsViewController {
         let image = UIImage(systemName: image, withConfiguration: size)
         let button = UIButton(type: .system)
         button.setImage(image, for: .normal)
-        button.tintColor = .blueBlackSea
+        button.tintColor = .white
         button.layer.cornerRadius = 12
-        button.layer.borderColor = UIColor.blueBlackSea.cgColor
+        button.layer.borderColor = UIColor.white.cgColor
         button.layer.borderWidth = 1.5
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: action, for: .touchUpInside)
@@ -751,13 +625,12 @@ extension QuizOfFlagsViewController {
 }
 // MARK: - Setup progress view
 extension QuizOfFlagsViewController {
-    private func setProgressView(radius: CGFloat, progressColor: UIColor,
-                                 trackColor: UIColor, progress: Float) -> UIProgressView {
+    private func setProgressView(radius: CGFloat, color: UIColor, progress: Float) -> UIProgressView {
         let progressView = UIProgressView()
         progressView.layer.cornerRadius = radius
         progressView.clipsToBounds = true
-        progressView.progressTintColor = progressColor
-        progressView.trackTintColor = trackColor
+        progressView.progressTintColor = color
+        progressView.trackTintColor = color.withAlphaComponent(0.3)
         progressView.progress = progress
         progressView.translatesAutoresizingMaskIntoConstraints = false
         return progressView
@@ -784,6 +657,74 @@ extension QuizOfFlagsViewController {
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
+    }
+}
+// MARK: - Setup circle timer
+extension QuizOfFlagsViewController {
+    private func circularShadow() {
+        let center = CGPoint(x: labelTimer.center.x, y: labelTimer.center.y)
+        let endAngle = CGFloat.pi / 2
+        let startAngle = 2 * CGFloat.pi + endAngle
+        let circularPath = UIBezierPath(
+            arcCenter: center,
+            radius: 32,
+            startAngle: -startAngle,
+            endAngle: -endAngle,
+            clockwise: true)
+        
+        let trackShape = CAShapeLayer()
+        trackShape.path = circularPath.cgPath
+        trackShape.lineWidth = 5
+        trackShape.fillColor = UIColor.clear.cgColor
+        trackShape.strokeColor = UIColor.white.withAlphaComponent(0.3).cgColor
+        view.layer.addSublayer(trackShape)
+    }
+    
+    private func circular(strokeEnd: CGFloat) {
+        let center = CGPoint(x: labelTimer.center.x, y: labelTimer.center.y)
+        let endAngle = CGFloat.pi / 2
+        let startAngle = 2 * CGFloat.pi + endAngle
+        let circularPath = UIBezierPath(
+            arcCenter: center,
+            radius: 32,
+            startAngle: -startAngle,
+            endAngle: -endAngle,
+            clockwise: true)
+        
+        shapeLayer.path = circularPath.cgPath
+        shapeLayer.lineWidth = 5
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.strokeEnd = strokeEnd
+        shapeLayer.lineCap = CAShapeLayerLineCap.round
+        shapeLayer.strokeColor = UIColor.white.cgColor
+        view.layer.addSublayer(shapeLayer)
+    }
+    
+    private func animationTimeElapsed() {
+        let timer = oneQuestionSeconds()
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.toValue = 0
+        animation.duration = CFTimeInterval(timer)
+        animation.fillMode = CAMediaTimingFillMode.forwards
+        animation.isRemovedOnCompletion = false
+        shapeLayer.add(animation, forKey: "animation")
+    }
+    
+    private func animationTimeReset() {
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.toValue = 1
+        animation.duration = CFTimeInterval(0.4)
+        animation.fillMode = CAMediaTimingFillMode.forwards
+        animation.isRemovedOnCompletion = false
+        shapeLayer.add(animation, forKey: "animation")
+    }
+    
+    private func stopAnimationCircleTimer() {
+        let oneQuestionTime = oneQuestionSeconds() * 10
+        let time = CGFloat(seconds) / CGFloat(oneQuestionTime)
+        let result = round(100 * time) / 100
+        shapeLayer.removeAnimation(forKey: "animation")
+        shapeLayer.strokeEnd = result
     }
 }
 // MARK: - Setup constraints

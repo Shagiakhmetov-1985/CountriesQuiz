@@ -399,12 +399,6 @@ class MenuViewController: UIViewController {
         navigationController?.pushViewController(gameTypeVC, animated: true)
     }
     
-    @objc private func quizOfFlagsDetails() {
-        let quizOfFlagsDetailsVC = QuizOfFlagsDetailsViewController()
-        quizOfFlagsDetailsVC.mode = mode
-        navigationController?.pushViewController(quizOfFlagsDetailsVC, animated: true)
-    }
-    
     @objc private func setting() {
         let settingVC = SettingViewController()
         settingVC.modalPresentationStyle = .custom

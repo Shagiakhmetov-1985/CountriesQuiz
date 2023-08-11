@@ -19,32 +19,19 @@ class ResultsViewController: UIViewController {
         return view
     }()
     
-    private lazy var buttonBackMenu: UIButton = {
+    private lazy var buttonReset: UIButton = {
         let button = setButton(
-            title: "Главное меню",
-            style: "mr_fontick",
-            size: 15,
-            colorTitle: UIColor(
-                red: 51/255,
-                green: 133/255,
-                blue: 51/255,
-                alpha: 1),
-            colorBackgroud: UIColor(
-                red: 224/255,
-                green: 255/255,
-                blue: 224/255,
-                alpha: 1),
-            radiusCorner: 14,
-            shadowColor: UIColor(
-                red: 51/255,
-                green: 83/255,
-                blue: 51/255,
-                alpha: 1).cgColor,
-            radiusShadow: 2.5,
-            shadowOffsetWidth: 2.5,
-            shadowOffsetHeight: 2.5)
-        button.addTarget(self, action: #selector(exitToMenu), for: .touchUpInside)
+            image: "arrow.counterclockwise",
+            action: #selector(resetGame))
         return button
+    }()
+    
+    private lazy var labelResults: UILabel = {
+        let label = setLabel(
+            title: "Результаты",
+            size: 35,
+            color: .blueBlackSea)
+        return label
     }()
     
     private lazy var scrollView: UIScrollView = {
@@ -76,23 +63,25 @@ class ResultsViewController: UIViewController {
         super.viewDidLoad()
         setupDesign()
         setupSubviews()
-        checkResults()
+//        checkResults()
         setupBarButton()
         setConstraints()
-        setConstraintsForView()
+//        setConstraintsForView()
     }
     
     private func setupDesign() {
-        view.backgroundColor = UIColor(
-            red: 51/255,
-            green: 83/255,
-            blue: 51/255,
-            alpha: 1)
+        view.backgroundColor = .skyCyanLight
         navigationItem.hidesBackButton = true
     }
     
     private func setupSubviews() {
-        setupSubviews(subviews: viewPanel, buttonBackMenu, contentView)
+        setupSubviews(subviews: labelResults, on: view)
+    }
+    
+    private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
+        subviews.forEach { subview in
+            view.addSubview(subview)
+        }
     }
     
     private func setupSubviews(subviews: UIView...) {
@@ -120,8 +109,8 @@ class ResultsViewController: UIViewController {
     }
     
     private func setupBarButton() {
-        let barButton = UIBarButtonItem(customView: buttonBackMenu)
-        navigationItem.rightBarButtonItem = barButton
+        let barButton = UIBarButtonItem(customView: buttonReset)
+        navigationItem.leftBarButtonItem = barButton
     }
     
     private func checkResults() {
@@ -311,8 +300,8 @@ class ResultsViewController: UIViewController {
         String(format: "%.2f", seconds)
     }
     
-    @objc private func exitToMenu() {
-        navigationController?.popToRootViewController(animated: true)
+    @objc private func resetGame() {
+        navigationController?.popViewController(animated: true)
     }
 }
 
@@ -499,6 +488,20 @@ extension ResultsViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
+    
+    private func setButton(image: String, action: Selector) -> UIButton {
+        let size = UIImage.SymbolConfiguration(pointSize: 20)
+        let image = UIImage(systemName: image, withConfiguration: size)
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.tintColor = .blueBlackSea
+        button.layer.cornerRadius = 12
+        button.layer.borderColor = UIColor.blueBlackSea.cgColor
+        button.layer.borderWidth = 1.5
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
+    }
 }
 // MARK: - Setup label
 extension ResultsViewController {
@@ -518,6 +521,21 @@ extension ResultsViewController {
         label.layer.shadowOpacity = 1
         label.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
                                           height: shadowOffsetHeight ?? 0)
+        label.numberOfLines = numberOfLines ?? 0
+        label.textAlignment = textAlignment ?? .natural
+        label.layer.opacity = opacity ?? 1
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+    
+    private func setLabel(title: String, size: CGFloat, color: UIColor,
+                          numberOfLines: Int? = nil,
+                          textAlignment: NSTextAlignment? = nil,
+                          opacity: Float? = nil) -> UILabel {
+        let label = UILabel()
+        label.text = title
+        label.font = UIFont(name: "mr_fontick", size: size)
+        label.textColor = color
         label.numberOfLines = numberOfLines ?? 0
         label.textAlignment = textAlignment ?? .natural
         label.layer.opacity = opacity ?? 1
@@ -583,6 +601,12 @@ extension ResultsViewController {
 extension ResultsViewController {
     private func setConstraints() {
         NSLayoutConstraint.activate([
+            labelResults.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -10),
+            labelResults.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+        setupSquare(subview: buttonReset, sizes: 40)
+        /*
+        NSLayoutConstraint.activate([
             viewPanel.topAnchor.constraint(equalTo: view.topAnchor),
             viewPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             viewPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -598,6 +622,14 @@ extension ResultsViewController {
             contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+         */
+    }
+    
+    private func setupSquare(subview: UIView, sizes: CGFloat) {
+        NSLayoutConstraint.activate([
+            subview.widthAnchor.constraint(equalToConstant: sizes),
+            subview.heightAnchor.constraint(equalToConstant: sizes)
         ])
     }
     

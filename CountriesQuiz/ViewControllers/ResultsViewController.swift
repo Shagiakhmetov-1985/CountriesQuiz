@@ -58,6 +58,7 @@ class ResultsViewController: UIViewController {
     }
     
     private var views: [UIView] = []
+    private var timer = Timer()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,6 +66,7 @@ class ResultsViewController: UIViewController {
         setupSubviews()
 //        checkResults()
         setupBarButton()
+        setupTimer()
         setConstraints()
 //        setConstraintsForView()
     }
@@ -111,6 +113,41 @@ class ResultsViewController: UIViewController {
     private func setupBarButton() {
         let barButton = UIBarButtonItem(customView: buttonReset)
         navigationItem.leftBarButtonItem = barButton
+    }
+    
+    private func setupTimer() {
+        timer = Timer.scheduledTimer(
+            timeInterval: 0.3, target: self, selector: #selector(circleCurrentQuestions),
+            userInfo: nil, repeats: false)
+    }
+    
+    @objc private func circleCurrentQuestions() {
+        timer.invalidate()
+        let delay = CGFloat(countries.count - results.count) * 0.2
+        let currentQuestions = CGFloat(countries.count - results.count)
+        let value = currentQuestions / CGFloat(countries.count)
+        let x = view.frame.width / 5
+        setCircle(x: x, color: .greenHarlequin, value: value, duration: delay)
+        timer = Timer.scheduledTimer(
+            timeInterval: delay, target: self, selector: #selector(circleWrongQuestions),
+            userInfo: nil, repeats: false)
+    }
+    
+    @objc private func circleWrongQuestions() {
+        timer.invalidate()
+        let delay = CGFloat(results.count) * 0.2
+        let wrongQuestions = CGFloat(results.count)
+        let value = wrongQuestions / CGFloat(countries.count)
+        let x = view.frame.width / 2
+        setCircle(x: x, color: .redTangerineTango, value: value, duration: delay)
+        timer = Timer.scheduledTimer(
+            timeInterval: delay, target: self, selector: #selector(circleSpendTime),
+            userInfo: nil, repeats: false)
+    }
+    
+    @objc private func circleSpendTime() {
+        timer.invalidate()
+        
     }
     
     private func checkResults() {
@@ -597,11 +634,45 @@ extension ResultsViewController {
         return image
     }
 }
+// MARK: - Setup circle shapes
+extension ResultsViewController {
+    private func setCircle(x: CGFloat, color: UIColor, value: CGFloat,
+                           duration: CGFloat) {
+        let center = CGPoint(x: x, y: 160)
+        let endAngle = CGFloat.pi / 2
+        let startAngle = 2 * CGFloat.pi + endAngle
+        let circularPath = UIBezierPath(
+            arcCenter: center,
+            radius: 42,
+            startAngle: -startAngle,
+            endAngle: -endAngle,
+            clockwise: true)
+        
+        let trackShape = CAShapeLayer()
+        trackShape.path = circularPath.cgPath
+        trackShape.lineWidth = 16
+        trackShape.fillColor = UIColor.clear.cgColor
+        trackShape.strokeEnd = 0
+        trackShape.strokeColor = color.cgColor
+        trackShape.lineCap = CAShapeLayerLineCap.round
+        view.layer.addSublayer(trackShape)
+        animateCircle(shape: trackShape, value: value, duration: duration)
+    }
+    
+    private func animateCircle(shape: CAShapeLayer, value: CGFloat, duration: CGFloat) {
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.toValue = value
+        animation.duration = CFTimeInterval(duration)
+        animation.fillMode = CAMediaTimingFillMode.forwards
+        animation.isRemovedOnCompletion = false
+        shape.add(animation, forKey: "animation")
+    }
+}
 // MARK: - Setup constraints
 extension ResultsViewController {
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            labelResults.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -10),
+            labelResults.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -40),
             labelResults.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         setupSquare(subview: buttonReset, sizes: 40)

@@ -527,7 +527,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func showDescription() {
         if currentQuestion == questions.questions.count - 1 {
-            let red = UIColor.redCardinal
+            let red = UIColor.redBeige
             labelDescription.text = "Коснитесь экрана, чтобы завершить"
             labelDescription.textColor = red
         }
@@ -695,7 +695,7 @@ extension QuizOfFlagsViewController {
         shapeLayer.lineWidth = 5
         shapeLayer.fillColor = UIColor.clear.cgColor
         shapeLayer.strokeEnd = strokeEnd
-        shapeLayer.lineCap = CAShapeLayerLineCap.round
+        shapeLayer.lineCap = CAShapeLayerLineCap.square
         shapeLayer.strokeColor = UIColor.white.cgColor
         view.layer.addSublayer(shapeLayer)
     }

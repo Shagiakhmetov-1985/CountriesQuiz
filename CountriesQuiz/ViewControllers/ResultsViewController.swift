@@ -8,13 +8,6 @@
 import UIKit
 
 class ResultsViewController: UIViewController {
-    private lazy var buttonReset: UIButton = {
-        let button = setButton(
-            image: "arrow.counterclockwise",
-            action: #selector(resetGame))
-        return button
-    }()
-    
     private lazy var labelResults: UILabel = {
         let label = setLabel(
             title: "Результаты",
@@ -33,7 +26,9 @@ class ResultsViewController: UIViewController {
     }()
     
     private lazy var imageCurrentQuestions: UIImageView = {
-        let image = setImage(image: "checkmark")
+        let image = setImage(
+            image: "checkmark",
+            size: 26)
         return image
     }()
     
@@ -48,7 +43,7 @@ class ResultsViewController: UIViewController {
     private lazy var labelNumberQuestions: UILabel = {
         let label = setLabel(
             title: "\(countries.count - results.count)",
-            size: 45,
+            size: 35,
             color: .white)
         return label
     }()
@@ -63,7 +58,9 @@ class ResultsViewController: UIViewController {
     }()
     
     private lazy var imageWrongQuestions: UIImageView = {
-        let image = setImage(image: "multiply")
+        let image = setImage(
+            image: "multiply",
+            size: 26)
         return image
     }()
     
@@ -78,33 +75,92 @@ class ResultsViewController: UIViewController {
     private lazy var labelNumberWrongQuestions: UILabel = {
         let label = setLabel(
             title: "\(results.count)",
-            size: 45,
+            size: 35,
             color: .white)
         return label
     }()
     
-    private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.frame = view.bounds
-        scrollView.contentSize = contentSize
-        return scrollView
+    private lazy var viewTimeSpend: UIView = {
+        let view = setView(
+            color: .blueMiddlePersian,
+            image: imageTimeSpend,
+            labelFirst: labelTimeSpend,
+            labelSecond: labelNumberTimeSpend,
+            imageInfinity: imageInfinity)
+        return view
     }()
     
-    private lazy var contentView: UIView = {
+    private lazy var imageTimeSpend: UIImageView = {
+        let image = setImage(
+            image: "\(imageTimeElapsedOnOff())",
+            size: 26)
+        return image
+    }()
+    
+    private lazy var labelTimeSpend: UILabel = {
+        let label = setLabel(
+            title: "\(labelTimeElapsedOnOff())",
+            size: 19,
+            color: .white)
+        return label
+    }()
+    
+    private lazy var labelNumberTimeSpend: UILabel = {
+        let label = setLabel(
+            title: "\(numberTimeElapsedOnOff())",
+            size: 35,
+            color: .white)
+        return label
+    }()
+    
+    private lazy var imageInfinity: UIImageView = {
+        let imageView = setImage(
+            image: "infinity",
+            size: 45)
+        return imageView
+    }()
+    
+    private lazy var viewCountQuestions: UIView = {
         let view = setView(
-            tag: 2)
-        view.frame.size = contentSize
+            color: .gummigut,
+            image: imageCountQuestions,
+            labelFirst: labelCountQuestions,
+            labelSecond: labelNumberCountQuestions)
         return view
+    }()
+    
+    private lazy var imageCountQuestions: UIImageView = {
+        let image = setImage(
+            image: "questionmark.bubble",
+            size: 26)
+        return image
+    }()
+    
+    private lazy var labelCountQuestions: UILabel = {
+        let label = setLabel(
+            title: "Количество вопросов",
+            size: 19,
+            color: .white)
+        return label
+    }()
+    
+    private lazy var labelNumberCountQuestions: UILabel = {
+        let label = setLabel(
+            title: "\(mode.countQuestions)",
+            size: 35,
+            color: .white)
+        return label
+    }()
+    
+    private lazy var buttonComplete: UIButton = {
+        let button = setButton()
+        return button
     }()
     
     var results: [Results]!
     var countries: [Countries]!
     var mode: Setting!
-    var spendTime: [Float]!
-    
-    private var contentSize: CGSize {
-        CGSize(width: view.frame.width, height: view.frame.height + heightContentSize())
-    }
+    var spendTime: [CGFloat]!
     
     private var views: [UIView] = []
     private var timer = Timer()
@@ -113,20 +169,20 @@ class ResultsViewController: UIViewController {
         super.viewDidLoad()
         setupDesign()
         setupSubviews()
-//        checkResults()
-        setupBarButton()
         setupTimer()
         setConstraints()
-//        setConstraintsForView()
     }
     
     private func setupDesign() {
         view.backgroundColor = .skyCyanLight
         navigationItem.hidesBackButton = true
+        imageInfinity.isHidden = timeElapsedCheck() ? true : false
     }
     
     private func setupSubviews() {
-        setupSubviews(subviews: labelResults, viewCurrentQuestions, viewWrongQuestions,
+        setupSubviews(subviews: labelResults, viewCurrentQuestions,
+                      viewWrongQuestions, viewTimeSpend, viewCountQuestions,
+                      buttonComplete,
                       on: view)
     }
     
@@ -134,35 +190,6 @@ class ResultsViewController: UIViewController {
         subviews.forEach { subview in
             subviewOther.addSubview(subview)
         }
-    }
-    
-    private func setupSubviews(subviews: UIView...) {
-        subviews.forEach { subview in
-            view.addSubview(subview)
-        }
-    }
-    
-    private func setupSubviewsOnContentView(subviews: UIView...) {
-        subviews.forEach { subview in
-            contentView.addSubview(subview)
-        }
-    }
-    
-    private func setupSubviewsOnScrollView(subviews: UIView...) {
-        subviews.forEach { subview in
-            scrollView.addSubview(subview)
-        }
-    }
-    
-    private func setupSubviewsOnView(view: UIView, subviews: UIView...) {
-        subviews.forEach { subview in
-            view.addSubview(subview)
-        }
-    }
-    
-    private func setupBarButton() {
-        let barButton = UIBarButtonItem(customView: buttonReset)
-        navigationItem.leftBarButtonItem = barButton
     }
     
     private func setupTimer() {
@@ -196,9 +223,9 @@ class ResultsViewController: UIViewController {
     @objc private func circleSpendTime() {
         timer.invalidate()
         let timeForQuestion = oneQuestionSeconds()
-        let averageTime = spendTime.reduce(0.0, +) / Float(spendTime.count)
-        let delay = CGFloat(averageTime) * 0.2
-        let value = CGFloat(averageTime) / CGFloat(timeForQuestion)
+        let averageTime = spendTime.reduce(0.0, +) / CGFloat(spendTime.count)
+        let delay = averageTime * 0.2
+        let value = averageTime / CGFloat(timeForQuestion)
         setCircle(color: .blueMiddlePersian, radius: 24, value: value, duration: delay)
     }
     
@@ -216,6 +243,63 @@ class ResultsViewController: UIViewController {
         mode.timeElapsed.questionSelect.oneQuestion ? true : false
     }
     
+    private func timeElapsedCheck() -> Bool {
+        mode.timeElapsed.timeElapsed ? true : false
+    }
+    
+    private func labelTimeElapsedOnOff() -> String {
+        timeElapsedCheck() ? "\(labelCheckTimeSpend())" : "Обратный отсчет выключен"
+    }
+    
+    private func labelCheckTimeSpend() -> String {
+        oneQuestionCheck() ? "Среднее время на вопрос" : labelCheckAllQuestions()
+    }
+    
+    private func labelCheckAllQuestions() -> String {
+        spendTime.isEmpty ? "Вы не успели ответить за это время" :
+        "Потраченное время на все вопросы"
+    }
+    
+    private func imageTimeElapsedOnOff() -> String {
+        timeElapsedCheck() ? "\(imageCheckTimeSpend())" : "clock.badge.xmark"
+    }
+    
+    private func imageCheckTimeSpend() -> String {
+        oneQuestionCheck() ? "timer" : imageCheckAllQuestions()
+    }
+    
+    private func imageCheckAllQuestions() -> String {
+        spendTime.isEmpty ? "clock" : "timer"
+    }
+    
+    private func numberTimeElapsedOnOff() -> String {
+        timeElapsedCheck() ? "\(numberCheckTimeSpend())" : ""
+    }
+    
+    private func numberCheckTimeSpend() -> String {
+        var text: String
+        if oneQuestionCheck() {
+            let averageTime = spendTime.reduce(0.0, +) / CGFloat(spendTime.count)
+            let roundingTime = round(100 * averageTime) / 100
+            text = "\(roundingTime)"
+        } else {
+            text = numberCheckAllQuestions()
+        }
+        return text
+    }
+    
+    private func numberCheckAllQuestions() -> String {
+        var text: String
+        if spendTime.isEmpty {
+            text = "-"
+        } else {
+            let spendTime = spendTime.first ?? 0
+            let roundingTime = round(100 * spendTime) / 100
+            text = "\(roundingTime)"
+        }
+        return text
+    }
+    /*
     private func checkResults() {
         if !results.isEmpty {
             showWrongAnswers()
@@ -366,14 +450,14 @@ class ResultsViewController: UIViewController {
             textAlignment: .left)
         
         setupSubviews(subviews: labelOne, labelTwo)
-//        setConstraintsCongratulation(labelOne: labelOne, labelTwo: labelTwo)
+        setConstraintsCongratulation(labelOne: labelOne, labelTwo: labelTwo)
     }
     
     private func checkSpendTime() -> String {
         var text = String()
         
         if oneQuestionCheck() {
-            let averageTime = spendTime.reduce(0.0, +) / Float(spendTime.count)
+            let averageTime = spendTime.reduce(0.0, +) / CGFloat(spendTime.count)
             text = "Среднее время потраченное на вопрос: \(string(seconds: averageTime)) секунд"
         } else {
             text = checkTime()
@@ -388,34 +472,42 @@ class ResultsViewController: UIViewController {
             text = "Вы не успели ответить на все вопросы за заданное время!"
         } else {
             let seconds = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
-            let spendTime = Float(seconds) - (spendTime.first ?? 0)
+            let spendTime = CGFloat(seconds) - (spendTime.first ?? 0)
             text = "На все вопросы вы потратили \(string(seconds: spendTime)) секунд"
         }
         
         return text
     }
-    
-    private func string(seconds: Float) -> String {
+    */
+    private func string(seconds: CGFloat) -> String {
         String(format: "%.2f", seconds)
     }
     
     @objc private func resetGame() {
         navigationController?.popViewController(animated: true)
     }
+    
+    @objc private func exitToMenu() {
+        navigationController?.popToRootViewController(animated: true)
+    }
 }
 
 // MARK: - Setup view
 extension ResultsViewController {
     private func setView(color: UIColor, image: UIImageView, labelFirst: UILabel,
-                         labelSecond: UILabel) -> UIView {
+                         labelSecond: UILabel, imageInfinity: UIImageView? = nil) -> UIView {
         let view = UIView()
         view.backgroundColor = color
         view.layer.cornerRadius = 20
         view.translatesAutoresizingMaskIntoConstraints = false
-        setupSubviews(subviews: image, labelFirst, labelSecond, on: view)
+        if let imageInfinity = imageInfinity {
+            setupSubviews(subviews: image, labelFirst, labelSecond, imageInfinity, on: view)
+        } else {
+            setupSubviews(subviews: image, labelFirst, labelSecond, on: view)
+        }
         return view
     }
-    
+    /*
     private func setView(color: UIColor? = nil, cornerRadius: CGFloat? = nil,
                          borderWidth: CGFloat? = nil, borderColor: UIColor? = nil,
                          shadowColor: UIColor? = nil, shadowRadius: CGFloat? = nil,
@@ -515,7 +607,7 @@ extension ResultsViewController {
             tag: 1)
         return view
     }
-    
+    */
     private func backgroundColor(question: Countries, answer: Countries,
                                  tag: Int, select: Int) -> UIColor {
         let lightGreen = UIColor(red: 152/255, green: 255/255, blue: 51/255, alpha: 1)
@@ -572,43 +664,18 @@ extension ResultsViewController {
 }
 // MARK: - Setup button
 extension ResultsViewController {
-    private func setButton(title: String, style: String? = nil, size: CGFloat,
-                           colorTitle: UIColor? = nil, colorBackgroud: UIColor? = nil,
-                           radiusCorner: CGFloat, borderWidth: CGFloat? = nil,
-                           borderColor: CGColor? = nil, shadowColor: CGColor? = nil,
-                           radiusShadow: CGFloat? = nil, shadowOffsetWidth: CGFloat? = nil,
-                           shadowOffsetHeight: CGFloat? = nil, isEnabled: Bool? = nil,
-                           tag: Int? = nil) -> UIButton {
+    private func setButton() -> UIButton {
         let button = UIButton(type: .system)
-        button.setTitle(title, for: .normal)
-        button.setTitleColor(colorTitle, for: .normal)
-        button.titleLabel?.font = UIFont(name: style ?? "", size: size)
-        button.backgroundColor = colorBackgroud
-        button.layer.cornerRadius = radiusCorner
-        button.layer.borderWidth = borderWidth ?? 0
-        button.layer.borderColor = borderColor
-        button.layer.shadowColor = shadowColor
-        button.layer.shadowOpacity = 1
-        button.layer.shadowRadius = radiusShadow ?? 0
-        button.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                           height: shadowOffsetHeight ?? 0)
-        button.isEnabled = isEnabled ?? true
-        button.tag = tag ?? 0
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }
-    
-    private func setButton(image: String, action: Selector) -> UIButton {
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
-        let image = UIImage(systemName: image, withConfiguration: size)
-        let button = UIButton(type: .system)
-        button.setImage(image, for: .normal)
-        button.tintColor = .blueBlackSea
+        button.setTitle("Завершить", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont(name: "mr_fontick", size: 25)
+        button.backgroundColor = .blueBlackSea
         button.layer.cornerRadius = 12
-        button.layer.borderColor = UIColor.blueBlackSea.cgColor
-        button.layer.borderWidth = 1.5
+        button.layer.shadowColor = UIColor.blueBlackSea.cgColor
+        button.layer.shadowOpacity = 0.5
+        button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: action, for: .touchUpInside)
+        button.addTarget(self, action: #selector(exitToMenu), for: .touchUpInside)
         return button
     }
 }
@@ -717,8 +784,8 @@ extension ResultsViewController {
         return image
     }
     
-    private func setImage(image: String) -> UIImageView {
-        let size = UIImage.SymbolConfiguration(pointSize: 25)
+    private func setImage(image: String, size: CGFloat) -> UIImageView {
+        let size = UIImage.SymbolConfiguration(pointSize: size)
         let image = UIImage(systemName: image, withConfiguration: size)
         let imageView = UIImageView(image: image)
         imageView.tintColor = .white
@@ -767,7 +834,6 @@ extension ResultsViewController {
             labelResults.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -40),
             labelResults.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
-        setupSquare(subview: buttonReset, sizes: 40)
         
         constraintsView(subview: viewCurrentQuestions, layout: view.topAnchor,
                         leading: 20, trailing: -setConstraint(), constant: 350,
@@ -777,7 +843,25 @@ extension ResultsViewController {
                         leading: setConstraint(), trailing: -20, constant: 350,
                         image: imageWrongQuestions, labelFirst: labelWrongQuestions,
                         labelSecond: labelNumberWrongQuestions)
+        constraintsView(subview: viewTimeSpend, layout: viewCurrentQuestions.bottomAnchor,
+                        leading: 20, trailing: -setConstraint(), constant: 20,
+                        image: imageTimeSpend, labelFirst: labelTimeSpend,
+                        labelSecond: labelNumberTimeSpend)
+        NSLayoutConstraint.activate([
+            imageInfinity.centerXAnchor.constraint(equalTo: labelNumberTimeSpend.centerXAnchor),
+            imageInfinity.centerYAnchor.constraint(equalTo: labelNumberTimeSpend.centerYAnchor)
+        ])
+        constraintsView(subview: viewCountQuestions, layout: viewWrongQuestions.bottomAnchor,
+                        leading: setConstraint(), trailing: -20, constant: 20,
+                        image: imageCountQuestions, labelFirst: labelCountQuestions,
+                        labelSecond: labelNumberCountQuestions)
         
+        NSLayoutConstraint.activate([
+            buttonComplete.topAnchor.constraint(equalTo: viewCountQuestions.bottomAnchor, constant: 50),
+            buttonComplete.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            buttonComplete.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            buttonComplete.heightAnchor.constraint(equalToConstant: 55)
+        ])
         /*
         NSLayoutConstraint.activate([
             viewPanel.topAnchor.constraint(equalTo: view.topAnchor),
@@ -807,23 +891,23 @@ extension ResultsViewController {
             subview.topAnchor.constraint(equalTo: layout, constant: constant),
             subview.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leading),
             subview.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: trailing),
-            subview.heightAnchor.constraint(equalToConstant: 100)
+            subview.heightAnchor.constraint(equalToConstant: 115)
         ])
         
         NSLayoutConstraint.activate([
-            labelFirst.centerYAnchor.constraint(equalTo: subview.centerYAnchor, constant: -25),
+            labelFirst.topAnchor.constraint(equalTo: subview.topAnchor, constant: 2.5),
             labelFirst.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 10),
             labelFirst.trailingAnchor.constraint(equalTo: subview.trailingAnchor, constant: -10)
         ])
         
         NSLayoutConstraint.activate([
-            image.centerXAnchor.constraint(equalTo: subview.centerXAnchor, constant: -30),
-            image.centerYAnchor.constraint(equalTo: subview.centerYAnchor, constant: 20)
+            image.centerXAnchor.constraint(equalTo: subview.centerXAnchor, constant: -45),
+            image.centerYAnchor.constraint(equalTo: subview.centerYAnchor, constant: 32.5)
         ])
         
         NSLayoutConstraint.activate([
             labelSecond.centerXAnchor.constraint(equalTo: subview.centerXAnchor, constant: 30),
-            labelSecond.centerYAnchor.constraint(equalTo: subview.centerYAnchor, constant: 20)
+            labelSecond.centerYAnchor.constraint(equalTo: subview.centerYAnchor, constant: 32.5)
         ])
     }
     
@@ -844,7 +928,7 @@ extension ResultsViewController {
         label.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         label.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
-    
+    /*
     private func setConstraintsOnView(
         view: UIView, label: UILabel, imageFlag: UIImageView, buttonFirst: UIView,
         buttonSecond: UIView, buttonThird: UIView, buttonFourth: UIView, labelTimeUp: UILabel? = nil) {
@@ -901,7 +985,7 @@ extension ResultsViewController {
                 ])
             }
     }
-    /*
+    
     private func setConstraintsCongratulation(labelOne: UILabel, labelTwo: UILabel) {
         NSLayoutConstraint.activate([
             labelOne.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 30),
@@ -915,7 +999,7 @@ extension ResultsViewController {
             labelTwo.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
         ])
     }
-    */
+    
     private func setConstraintsForView() {
         guard !views.isEmpty else { return }
         
@@ -1019,4 +1103,5 @@ extension ResultsViewController {
             multiplierOne * multiplierTwo + 232 * multiplierThree
         }
     }
+     */
 }

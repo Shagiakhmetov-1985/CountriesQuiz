@@ -137,7 +137,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private var currentQuestion = 0
     private var seconds = 0
-    private var spendTime: [Float] = []
+    private var spendTime: [CGFloat] = []
     private var questions = Countries.getQuestions()
     private var answerSelect = false
     
@@ -367,7 +367,7 @@ class QuizOfFlagsViewController: UIViewController {
         }
         
         if oneQuestionCheck() {
-            setAverageTime()
+            setTimeSpent()
         } else if !oneQuestionCheck(), currentQuestion + 1 == questions.questions.count {
             setTimeSpent()
         }
@@ -445,17 +445,10 @@ class QuizOfFlagsViewController: UIViewController {
         }
     }
     
-    private func setAverageTime() {
-        let progressViewSpent = 1 - progressView.progress
-        let seconds = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
-        let timeSpent = progressViewSpent * Float(seconds)
-        spendTime.append(timeSpent)
-    }
-    
     private func setTimeSpent() {
-        let progressViewSpent = 1 - progressView.progress
-        let seconds = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
-        let timeSpent = progressViewSpent * Float(seconds)
+        let circleTimeSpent = 1 - shapeLayer.strokeEnd
+        let seconds = oneQuestionSeconds()
+        let timeSpent = circleTimeSpent * CGFloat(seconds)
         spendTime.append(timeSpent)
     }
     
@@ -787,30 +780,6 @@ extension QuizOfFlagsViewController {
             labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 70),
             labelTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
-    }
-    
-    private func constraintsProgressView() {
-        NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 26),
-            progressView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            progressView.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
-            progressView.heightAnchor.constraint(equalToConstant: 28)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelTimer.topAnchor.constraint(equalTo: progressView.topAnchor, constant: 4),
-            labelTimer.trailingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: -30)
-        ])
-    }
-    
-    private func constraintsLabelQuiz() -> NSLayoutConstraint {
-        var constraint = NSLayoutConstraint()
-        if mode.timeElapsed.timeElapsed {
-            constraint = labelQuiz.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 30)
-        } else {
-            constraint = labelQuiz.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30)
-        }
-        return constraint
     }
     
     private func setupSquare(subview: UIView, sizes: CGFloat) {

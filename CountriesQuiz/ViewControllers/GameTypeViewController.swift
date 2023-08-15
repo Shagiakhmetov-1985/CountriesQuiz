@@ -359,7 +359,7 @@ extension GameTypeViewController {
         button.tintColor = .white
         button.layer.cornerRadius = 12
         button.layer.shadowColor = color.cgColor
-        button.layer.shadowOpacity = 0.5
+        button.layer.shadowOpacity = 0.4
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: action, for: .touchUpInside)
@@ -373,7 +373,7 @@ extension GameTypeViewController {
         button.backgroundColor = color
         button.layer.cornerRadius = 20
         button.layer.shadowColor = color.cgColor
-        button.layer.shadowOpacity = 0.5
+        button.layer.shadowOpacity = 0.4
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: action, for: .touchUpInside)

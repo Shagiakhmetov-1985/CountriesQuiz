@@ -557,7 +557,6 @@ extension QuizOfFlagsViewController {
             } else {
                 let resultsVC = ResultsViewController()
                 resultsVC.results = results
-                resultsVC.countries = questions.questions
                 resultsVC.mode = mode
                 resultsVC.spendTime = spendTime
                 navigationController?.pushViewController(resultsVC, animated: true)
@@ -795,17 +794,5 @@ extension QuizOfFlagsViewController {
     
     private func setupWidthConstraint() -> CGFloat {
         view.bounds.width - 40
-    }
-    
-    private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 110 : 70
-    }
-    
-    private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 60 : 30
-    }
-    
-    private func size() -> CGFloat {
-        view.frame.width > 375 ? 20 : 19
     }
 }

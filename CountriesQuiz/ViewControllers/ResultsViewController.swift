@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+// MARK: - Properties
 class ResultsViewController: UIViewController {
     private lazy var labelResults: UILabel = {
         let label = setLabel(
@@ -18,7 +18,9 @@ class ResultsViewController: UIViewController {
     }()
     
     private lazy var buttonDetails: UIButton = {
-        let button = setButton(image: "lightbulb")
+        let button = setButton(
+            image: "lightbulb",
+            action: #selector(showWrongAnswers))
         return button
     }()
     
@@ -270,11 +272,8 @@ class ResultsViewController: UIViewController {
     var mode: Setting!
     var spendTime: [CGFloat]!
     
-    private var views: [UIView] = []
     private var timer = Timer()
-    private var animate = Timer()
-    private var count: CGFloat = 0
-    
+    // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDesign()
@@ -295,9 +294,8 @@ class ResultsViewController: UIViewController {
                       viewCountQuestions, imageInfinity, stackViews,
                       buttonComplete,
                       on: view)
-//        opacity(subviews: labelNumberQuestions, labelNumberWrongQuestions,
-//                labelNumberTimeSpend, labelNumberCountQuestions, stackViewCurrent,
-//                stackViewWrong, stackViewTimeSpend, opacity: 0)
+        opacity(subviews: stackViewCurrent, stackViewWrong, stackViewTimeSpend,
+                opacity: 0)
     }
     
     private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -312,12 +310,6 @@ class ResultsViewController: UIViewController {
         }
     }
     
-    private func setupHiddenSubviews(views: UIView..., isHidden: Bool) {
-        views.forEach { view in
-            view.isHidden = isHidden
-        }
-    }
-    
     private func setupTimer() {
         timer = Timer.scheduledTimer(
             timeInterval: 0.3, target: self, selector: #selector(circleCurrentQuestions),
@@ -326,56 +318,49 @@ class ResultsViewController: UIViewController {
     
     @objc private func circleCurrentQuestions() {
         timer.invalidate()
-        let delay = CGFloat(mode.countQuestions - results.count) * 0.2
+        let delay = 0.75
+        let delayTimer = delay + 0.3
         let currentQuestions = CGFloat(mode.countQuestions - results.count)
         let value = currentQuestions / CGFloat(mode.countQuestions)
         setCircle(color: .greenHarlequin.withAlphaComponent(0.3), radius: 80, strokeEnd: 1)
         setCircle(color: .greenHarlequin, radius: 80, strokeEnd: 0, value: value, duration: delay)
+        showAnimate(stackView: stackViewCurrent)
+        
         timer = Timer.scheduledTimer(
-            timeInterval: delay, target: self, selector: #selector(circleWrongQuestions),
+            timeInterval: delayTimer, target: self, selector: #selector(circleWrongQuestions),
             userInfo: nil, repeats: false)
     }
-    /*
-    private func startAnimateCurrent() {
-        UIView.animate(withDuration: 0.5) {
-            self.opacity(subviews: self.labelNumberQuestions, opacity: 1)
-        }
-        animate = Timer.scheduledTimer(
-            timeInterval: 0.05, target: self, selector: #selector(animateLabelCurrent),
-            userInfo: nil, repeats: true)
-    }
     
-    @objc private func animateLabelCurrent() {
-        count += 0.25
-        labelNumberQuestions.text = round(count: count)
-        print("count: \(count), countQuestions: \(mode.countQuestions - results.count)")
-        if count >= CGFloat(mode.countQuestions - results.count) {
-            animate.invalidate()
-            labelNumberQuestions.text = percentString(count: count)
-            count = 0
-        }
-    }
-    */
     @objc private func circleWrongQuestions() {
         timer.invalidate()
-        let delay = CGFloat(results.count) * 0.2
+        let delay = 0.75
+        let delayTimer = delay + 0.3
         let wrongQuestions = CGFloat(results.count)
         let value = wrongQuestions / CGFloat(mode.countQuestions)
         setCircle(color: .redTangerineTango.withAlphaComponent(0.3), radius: 61, strokeEnd: 1)
         setCircle(color: .redTangerineTango, radius: 61, strokeEnd: 0, value: value, duration: delay)
+        showAnimate(stackView: stackViewWrong)
+        
         timer = Timer.scheduledTimer(
-            timeInterval: delay, target: self, selector: #selector(circleSpendTime),
+            timeInterval: delayTimer, target: self, selector: #selector(circleSpendTime),
             userInfo: nil, repeats: false)
     }
     
     @objc private func circleSpendTime() {
         timer.invalidate()
-        let timeForQuestion = oneQuestionSeconds()
+        let delay = 0.75
         let averageTime = spendTime.reduce(0.0, +) / CGFloat(spendTime.count)
-        let delay = averageTime * 0.2
+        let timeForQuestion = oneQuestionSeconds()
         let value = averageTime / CGFloat(timeForQuestion)
         setCircle(color: .blueMiddlePersian.withAlphaComponent(0.3), radius: 42, strokeEnd: 1)
         setCircle(color: .blueMiddlePersian, radius: 42, strokeEnd: 0, value: value, duration: delay)
+        showAnimate(stackView: stackViewTimeSpend)
+    }
+    
+    private func showAnimate(stackView: UIStackView) {
+        UIView.animate(withDuration: 1) {
+            self.opacity(subviews: stackView, opacity: 1)
+        }
     }
     
     private func oneQuestionSeconds() -> Int {
@@ -450,17 +435,17 @@ class ResultsViewController: UIViewController {
     private func percentCurrentQuestions() -> String {
         let currentQuestions = mode.countQuestions - results.count
         let percent = CGFloat(currentQuestions) / CGFloat(mode.countQuestions) * 100
-        return percentString(count: percent) + "%"
+        return stringWithoutNull(count: percent) + "%"
     }
     
     private func percentWrongQuestions() -> String {
         let wrongQuestions = results.count
         let percent = CGFloat(wrongQuestions) / CGFloat(mode.countQuestions) * 100
-        return percentString(count: percent) + "%"
+        return stringWithoutNull(count: percent) + "%"
     }
     
     private func percentTimeSpend() -> String {
-        timeElapsedCheck() ? percentString(count: percentTimeCheck()) + "%" : " "
+        timeElapsedCheck() ? stringWithoutNull(count: percentTimeCheck()) + "%" : " "
     }
     
     private func percentTimeCheck() -> CGFloat {
@@ -481,186 +466,7 @@ class ResultsViewController: UIViewController {
         }
         return seconds
     }
-    /*
-    private func checkResults() {
-        if !results.isEmpty {
-            showWrongAnswers()
-        } else {
-            showCongratulation()
-        }
-    }
     
-    private func showWrongAnswers() {
-        let labelStats = setLabel(
-            title: """
-            Всего вопросов: \(countries.count)
-            \(checkAnswers())
-            \(checkSpendTime())
-            """,
-            size: 23,
-            style: "mr_fontick",
-            color: UIColor(
-                red: 214/255,
-                green: 245/255,
-                blue: 214/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 51/255,
-                green: 83/255,
-                blue: 51/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2,
-            textAlignment: .left)
-        
-        views.append(labelStats)
-        
-        results.forEach { result in
-            let view = setViewForResults()
-            
-            let label = setLabelForResults(text: result.currentQuestion, tag: 1)
-            
-            let imageFlag = setImageFlagForResults(imageFlag: result.question.flag)
-            
-            let buttonFirst = setButtonForResults(
-                question: result.question, answer: result.buttonFirst, tag: 1, select: result.tag)
-            let buttonSecond = setButtonForResults(
-                question: result.question, answer: result.buttonSecond, tag: 2, select: result.tag)
-            let buttonThird = setButtonForResults(
-                question: result.question, answer: result.buttonThird, tag: 3, select: result.tag)
-            let buttonFourth = setButtonForResults(
-                question: result.question, answer: result.buttonFourth, tag: 4, select: result.tag)
-            
-            if result.timeUp {
-                let labelTimeUp = setLabelForResults(tag: 2)
-                
-                setupSubviewsOnView(view: view, subviews: label, imageFlag, buttonFirst,
-                                    buttonSecond, buttonThird, buttonFourth, labelTimeUp)
-                setConstraintsOnView(view: view, label: label, imageFlag: imageFlag,
-                                     buttonFirst: buttonFirst, buttonSecond: buttonSecond,
-                                     buttonThird: buttonThird, buttonFourth: buttonFourth,
-                                     labelTimeUp: labelTimeUp)
-            } else {
-                setupSubviewsOnView(view: view, subviews: label, imageFlag, buttonFirst,
-                                    buttonSecond, buttonThird, buttonFourth)
-                setConstraintsOnView(view: view, label: label, imageFlag: imageFlag,
-                                     buttonFirst: buttonFirst, buttonSecond: buttonSecond,
-                                     buttonThird: buttonThird, buttonFourth: buttonFourth)
-            }
-            
-            views.append(view)
-        }
-    }
-    
-    private func checkAnswers() -> String {
-        var text = String()
-        
-        if oneQuestionCheck() {
-            text = """
-            Правильных ответов: \(countries.count - results.count)
-            Неправильных ответов: \(results.count)
-            """
-        } else {
-            text = checkAnswersTime()
-        }
-        
-        return text
-    }
-    
-    private func checkAnswersTime() -> String {
-        var text = String()
-        
-        if spendTime.isEmpty {
-            let wrongAnswers = countries.count - (results.last?.currentQuestion ?? 0) + 1
-            let correctAnswers = countries.count - wrongAnswers
-            text = """
-            Правильных ответов: \(correctAnswers)
-            Неправильных ответов: \(wrongAnswers)
-            """
-        } else {
-            text = """
-            Правильных ответов: \(countries.count - results.count)
-            Неправильных ответов: \(results.count)
-            """
-        }
-        
-        return text
-    }
-    
-    private func showCongratulation() {
-        let labelOne = setLabel(
-            title: "Поздравляем!",
-            size: 24,
-            style: "mr_fontick",
-            color: UIColor(
-                red: 214/255,
-                green: 245/255,
-                blue: 214/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 51/255,
-                green: 83/255,
-                blue: 51/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2,
-            textAlignment: .center)
-        
-        let labelTwo = setLabel(
-            title: """
-            Вы ответили на все вопросы правильно!
-            Всего вопросов: \(countries.count)
-            \(checkSpendTime())
-            """,
-            size: 23,
-            style: "mr_fontick",
-            color: UIColor(
-                red: 214/255,
-                green: 245/255,
-                blue: 214/255,
-                alpha: 1),
-            colorOfShadow: UIColor(
-                red: 51/255,
-                green: 83/255,
-                blue: 51/255,
-                alpha: 1).cgColor,
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2,
-            textAlignment: .left)
-        
-        setupSubviews(subviews: labelOne, labelTwo)
-        setConstraintsCongratulation(labelOne: labelOne, labelTwo: labelTwo)
-    }
-    
-    private func checkSpendTime() -> String {
-        var text = String()
-        
-        if oneQuestionCheck() {
-            let averageTime = spendTime.reduce(0.0, +) / CGFloat(spendTime.count)
-            text = "Среднее время потраченное на вопрос: \(string(seconds: averageTime)) секунд"
-        } else {
-            text = checkTime()
-        }
-        return text
-    }
-    
-    private func checkTime() -> String {
-        var text = String()
-        
-        if spendTime.isEmpty {
-            text = "Вы не успели ответить на все вопросы за заданное время!"
-        } else {
-            let seconds = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
-            let spendTime = CGFloat(seconds) - (spendTime.first ?? 0)
-            text = "На все вопросы вы потратили \(string(seconds: spendTime)) секунд"
-        }
-        
-        return text
-    }
-    */
     private func string(seconds: CGFloat) -> String {
         String(format: "%.2f", seconds)
     }
@@ -669,32 +475,25 @@ class ResultsViewController: UIViewController {
         String(format: "%.1f", count)
     }
     
-    private func percentString(count: CGFloat) -> String {
+    private func stringWithoutNull(count: CGFloat) -> String {
         String(format: "%.0f", count)
     }
     
     @objc private func exitToMenu() {
         navigationController?.popToRootViewController(animated: true)
     }
+    
+    @objc private func showWrongAnswers() {
+        let wrongAnswersVC = WrongAnswersViewController()
+        wrongAnswersVC.mode = mode
+        wrongAnswersVC.results = results
+        wrongAnswersVC.modalPresentationStyle = .custom
+        present(wrongAnswersVC, animated: true)
+    }
 }
 
 // MARK: - Setup view
 extension ResultsViewController {
-    /*
-    private func setView(color: UIColor, image: UIImageView, labelFirst: UILabel,
-                         labelSecond: UILabel, imageInfinity: UIImageView? = nil) -> UIView {
-        let view = UIView()
-        view.backgroundColor = color
-        view.layer.cornerRadius = 20
-        view.translatesAutoresizingMaskIntoConstraints = false
-        if let imageInfinity = imageInfinity {
-            setupSubviews(subviews: image, labelFirst, labelSecond, imageInfinity, on: view)
-        } else {
-            setupSubviews(subviews: image, labelFirst, labelSecond, on: view)
-        }
-        return view
-    }
-    */
     private func setView(color: UIColor, labelFirst: UILabel? = nil, image: UIImageView? = nil,
                          labelSecond: UILabel? = nil, radius: CGFloat) -> UIView {
         let view = UIView()
@@ -706,165 +505,10 @@ extension ResultsViewController {
         }
         return view
     }
-    /*
-    private func setView(color: UIColor? = nil, cornerRadius: CGFloat? = nil,
-                         borderWidth: CGFloat? = nil, borderColor: UIColor? = nil,
-                         shadowColor: UIColor? = nil, shadowRadius: CGFloat? = nil,
-                         shadowOffsetWidth: CGFloat? = nil,
-                         shadowOffsetHeight: CGFloat? = nil,
-                         tag: Int? = nil) -> UIView {
-        let view = UIView()
-        view.layer.cornerRadius = cornerRadius ?? 0
-        view.layer.borderWidth = borderWidth ?? 0
-        view.layer.borderColor = borderColor?.cgColor
-        view.layer.shadowColor = shadowColor?.cgColor
-        view.layer.shadowOpacity = 1
-        view.layer.shadowRadius = shadowRadius ?? 0
-        view.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                         height: shadowOffsetHeight ?? 0)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.tag = tag ?? 0
-        
-        switch tag {
-        case 1:
-            view.backgroundColor = color
-        case 2:
-            setGradient(content: view)
-        default:
-            setGradientView(content: view)
-        }
-        
-        return view
-    }
-    
-    private func setGradient(content: UIView) {
-        let gradientLayer = CAGradientLayer()
-        let colorGreen = UIColor(red: 71/255, green: 160/255, blue: 36/255, alpha: 1)
-        let colorLightGreen = UIColor(red: 103/255, green: 200/255, blue: 51/255, alpha: 1)
-        gradientLayer.frame = view.bounds
-        gradientLayer.colors = [colorLightGreen.cgColor, colorGreen.cgColor]
-        content.layer.addSublayer(gradientLayer)
-    }
-    
-    private func setGradientView(content: UIView) {
-        let gradientLayer = CAGradientLayer()
-        let colorGreen = UIColor(red: 30/255, green: 113/255, blue: 204/255, alpha: 1)
-        let colorLightGreen = UIColor(red: 102/255, green: 153/255, blue: 204/255, alpha: 1)
-        gradientLayer.frame.size.width = setupWidthConstraint()
-        gradientLayer.frame.size.height = heightViewConstraint()
-        gradientLayer.cornerRadius = radiusView()
-        gradientLayer.colors = [colorLightGreen.cgColor, colorGreen.cgColor]
-        content.layer.addSublayer(gradientLayer)
-    }
-    
-    private func setViewForResults() -> UIView {
-        let view = setView(
-            cornerRadius: radiusView(),
-            shadowColor: UIColor(
-                red: 54/255,
-                green: 55/255,
-                blue: 215/255,
-                alpha: 1),
-            shadowRadius: 3.5,
-            shadowOffsetWidth: 3.5,
-            shadowOffsetHeight: 3.5,
-            tag: 3)
-        return view
-    }
-    
-    private func setButtonForResults(question: Countries, answer: Countries,
-                                     tag: Int, select: Int) -> UIView {
-        let view = setViewForLabel(question: question, answer: answer,
-                                   tag: tag, select: select)
-        
-        let label = setLabel(
-            title: answer.name,
-            size: 15,
-            style: "mr_fontick",
-            color: textColor(question: question, answer: answer, tag: tag,
-                             select: select),
-            textAlignment: .center)
-        
-        view.addSubview(label)
-        view.tag = tag
-        
-        setConstraintsForLabel(label: label, view: view)
-        return view
-    }
-    
-    private func setViewForLabel(question: Countries, answer: Countries,
-                                 tag: Int, select: Int) -> UIView {
-        let view = setView(
-            color: backgroundColor(question: question, answer: answer, tag: tag,
-                                   select: select),
-            cornerRadius: 5,
-            shadowColor: shadowColor(question: question, answer: answer, tag: tag,
-                                     select: select),
-            shadowRadius: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2,
-            tag: 1)
-        return view
-    }
-    
-    private func backgroundColor(question: Countries, answer: Countries,
-                                 tag: Int, select: Int) -> UIColor {
-        let lightGreen = UIColor(red: 152/255, green: 255/255, blue: 51/255, alpha: 1)
-        let lightRed = UIColor(red: 255/255, green: 102/255, blue: 102/255, alpha: 1)
-        let lightGray = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)
-        
-        switch true {
-        case question == answer && tag == select:
-            return lightGreen
-        case question == answer && !(tag == select):
-            return lightGreen
-        case !(question == answer) && tag == select:
-            return lightRed
-        default:
-            return lightGray
-        }
-    }
-    
-    private func shadowColor(question: Countries, answer: Countries,
-                             tag: Int, select: Int) -> UIColor {
-        let darkGreen = UIColor(red: 51/255, green: 83/255, blue: 51/255, alpha: 1)
-        let darkRed = UIColor(red: 113/255, green: 0, blue: 0, alpha: 1)
-        let darkGray = UIColor(red: 72/255, green: 72/255, blue: 72/255, alpha: 1)
-        
-        switch true {
-        case question == answer && tag == select:
-            return darkGreen
-        case question == answer && !(tag == select):
-            return darkGreen
-        case !(question == answer) && tag == select:
-            return darkRed
-        default:
-            return darkGray
-        }
-    }
-    
-    private func textColor(question: Countries, answer: Countries,
-                           tag: Int, select: Int) -> UIColor {
-        let green = UIColor(red: 51/255, green: 133/255, blue: 51/255, alpha: 1)
-        let red = UIColor(red: 153/255, green: 0, blue: 0, alpha: 1)
-        let gray = UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1)
-        
-        switch true {
-        case question == answer && tag == select:
-            return green
-        case question == answer && !(tag == select):
-            return green
-        case !(question == answer) && tag == select:
-            return red
-        default:
-            return gray
-        }
-    }
-     */
 }
 // MARK: - Setup button
 extension ResultsViewController {
-    private func setButton(image: String) -> UIButton {
+    private func setButton(image: String, action: Selector) -> UIButton {
         let size = UIImage.SymbolConfiguration(pointSize: 26)
         let image = UIImage(systemName: image, withConfiguration: size)
         let button = Button(type: .custom)
@@ -876,6 +520,7 @@ extension ResultsViewController {
         button.layer.shadowColor = UIColor.grayLight.cgColor
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
         return button
     }
     
@@ -907,45 +552,6 @@ extension ResultsViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
-    /*
-    private func setLabelForResults(text: Int? = nil, tag: Int) -> UILabel {
-        let label = setLabel(
-            title: title(text: text),
-            size: size(tag: tag),
-            style: "mr_fontick",
-            color: titleColor(tag: tag),
-            colorOfShadow: shadowColor(tag: tag),
-            radiusOfShadow: 2,
-            shadowOffsetWidth: 2,
-            shadowOffsetHeight: 2,
-            textAlignment: .center)
-        return label
-    }
-    
-    private func title(text: Int? = nil) -> String {
-        if let text = text {
-            return "Вопрос \(text) из \(countries.count)"
-        } else {
-            return "Время вышло!"
-        }
-    }
-    
-    private func size(tag: Int) -> CGFloat {
-        tag == 1 ? 25 : 20
-    }
-    
-    private func titleColor(tag: Int) -> UIColor {
-        tag == 1 ?
-        UIColor(red: 153/255, green: 204/255, blue: 255/255, alpha: 1) :
-        UIColor(red: 255/255, green: 102/255, blue: 102/255, alpha: 1)
-    }
-    
-    private func shadowColor(tag: Int) -> CGColor {
-        tag == 1 ?
-        UIColor(red: 54/255, green: 55/255, blue: 215/255, alpha: 1).cgColor :
-        UIColor(red: 113/255, green: 0, blue: 0, alpha: 1).cgColor
-    }
-     */
 }
 // MARK: - Setup stack views
 extension ResultsViewController {
@@ -975,21 +581,6 @@ extension ResultsViewController {
 }
 // MARK: - Setup images
 extension ResultsViewController {
-    /*
-    private func setImageFlagForResults(imageFlag: String) -> UIImageView {
-        let image = UIImageView()
-        image.image = UIImage(named: imageFlag)
-        image.clipsToBounds = true
-        image.layer.borderWidth = 1
-        image.layer.borderColor = UIColor(
-            red: 54/255,
-            green: 55/255,
-            blue: 215/255,
-            alpha: 1).cgColor
-        image.translatesAutoresizingMaskIntoConstraints = false
-        return image
-    }
-    */
     private func setImage(image: String, size: CGFloat) -> UIImageView {
         let size = UIImage.SymbolConfiguration(pointSize: size)
         let image = UIImage(systemName: image, withConfiguration: size)
@@ -1133,180 +724,4 @@ extension ResultsViewController {
             subview.centerYAnchor.constraint(equalTo: subviewOther.centerYAnchor)
         ])
     }
-    /*
-    private func setConstraintsOnView(
-        view: UIView, label: UILabel, imageFlag: UIImageView, buttonFirst: UIView,
-        buttonSecond: UIView, buttonThird: UIView, buttonFourth: UIView, labelTimeUp: UILabel? = nil) {
-            NSLayoutConstraint.activate([
-                label.topAnchor.constraint(equalTo: view.topAnchor, constant: 12),
-                label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                label.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-            ])
-            
-            NSLayoutConstraint.activate([
-                imageFlag.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 12),
-                imageFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                imageFlag.widthAnchor.constraint(equalToConstant: 180),
-                imageFlag.heightAnchor.constraint(equalToConstant: 110)
-            ])
-            
-            NSLayoutConstraint.activate([
-                buttonFirst.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 16),
-                buttonFirst.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                buttonFirst.heightAnchor.constraint(equalToConstant: 22),
-                buttonFirst.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-                buttonFirst.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
-            ])
-            
-            NSLayoutConstraint.activate([
-                buttonSecond.topAnchor.constraint(equalTo: buttonFirst.bottomAnchor, constant: 6),
-                buttonSecond.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                buttonSecond.heightAnchor.constraint(equalToConstant: 22),
-                buttonSecond.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-                buttonSecond.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
-            ])
-            
-            NSLayoutConstraint.activate([
-                buttonThird.topAnchor.constraint(equalTo: buttonSecond.bottomAnchor, constant: 6),
-                buttonThird.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                buttonThird.heightAnchor.constraint(equalToConstant: 22),
-                buttonThird.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-                buttonThird.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
-            ])
-            
-            NSLayoutConstraint.activate([
-                buttonFourth.topAnchor.constraint(equalTo: buttonThird.bottomAnchor, constant: 6),
-                buttonFourth.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                buttonFourth.heightAnchor.constraint(equalToConstant: 22),
-                buttonFourth.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-                buttonFourth.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
-            ])
-            
-            if let labelTimeUp = labelTimeUp {
-                NSLayoutConstraint.activate([
-                    labelTimeUp.topAnchor.constraint(equalTo: buttonFourth.bottomAnchor, constant: 6),
-                    labelTimeUp.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                    labelTimeUp.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-                ])
-            }
-    }
-    
-    private func setConstraintsCongratulation(labelOne: UILabel, labelTwo: UILabel) {
-        NSLayoutConstraint.activate([
-            labelOne.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 30),
-            labelOne.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            labelOne.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelTwo.topAnchor.constraint(equalTo: labelOne.bottomAnchor, constant: 20),
-            labelTwo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            labelTwo.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
-    }
-    
-    private func setConstraintsForView() {
-        guard !views.isEmpty else { return }
-        
-        setupSubviewsOnContentView(subviews: scrollView)
-        
-        setConstraintsForLabelStats()
-        
-        var height: CGFloat = 0
-        var multiplier: CGFloat = 2
-        
-        views.forEach { subview in
-            setupSubviewsOnScrollView(subviews: subview)
-            let constraint = heightLabelStatsConstraint() + 30 * multiplier + heightViewConstraint() * height
-            
-            constraints(subview: subview, constant: constraint)
-            
-            height += 1
-            multiplier += 1
-        }
-    }
-    
-    private func setConstraintsForLabelStats() {
-        if let labelStats = views.first {
-            setupSubviewsOnScrollView(subviews: labelStats)
-            
-            constraints(subview: labelStats, constant: 20)
-            
-            views.removeFirst()
-        }
-    }
-    
-    private func constraints(subview: UIView, constant: CGFloat) {
-        NSLayoutConstraint.activate([
-            subview.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: constant),
-            subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            subview.widthAnchor.constraint(equalToConstant: setupWidthConstraint())
-        ])
-    }
-    
-    private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 110 : 70
-    }
-    
-    private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 60 : 30
-    }
-    
-    private func setupWidthConstraint() -> CGFloat {
-        view.frame.width - 60
-    }
-    
-    private func heightViewConstraint() -> CGFloat {
-        315
-    }
-    
-    private func heightLabelStatsConstraint() -> CGFloat {
-        115
-    }
-    
-    private func heightConstraint() -> CGFloat {
-        30 + heightLabelStatsConstraint()
-    }
-    
-    private func radiusView() -> CGFloat {
-        15
-    }
-    
-    private func heightContentSize() -> CGFloat {
-        let answers = CGFloat(views.count - 1)
-        let multiplierOne: CGFloat = answers > 2 ? 1 : 0
-        let multiplierTwo: CGFloat = answers > 2 ? answers - 2 : 0
-        let multiplierThree: CGFloat = answers > 1 ? 1 : 0
-        
-        switch view.frame.height {
-        case 667:
-            return heightConstraint() + 30 * multiplierOne * multiplierTwo +
-            315 * multiplierOne * multiplierTwo + 133 * multiplierThree
-        case 736:
-            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
-            multiplierOne * multiplierTwo + 64 * multiplierThree
-        case 812:
-            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
-            multiplierOne * multiplierTwo - 12
-        case 844:
-            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
-            multiplierOne * multiplierTwo - 44
-        case 852:
-            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
-            multiplierOne * multiplierTwo - 52
-        case 896:
-            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
-            multiplierOne * multiplierTwo - 96
-        case 926:
-            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
-            multiplierOne * multiplierTwo - 126
-        case 932:
-            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
-            multiplierOne * multiplierTwo - 132
-        default:
-            return heightConstraint() + 30 * multiplierOne * multiplierTwo + 315 *
-            multiplierOne * multiplierTwo + 232 * multiplierThree
-        }
-    }
-     */
 }

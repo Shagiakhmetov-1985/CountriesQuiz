@@ -88,6 +88,10 @@ extension UIColor {
     static var bismarkFuriozo: UIColor {
         #colorLiteral(red: 0.6470588235, green: 0.1490196078, blue: 0.03921568627, alpha: 1)
     }
+    
+    static var lightPurplePink: UIColor {
+        #colorLiteral(red: 1, green: 0.6588235294, blue: 0.6862745098, alpha: 1)
+    }
     // MARK: - Results view controller
     static var gummigut: UIColor {
         #colorLiteral(red: 0.8941176471, green: 0.6078431373, blue: 0.05882352941, alpha: 1)

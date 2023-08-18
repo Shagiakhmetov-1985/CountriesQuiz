@@ -233,7 +233,7 @@ class QuizOfFlagsViewController: UIViewController {
             timeInterval: 1, target: self, selector: #selector(showSubviews),
             userInfo: nil, repeats: false)
         timerSecond = Timer.scheduledTimer(
-            timeInterval: 2, target: self, selector: #selector(isEnabledButton),
+            timeInterval: 1.5, target: self, selector: #selector(isEnabledButton),
             userInfo: nil, repeats: false)
     }
     
@@ -259,7 +259,7 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func animationSubviews() {
-        UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut) {
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
             self.imageFlagSpring.constant -= self.view.bounds.width
             self.stackViewSpring.constant -= self.view.bounds.width
             self.view.layoutIfNeeded()
@@ -275,8 +275,8 @@ class QuizOfFlagsViewController: UIViewController {
         labelNumberQuiz.text = "\(currentQuestion + 1) / \(mode.countQuestions)"
         
         if mode.timeElapsed.timeElapsed {
-            animationTimeElapsed()
             checkSeconds()
+            animationTimeElapsed()
             runTimer()
         }
     }
@@ -313,6 +313,16 @@ class QuizOfFlagsViewController: UIViewController {
             seconds = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
         }
         return seconds
+    }
+    
+    private func checkCircleTimeElapsed() -> Int {
+        let timer: Int
+        if oneQuestionCheck() {
+            timer = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
+        } else {
+            timer = seconds / 10
+        }
+        return timer
     }
     
     private func oneQuestionCheck() -> Bool {
@@ -429,7 +439,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func disableButton(buttons: UIButton..., tag: Int) {
         let gray = UIColor.grayLight
-        let white = UIColor.white.withAlphaComponent(0.95)
+        let white = UIColor.white.withAlphaComponent(0.9)
         
         buttons.forEach { button in
             if !(button.tag == tag) {
@@ -520,7 +530,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func showDescription() {
         if currentQuestion == questions.questions.count - 1 {
-            let red = UIColor.redBeige
+            let red = UIColor.lightPurplePink
             labelDescription.text = "Коснитесь экрана, чтобы завершить"
             labelDescription.textColor = red
         }
@@ -693,7 +703,7 @@ extension QuizOfFlagsViewController {
     }
     
     private func animationTimeElapsed() {
-        let timer = oneQuestionSeconds()
+        let timer = checkCircleTimeElapsed()
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.toValue = 0
         animation.duration = CFTimeInterval(timer)

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Results {
+struct Results: Equatable {
     let currentQuestion: Int
     let tag: Int
     

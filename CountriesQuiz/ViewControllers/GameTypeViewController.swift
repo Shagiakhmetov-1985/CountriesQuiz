@@ -64,7 +64,7 @@ class GameTypeViewController: UIViewController {
     
     private lazy var buttonFlagOrCountry: UIButton = {
         let button = setupButton(
-            image: "flag",
+            image: mode.flag ? "flag" : "building",
             color: game.swap,
             action: #selector(flagOrCountry))
         return button
@@ -292,7 +292,15 @@ class GameTypeViewController: UIViewController {
     }
     
     @objc private func flagOrCountry() {
-        
+        if mode.flag {
+            let image = UIImage(systemName: "building")
+            buttonFlagOrCountry.setImage(image, for: .normal)
+        } else {
+            let image = UIImage(systemName: "flag")
+            buttonFlagOrCountry.setImage(image, for: .normal)
+        }
+        mode.flag.toggle()
+        StorageManager.shared.saveSetting(setting: mode)
     }
     
     @objc private func changeSetting() {

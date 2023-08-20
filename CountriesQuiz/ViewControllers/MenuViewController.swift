@@ -281,16 +281,6 @@ class MenuViewController: UIViewController {
         return imageView
     }()
     
-    private lazy var labelGameMode: UILabel = {
-        let label = setLabel(
-            title: "",
-            size: 20,
-            style: "mr_fontick",
-            color: .white,
-            alignment: .center)
-        return label
-    }()
-    
     private let games = Games.getGames()
     private var mode: Setting!
     private var transition = Transition()
@@ -302,7 +292,6 @@ class MenuViewController: UIViewController {
         setupSubviewOnContentView()
         setupSubviewsOnScrollView()
         setupConstraints()
-        gameMode()
     }
     
     // MARK: - Private methods
@@ -329,66 +318,6 @@ class MenuViewController: UIViewController {
         subviews.forEach { subview in
             subviewOther.addSubview(subview)
         }
-    }
-    
-    private func gameMode() {
-        let countQuestions = mode.countQuestions
-        let continents = comma(continents: mode.allCountries, mode.americaContinent,
-                               mode.europeContinent, mode.africaContinent,
-                               mode.asiaContinent, mode.oceaniaContinent)
-        let timeElapsed = mode.timeElapsed.timeElapsed ? "Да" : "Нет"
-        let questionTime = questionTime()
-        
-        showGameMode(countQuestions: countQuestions, continents: continents,
-                     timeElapsed: timeElapsed, questionTime: questionTime)
-    }
-    
-    private func comma(continents: Bool...) -> String {
-        var text = ""
-        var number = 0
-        continents.forEach { continent in
-            number += 1
-            if continent {
-                text += text == "" ? checkContinent(continent: number) : ", " + checkContinent(continent: number)
-            }
-        }
-        return text
-    }
-    
-    private func checkContinent(continent: Int) -> String {
-        var text = ""
-        switch continent {
-        case 1: text = "Все страны"
-        case 2: text = "Америка"
-        case 3: text = "Европа"
-        case 4: text = "Африка"
-        case 5: text = "Азия"
-        default: text = "Океания"
-        }
-        return text
-    }
-    
-    private func questionTime() -> String {
-        guard mode.timeElapsed.timeElapsed else { return "" }
-        let time = mode.timeElapsed.questionSelect.oneQuestion
-        let questionTime = time ? "Время одного вопроса:" : "Время всех вопросов:"
-        return "\(questionTime) \(checkQuestionTime(check: time))"
-    }
-    
-    private func checkQuestionTime(check: Bool) -> String {
-        check ?
-        "\(mode.timeElapsed.questionSelect.questionTime.oneQuestionTime)" :
-        "\(mode.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
-    }
-    
-    private func showGameMode(countQuestions: Int, continents: String,
-                              timeElapsed: String, questionTime: String) {
-        labelGameMode.text = """
-        Количество вопросов: \(countQuestions)
-        Континенты: \(continents)
-        Обратный отсчет: \(timeElapsed)
-        \(questionTime)
-        """
     }
     
     @objc private func gameType(sender: UIButton) {
@@ -509,7 +438,6 @@ extension MenuViewController {
 extension MenuViewController: SettingViewControllerDelegate {
     func sendDataOfSetting(setting: Setting) {
         mode = setting
-        gameMode()
     }
 }
 // MARK: - UIViewControllerTransitioningDelegate
@@ -605,9 +533,5 @@ extension MenuViewController {
     
     private func radius() -> CGFloat {
         50
-    }
-    
-    private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 60 : 20
     }
 }

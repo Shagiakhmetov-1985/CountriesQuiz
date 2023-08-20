@@ -40,6 +40,16 @@ class QuizOfFlagsViewController: UIViewController {
         return image
     }()
     
+    private lazy var labelCountry: UILabel = {
+        let label = setLabel(
+            title: "\(questions.questions[currentQuestion].name)",
+            size: 23,
+            color: .white,
+            numberOfLines: 0,
+            textAlignment: .center)
+        return label
+    }()
+    
     private lazy var progressView: UIProgressView = {
         let progressView = setProgressView(
             radius: radius(),
@@ -129,6 +139,7 @@ class QuizOfFlagsViewController: UIViewController {
     var game: Games!
     
     private var imageFlagSpring: NSLayoutConstraint!
+    private var labelNameSpring: NSLayoutConstraint!
     private var stackViewSpring: NSLayoutConstraint!
     
     private var timerFirst = Timer()
@@ -169,20 +180,32 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func setupSubviews() {
         if mode.timeElapsed.timeElapsed {
-            setupSubviewsWithTimer()
+            checkFlag() ? subviewsWithTimerFlag() : subviewsWithTimerLabel()
         } else {
-            setupSubviewsWithoutTimer()
+            checkFlag() ? subviewsWithoutTimerFlag() : subviewsWithoutTimerLabel()
         }
     }
     
-    private func setupSubviewsWithTimer() {
+    private func subviewsWithTimerFlag() {
         setupSubviews(subviews: labelTimer, imageFlag, progressView, labelNumberQuiz,
                       labelQuiz, labelDescription, stackViewButtons,
                       on: view)
     }
     
-    private func setupSubviewsWithoutTimer() {
+    private func subviewsWithTimerLabel() {
+        setupSubviews(subviews: labelTimer, labelCountry, progressView, labelNumberQuiz,
+                      labelQuiz, labelDescription, stackViewButtons,
+                      on: view)
+    }
+    
+    private func subviewsWithoutTimerFlag() {
         setupSubviews(subviews: imageFlag, progressView, labelNumberQuiz,
+                      labelQuiz, labelDescription, stackViewButtons,
+                      on: view)
+    }
+    
+    private func subviewsWithoutTimerLabel() {
+        setupSubviews(subviews: labelCountry, progressView, labelNumberQuiz,
                       labelQuiz, labelDescription, stackViewButtons,
                       on: view)
     }
@@ -200,9 +223,17 @@ class QuizOfFlagsViewController: UIViewController {
         navigationItem.rightBarButtonItem = rightBarButton
     }
     
+    private func checkFlag() -> Bool {
+        mode.flag ? true : false
+    }
+    
     private func setupMoveSubviews() {
         let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
-        imageFlagSpring.constant += view.bounds.width * pointX
+        if checkFlag() {
+            imageFlagSpring.constant += view.bounds.width * pointX
+        } else {
+            labelNameSpring.constant += view.bounds.width * pointX
+        }
         stackViewSpring.constant += view.bounds.width * pointX
     }
     
@@ -260,7 +291,11 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func animationSubviews() {
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
-            self.imageFlagSpring.constant -= self.view.bounds.width
+            if self.checkFlag() {
+                self.imageFlagSpring.constant -= self.view.bounds.width
+            } else {
+                self.labelNameSpring.constant -= self.view.bounds.width
+            }
             self.stackViewSpring.constant -= self.view.bounds.width
             self.view.layoutIfNeeded()
         }
@@ -738,22 +773,14 @@ extension QuizOfFlagsViewController {
         
         setupSquare(subview: buttonGameType, sizes: 40)
         setupSquare(subview: buttonBackMenu, sizes: 40)
-
-        imageFlagSpring = NSLayoutConstraint(
-            item: imageFlag, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(imageFlagSpring)
-        NSLayoutConstraint.activate([
-            imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            imageFlag.widthAnchor.constraint(equalToConstant: 300),
-            imageFlag.heightAnchor.constraint(equalToConstant: 180)
-        ])
         
-        NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 30),
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            progressView.heightAnchor.constraint(equalToConstant: radius() * 2)
-        ])
+        if checkFlag() {
+            constraintsFlag()
+            constraintsProgressViewFlag()
+        } else {
+            constraintsLabel()
+            constraintsProgressViewLabel()
+        }
         
         NSLayoutConstraint.activate([
             labelNumberQuiz.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
@@ -788,6 +815,45 @@ extension QuizOfFlagsViewController {
         NSLayoutConstraint.activate([
             labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 70),
             labelTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+    
+    private func constraintsFlag() {
+        imageFlagSpring = NSLayoutConstraint(
+            item: imageFlag, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(imageFlagSpring)
+        NSLayoutConstraint.activate([
+            imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            imageFlag.widthAnchor.constraint(equalToConstant: 300),
+            imageFlag.heightAnchor.constraint(equalToConstant: 180)
+        ])
+    }
+    
+    private func constraintsLabel() {
+        labelNameSpring = NSLayoutConstraint(
+            item: labelCountry, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(labelNameSpring)
+        NSLayoutConstraint.activate([
+            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            labelCountry.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+    
+    private func constraintsProgressViewFlag() {
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 30),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            progressView.heightAnchor.constraint(equalToConstant: radius() * 2)
+        ])
+    }
+    
+    private func constraintsProgressViewLabel() {
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: labelCountry.bottomAnchor, constant: 30),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            progressView.heightAnchor.constraint(equalToConstant: radius() * 2)
         ])
     }
     

@@ -16,6 +16,7 @@ struct Setting: Codable {
     var africaContinent: Bool
     var asiaContinent: Bool
     var oceaniaContinent: Bool
+    var flag: Bool
     var timeElapsed: TimeElapsed
 }
 
@@ -45,6 +46,7 @@ extension Setting {
             africaContinent: false,
             asiaContinent: false,
             oceaniaContinent: false,
+            flag: true,
             timeElapsed: TimeElapsed(
                 timeElapsed: true,
                 questionSelect: QuestionSelect(

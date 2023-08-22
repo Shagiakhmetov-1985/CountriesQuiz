@@ -45,54 +45,13 @@ class WrongAnswersViewController: UIViewController, UITableViewDelegate, UITable
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
-        cell.image.image = UIImage(named: results[indexPath.section].question.flag)
-        
-        cell.progressView.progress = setProgress(value: results[indexPath.section].currentQuestion)
-        cell.labelNumber.text = setText(value: results[indexPath.section].currentQuestion)
-        
-        cell.buttonFirst.text = results[indexPath.section].buttonFirst.name
-        cell.buttonFirst.textColor = setColorTitle(
-            question: results[indexPath.section].question,
-            answer: results[indexPath.section].buttonFirst, tag: 1,
-            select: results[indexPath.section].tag)
-        cell.buttonFirst.backgroundColor = setColorBackgroung(
-            question: results[indexPath.section].question,
-            answer: results[indexPath.section].buttonFirst, tag: 1,
-            select: results[indexPath.section].tag)
-        
-        cell.buttonSecond.text = results[indexPath.section].buttonSecond.name
-        cell.buttonSecond.textColor = setColorTitle(
-            question: results[indexPath.section].question,
-            answer: results[indexPath.section].buttonSecond, tag: 2,
-            select: results[indexPath.section].tag)
-        cell.buttonSecond.backgroundColor = setColorBackgroung(
-            question: results[indexPath.section].question,
-            answer: results[indexPath.section].buttonSecond, tag: 2,
-            select: results[indexPath.section].tag)
-        
-        cell.buttonThird.text = results[indexPath.section].buttonThird.name
-        cell.buttonThird.textColor = setColorTitle(
-            question: results[indexPath.section].question,
-            answer: results[indexPath.section].buttonThird, tag: 3,
-            select: results[indexPath.section].tag)
-        cell.buttonThird.backgroundColor = setColorBackgroung(
-            question: results[indexPath.section].question,
-            answer: results[indexPath.section].buttonThird, tag: 3,
-            select: results[indexPath.section].tag)
-        
-        cell.buttonFourth.text = results[indexPath.section].buttonFourth.name
-        cell.buttonFourth.textColor = setColorTitle(
-            question: results[indexPath.section].question,
-            answer: results[indexPath.section].buttonFourth, tag: 4,
-            select: results[indexPath.section].tag)
-        cell.buttonFourth.backgroundColor = setColorBackgroung(
-            question: results[indexPath.section].question,
-            answer: results[indexPath.section].buttonFourth, tag: 4,
-            select: results[indexPath.section].tag)
-        
-        cell.timeUp.text = timeUpCheck(bool: results[indexPath.section].timeUp)
+        if mode.flag {
+            flagCell(cell: cell as! CustomCell, indexPath: indexPath)
+        } else {
+            labelCell(cell: cell as! CustomLabelCell, indexPath: indexPath)
+        }
         
         return cell
     }
@@ -138,7 +97,7 @@ class WrongAnswersViewController: UIViewController, UITableViewDelegate, UITable
         }
     }
     
-    private func setColorBackgroung(question: Countries, answer: Countries, tag: Int,
+    private func setColorBackground(question: Countries, answer: Countries, tag: Int,
                                     select: Int) -> UIColor {
         switch true {
         case question == answer && (tag == select || !(tag == select)):
@@ -152,6 +111,96 @@ class WrongAnswersViewController: UIViewController, UITableViewDelegate, UITable
     
     private func timeUpCheck(bool: Bool) -> String {
         bool ? "Истекло время!" : ""
+    }
+    
+    private func checkCell() -> AnyClass {
+        mode.flag ? CustomCell.self : CustomLabelCell.self
+    }
+    
+    private func checkHeight() -> CGFloat {
+        mode.flag ? 350 : 330
+    }
+    
+    private func flagCell(cell: CustomCell, indexPath: IndexPath) {
+        cell.image.image = UIImage(named: results[indexPath.section].question.flag)
+        
+        cell.progressView.progress = setProgress(value: results[indexPath.section].currentQuestion)
+        cell.labelNumber.text = setText(value: results[indexPath.section].currentQuestion)
+        
+        cell.buttonFirst.text = results[indexPath.section].buttonFirst.name
+        cell.buttonFirst.textColor = setColorTitle(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonFirst, tag: 1,
+            select: results[indexPath.section].tag)
+        cell.buttonFirst.backgroundColor = setColorBackground(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonFirst, tag: 1,
+            select: results[indexPath.section].tag)
+        
+        cell.buttonSecond.text = results[indexPath.section].buttonSecond.name
+        cell.buttonSecond.textColor = setColorTitle(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonSecond, tag: 2,
+            select: results[indexPath.section].tag)
+        cell.buttonSecond.backgroundColor = setColorBackground(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonSecond, tag: 2,
+            select: results[indexPath.section].tag)
+        
+        cell.buttonThird.text = results[indexPath.section].buttonThird.name
+        cell.buttonThird.textColor = setColorTitle(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonThird, tag: 3,
+            select: results[indexPath.section].tag)
+        cell.buttonThird.backgroundColor = setColorBackground(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonThird, tag: 3,
+            select: results[indexPath.section].tag)
+        
+        cell.buttonFourth.text = results[indexPath.section].buttonFourth.name
+        cell.buttonFourth.textColor = setColorTitle(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonFourth, tag: 4,
+            select: results[indexPath.section].tag)
+        cell.buttonFourth.backgroundColor = setColorBackground(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonFourth, tag: 4,
+            select: results[indexPath.section].tag)
+        
+        cell.timeUp.text = timeUpCheck(bool: results[indexPath.section].timeUp)
+    }
+    
+    private func labelCell(cell: CustomLabelCell, indexPath: IndexPath) {
+        cell.labelName.text = results[indexPath.section].question.name
+        
+        cell.progressView.progress = setProgress(value: results[indexPath.section].currentQuestion)
+        cell.labelNumber.text = setText(value: results[indexPath.section].currentQuestion)
+        
+        cell.imageFirst.image = UIImage(named: results[indexPath.section].buttonFirst.flag)
+        cell.viewFirst.backgroundColor = setColorBackground(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonFirst, tag: 1,
+            select: results[indexPath.section].tag)
+        
+        cell.imageSecond.image = UIImage(named: results[indexPath.section].buttonSecond.flag)
+        cell.viewSecond.backgroundColor = setColorBackground(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonSecond, tag: 2,
+            select: results[indexPath.section].tag)
+        
+        cell.imageThird.image = UIImage(named: results[indexPath.section].buttonThird.flag)
+        cell.viewThird.backgroundColor = setColorBackground(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonThird, tag: 3,
+            select: results[indexPath.section].tag)
+        
+        cell.imageFourth.image = UIImage(named: results[indexPath.section].buttonFourth.flag)
+        cell.viewFourth.backgroundColor = setColorBackground(
+            question: results[indexPath.section].question,
+            answer: results[indexPath.section].buttonFourth, tag: 4,
+            select: results[indexPath.section].tag)
+        
+        cell.timeUp.text = timeUpCheck(bool: results[indexPath.section].timeUp)
     }
 }
 // MARK: - Setup buttons
@@ -186,10 +235,10 @@ extension WrongAnswersViewController {
 extension WrongAnswersViewController {
     private func setupTableView() -> UITableView {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.register(CustomCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(checkCell(), forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = 350
+        tableView.rowHeight = checkHeight()
         tableView.backgroundColor = .white
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView

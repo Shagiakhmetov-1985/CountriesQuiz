@@ -96,6 +96,10 @@ extension UIColor {
     static var gummigut: UIColor {
         #colorLiteral(red: 0.8941176471, green: 0.6078431373, blue: 0.05882352941, alpha: 1)
     }
+    
+    static var grayStone: UIColor {
+        #colorLiteral(red: 0.5411764706, green: 0.5411764706, blue: 0.5411764706, alpha: 1)
+    }
     // MARK: - For panel and backgroung setting view controller
     static var panelViewLightBlueLight: UIColor {
         #colorLiteral(red: 0.405766964, green: 0.6143494248, blue: 1, alpha: 1)

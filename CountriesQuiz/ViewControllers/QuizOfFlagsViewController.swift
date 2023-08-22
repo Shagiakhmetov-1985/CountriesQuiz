@@ -39,7 +39,7 @@ class QuizOfFlagsViewController: UIViewController {
     private lazy var labelCountry: UILabel = {
         let label = setLabel(
             title: "\(questions.questions[currentQuestion].name)",
-            size: 23,
+            size: 32,
             color: .white,
             numberOfLines: 0,
             textAlignment: .center)
@@ -100,7 +100,8 @@ class QuizOfFlagsViewController: UIViewController {
     
     private lazy var imageFirst: UIImageView = {
         let imageView = setImage(
-            image: questions.buttonFirst[currentQuestion].flag)
+            image: questions.buttonFirst[currentQuestion].flag,
+            radius: 8)
         return imageView
     }()
     
@@ -115,14 +116,15 @@ class QuizOfFlagsViewController: UIViewController {
             image: imageSecond,
             color: .white,
             isEnabled: false,
-            tag: 1,
+            tag: 2,
             action: #selector(buttonPress))
         return button
     }()
     
     private lazy var imageSecond: UIImageView = {
         let imageView = setImage(
-            image: questions.buttonSecond[currentQuestion].flag)
+            image: questions.buttonSecond[currentQuestion].flag,
+            radius: 8)
         return imageView
     }()
     
@@ -137,14 +139,15 @@ class QuizOfFlagsViewController: UIViewController {
             image: imageThird,
             color: .white,
             isEnabled: false,
-            tag: 1,
+            tag: 3,
             action: #selector(buttonPress))
         return button
     }()
     
     private lazy var imageThird: UIImageView = {
         let imageView = setImage(
-            image: questions.buttonThird[currentQuestion].flag)
+            image: questions.buttonThird[currentQuestion].flag,
+            radius: 8)
         return imageView
     }()
     
@@ -159,14 +162,15 @@ class QuizOfFlagsViewController: UIViewController {
             image: imageFourth,
             color: .white,
             isEnabled: false,
-            tag: 1,
+            tag: 4,
             action: #selector(buttonPress))
         return button
     }()
     
     private lazy var imageFourth: UIImageView = {
         let imageView = setImage(
-            image: questions.buttonFourth[currentQuestion].flag)
+            image: questions.buttonFourth[currentQuestion].flag,
+            radius: 8)
         return imageView
     }()
     
@@ -198,21 +202,6 @@ class QuizOfFlagsViewController: UIViewController {
             stackViewTop: stackViewTop,
             stackViewBottom: stackViewBottom)
         return stackView
-    }()
-    
-    private lazy var testButton: UIButton = {
-        let button = setButton(
-            image: testImage,
-            color: .white,
-            isEnabled: true,
-            tag: 5,
-            action: #selector(testButtonPress))
-        return button
-    }()
-    
-    private lazy var testImage: UIImageView = {
-        let imageView = setImage(image: "afghanistan")
-        return imageView
     }()
     
     var mode: Setting!
@@ -278,7 +267,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func subviewsWithTimerLabel() {
         setupSubviews(subviews: labelTimer, labelCountry, progressView, labelNumberQuiz,
-                      labelQuiz, labelDescription, stackViewLabel, testButton,
+                      labelQuiz, labelDescription, stackViewLabel,
                       on: view)
     }
     
@@ -290,13 +279,13 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func subviewsWithoutTimerLabel() {
         setupSubviews(subviews: labelCountry, progressView, labelNumberQuiz,
-                      labelQuiz, labelDescription, stackViewLabel, testButton,
+                      labelQuiz, labelDescription, stackViewLabel,
                       on: view)
     }
     
     private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
         subviews.forEach { subview in
-            view.addSubview(subview)
+            subviewOther.addSubview(subview)
         }
     }
     
@@ -487,7 +476,12 @@ class QuizOfFlagsViewController: UIViewController {
         timerSecond.invalidate()
         answerSelect.toggle()
         
-        checkAnswer(tag: button.tag, button: button)
+        if checkFlag() {
+            checkAnswerFlag(tag: button.tag, button: button)
+        } else {
+            checkAnswerLabel(tag: button.tag, button: button)
+        }
+        
         showDescription()
         disableButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
                       buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
@@ -502,7 +496,7 @@ class QuizOfFlagsViewController: UIViewController {
         }
     }
     
-    private func checkAnswer(tag: Int, button: UIButton) {
+    private func checkAnswerFlag(tag: Int, button: UIButton) {
         let green = UIColor.greenYellowBrilliant
         let red = UIColor.redTangerineTango
         let white = UIColor.white
@@ -515,7 +509,19 @@ class QuizOfFlagsViewController: UIViewController {
         }
     }
     
-    private func setButtonColor(button: UIButton, color: UIColor, titleColor: UIColor) {
+    private func checkAnswerLabel(tag: Int, button: UIButton) {
+        let green = UIColor.greenYellowBrilliant
+        let red = UIColor.redTangerineTango
+        
+        if checkAnswer(tag: tag) {
+            setButtonColor(button: button, color: green)
+        } else {
+            setButtonColor(button: button, color: red)
+            setupResults(tag: tag)
+        }
+    }
+    
+    private func setButtonColor(button: UIButton, color: UIColor, titleColor: UIColor? = nil) {
         UIView.animate(withDuration: 0.3) {
             button.backgroundColor = color
             button.layer.shadowColor = color.cgColor
@@ -602,16 +608,10 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func refreshButtonsLabel() {
-        /*
-        let imageFirst = UIImage(named: questions.buttonFirst[currentQuestion].flag)
-        let imageSecond = UIImage(named: questions.buttonSecond[currentQuestion].flag)
-        let imageThird = UIImage(named: questions.buttonThird[currentQuestion].flag)
-        let imageFourth = UIImage(named: questions.buttonFourth[currentQuestion].flag)
-        buttonAnswerFirst.setImage(imageFirst?.withRenderingMode(.alwaysOriginal), for: .normal)
-        buttonAnswerSecond.setImage(imageSecond?.withRenderingMode(.alwaysOriginal), for: .normal)
-        buttonAnswerThird.setImage(imageThird?.withRenderingMode(.alwaysOriginal), for: .normal)
-        buttonAnswerFourth.setImage(imageFourth?.withRenderingMode(.alwaysOriginal), for: .normal)
-         */
+        imageFirst.image = UIImage(named: questions.buttonFirst[currentQuestion].flag)
+        imageSecond.image = UIImage(named: questions.buttonSecond[currentQuestion].flag)
+        imageThird.image = UIImage(named: questions.buttonThird[currentQuestion].flag)
+        imageFourth.image = UIImage(named: questions.buttonFourth[currentQuestion].flag)
     }
     
     private func resetTimer() {
@@ -733,7 +733,7 @@ extension QuizOfFlagsViewController {
         return button
     }
     
-    private func setButton(image: UIImageView, color: UIColor, isEnabled: Bool,
+    private func setButton(image: UIView, color: UIColor, isEnabled: Bool,
                            tag: Int, action: Selector) -> UIButton {
         let button = Button(type: .custom)
         button.backgroundColor = color
@@ -743,7 +743,6 @@ extension QuizOfFlagsViewController {
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.isEnabled = isEnabled
         button.tag = tag
-        button.layer.opacity = 0.3
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: action, for: .touchUpInside)
         setupSubviews(subviews: image, on: button)
@@ -906,11 +905,13 @@ extension QuizOfFlagsViewController {
 }
 // MARK: - Setup images
 extension QuizOfFlagsViewController {
-    private func setImage(image: String) -> UIImageView {
+    private func setImage(image: String, radius: CGFloat? = nil) -> UIImageView {
         let imageView = UIImageView()
         imageView.image = UIImage(named: image)
         imageView.layer.borderWidth = 1
         imageView.layer.borderColor = UIColor.black.cgColor
+        imageView.layer.cornerRadius = radius ?? 0
+        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }
@@ -964,7 +965,6 @@ extension QuizOfFlagsViewController {
             constraintsButtonsFlag()
         } else {
             constraintsButtonsLabel()
-            test()
         }
     }
     
@@ -993,7 +993,8 @@ extension QuizOfFlagsViewController {
             toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
         view.addConstraint(labelNameSpring)
         NSLayoutConstraint.activate([
-            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50)
+            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            labelCountry.widthAnchor.constraint(equalToConstant: setupConstraintLabel())
         ])
     }
     
@@ -1007,7 +1008,7 @@ extension QuizOfFlagsViewController {
     
     private func constraintsProgressViewLabel() {
         NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: labelCountry.bottomAnchor, constant: 30),
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 140),
             progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             progressView.heightAnchor.constraint(equalToConstant: radius() * 2)
         ])
@@ -1027,7 +1028,7 @@ extension QuizOfFlagsViewController {
         view.addConstraint(stackViewSpring)
         NSLayoutConstraint.activate([
             stackViewFlag.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
-            stackViewFlag.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
+            stackViewFlag.widthAnchor.constraint(equalToConstant: setupConstraintFlag()),
             stackViewFlag.heightAnchor.constraint(equalToConstant: 200)
         ])
     }
@@ -1039,8 +1040,8 @@ extension QuizOfFlagsViewController {
         view.addConstraint(stackViewSpring)
         NSLayoutConstraint.activate([
             stackViewLabel.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
-            stackViewLabel.widthAnchor.constraint(equalToConstant: setupWidthConstraint()),
-            stackViewLabel.heightAnchor.constraint(equalToConstant: 200)
+            stackViewLabel.widthAnchor.constraint(equalToConstant: setupConstraintLabel()),
+            stackViewLabel.heightAnchor.constraint(equalToConstant: 220)
         ])
         
         setupImageButton(image: imageFirst, on: buttonAnswerFirst)
@@ -1051,29 +1052,23 @@ extension QuizOfFlagsViewController {
     
     private func setupImageButton(image: UIView, on button: UIView) {
         NSLayoutConstraint.activate([
-            image.topAnchor.constraint(equalTo: button.topAnchor, constant: 4),
-            image.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 4),
-            image.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -4),
-            image.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -4)
+            image.topAnchor.constraint(equalTo: button.topAnchor, constant: 5),
+            image.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 5),
+            image.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -5),
+            image.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -5)
         ])
-    }
-    
-    private func test() {
-        NSLayoutConstraint.activate([
-            testButton.topAnchor.constraint(equalTo: stackViewLabel.bottomAnchor, constant: 20),
-            testButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            testButton.widthAnchor.constraint(equalToConstant: 300),
-            testButton.heightAnchor.constraint(equalToConstant: 180)
-        ])
-        setupImageButton(image: testImage, on: testButton)
     }
     
     private func radius() -> CGFloat {
         6
     }
     
-    private func setupWidthConstraint() -> CGFloat {
+    private func setupConstraintFlag() -> CGFloat {
         view.bounds.width - 40
+    }
+    
+    private func setupConstraintLabel() -> CGFloat {
+        view.bounds.width - 20
     }
     
     private func width() -> CGFloat {

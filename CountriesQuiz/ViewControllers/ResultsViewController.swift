@@ -20,6 +20,8 @@ class ResultsViewController: UIViewController {
     private lazy var buttonDetails: UIButton = {
         let button = setButton(
             image: "lightbulb",
+            color: results.count > 0 ? .blueBlackSea : .grayStone,
+            isEnabled: results.count > 0 ? true : false,
             action: #selector(showWrongAnswers))
         return button
     }()
@@ -508,18 +510,20 @@ extension ResultsViewController {
 }
 // MARK: - Setup button
 extension ResultsViewController {
-    private func setButton(image: String, action: Selector) -> UIButton {
+    private func setButton(image: String, color: UIColor, isEnabled: Bool,
+                           action: Selector) -> UIButton {
         let size = UIImage.SymbolConfiguration(pointSize: 26)
         let image = UIImage(systemName: image, withConfiguration: size)
         let button = Button(type: .custom)
         button.setImage(image, for: .normal)
         button.tintColor = .white
-        button.backgroundColor = .grayLight
+        button.backgroundColor = color
         button.layer.cornerRadius = 12
         button.layer.shadowOpacity = 0.4
-        button.layer.shadowColor = UIColor.grayLight.cgColor
+        button.layer.shadowColor = color.cgColor
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isEnabled = isEnabled
         button.addTarget(self, action: action, for: .touchUpInside)
         return button
     }

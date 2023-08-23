@@ -459,8 +459,14 @@ class QuizOfFlagsViewController: UIViewController {
         }
         
         showDescription()
-        disableButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
-                      buttonAnswerThird, buttonAnswerFourth, tag: 0)
+        
+        if mode.flag {
+            disableButtonFlag(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                              buttonAnswerThird, buttonAnswerFourth, tag: 0)
+        } else {
+            disableButtonLabel(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                               buttonAnswerThird, buttonAnswerFourth, tag: 0)
+        }
     }
     
     @objc private func backToGameType() {
@@ -478,13 +484,16 @@ class QuizOfFlagsViewController: UIViewController {
         
         if checkFlag() {
             checkAnswerFlag(tag: button.tag, button: button)
+            disableButtonFlag(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                          buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
         } else {
             checkAnswerLabel(tag: button.tag, button: button)
+            disableButtonLabel(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                               buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
         }
         
         showDescription()
-        disableButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
-                      buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
+        
         if mode.timeElapsed.timeElapsed {
             stopAnimationCircleTimer()
         }
@@ -562,7 +571,7 @@ class QuizOfFlagsViewController: UIViewController {
         }
     }
     
-    private func disableButton(buttons: UIButton..., tag: Int) {
+    private func disableButtonFlag(buttons: UIButton..., tag: Int) {
         let gray = UIColor.grayLight
         let white = UIColor.white.withAlphaComponent(0.9)
         
@@ -572,7 +581,22 @@ class QuizOfFlagsViewController: UIViewController {
             }
             button.isEnabled = false
         }
+        delay()
+    }
+    
+    private func disableButtonLabel(buttons: UIButton..., tag: Int) {
+        let gray = UIColor.skyGrayLight
         
+        buttons.forEach { button in
+            if !(button.tag == tag) {
+                setButtonColor(button: button, color: gray)
+            }
+            button.isEnabled = false
+        }
+        delay()
+    }
+    
+    private func delay() {
         if currentQuestion + 1 < questions.questions.count {
             timerFirst = Timer.scheduledTimer(
                 timeInterval: 5, target: self, selector: #selector(hideSubviews),

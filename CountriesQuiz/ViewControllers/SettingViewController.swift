@@ -9,48 +9,27 @@ import UIKit
 
 class SettingViewController: UIViewController {
     // MARK: - Subviews
-    private lazy var viewPanel: UIView = {
-        let view = setView(color: UIColor.panelViewLightBlueLight)
-        return view
-    }()
-    
-    private lazy var buttonBackMenu: UIButton = {
-        let button = setButton(
-            title: "Главное меню",
-            style: "mr_fontick",
-            size: 15,
-            colorTitle: UIColor.blueLight,
-            colorBackgroud: UIColor.cyanLight,
-            radiusCorner: 14,
-            shadowColor: UIColor.shadowBlueLight.cgColor,
-            radiusShadow: 2.5,
-            shadowOffsetWidth: 2.5,
-            shadowOffsetHeight: 2.5)
-        button.addTarget(self, action: #selector(backToMenu), for: .touchUpInside)
+    private lazy var buttonBack: UIButton = {
+        let button = setupButton(
+            image: "multiply",
+            color: .blueBlackSea,
+            action: #selector(backToMenu))
         return button
     }()
     
-    private lazy var buttonDefaultSetting: UIButton = {
-        let lightBlue = UIColor.cyanLight
-        let blue = UIColor.blueLight
-        let darkBlue = UIColor.shadowBlueLight
-        let lightGray = UIColor.skyGrayLight
-        let gray = UIColor.grayLight
-        let darkGray = UIColor.shadowGrayLight
-        let button = setButton(
-            title: "Сброс",
-            style: "mr_fontick",
-            size: 15,
-            colorTitle: conditions() ? blue : gray,
-            colorBackgroud: conditions() ? lightBlue : lightGray,
-            radiusCorner: 14,
-            shadowColor: conditions() ? darkBlue.cgColor : darkGray.cgColor,
-            radiusShadow: 2.5,
-            shadowOffsetWidth: 2.5,
-            shadowOffsetHeight: 2.5,
-            isEnabled: conditions() ? true : false)
-        button.addTarget(self, action: #selector(defaultSetting), for: .touchUpInside)
+    private lazy var buttonDefault: UIButton = {
+        let button = setupButton(
+            image: "arrow.counterclockwise",
+            color: conditions() ? .blueBlackSea : .grayStone,
+            action: #selector(defaultSetting))
         return button
+    }()
+    
+    private lazy var stackViewButtons: UIStackView = {
+        let stackView = setStackView(
+            buttonFirst: buttonBack,
+            buttonSecond: buttonDefault)
+        return stackView
     }()
     
     private lazy var scrollView: UIScrollView = {
@@ -72,34 +51,31 @@ class SettingViewController: UIViewController {
     
     private lazy var labelNumberQuestions: UILabel = {
         let label = setLabel(
-            title: "Количество вопросов:",
+            title: "Количество вопросов",
             size: 26,
-            style: "mr_fontick",
-            color: UIColor.blueLight,
-            numberOfLines: 1,
-            textAlignment: .center)
+            textAlignment: .center,
+            numberOfLines: 1)
         return label
     }()
     
     private lazy var labelNumber: UILabel = {
         let label = setLabel(
             title: "\(mode.countQuestions)",
-            size: 26,
-            style: "mr_fontick",
-            color: UIColor.blueLight,
-            textAlignment: .left)
+            size: 26)
         return label
     }()
     
     private lazy var stackViewNumberQuestion: UIStackView = {
-        let stackView = setStackViewLabels(labelFirst: labelNumberQuestions,
-                                           labelSecond: labelNumber, spacing: 10)
+        let stackView = setStackViewLabels(
+            labelFirst: labelNumberQuestions,
+            labelSecond: labelNumber,
+            spacing: 10)
         return stackView
     }()
     
     private lazy var pickerViewNumberQuestion: UIPickerView = {
         let pickerView = setPickerView(
-            backgroundColor: UIColor.skyCyanLight,
+            backgroundColor: .skyCyanLight,
             tag: 1,
             isEnabled: true)
         return pickerView
@@ -108,18 +84,14 @@ class SettingViewController: UIViewController {
     private lazy var labelAllCountries: UILabel = {
         let label = setLabel(
             title: "Все страны мира",
-            size: 26,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 26)
         return label
     }()
     
     private lazy var labelCountAllCountries: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countries.count)",
-            size: 20,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 20)
         return label
     }()
     
@@ -136,18 +108,14 @@ class SettingViewController: UIViewController {
     private lazy var labelAmericaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Америки",
-            size: 26,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 26)
         return label
     }()
     
     private lazy var labelCountAmericaContinent: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAmericanContinent.count)",
-            size: 20,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 20)
         return label
     }()
     
@@ -164,18 +132,14 @@ class SettingViewController: UIViewController {
     private lazy var labelEuropeContinent: UILabel = {
         let label = setLabel(
             title: "Континент Европы",
-            size: 26,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 26)
         return label
     }()
     
     private lazy var labelCountEuropeContinent: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfEuropeanContinent.count)",
-            size: 20,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 20)
         return label
     }()
     
@@ -192,18 +156,14 @@ class SettingViewController: UIViewController {
     private lazy var labelAfricaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Африки",
-            size: 26,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 26)
         return label
     }()
     
     private lazy var labelCountAfricaContinent: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAfricanContinent.count)",
-            size: 20,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 20)
         return label
     }()
     
@@ -220,18 +180,14 @@ class SettingViewController: UIViewController {
     private lazy var labelAsiaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Азии",
-            size: 26,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 26)
         return label
     }()
     
     private lazy var labelCountAsiaContinent: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAsianContinent.count)",
-            size: 20,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 20)
         return label
     }()
     
@@ -248,18 +204,14 @@ class SettingViewController: UIViewController {
     private lazy var labelOceaniaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Океании",
-            size: 26,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 26)
         return label
     }()
     
     private lazy var labelCountOceaniaContinent: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfOceanContinent.count)",
-            size: 20,
-            style: "mr_fontick",
-            color: UIColor.blueLight)
+            size: 20)
         return label
     }()
     
@@ -292,8 +244,6 @@ class SettingViewController: UIViewController {
         let label = setLabel(
             title: "Обратный отсчет",
             size: 26,
-            style: "mr_fontick",
-            color: UIColor.blueLight,
             textAlignment: .center)
         return label
     }()
@@ -306,26 +256,19 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var labelTimeElapsedQuestion: UILabel = {
-        let blue = UIColor.blueLight
-        let gray = UIColor.grayLight
         let label = setLabel(
             title: isEnabledText(),
             size: 26,
-            style: "mr_fontick",
-            color: mode.timeElapsed.timeElapsed ? blue : gray,
+            color: timeElapsed() ? .blueBlackSea : .grayLight,
             numberOfLines: 1)
         return label
     }()
     
     private lazy var labelTimeElapsedNumber: UILabel = {
-        let blue = UIColor.blueLight
-        let gray = UIColor.grayLight
         let label = setLabel(
             title: setLabelNumberQuestions(),
             size: 26,
-            style: "mr_fontick",
-            color: mode.timeElapsed.timeElapsed ? blue : gray,
-            textAlignment: .left)
+            color: timeElapsed() ? .blueBlackSea : .grayLight)
         return label
     }()
     
@@ -338,19 +281,15 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var segmentedControl: UISegmentedControl = {
-        let lightBlue = UIColor.skyCyanLight
-        let blue = UIColor.blueLight
-        let lightGray = UIColor.skyGrayLight
-        let gray = UIColor.grayLight
         let segment = setSegmentedControl(
-            background: mode.timeElapsed.timeElapsed ? lightBlue : lightGray,
-            segmentColor: mode.timeElapsed.timeElapsed ? blue : gray,
+            background: timeElapsed() ? .skyCyanLight : .skyGrayLight,
+            segmentColor: timeElapsed() ? .blueBlackSea : .grayLight,
             elements: ["Один вопрос", "Все вопросы"],
-            titleSelectedColor: mode.timeElapsed.timeElapsed ? lightBlue : lightGray,
-            titleNormalColor: mode.timeElapsed.timeElapsed ? blue : gray,
+            titleSelectedColor: timeElapsed() ? .skyCyanLight : .skyGrayLight,
+            titleNormalColor: timeElapsed() ? .blueBlackSea : .grayLight,
             setIndex: mode.timeElapsed.questionSelect.oneQuestion ? 0 : 1,
-            isEnabled: mode.timeElapsed.timeElapsed ? true : false,
-            borderColor: mode.timeElapsed.timeElapsed ? lightBlue : lightGray)
+            isEnabled: timeElapsed() ? true : false,
+            borderColor: timeElapsed() ? .skyCyanLight : .skyGrayLight)
         return segment
     }()
     
@@ -393,7 +332,7 @@ class SettingViewController: UIViewController {
     }
     // MARK: - Private methods
     private func setupDesign() {
-        view.backgroundColor = UIColor.backgroundBlueLight
+        view.backgroundColor = .white
         setupPickerViewNumberQuestions()
         setupPickerViewOneQuestion()
     }
@@ -417,8 +356,7 @@ class SettingViewController: UIViewController {
     }
     
     private func setupSubviewsOnView() {
-        setupSubviews(subviews: viewPanel, buttonBackMenu, buttonDefaultSetting,
-                      contentView, on: view)
+        setupSubviews(subviews: stackViewButtons, contentView, on: view)
     }
     
     private func setupSubviewsOnContentView() {
@@ -450,12 +388,10 @@ class SettingViewController: UIViewController {
         showAlert(setting: mode)
     }
     
-    private func buttonIsEnabled(isEnabled: Bool, titleColor: UIColor,
-                                 backgroundColor: UIColor, shadowColor: CGColor) {
-        buttonDefaultSetting.isEnabled = isEnabled
-        buttonDefaultSetting.setTitleColor(titleColor, for: .normal)
-        buttonDefaultSetting.backgroundColor = backgroundColor
-        buttonDefaultSetting.layer.shadowColor = shadowColor
+    private func buttonIsEnabled(isEnabled: Bool, color: UIColor) {
+        buttonDefault.isEnabled = isEnabled
+        buttonDefault.tintColor = color
+        buttonDefault.layer.borderColor = color.cgColor
     }
     
     private func conditions() -> Bool {
@@ -640,7 +576,7 @@ class SettingViewController: UIViewController {
     }
     
     private func select(isOn: Bool) -> (UIColor, UIColor) {
-        isOn ? (UIColor.cyanLight, UIColor.blueLight) : (UIColor.skyCyanLight, UIColor.skyCyanLight)
+        isOn ? (.cyanLight, .blueBlackSea) : (.skyCyanLight, .skyCyanLight)
     }
     
     private func setupCountCountries(continents: Bool...) {
@@ -792,20 +728,18 @@ class SettingViewController: UIViewController {
     }
     
     private func isEnabledTextColor(tag: Int) -> UIColor {
-        let blue = UIColor.blueLight
-        let gray = UIColor.grayLight
         switch segmentedControl.selectedSegmentIndex {
         case 0:
             if tag == 2 {
-                return blue
+                return .blueBlackSea
             } else {
-                return gray
+                return .grayLight
             }
         default:
             if tag == 2 {
-                return gray
+                return .grayLight
             } else {
-                return blue
+                return .blueBlackSea
             }
         }
     }
@@ -819,21 +753,19 @@ class SettingViewController: UIViewController {
         }
         return text
     }
+    
+    private func timeElapsed() -> Bool {
+        mode.timeElapsed.timeElapsed ? true : false
+    }
     // MARK: - Reset setting default
     private func resetSetting() {
         mode = Setting.getSettingDefault()
         
-        let countQuestions = mode.countQuestions - 10
-        let averageTime = 5 * mode.countQuestions
-        let timeOneQuestion = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
-        let timeAllQuestions = averageTime - (4 * mode.countQuestions)
-        
         setupLabels()
         checkmarkOnAllCountries()
         segmentedControl.selectedSegmentIndex = 0
-        setupPickerViews(pickerView: pickerViewNumberQuestion, row: countQuestions)
-        setupPickerViews(pickerView: pickerViewOneQuestion, row: timeOneQuestion)
-        setupPickerViews(pickerView: pickerViewAllQuestions, row: timeAllQuestions)
+        
+        setupPickerViews()
         buttonIsEnabled()
     }
     
@@ -842,30 +774,25 @@ class SettingViewController: UIViewController {
         labelTimeElapsedNumber.text = "\(mode.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
     }
     
+    private func setupPickerViews() {
+        let countQuestions = mode.countQuestions - 10
+        let averageTime = 5 * mode.countQuestions
+        let timeOneQuestion = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
+        let timeAllQuestions = averageTime - (4 * mode.countQuestions)
+        
+        setupPickerViews(pickerView: pickerViewNumberQuestion, row: countQuestions)
+        setupPickerViews(pickerView: pickerViewOneQuestion, row: timeOneQuestion)
+        setupPickerViews(pickerView: pickerViewAllQuestions, row: timeAllQuestions)
+    }
+    
     private func setupPickerViews(pickerView: UIPickerView, row: Int) {
         pickerView.reloadAllComponents()
         pickerView.selectRow(row, inComponent: 0, animated: false)
     }
     
     private func buttonIsEnabled() {
-        let lightBlue = UIColor.cyanLight
-        let blue = UIColor.blueLight
-        let darkBlue = UIColor.shadowBlueLight
-        let lightGray = UIColor.skyGrayLight
-        let gray = UIColor.grayLight
-        let darkGray = UIColor.shadowGrayLight
-        
-        conditions() ?
-        buttonIsEnabled(
-            isEnabled: true,
-            titleColor: blue,
-            backgroundColor: lightBlue,
-            shadowColor: darkBlue.cgColor) :
-        buttonIsEnabled(
-            isEnabled: false,
-            titleColor: gray,
-            backgroundColor: lightGray,
-            shadowColor: darkGray.cgColor)
+        conditions() ? buttonIsEnabled( isEnabled: true, color: .blueBlackSea) :
+        buttonIsEnabled(isEnabled: false, color: .grayStone)
     }
 }
 // MARK: - Setup view
@@ -886,6 +813,20 @@ extension SettingViewController {
 }
 // MARK: - Setup button
 extension SettingViewController {
+    private func setupButton(image: String, color: UIColor, action: Selector) -> UIButton {
+        let size = UIImage.SymbolConfiguration(pointSize: 20)
+        let image = UIImage(systemName: image, withConfiguration: size)
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.tintColor = color
+        button.layer.cornerRadius = 12
+        button.layer.borderColor = color.cgColor
+        button.layer.borderWidth = 1.5
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
+    }
+    
     private func setButton(title: String, style: String? = nil, size: CGFloat,
                            colorTitle: UIColor? = nil, colorBackgroud: UIColor? = nil,
                            radiusCorner: CGFloat? = nil, borderWidth: CGFloat? = nil,
@@ -917,7 +858,7 @@ extension SettingViewController {
         let image = UIImage(systemName: image, withConfiguration: configuration)
         button.configuration = UIButton.Configuration.filled()
         button.configuration?.baseBackgroundColor = .clear
-        button.configuration?.baseForegroundColor = UIColor.blueLight
+        button.configuration?.baseForegroundColor = .blueBlackSea
         button.configuration?.image = image
         button.tag = tag
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -942,6 +883,19 @@ extension SettingViewController {
 }
 // MARK: - Setup label
 extension SettingViewController {
+    private func setLabel(title: String, size: CGFloat, color: UIColor? = nil,
+                          textAlignment: NSTextAlignment? = nil,
+                          numberOfLines: Int? = nil) -> UILabel {
+        let label = UILabel()
+        label.text = title
+        label.font = UIFont(name: "mr_fontick", size: size)
+        label.textColor = color ?? .blueBlackSea
+        label.textAlignment = textAlignment ?? .natural
+        label.numberOfLines = numberOfLines ?? 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+    
     private func setLabel(title: String, size: CGFloat, style: String, color: UIColor,
                           colorOfShadow: CGColor? = nil, radiusOfShadow: CGFloat? = nil,
                           shadowOffsetWidth: CGFloat? = nil, shadowOffsetHeight: CGFloat? = nil,
@@ -988,6 +942,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         case 1:
             title = "\(row + 10)"
             attributed = attributedString(title: title)
+            view?.backgroundColor = .redTangerineTango
         case 2:
             title = "\(row + 6)"
             attributed = attributedStringTimeElapsed(title: title, tag: 2)
@@ -1047,16 +1002,15 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     private func attributedString(title: String) -> NSAttributedString {
         NSAttributedString(string: title, attributes: [
             .font: UIFont(name: "mr_fontick", size: 26) ?? "",
-            .foregroundColor: UIColor.blueLight
+            .foregroundColor: UIColor.blueBlackSea
         ])
     }
     
     private func attributedStringTimeElapsed(title: String, tag: Int) -> NSAttributedString {
-        let gray = UIColor.grayLight
-        let currentColor: UIColor = mode.timeElapsed.timeElapsed ? isEnabledTextColor(tag: tag) : gray
+        let color: UIColor = timeElapsed() ? isEnabledTextColor(tag: tag) : .grayLight
         return NSAttributedString(string: title, attributes: [
             .font: UIFont(name: "mr_fontick", size: 26) ?? "",
-            .foregroundColor: currentColor
+            .foregroundColor: color
         ])
     }
     
@@ -1078,6 +1032,13 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
 }
 // MARK: - Setup stack view
 extension SettingViewController {
+    private func setStackView(buttonFirst: UIButton, buttonSecond: UIButton) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [buttonFirst, buttonSecond])
+        stackView.distribution = .equalSpacing
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
     private func setStackViewLabels(labelFirst: UILabel, labelSecond: UILabel,
                                     spacing: CGFloat? = nil,
                                     axis: NSLayoutConstraint.Axis? = nil,
@@ -1141,33 +1102,22 @@ extension SettingViewController {
 extension SettingViewController {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            viewPanel.topAnchor.constraint(equalTo: view.topAnchor),
-            viewPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            viewPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            viewPanel.heightAnchor.constraint(equalToConstant: fixConstraintsForViewPanelBySizeIphone())
+            stackViewButtons.topAnchor.constraint(equalTo: view.topAnchor, constant: topAnchorCheck()),
+            stackViewButtons.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewButtons.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
+        setupSquare(subview: buttonBack, sizes: 40)
+        setupSquare(subview: buttonDefault, sizes: 40)
         
         NSLayoutConstraint.activate([
-            buttonBackMenu.topAnchor.constraint(equalTo: view.topAnchor, constant: fixConstraintsForButtonBySizeIphone()),
-            buttonBackMenu.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonBackMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -245)
-        ])
-        
-        NSLayoutConstraint.activate([
-            buttonDefaultSetting.topAnchor.constraint(equalTo: view.topAnchor, constant: fixConstraintsForButtonBySizeIphone()),
-            buttonDefaultSetting.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 245),
-            buttonDefaultSetting.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: viewPanel.bottomAnchor, constant: 1),
+            contentView.topAnchor.constraint(equalTo: stackViewButtons.bottomAnchor, constant: 20),
             contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            stackViewNumberQuestion.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 14),
+            stackViewNumberQuestion.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 5),
             stackViewNumberQuestion.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width / 8),
             stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
@@ -1228,9 +1178,9 @@ extension SettingViewController {
         setupConstraints(subviewFirst: stackViewTimeElapsed,
                          to: buttonOceaniaContinent,
                          leadingConstant: 20, constant: 15)
-        setupSizesSubview(subview: viewTimeElapsed, sizes: 60)
+        setupSquare(subview: viewTimeElapsed, sizes: 60)
         setupConstraintsCentersOnView(viewFirst: buttonTimeElapsed, on: viewTimeElapsed)
-        setupSizesSubview(subview: buttonTimeElapsed, sizes: 50)
+        setupSquare(subview: buttonTimeElapsed, sizes: 50)
         
         setupConstraints(subviewFirst: stackViewLabelTimeElapsed,
                          to: stackViewTimeElapsed,
@@ -1257,7 +1207,7 @@ extension SettingViewController {
         ])
     }
     
-    private func setupSizesSubview(subview: UIView, sizes: CGFloat) {
+    private func setupSquare(subview: UIView, sizes: CGFloat) {
         NSLayoutConstraint.activate([
             subview.heightAnchor.constraint(equalToConstant: sizes),
             subview.widthAnchor.constraint(equalToConstant: sizes)
@@ -1295,7 +1245,7 @@ extension SettingViewController {
         view.frame.height > 736 ? 180 : 320
     }
     
-    private func fixConstraintsForButtonBySizeIphone() -> CGFloat {
+    private func topAnchorCheck() -> CGFloat {
         view.frame.height > 736 ? 60 : 30
     }
 }

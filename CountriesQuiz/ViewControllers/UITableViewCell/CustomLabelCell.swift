@@ -57,7 +57,7 @@ class CustomLabelCell: UITableViewCell {
         
         setupView(subview: view)
         
-        setupLabel(label: labelName, size: 30, color: .white)
+        setupLabel(label: labelName, size: 28, color: .white)
         
         setupProgressView(subview: progressView)
         setupLabel(label: labelNumber, size: 20, color: .white)
@@ -86,7 +86,6 @@ extension CustomLabelCell {
     }
     
     private func setupView(subview: UIView, image: UIImageView) {
-        subview.backgroundColor = .white.withAlphaComponent(0.9)
         subview.layer.cornerRadius = 8
         addSubviews(subviews: image, on: subview)
     }
@@ -105,6 +104,7 @@ extension CustomLabelCell {
     private func setupLabel(label: UILabel, size: CGFloat, color: UIColor) {
         label.font = UIFont(name: "mr_fontick", size: size)
         label.textColor = color
+        label.numberOfLines = 0
         label.textAlignment = .center
     }
 }
@@ -148,13 +148,13 @@ extension CustomLabelCell {
         ])
         
         NSLayoutConstraint.activate([
-            labelName.topAnchor.constraint(equalTo: view.topAnchor, constant: 15),
+            labelName.topAnchor.constraint(equalTo: view.topAnchor, constant: 7),
             labelName.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
             labelName.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5)
         ])
         
         NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: labelName.bottomAnchor, constant: 30),
+            progressView.topAnchor.constraint(equalTo: view.topAnchor, constant: 73),
             progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             progressView.heightAnchor.constraint(equalToConstant: 8)
         ])
@@ -189,9 +189,5 @@ extension CustomLabelCell {
             image.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -4),
             image.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -4)
         ])
-    }
-    
-    private func width() -> CGFloat {
-        contentView.frame.width - 10
     }
 }

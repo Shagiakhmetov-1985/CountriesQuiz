@@ -105,7 +105,7 @@ class WrongAnswersViewController: UIViewController, UITableViewDelegate, UITable
         case !(question == answer) && tag == select:
             return .redTangerineTango
         default:
-            return .white.withAlphaComponent(0.9)
+            return mode.flag ? .white.withAlphaComponent(0.9) : .skyGrayLight
         }
     }
     
@@ -118,7 +118,7 @@ class WrongAnswersViewController: UIViewController, UITableViewDelegate, UITable
     }
     
     private func checkHeight() -> CGFloat {
-        mode.flag ? 350 : 330
+        mode.flag ? 350 : 315
     }
     
     private func flagCell(cell: CustomCell, indexPath: IndexPath) {

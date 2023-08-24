@@ -21,6 +21,7 @@ class SettingViewController: UIViewController {
         let button = setupButton(
             image: "arrow.counterclockwise",
             color: conditions() ? .blueBlackSea : .grayStone,
+            isEnabled: conditions() ? true : false,
             action: #selector(defaultSetting))
         return button
     }()
@@ -46,7 +47,7 @@ class SettingViewController: UIViewController {
     }()
     
     private var contentSize: CGSize {
-        CGSize(width: view.frame.width, height: view.frame.height + fixSizeForContentViewBySizeIphone())
+        CGSize(width: view.frame.width, height: view.frame.height + checkSizeScreenIphone())
     }
     
     private lazy var labelNumberQuestions: UILabel = {
@@ -84,21 +85,22 @@ class SettingViewController: UIViewController {
     private lazy var labelAllCountries: UILabel = {
         let label = setLabel(
             title: "Все страны мира",
-            size: 26)
+            size: 26,
+            color: select(isOn: !mode.allCountries))
         return label
     }()
     
     private lazy var labelCountAllCountries: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countries.count)",
-            size: 20)
+            size: 20,
+            color: select(isOn: !mode.allCountries))
         return label
     }()
     
     private lazy var buttonAllCountries: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: mode.allCountries).0,
-            borderColor: select(isOn: mode.allCountries).1,
+            color: select(isOn: mode.allCountries),
             tag: 1,
             addLabelFirst: labelAllCountries,
             addLabelSecond: labelCountAllCountries)
@@ -108,21 +110,22 @@ class SettingViewController: UIViewController {
     private lazy var labelAmericaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Америки",
-            size: 26)
+            size: 26,
+            color: select(isOn: !mode.americaContinent))
         return label
     }()
     
     private lazy var labelCountAmericaContinent: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAmericanContinent.count)",
-            size: 20)
+            size: 20,
+            color: select(isOn: !mode.americaContinent))
         return label
     }()
     
     private lazy var buttonAmericaContinent: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: mode.americaContinent).0,
-            borderColor: select(isOn: mode.americaContinent).1,
+            color: select(isOn: mode.americaContinent),
             tag: 2,
             addLabelFirst: labelAmericaContinent,
             addLabelSecond: labelCountAmericaContinent)
@@ -132,21 +135,22 @@ class SettingViewController: UIViewController {
     private lazy var labelEuropeContinent: UILabel = {
         let label = setLabel(
             title: "Континент Европы",
-            size: 26)
+            size: 26,
+            color: select(isOn: !mode.europeContinent))
         return label
     }()
     
     private lazy var labelCountEuropeContinent: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfEuropeanContinent.count)",
-            size: 20)
+            size: 20,
+            color: select(isOn: !mode.europeContinent))
         return label
     }()
     
     private lazy var buttonEuropeContinent: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: mode.europeContinent).0,
-            borderColor: select(isOn: mode.europeContinent).1,
+            color: select(isOn: mode.europeContinent),
             tag: 3,
             addLabelFirst: labelEuropeContinent,
             addLabelSecond: labelCountEuropeContinent)
@@ -156,21 +160,22 @@ class SettingViewController: UIViewController {
     private lazy var labelAfricaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Африки",
-            size: 26)
+            size: 26,
+            color: select(isOn: !mode.africaContinent))
         return label
     }()
     
     private lazy var labelCountAfricaContinent: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAfricanContinent.count)",
-            size: 20)
+            size: 20,
+            color: select(isOn: !mode.africaContinent))
         return label
     }()
     
     private lazy var buttonAfricaContinent: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: mode.africaContinent).0,
-            borderColor: select(isOn: mode.africaContinent).1,
+            color: select(isOn: mode.africaContinent),
             tag: 4,
             addLabelFirst: labelAfricaContinent,
             addLabelSecond: labelCountAfricaContinent)
@@ -180,21 +185,22 @@ class SettingViewController: UIViewController {
     private lazy var labelAsiaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Азии",
-            size: 26)
+            size: 26,
+            color: select(isOn: !mode.asiaContinent))
         return label
     }()
     
     private lazy var labelCountAsiaContinent: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAsianContinent.count)",
-            size: 20)
+            size: 20,
+            color: select(isOn: !mode.asiaContinent))
         return label
     }()
     
     private lazy var buttonAsiaContinent: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: mode.asiaContinent).0,
-            borderColor: select(isOn: mode.asiaContinent).1,
+            color: select(isOn: mode.asiaContinent),
             tag: 5,
             addLabelFirst: labelAsiaContinent,
             addLabelSecond: labelCountAsiaContinent)
@@ -204,21 +210,22 @@ class SettingViewController: UIViewController {
     private lazy var labelOceaniaContinent: UILabel = {
         let label = setLabel(
             title: "Континент Океании",
-            size: 26)
+            size: 26,
+            color: select(isOn: !mode.oceaniaContinent))
         return label
     }()
     
     private lazy var labelCountOceaniaContinent: UILabel = {
         let label = setLabel(
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfOceanContinent.count)",
-            size: 20)
+            size: 20,
+            color: select(isOn: !mode.oceaniaContinent))
         return label
     }()
     
     private lazy var buttonOceaniaContinent: UIButton = {
         let button = setButtonContinents(
-            color: select(isOn: mode.oceaniaContinent).0,
-            borderColor: select(isOn: mode.oceaniaContinent).1,
+            color: select(isOn: mode.oceaniaContinent),
             tag: 6,
             addLabelFirst: labelOceaniaContinent,
             addLabelSecond: labelCountOceaniaContinent)
@@ -294,20 +301,18 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var pickerViewOneQuestion: UIPickerView = {
-        let gray = UIColor.skyGrayLight
         let pickerView = setPickerView(
-            backgroundColor: mode.timeElapsed.timeElapsed ? isEnabledColor(tag: 2) : gray,
+            backgroundColor: timeElapsed() ? isEnabledColor(tag: 2) : .skyGrayLight,
             tag: 2,
-            isEnabled: mode.timeElapsed.timeElapsed ? isEnabled(tag: 2) : false)
+            isEnabled: timeElapsed() ? isEnabled(tag: 2) : false)
         return pickerView
     }()
     
     private lazy var pickerViewAllQuestions: UIPickerView = {
-        let gray = UIColor.skyGrayLight
         let pickerView = setPickerView(
-            backgroundColor: mode.timeElapsed.timeElapsed ? isEnabledColor(tag: 3) : gray,
+            backgroundColor: timeElapsed() ? isEnabledColor(tag: 3) : .skyGrayLight,
             tag: 3,
-            isEnabled: mode.timeElapsed.timeElapsed ? isEnabled(tag: 3) : false)
+            isEnabled: timeElapsed() ? isEnabled(tag: 3) : false)
         return pickerView
     }()
     
@@ -439,12 +444,19 @@ class SettingViewController: UIViewController {
     }
     
     private func checkmarkOnAllCountries() {
-        buttonOnOff(buttons: buttonAllCountries, color: UIColor.cyanLight,
-                    borderColor: UIColor.blueLight)
+        buttonOnOff(buttons: buttonAllCountries, color: .blueBlackSea)
         buttonOnOff(buttons: buttonAmericaContinent, buttonEuropeContinent,
                     buttonAfricaContinent, buttonAsiaContinent,
-                    buttonOceaniaContinent, color: UIColor.skyCyanLight,
-                    borderColor: UIColor.skyCyanLight)
+                    buttonOceaniaContinent, color: .skyCyanLight)
+        
+        labelOnOff(labels: labelAllCountries, labelCountAllCountries,
+                   color: .skyCyanLight)
+        labelOnOff(labels: labelAmericaContinent, labelCountAmericaContinent,
+                   labelEuropeContinent, labelCountEuropeContinent,
+                   labelAfricaContinent, labelCountAfricaContinent,
+                   labelAsiaContinent, labelCountAsiaContinent,
+                   labelOceaniaContinent, labelCountOceaniaContinent,
+                   color: .blueBlackSea)
     }
     
     private func settingOnAllCountries() {
@@ -454,11 +466,40 @@ class SettingViewController: UIViewController {
                               buttonOceaniaContinent, bool: false)
     }
     
-    private func buttonOnOff(buttons: UIButton..., color: UIColor, borderColor: UIColor) {
+    private func buttonOnOff(buttons: UIButton..., color: UIColor) {
         buttons.forEach { button in
             UIView.animate(withDuration: 0.3) {
                 button.backgroundColor = color
-                button.layer.borderColor = borderColor.cgColor
+            }
+        }
+    }
+    
+    private func labelOnOff(labels: UILabel..., color: UIColor) {
+        labels.forEach { label in
+            UIView.animate(withDuration: 0.3) {
+                label.textColor = color
+            }
+        }
+    }
+    
+    private func labelOnOff(buttons: UIButton..., color: UIColor) {
+        buttons.forEach { button in
+            switch button.tag {
+            case 2:
+                labelOnOff(labels: labelAmericaContinent,
+                           labelCountAmericaContinent, color: color)
+            case 3:
+                labelOnOff(labels: labelEuropeContinent,
+                           labelCountEuropeContinent, color: color)
+            case 4:
+                labelOnOff(labels: labelAfricaContinent,
+                           labelCountAfricaContinent, color: color)
+            case 5:
+                labelOnOff(labels: labelAsiaContinent,
+                           labelCountAsiaContinent, color: color)
+            default:
+                labelOnOff(labels: labelOceaniaContinent,
+                           labelCountOceaniaContinent, color: color)
             }
         }
     }
@@ -496,26 +537,26 @@ class SettingViewController: UIViewController {
             checkmarkOnAllCountries()
             settingOnAllCountries()
         } else {
-            buttonOnOff(buttons: buttonAllCountries, color: UIColor.skyCyanLight,
-                        borderColor: UIColor.skyCyanLight)
-            buttonOnOff(buttons: button, color: select(isOn: isOn).0,
-                        borderColor: select(isOn: isOn).1)
+            buttonOnOff(buttons: buttonAllCountries, color: .skyCyanLight)
+            buttonOnOff(buttons: button, color: select(isOn: isOn))
+            
+            labelOnOff(labels: labelAllCountries, labelCountAllCountries,
+                       color: .blueBlackSea)
+            labelOnOff(buttons: button, color: select(isOn: !isOn))
             checkmarkSettingOnOff(buttons: buttonAllCountries, bool: false)
         }
     }
     
     private func checkmarkTimeElapsed(button: UIButton) {
         mode.timeElapsed.timeElapsed.toggle()
-        let isOn = mode.timeElapsed.timeElapsed
+        let isOn = timeElapsed()
         checkmarkOnOff(buttons: button, image: checkmark(isOn: isOn))
         checkmarkColors(isOn: isOn)
     }
     
     private func checkmarkColors(isOn: Bool) {
-        let blue = UIColor.blueLight
-        let gray = UIColor.grayLight
-        checkmarkLabels(blue: blue, gray: gray, isOn: isOn)
-        checkmarkSegmentedControl(blue: blue, gray: gray, isOn: isOn)
+        checkmarkLabels(blue: .blueBlackSea, gray: .grayLight, isOn: isOn)
+        checkmarkSegmentedControl(blue: .blueBlackSea, gray: .grayLight, isOn: isOn)
         checkmarkPickerViews(isOn: isOn)
     }
     
@@ -563,10 +604,9 @@ class SettingViewController: UIViewController {
     }
     
     private func pickerViewOnOff(pickerView: UIPickerView, isOn: Bool, tag: Int) {
-        let lightGray = UIColor.skyGrayLight
         UIView.animate(withDuration: 0.3) { [self] in
             pickerView.isUserInteractionEnabled = isOn ? isEnabled(tag: tag) : false
-            pickerView.backgroundColor = isOn ? isEnabledColor(tag: tag) : lightGray
+            pickerView.backgroundColor = isOn ? isEnabledColor(tag: tag) : .skyGrayLight
         }
         pickerView.reloadAllComponents()
     }
@@ -575,8 +615,8 @@ class SettingViewController: UIViewController {
         isOn ? "checkmark.circle.fill" : "circle"
     }
     
-    private func select(isOn: Bool) -> (UIColor, UIColor) {
-        isOn ? (.cyanLight, .blueBlackSea) : (.skyCyanLight, .skyCyanLight)
+    private func select(isOn: Bool) -> UIColor {
+        isOn ? .blueBlackSea : .skyCyanLight
     }
     
     private func setupCountCountries(continents: Bool...) {
@@ -635,16 +675,13 @@ class SettingViewController: UIViewController {
     }
     // MARK: - Setting of segmented control
     @objc private func segmentedControlAction() {
-        let lightBlue = UIColor.skyCyanLight
-        let lightGray = UIColor.skyGrayLight
-        
         if segmentedControl.selectedSegmentIndex == 0 {
             let countQuestion = mode.countQuestions
             let currentTime = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
             let currentRow = currentTime - (4 * countQuestion)
             
-            segmentAction(pickerView: pickerViewOneQuestion, isEnabled: true, backgroundColor: lightBlue)
-            segmentAction(pickerView: pickerViewAllQuestions, isEnabled: false, backgroundColor: lightGray)
+            segmentAction(pickerView: pickerViewOneQuestion, isEnabled: true, backgroundColor: .skyCyanLight)
+            segmentAction(pickerView: pickerViewAllQuestions, isEnabled: false, backgroundColor: .skyGrayLight)
             
             setupDataFromSegmentedControl(
                 currentRow: currentRow,
@@ -656,8 +693,8 @@ class SettingViewController: UIViewController {
             let currentTime = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
             let currentRow = currentTime - 6
             
-            segmentAction(pickerView: pickerViewOneQuestion, isEnabled: false, backgroundColor: lightGray)
-            segmentAction(pickerView: pickerViewAllQuestions, isEnabled: true, backgroundColor: lightBlue)
+            segmentAction(pickerView: pickerViewOneQuestion, isEnabled: false, backgroundColor: .skyGrayLight)
+            segmentAction(pickerView: pickerViewAllQuestions, isEnabled: true, backgroundColor: .skyCyanLight)
             
             setupDataFromSegmentedControl(
                 currentRow: currentRow,
@@ -709,20 +746,18 @@ class SettingViewController: UIViewController {
     }
     
     private func isEnabledColor(tag: Int) -> UIColor {
-        let lightBlue = UIColor.skyCyanLight
-        let lightGray = UIColor.skyGrayLight
         switch segmentedControl.selectedSegmentIndex {
         case 0:
             if tag == 2 {
-                return lightBlue
+                return .skyCyanLight
             } else {
-                return lightGray
+                return .skyGrayLight
             }
         default:
             if tag == 2 {
-                return lightGray
+                return .skyGrayLight
             } else {
-                return lightBlue
+                return .skyCyanLight
             }
         }
     }
@@ -791,7 +826,7 @@ class SettingViewController: UIViewController {
     }
     
     private func buttonIsEnabled() {
-        conditions() ? buttonIsEnabled( isEnabled: true, color: .blueBlackSea) :
+        conditions() ? buttonIsEnabled(isEnabled: true, color: .blueBlackSea) :
         buttonIsEnabled(isEnabled: false, color: .grayStone)
     }
 }
@@ -813,7 +848,8 @@ extension SettingViewController {
 }
 // MARK: - Setup button
 extension SettingViewController {
-    private func setupButton(image: String, color: UIColor, action: Selector) -> UIButton {
+    private func setupButton(image: String, color: UIColor, isEnabled: Bool? = nil,
+                             action: Selector) -> UIButton {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: image, withConfiguration: size)
         let button = UIButton(type: .system)
@@ -822,33 +858,9 @@ extension SettingViewController {
         button.layer.cornerRadius = 12
         button.layer.borderColor = color.cgColor
         button.layer.borderWidth = 1.5
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: action, for: .touchUpInside)
-        return button
-    }
-    
-    private func setButton(title: String, style: String? = nil, size: CGFloat,
-                           colorTitle: UIColor? = nil, colorBackgroud: UIColor? = nil,
-                           radiusCorner: CGFloat? = nil, borderWidth: CGFloat? = nil,
-                           borderColor: CGColor? = nil, shadowColor: CGColor? = nil,
-                           radiusShadow: CGFloat? = nil, shadowOffsetWidth: CGFloat? = nil,
-                           shadowOffsetHeight: CGFloat? = nil,
-                           isEnabled: Bool? = nil) -> UIButton {
-        let button = UIButton(type: .system)
-        button.setTitle(title, for: .normal)
-        button.setTitleColor(colorTitle, for: .normal)
-        button.titleLabel?.font = UIFont(name: style ?? "", size: size)
-        button.backgroundColor = colorBackgroud
-        button.layer.cornerRadius = radiusCorner ?? 0
-        button.layer.borderWidth = borderWidth ?? 0
-        button.layer.borderColor = borderColor
-        button.layer.shadowColor = shadowColor
-        button.layer.shadowOpacity = 1
-        button.layer.shadowRadius = radiusShadow ?? 0
-        button.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                           height: shadowOffsetHeight ?? 0)
         button.isEnabled = isEnabled ?? true
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
         return button
     }
     
@@ -866,14 +878,17 @@ extension SettingViewController {
         return button
     }
     
-    private func setButtonContinents(color: UIColor, borderColor: UIColor, tag: Int,
+    private func setButtonContinents(color: UIColor, tag: Int,
                                      addLabelFirst: UILabel,
                                      addLabelSecond: UILabel) -> UIButton {
         let button = UIButton(type: .custom)
         button.backgroundColor = color
-        button.layer.borderColor = borderColor.cgColor
-        button.layer.borderWidth = 3
+        button.layer.borderColor = UIColor.blueBlackSea.cgColor
+        button.layer.borderWidth = 2
         button.layer.cornerRadius = 13
+        button.layer.shadowColor = UIColor.blueBlackSea.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.tag = tag
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(buttonCheckmark), for: .touchUpInside)
@@ -892,26 +907,6 @@ extension SettingViewController {
         label.textColor = color ?? .blueBlackSea
         label.textAlignment = textAlignment ?? .natural
         label.numberOfLines = numberOfLines ?? 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }
-    
-    private func setLabel(title: String, size: CGFloat, style: String, color: UIColor,
-                          colorOfShadow: CGColor? = nil, radiusOfShadow: CGFloat? = nil,
-                          shadowOffsetWidth: CGFloat? = nil, shadowOffsetHeight: CGFloat? = nil,
-                          numberOfLines: Int? = nil,
-                          textAlignment: NSTextAlignment? = nil) -> UILabel {
-        let label = UILabel()
-        label.text = title
-        label.font = UIFont(name: style, size: size)
-        label.textColor = color
-        label.layer.shadowColor = colorOfShadow
-        label.layer.shadowRadius = radiusOfShadow ?? 0
-        label.layer.shadowOpacity = 1
-        label.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                          height: shadowOffsetHeight ?? 0)
-        label.numberOfLines = numberOfLines ?? 0
-        label.textAlignment = textAlignment ?? .natural
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
@@ -1237,11 +1232,7 @@ extension SettingViewController {
         ])
     }
     
-    private func fixConstraintsForViewPanelBySizeIphone() -> CGFloat {
-        view.frame.height > 736 ? 110 : 70
-    }
-    
-    private func fixSizeForContentViewBySizeIphone() -> CGFloat {
+    private func checkSizeScreenIphone() -> CGFloat {
         view.frame.height > 736 ? 180 : 320
     }
     

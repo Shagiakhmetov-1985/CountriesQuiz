@@ -109,10 +109,6 @@ extension UIColor {
         #colorLiteral(red: 0.2117647059, green: 0.2156862745, blue: 0.9882352941, alpha: 1)
     }
     
-    static var contentLight: UIColor {
-        #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-    }
-    
     static var colorGradientOneLight: UIColor {
         #colorLiteral(red: 0.9019607843, green: 0.902883172, blue: 0.9026857018, alpha: 1)
     }

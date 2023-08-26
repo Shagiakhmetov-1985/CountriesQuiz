@@ -41,7 +41,7 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var contentView: UIView = {
-        let view = setView(color: UIColor.contentLight)
+        let view = setView(color: .white)
         view.frame.size = contentSize
         return view
     }()
@@ -54,6 +54,7 @@ class SettingViewController: UIViewController {
         let label = setLabel(
             title: "Количество вопросов",
             size: 26,
+            color: .blueBlackSea,
             textAlignment: .center,
             numberOfLines: 1)
         return label
@@ -62,7 +63,8 @@ class SettingViewController: UIViewController {
     private lazy var labelNumber: UILabel = {
         let label = setLabel(
             title: "\(mode.countQuestions)",
-            size: 26)
+            size: 26,
+            color: .blueBlackSea)
         return label
     }()
     
@@ -77,8 +79,7 @@ class SettingViewController: UIViewController {
     private lazy var pickerViewNumberQuestion: UIPickerView = {
         let pickerView = setPickerView(
             backgroundColor: .skyCyanLight,
-            tag: 1,
-            isEnabled: true)
+            tag: 1)
         return pickerView
     }()
     
@@ -234,7 +235,7 @@ class SettingViewController: UIViewController {
     
     private lazy var viewTimeElapsed: UIView = {
         let view = setView(
-            color: UIColor.skyCyanLight,
+            color: .blueBlackSea,
             radiusCorner: 13,
             addButton: buttonTimeElapsed)
         return view
@@ -841,6 +842,9 @@ extension SettingViewController {
             view.layer.cornerRadius = radiusCorner ?? 0
             if let button = addButton {
                 view.addSubview(button)
+                view.layer.shadowColor = color.cgColor
+                view.layer.shadowOpacity = 0.4
+                view.layer.shadowOffset = CGSize(width: 0, height: 6)
             }
         }
         return view
@@ -870,7 +874,7 @@ extension SettingViewController {
         let image = UIImage(systemName: image, withConfiguration: configuration)
         button.configuration = UIButton.Configuration.filled()
         button.configuration?.baseBackgroundColor = .clear
-        button.configuration?.baseForegroundColor = .blueBlackSea
+        button.configuration?.baseForegroundColor = .skyCyanLight
         button.configuration?.image = image
         button.tag = tag
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -937,7 +941,6 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         case 1:
             title = "\(row + 10)"
             attributed = attributedString(title: title)
-            view?.backgroundColor = .redTangerineTango
         case 2:
             title = "\(row + 6)"
             attributed = attributedStringTimeElapsed(title: title, tag: 2)
@@ -982,12 +985,12 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     private func setPickerView(backgroundColor: UIColor,
                                tag: Int,
-                               isEnabled: Bool) -> UIPickerView {
+                               isEnabled: Bool? = nil) -> UIPickerView {
         let pickerView = UIPickerView()
         pickerView.backgroundColor = backgroundColor
         pickerView.layer.cornerRadius = 13
         pickerView.tag = tag
-        pickerView.isUserInteractionEnabled = isEnabled
+        pickerView.isUserInteractionEnabled = isEnabled ?? true
         pickerView.translatesAutoresizingMaskIntoConstraints = false
         pickerView.dataSource = self
         pickerView.delegate = self
@@ -1125,7 +1128,7 @@ extension SettingViewController {
         setupConstraints(
             subviewFirst: buttonAllCountries, to: pickerViewNumberQuestion,
             leadingConstant: 20, constant: 15)
-        setupConstraintsOnbutton(
+        setupConstraintsOnButton(
             labelFirst: labelAllCountries, and: labelCountAllCountries,
             button: buttonAllCountries)
         setupHeightSubview(subview: buttonAllCountries, height: 60)
@@ -1133,7 +1136,7 @@ extension SettingViewController {
         setupConstraints(
             subviewFirst: buttonAmericaContinent, to: buttonAllCountries,
             leadingConstant: 20, constant: 15)
-        setupConstraintsOnbutton(
+        setupConstraintsOnButton(
             labelFirst: labelAmericaContinent, and: labelCountAmericaContinent,
             button: buttonAmericaContinent)
         setupHeightSubview(subview: buttonAmericaContinent, height: 60)
@@ -1141,7 +1144,7 @@ extension SettingViewController {
         setupConstraints(
             subviewFirst: buttonEuropeContinent, to: buttonAmericaContinent,
             leadingConstant: 20, constant: 15)
-        setupConstraintsOnbutton(
+        setupConstraintsOnButton(
             labelFirst: labelEuropeContinent, and: labelCountEuropeContinent,
             button: buttonEuropeContinent)
         setupHeightSubview(subview: buttonEuropeContinent, height: 60)
@@ -1149,7 +1152,7 @@ extension SettingViewController {
         setupConstraints(
             subviewFirst: buttonAfricaContinent, to: buttonEuropeContinent,
             leadingConstant: 20, constant: 15)
-        setupConstraintsOnbutton(
+        setupConstraintsOnButton(
             labelFirst: labelAfricaContinent, and: labelCountAfricaContinent,
             button: buttonAfricaContinent)
         setupHeightSubview(subview: buttonAfricaContinent, height: 60)
@@ -1157,7 +1160,7 @@ extension SettingViewController {
         setupConstraints(
             subviewFirst: buttonAsiaContinent, to: buttonAfricaContinent,
             leadingConstant: 20, constant: 15)
-        setupConstraintsOnbutton(
+        setupConstraintsOnButton(
             labelFirst: labelAsiaContinent, and: labelCountAsiaContinent,
             button: buttonAsiaContinent)
         setupHeightSubview(subview: buttonAsiaContinent, height: 60)
@@ -1165,7 +1168,7 @@ extension SettingViewController {
         setupConstraints(
             subviewFirst: buttonOceaniaContinent, to: buttonAsiaContinent,
             leadingConstant: 20, constant: 15)
-        setupConstraintsOnbutton(
+        setupConstraintsOnButton(
             labelFirst: labelOceaniaContinent, and: labelCountOceaniaContinent,
             button: buttonOceaniaContinent)
         setupHeightSubview(subview: buttonOceaniaContinent, height: 60)
@@ -1222,7 +1225,7 @@ extension SettingViewController {
         ])
     }
     
-    private func setupConstraintsOnbutton(labelFirst: UILabel, and labelSecond: UILabel,
+    private func setupConstraintsOnButton(labelFirst: UILabel, and labelSecond: UILabel,
                                           button: UIButton) {
         NSLayoutConstraint.activate([
             labelFirst.centerXAnchor.constraint(equalTo: button.centerXAnchor),

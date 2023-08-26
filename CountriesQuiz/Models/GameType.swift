@@ -11,7 +11,7 @@ class GameType {
     static let shared = GameType()
     
     let names = ["Викторина флагов", "Опрос", "Викторина карт", "Эрудит",
-                    "Викторина столиц"]
+                 "Викторина столиц"]
     
     let images = ["filemenu.and.selection", "checklist", "globe.desk",
                   "a.square", "building.2"]
@@ -27,7 +27,7 @@ class GameType {
                                   .indigo, .redTangerineTango]
     
     let buttonsPlay: [UIColor] = [.skyBlueLight, .greenYellowBrilliant,
-                                   .redBeige, .fuchsiaCrayolaDeep, .redCardinal]
+                                  .redBeige, .fuchsiaCrayolaDeep, .redCardinal]
     
     let buttonsFavourite: [UIColor] = [.blueMiddlePersian, .greenEmerald, .brown,
                                        .amethyst, .bismarkFuriozo]

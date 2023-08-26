@@ -62,7 +62,7 @@ class MenuViewController: UIViewController {
             color: .cyanDark,
             image: imageFlag,
             label: labelQuizOfFlags,
-            view: viewQuizOfFlags,
+            circle: circleQuizOfFlag,
             imageGame: imageQuizOfFlags,
             action: #selector(gameType))
         return button
@@ -86,10 +86,11 @@ class MenuViewController: UIViewController {
         return label
     }()
     
-    private lazy var viewQuizOfFlags: UIView = {
-        let view = setupView(
+    private lazy var circleQuizOfFlag: UIImageView = {
+        let view = setImage(
+            image: "circle.fill",
             color: .white.withAlphaComponent(0.8),
-            radius: radius())
+            size: 100)
         return view
     }()
     
@@ -106,7 +107,7 @@ class MenuViewController: UIViewController {
             color: .greenHarlequin,
             image: imageCheckmark,
             label: labelQuestionnaire,
-            view: viewQuestionnaire,
+            circle: circleQuestionnare,
             imageGame: imageQuestionnaire,
             tag: 1,
             action: #selector(gameType))
@@ -131,10 +132,11 @@ class MenuViewController: UIViewController {
         return label
     }()
     
-    private lazy var viewQuestionnaire: UIView = {
-        let view = setupView(
+    private lazy var circleQuestionnare: UIImageView = {
+        let view = setImage(
+            image: "circle.fill",
             color: .white.withAlphaComponent(0.8),
-            radius: radius())
+            size: 100)
         return view
     }()
     
@@ -151,7 +153,7 @@ class MenuViewController: UIViewController {
             color: .redYellowBrown,
             image: imageMap,
             label: labelQuizOfMaps,
-            view: viewQuizOfMaps,
+            circle: circleQuizOfMaps,
             imageGame: imageQuizOfMaps,
             tag: 2,
             action: #selector(gameType))
@@ -176,10 +178,11 @@ class MenuViewController: UIViewController {
         return label
     }()
     
-    private lazy var viewQuizOfMaps: UIView = {
-        let view = setupView(
+    private lazy var circleQuizOfMaps: UIImageView = {
+        let view = setImage(
+            image: "circle.fill",
             color: .white.withAlphaComponent(0.8),
-            radius: radius())
+            size: 100)
         return view
     }()
     
@@ -196,7 +199,7 @@ class MenuViewController: UIViewController {
             color: .indigo,
             image: imageText,
             label: labelScrabble,
-            view: viewScrabble,
+            circle: circleScrabble,
             imageGame: imageScrabble,
             tag: 3,
             action: #selector(gameType))
@@ -221,10 +224,11 @@ class MenuViewController: UIViewController {
         return label
     }()
     
-    private lazy var viewScrabble: UIView = {
-        let view = setupView(
+    private lazy var circleScrabble: UIImageView = {
+        let view = setImage(
+            image: "circle.fill",
             color: .white.withAlphaComponent(0.8),
-            radius: radius())
+            size: 100)
         return view
     }()
     
@@ -241,7 +245,7 @@ class MenuViewController: UIViewController {
             color: .redTangerineTango,
             image: imageHouse,
             label: labelQuizOfCapitals,
-            view: viewQuizOfCapitals,
+            circle: circleQuizOfCapitals,
             imageGame: imageQuizOfCapitals,
             tag: 4,
             action: #selector(gameType))
@@ -266,10 +270,11 @@ class MenuViewController: UIViewController {
         return label
     }()
     
-    private lazy var viewQuizOfCapitals: UIView = {
-        let view = setupView(
+    private lazy var circleQuizOfCapitals: UIImageView = {
+        let view = setImage(
+            image: "circle.fill",
             color: .white.withAlphaComponent(0.8),
-            radius: radius())
+            size: 100)
         return view
     }()
     
@@ -362,7 +367,7 @@ extension MenuViewController {
 // MARK: - Setup button
 extension MenuViewController {
     private func setButton(color: UIColor, image: UIView, label: UILabel? = nil,
-                           view: UIView? = nil, imageGame: UIView? = nil,
+                           circle: UIView? = nil, imageGame: UIView? = nil,
                            tag: Int? = nil, action: Selector) -> UIButton {
         let button = Button(type: .custom)
         button.backgroundColor = color
@@ -372,8 +377,8 @@ extension MenuViewController {
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.tag = tag ?? 0
         button.translatesAutoresizingMaskIntoConstraints = false
-        if let label = label, let view = view, let imageGame = imageGame {
-            setupSubviews(subviews: image, label, view, imageGame, on: button)
+        if let label = label, let circle = circle, let imageGame = imageGame {
+            setupSubviews(subviews: image, label, circle, imageGame, on: button)
         } else {
             setupSubviews(subviews: image, on: button)
         }
@@ -410,18 +415,6 @@ extension MenuViewController {
 }
 // MARK: - Setup view
 extension MenuViewController {
-    private func setupView(color: UIColor, radius: CGFloat, image: UIImageView? = nil,
-                           label: UILabel? = nil, stackView: UIStackView? = nil) -> UIView {
-        let view = UIView()
-        view.backgroundColor = color
-        view.layer.cornerRadius = radius
-        view.translatesAutoresizingMaskIntoConstraints = false
-        if let image = image, let label = label, let stackView = stackView {
-            setupSubviews(subviews: image, label, stackView, on: view)
-        }
-        return view
-    }
-    
     private func setupView(color: UIColor) -> UIView {
         let view = UIView()
         view.backgroundColor = color
@@ -473,24 +466,29 @@ extension MenuViewController {
         ])
         
         setConstraintsList(button: buttonQuizOfFlags, image: imageFlag,
-                           label: labelQuizOfFlags, viewGame: viewQuizOfFlags,
-                           imageGame: imageQuizOfFlags, layout: scrollView.topAnchor)
+                           label: labelQuizOfFlags, circle: circleQuizOfFlag,
+                           imageGame: imageQuizOfFlags,
+                           layout: scrollView.topAnchor)
         setConstraintsList(button: buttonQuestionnaire, image: imageCheckmark,
-                           label: labelQuestionnaire, viewGame: viewQuestionnaire,
-                           imageGame: imageQuestionnaire, layout: buttonQuizOfFlags.bottomAnchor)
+                           label: labelQuestionnaire, circle: circleQuestionnare,
+                           imageGame: imageQuestionnaire,
+                           layout: buttonQuizOfFlags.bottomAnchor)
         setConstraintsList(button: buttonQuizOfMaps, image: imageMap,
-                           label: labelQuizOfMaps, viewGame: viewQuizOfMaps,
-                           imageGame: imageQuizOfMaps, layout: buttonQuestionnaire.bottomAnchor)
+                           label: labelQuizOfMaps, circle: circleQuizOfMaps,
+                           imageGame: imageQuizOfMaps,
+                           layout: buttonQuestionnaire.bottomAnchor)
         setConstraintsList(button: buttonScrabble, image: imageText,
-                           label: labelScrabble, viewGame: viewScrabble,
-                           imageGame: imageScrabble, layout: buttonQuizOfMaps.bottomAnchor)
+                           label: labelScrabble, circle: circleScrabble,
+                           imageGame: imageScrabble,
+                           layout: buttonQuizOfMaps.bottomAnchor)
         setConstraintsList(button: buttonQuizOfCapitals, image: imageHouse,
-                           label: labelQuizOfCapitals, viewGame: viewQuizOfCapitals,
-                           imageGame: imageQuizOfCapitals, layout: buttonScrabble.bottomAnchor)
+                           label: labelQuizOfCapitals, circle: circleQuizOfCapitals,
+                           imageGame: imageQuizOfCapitals,
+                           layout: buttonScrabble.bottomAnchor)
     }
     
     private func setConstraintsList(button: UIButton, image: UIImageView,
-                                    label: UILabel, viewGame: UIView,
+                                    label: UILabel, circle: UIImageView,
                                     imageGame: UIImageView, layout: NSLayoutYAxisAnchor) {
         NSLayoutConstraint.activate([
             button.topAnchor.constraint(equalTo: layout, constant: 15),
@@ -510,11 +508,10 @@ extension MenuViewController {
         ])
         
         NSLayoutConstraint.activate([
-            viewGame.topAnchor.constraint(equalTo: button.topAnchor, constant: 10),
-            viewGame.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -10)
+            circle.topAnchor.constraint(equalTo: button.topAnchor),
+            circle.trailingAnchor.constraint(equalTo: button.trailingAnchor)
         ])
-        setupSquare(subview: viewGame, sizes: radius() * 2)
-        setupCenterSubview(subview: imageGame, on: viewGame)
+        setupCenterSubview(subview: imageGame, on: circle)
     }
     
     private func setupSquare(subview: UIView, sizes: CGFloat) {
@@ -529,9 +526,5 @@ extension MenuViewController {
             subview.centerXAnchor.constraint(equalTo: subviewOther.centerXAnchor),
             subview.centerYAnchor.constraint(equalTo: subviewOther.centerYAnchor)
         ])
-    }
-    
-    private func radius() -> CGFloat {
-        50
     }
 }

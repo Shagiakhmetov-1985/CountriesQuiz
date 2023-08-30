@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */; };
 		C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */; };
+		C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */; };
+		C34BA42D2A9F20CD006E191D /* CustomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34BA42C2A9F20CD006E191D /* CustomHeader.swift */; };
+		C34BA42F2A9F29C5006E191D /* QuestionnaireCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34BA42E2A9F29C5006E191D /* QuestionnaireCell.swift */; };
 		C34EC0702986694900300585 /* Results.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34EC06F2986694900300585 /* Results.swift */; };
 		C3613A712A7FB82C006C0F1E /* GameTypeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */; };
 		C36773F1296BF9E10096BCC5 /* QuizOfFlagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */; };
@@ -36,6 +39,9 @@
 /* Begin PBXFileReference section */
 		C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabelCell.swift; sourceTree = "<group>"; };
 		C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorManager.swift; sourceTree = "<group>"; };
+		C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireViewController.swift; sourceTree = "<group>"; };
+		C34BA42C2A9F20CD006E191D /* CustomHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeader.swift; sourceTree = "<group>"; };
+		C34BA42E2A9F29C5006E191D /* QuestionnaireCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireCell.swift; sourceTree = "<group>"; };
 		C34EC06F2986694900300585 /* Results.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Results.swift; sourceTree = "<group>"; };
 		C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeManager.swift; sourceTree = "<group>"; };
 		C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfFlagsViewController.swift; sourceTree = "<group>"; };
@@ -82,6 +88,14 @@
 			path = "Extensions + UIKit";
 			sourceTree = "<group>";
 		};
+		C34BA42B2A9F206A006E191D /* UITableViewHeaderFooterView */ = {
+			isa = PBXGroup;
+			children = (
+				C34BA42C2A9F20CD006E191D /* CustomHeader.swift */,
+			);
+			path = UITableViewHeaderFooterView;
+			sourceTree = "<group>";
+		};
 		C36773F4296D541E0096BCC5 /* AnimatedTransition */ = {
 			isa = PBXGroup;
 			children = (
@@ -104,6 +118,7 @@
 			children = (
 				C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */,
 				C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */,
+				C34BA42E2A9F29C5006E191D /* QuestionnaireCell.swift */,
 			);
 			path = UITableViewCell;
 			sourceTree = "<group>";
@@ -152,10 +167,12 @@
 		C3E2EB442938E88100AB40AD /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				C34BA42B2A9F206A006E191D /* UITableViewHeaderFooterView */,
 				C38DF4DC2A8F4A3D00550BCC /* UITableViewCell */,
 				C3E2EB332938E7F300AB40AD /* MenuViewController.swift */,
 				C3E7C9932A7B68AA0046A883 /* GameTypeViewController.swift */,
 				C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */,
+				C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */,
 				C38C023E2981025C008C2202 /* ResultsViewController.swift */,
 				C38DF4DA2A8E4BF000550BCC /* WrongAnswersViewController.swift */,
 				C3D292EA293F5F0900786752 /* SettingViewController.swift */,
@@ -297,9 +314,12 @@
 				C3E7C9942A7B68AA0046A883 /* GameTypeViewController.swift in Sources */,
 				C34EC0702986694900300585 /* Results.swift in Sources */,
 				C376AC072947261D00DE5E86 /* Setting.swift in Sources */,
+				C34BA42F2A9F29C5006E191D /* QuestionnaireCell.swift in Sources */,
 				C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */,
 				C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */,
+				C34BA42D2A9F20CD006E191D /* CustomHeader.swift in Sources */,
 				C376AC0929474EB400DE5E86 /* StorageManager.swift in Sources */,
+				C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */,
 				C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

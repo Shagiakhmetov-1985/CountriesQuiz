@@ -10,6 +10,7 @@ import Foundation
 struct Countries: Equatable {
     let flag: String
     let name: String
+    var select: Bool
 }
 
 extension Countries {
@@ -23,7 +24,8 @@ extension Countries {
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
-                name: names[index]
+                name: names[index],
+                select: false
             )
             countries.append(information)
         }
@@ -41,7 +43,8 @@ extension Countries {
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
-                name: names[index]
+                name: names[index],
+                select: false
             )
             countries.append(information)
         }
@@ -59,7 +62,8 @@ extension Countries {
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
-                name: names[index]
+                name: names[index],
+                select: false
             )
             countries.append(information)
         }
@@ -77,7 +81,8 @@ extension Countries {
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
-                name: names[index]
+                name: names[index],
+                select: false
             )
             countries.append(information)
         }
@@ -95,7 +100,8 @@ extension Countries {
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
-                name: names[index]
+                name: names[index],
+                select: false
             )
             countries.append(information)
         }
@@ -113,7 +119,8 @@ extension Countries {
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
-                name: names[index]
+                name: names[index],
+                select: false
             )
             countries.append(information)
         }

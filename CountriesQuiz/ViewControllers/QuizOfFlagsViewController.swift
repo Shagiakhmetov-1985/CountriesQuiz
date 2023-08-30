@@ -242,10 +242,6 @@ class QuizOfFlagsViewController: UIViewController {
         }
     }
     
-    @objc private func testButtonPress() {
-        print("test button!")
-    }
-    
     private func setupDesign() {
         view.backgroundColor = game.background
         navigationItem.hidesBackButton = true

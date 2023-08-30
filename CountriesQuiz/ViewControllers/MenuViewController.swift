@@ -330,6 +330,7 @@ class MenuViewController: UIViewController {
         let gameTypeVC = GameTypeViewController()
         gameTypeVC.mode = mode
         gameTypeVC.game = games[tag]
+        gameTypeVC.tag = tag
         navigationController?.pushViewController(gameTypeVC, animated: true)
     }
     

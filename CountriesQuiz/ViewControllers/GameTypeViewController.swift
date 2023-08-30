@@ -197,6 +197,7 @@ class GameTypeViewController: UIViewController {
     
     var mode: Setting!
     var game: Games!
+    var tag: Int!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -234,7 +235,21 @@ class GameTypeViewController: UIViewController {
     }
     
     @objc private func startGame() {
+        switch tag {
+        case 0: quizOfFlagsViewController()
+        default: questionnaireViewController()
+        }
+    }
+    
+    private func quizOfFlagsViewController() {
         let startGameVC = QuizOfFlagsViewController()
+        startGameVC.mode = mode
+        startGameVC.game = game
+        navigationController?.pushViewController(startGameVC, animated: true)
+    }
+    
+    private func questionnaireViewController() {
+        let startGameVC = QuestionnaireViewController()
         startGameVC.mode = mode
         startGameVC.game = game
         navigationController?.pushViewController(startGameVC, animated: true)

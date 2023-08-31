@@ -20,16 +20,22 @@ class QuestionnaireViewController: UIViewController, UITableViewDelegate, UITabl
         return tableView
     }()
     
+    private lazy var labelTimer: UILabel = {
+        let label = setupLabel()
+        return label
+    }()
+    
     var mode: Setting!
     var game: Games!
     
     private var timer = Timer()
     private var questions = Countries.getQuestions()
+    private var shapeLayer = CAShapeLayer()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDesign()
-//        setupNavigationBar()
+        setupNavigationBar()
         setupBarButton()
         setupSubviews()
         setupConstraints()
@@ -81,21 +87,22 @@ class QuestionnaireViewController: UIViewController, UITableViewDelegate, UITabl
         switch indexPath.row {
         case 0:
             guard !questions.buttonFirst[indexPath.section].select else { return }
-            
+            checkSelect(answer: questions.buttonFirst, indexPath: indexPath)
         case 1:
             guard !questions.buttonSecond[indexPath.section].select else { return }
-            
+            checkSelect(answer: questions.buttonSecond, indexPath: indexPath)
         case 2:
             guard !questions.buttonThird[indexPath.section].select else { return }
-            
+            checkSelect(answer: questions.buttonThird, indexPath: indexPath)
         default:
             guard !questions.buttonFourth[indexPath.section].select else { return }
-            
+            checkSelect(answer: questions.buttonFourth, indexPath: indexPath)
         }
+        tableView.reloadData()
     }
     
     private func setupDesign() {
-        view.backgroundColor = .white
+        view.backgroundColor = game.background
         navigationItem.hidesBackButton = true
     }
     
@@ -103,6 +110,7 @@ class QuestionnaireViewController: UIViewController, UITableViewDelegate, UITabl
         let appearence = UINavigationBarAppearance()
         appearence.backgroundColor = game.background
         navigationController?.navigationBar.standardAppearance = appearence
+        navigationController?.navigationBar.compactAppearance = appearence
     }
     
     private func setupBarButton() {
@@ -111,7 +119,11 @@ class QuestionnaireViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     private func setupSubviews() {
-        setupSubviews(subviews: tableView, on: view)
+        if mode.timeElapsed.timeElapsed {
+            setupSubviews(subviews: tableView, labelTimer, on: view)
+        } else {
+            setupSubviews(subviews: tableView, on: view)
+        }
     }
     
     private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -130,6 +142,13 @@ class QuestionnaireViewController: UIViewController, UITableViewDelegate, UITabl
     
     @objc private func backToGameType() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    private func checkSelect(answer: [Countries], indexPath: IndexPath) {
+        questions.buttonFirst[indexPath.section].select = answer == questions.buttonFirst ? true : false
+        questions.buttonSecond[indexPath.section].select = answer == questions.buttonSecond ? true : false
+        questions.buttonThird[indexPath.section].select = answer == questions.buttonThird ? true : false
+        questions.buttonFourth[indexPath.section].select = answer == questions.buttonFourth ? true : false
     }
 }
 // MARK: - Setup buttons
@@ -158,9 +177,66 @@ extension QuestionnaireViewController {
         tableView.dataSource = self
         tableView.sectionHeaderHeight = 175
         tableView.rowHeight = 55
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = game.background
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
+    }
+}
+// MARK: - Setup label
+extension QuestionnaireViewController {
+    private func setupLabel() -> UILabel {
+        let label = UILabel()
+        label.text = "\(seconds())"
+        label.font = UIFont(name: "mr_fontick", size: 35)
+        label.textAlignment = .center
+        label.textColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+    
+    private func seconds() -> Int {
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
+    }
+}
+// MARK: - Setup circle timer
+extension QuestionnaireViewController {
+    private func circleShadow() {
+        let center = CGPoint(x: labelTimer.center.x, y: labelTimer.center.y)
+        let endAngle = CGFloat.pi / 2
+        let startAngle = 2 * CGFloat.pi + endAngle
+        let circularPath = UIBezierPath(
+            arcCenter: center,
+            radius: 32,
+            startAngle: -startAngle,
+            endAngle: -endAngle,
+            clockwise: true)
+        
+        let trackShape = CAShapeLayer()
+        trackShape.path = circularPath.cgPath
+        trackShape.lineWidth = 5
+        trackShape.fillColor = UIColor.clear.cgColor
+        trackShape.strokeColor = UIColor.white.withAlphaComponent(0.3).cgColor
+        view.layer.addSublayer(trackShape)
+    }
+    
+    private func circle(strokeEnd: CGFloat) {
+        let center = CGPoint(x: labelTimer.center.x, y: labelTimer.center.y)
+        let endAngle = CGFloat.pi / 2
+        let startAngle = 2 * CGFloat.pi + endAngle
+        let circularPath = UIBezierPath(
+            arcCenter: center,
+            radius: 32,
+            startAngle: -startAngle,
+            endAngle: -endAngle,
+            clockwise: true)
+        
+        shapeLayer.path = circularPath.cgPath
+        shapeLayer.lineWidth = 5
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.strokeEnd = strokeEnd
+        shapeLayer.lineCap = CAShapeLayerLineCap.square
+        shapeLayer.strokeColor = UIColor.white.cgColor
+        view.layer.addSublayer(shapeLayer)
     }
 }
 // MARK: - Setup constraints
@@ -168,11 +244,22 @@ extension QuestionnaireViewController {
     private func setupConstraints() {
         setupSquare(subview: buttonBack, sizes: 40)
         
+        if mode.timeElapsed.timeElapsed {
+            constraintsTimer()
+        }
+        
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
+    private func constraintsTimer() {
+        NSLayoutConstraint.activate([
+            labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 70),
+            labelTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     

@@ -289,6 +289,10 @@ class MenuViewController: UIViewController {
     private let games = Games.getGames()
     private var mode: Setting!
     private var transition = Transition()
+    
+    private var contentSize: CGSize {
+        CGSize(width: view.frame.width, height: view.frame.height + 10)
+    }
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -422,10 +426,6 @@ extension MenuViewController {
         view.frame.size = contentSize
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }
-    
-    private var contentSize: CGSize {
-        CGSize(width: view.frame.width, height: view.frame.height + 10)
     }
 }
 // MARK: - Delegate rewrite user defaults

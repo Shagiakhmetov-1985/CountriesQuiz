@@ -7,7 +7,7 @@
 
 import UIKit
 
-class QuestionnaireViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class QuestionnaireViewController: UIViewController {
     private lazy var buttonBack: UIButton = {
         let button = setButton(
             image: "arrow.backward",
@@ -15,32 +15,65 @@ class QuestionnaireViewController: UIViewController, UITableViewDelegate, UITabl
         return button
     }()
     
-    private lazy var tableView: UITableView = {
-        let tableView = setTableView()
-        return tableView
-    }()
-    
     private lazy var labelTimer: UILabel = {
-        let label = setupLabel()
+        let label = setupLabel(
+            title: "\(seconds())",
+            size: 35)
         return label
     }()
     
+    private lazy var progressView: UIProgressView = {
+        let progressView = setupProgressView()
+        return progressView
+    }()
+    
+    private lazy var contentView: UIView = {
+        let view = setupView()
+        return view
+    }()
+    
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = setupScrollView()
+        return scrollView
+    }()
+    /*
+    private lazy var imageView: UIImageView = {
+        let imageView = UIImageView()
+        return imageView
+    }()
+    */
     var mode: Setting!
     var game: Games!
     
     private var timer = Timer()
-    private var questions = Countries.getQuestions()
+    private let questions = Countries.getQuestions()
     private var shapeLayer = CAShapeLayer()
+    
+//    private var imageView: [UIImageView] = []
+//    private var button: [UIButton] = []
+    
+    private var contentSize: CGSize {
+        CGSize(width: view.frame.width, height: view.frame.height + sizeForQuestions())
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDesign()
-        setupNavigationBar()
         setupBarButton()
         setupSubviews()
+        setupSubviewsOnContentView()
+        setupSubviewsOnScrollView()
         setupConstraints()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        setupCircles()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        print("scroll view height: \(contentView.frame.height)")
+    }
+    /*
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         4
     }
@@ -100,17 +133,10 @@ class QuestionnaireViewController: UIViewController, UITableViewDelegate, UITabl
         }
         tableView.reloadData()
     }
-    
+    */
     private func setupDesign() {
         view.backgroundColor = game.background
         navigationItem.hidesBackButton = true
-    }
-    
-    private func setupNavigationBar() {
-        let appearence = UINavigationBarAppearance()
-        appearence.backgroundColor = game.background
-        navigationController?.navigationBar.standardAppearance = appearence
-        navigationController?.navigationBar.compactAppearance = appearence
     }
     
     private func setupBarButton() {
@@ -120,9 +146,52 @@ class QuestionnaireViewController: UIViewController, UITableViewDelegate, UITabl
     
     private func setupSubviews() {
         if mode.timeElapsed.timeElapsed {
-            setupSubviews(subviews: tableView, labelTimer, on: view)
+            setupSubviews(subviews: labelTimer, progressView, contentView,
+                          on: view)
         } else {
-            setupSubviews(subviews: tableView, on: view)
+            setupSubviews(subviews: progressView, contentView, on: view)
+        }
+    }
+    
+    private func setupSubviewsOnContentView() {
+        setupSubviews(subviews: scrollView, on: contentView)
+    }
+    
+    private func setupQuestions() -> [UIImageView] {
+        var flags: [UIImageView] = []
+        questions.questions.forEach { country in
+            let flag = setupImageView(image: country.flag)
+            flags.append(flag)
+        }
+        return flags
+    }
+    
+    private func setupButtons(countries: [Countries]) -> [UIButton] {
+        var buttons: [UIButton] = []
+        countries.forEach { country in
+            let label = setupLabel(title: country.name, size: 28)
+            let image = setupImage(image: "circle")
+            let button = setButton(label: label, image: image)
+            constraintsOnButton(label: label, image: image, button: button)
+            buttons.append(button)
+        }
+        return buttons
+    }
+    
+    private func setupAnswers() -> ([UIButton], [UIButton], [UIButton], [UIButton]) {
+        let buttonsFirst = setupButtons(countries: questions.buttonFirst)
+        let buttonsSecond = setupButtons(countries: questions.buttonSecond)
+        let buttonsThird = setupButtons(countries: questions.buttonThird)
+        let buttonsFourth = setupButtons(countries: questions.buttonFourth)
+        return (buttonsFirst, buttonsSecond, buttonsThird, buttonsFourth)
+    }
+    
+    private func setupSubviewsOnScrollView() {
+        var constant: CGFloat = 20
+        setupQuestions().forEach { flag in
+            setupSubviews(subviews: flag, on: scrollView)
+            constraintsImage(image: flag, constant: constant)
+            constant += 150
         }
     }
     
@@ -132,6 +201,16 @@ class QuestionnaireViewController: UIViewController, UITableViewDelegate, UITabl
         }
     }
     
+    private func setupCircles() {
+        circleShadow()
+        circle(strokeEnd: 0)
+        animationTimeReset()
+    }
+    
+    @objc private func backToGameType() {
+        navigationController?.popViewController(animated: true)
+    }
+    /*
     private func checkImage(_ checkmark: Bool) -> UIImage? {
         checkmark ? UIImage(systemName: "checkmark.circle") : UIImage(systemName: "circle")
     }
@@ -140,15 +219,30 @@ class QuestionnaireViewController: UIViewController, UITableViewDelegate, UITabl
         checkmark ? .systemGreen : .systemRed
     }
     
-    @objc private func backToGameType() {
-        navigationController?.popViewController(animated: true)
-    }
-    
     private func checkSelect(answer: [Countries], indexPath: IndexPath) {
         questions.buttonFirst[indexPath.section].select = answer == questions.buttonFirst ? true : false
         questions.buttonSecond[indexPath.section].select = answer == questions.buttonSecond ? true : false
         questions.buttonThird[indexPath.section].select = answer == questions.buttonThird ? true : false
         questions.buttonFourth[indexPath.section].select = answer == questions.buttonFourth ? true : false
+    }
+     */
+}
+// MARK: - Setup view
+extension QuestionnaireViewController {
+    private func setupView() -> UIView {
+        let view = UIView()
+        view.frame.size = contentSize
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }
+}
+// MARK: - Setup scroll view
+extension QuestionnaireViewController {
+    private func setupScrollView() -> UIScrollView {
+        let scrollView = UIScrollView()
+        scrollView.frame = view.bounds
+        scrollView.contentSize = contentSize
+        return scrollView
     }
 }
 // MARK: - Setup buttons
@@ -166,28 +260,23 @@ extension QuestionnaireViewController {
         button.addTarget(self, action: action, for: .touchUpInside)
         return button
     }
-}
-// MARK: - Setup table view
-extension QuestionnaireViewController {
-    private func setTableView() -> UITableView {
-        let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.register(CustomHeader.self, forHeaderFooterViewReuseIdentifier: "header")
-        tableView.register(QuestionnaireCell.self, forCellReuseIdentifier: "cell")
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.sectionHeaderHeight = 175
-        tableView.rowHeight = 55
-        tableView.backgroundColor = game.background
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
+    
+    private func setButton(label: UILabel, image: UIImageView) -> UIButton {
+        let button = UIButton(type: .custom)
+        button.layer.borderWidth = 2
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.cornerRadius = 12
+        button.translatesAutoresizingMaskIntoConstraints = false
+        setupSubviews(subviews: label, image, on: button)
+        return button
     }
 }
 // MARK: - Setup label
 extension QuestionnaireViewController {
-    private func setupLabel() -> UILabel {
+    private func setupLabel(title: String, size: CGFloat) -> UILabel {
         let label = UILabel()
-        label.text = "\(seconds())"
-        label.font = UIFont(name: "mr_fontick", size: 35)
+        label.text = title
+        label.font = UIFont(name: "mr_fontick", size: size)
         label.textAlignment = .center
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -238,6 +327,71 @@ extension QuestionnaireViewController {
         shapeLayer.strokeColor = UIColor.white.cgColor
         view.layer.addSublayer(shapeLayer)
     }
+    
+    private func animationTimeElapsed() {
+        let timer = seconds()
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.toValue = 0
+        animation.duration = CFTimeInterval(timer)
+        animation.fillMode = CAMediaTimingFillMode.forwards
+        animation.isRemovedOnCompletion = false
+        shapeLayer.add(animation, forKey: "animation")
+    }
+    
+    private func animationTimeReset() {
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.toValue = 1
+        animation.duration = CFTimeInterval(0.4)
+        animation.fillMode = CAMediaTimingFillMode.forwards
+        animation.isRemovedOnCompletion = false
+        shapeLayer.add(animation, forKey: "animation")
+    }
+}
+// MARK: - Setup progress view
+extension QuestionnaireViewController {
+    private func setupProgressView() -> UIProgressView {
+        let progressView = UIProgressView()
+        progressView.layer.cornerRadius = radius()
+        progressView.clipsToBounds = true
+        progressView.progressTintColor = .white
+        progressView.trackTintColor = .white.withAlphaComponent(0.3)
+        progressView.progress = 0
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        return progressView
+    }
+}
+// MARK: - Setup image view
+extension QuestionnaireViewController {
+    private func setupImageView(image: String) -> UIImageView {
+        let image = UIImage(named: image)
+        let imageView = UIImageView()
+        imageView.image = image
+        imageView.layer.borderWidth = 1
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }
+    
+    private func setupImage(image: String) -> UIImageView {
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
+        let image = UIImage(systemName: image, withConfiguration: size)
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = .white
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }
+}
+// MARK: - Setup stack view
+extension QuestionnaireViewController {
+    private func setupStackView(buttonFirst: UIButton, buttonSecond: UIButton,
+                                buttonThird: UIButton, buttonFourth: UIButton) -> UIStackView {
+        let stackView = UIStackView(
+            arrangedSubviews: [buttonFirst, buttonSecond, buttonThird, buttonFourth])
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
 }
 // MARK: - Setup constraints
 extension QuestionnaireViewController {
@@ -246,13 +400,16 @@ extension QuestionnaireViewController {
         
         if mode.timeElapsed.timeElapsed {
             constraintsTimer()
+            constraintsProgressView(layout: labelTimer.bottomAnchor, constant: 30)
+        } else {
+            constraintsProgressView(layout: view.topAnchor, constant: 100)
         }
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            contentView.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 20),
+            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
@@ -263,10 +420,47 @@ extension QuestionnaireViewController {
         ])
     }
     
+    private func constraintsProgressView(layout: NSLayoutYAxisAnchor, constant: CGFloat) {
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: layout, constant: constant),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            progressView.heightAnchor.constraint(equalToConstant: radius() * 2)
+        ])
+    }
+    
     private func setupSquare(subview: UIView, sizes: CGFloat) {
         NSLayoutConstraint.activate([
             subview.widthAnchor.constraint(equalToConstant: sizes),
             subview.heightAnchor.constraint(equalToConstant: sizes)
         ])
+    }
+    
+    private func constraintsOnButton(label: UILabel, image: UIImageView,
+                                     button: UIButton) {
+        NSLayoutConstraint.activate([
+            image.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            image.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 30),
+            label.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 20),
+            label.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -20)
+        ])
+    }
+    
+    private func constraintsImage(image: UIImageView, constant: CGFloat) {
+        NSLayoutConstraint.activate([
+            image.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: constant),
+            image.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            image.widthAnchor.constraint(equalToConstant: 200),
+            image.heightAnchor.constraint(equalToConstant: 130)
+        ])
+    }
+    
+    private func sizeForQuestions() -> CGFloat {
+        CGFloat(questions.questions.count * 150) - 655
+    }
+    
+    private func radius() -> CGFloat {
+        6
     }
 }

@@ -34,7 +34,7 @@ class QuestionnaireViewController: UIViewController {
     
     private lazy var labelNumber: UILabel = {
         let label = setupLabel(
-            title: "1 / \(mode.countQuestions)",
+            title: "0 / \(mode.countQuestions)",
             size: 23)
         return label
     }()
@@ -49,76 +49,96 @@ class QuestionnaireViewController: UIViewController {
     private lazy var buttonFirst: UIButton = {
         let button = setButton(
             image: checkmarkFirst,
-            label: labelFirst)
+            label: labelFirst,
+            tag: 1,
+            action: #selector(buttonPress))
         return button
     }()
     
     private lazy var checkmarkFirst: UIImageView = {
-        let checkmark = setupCheckmark(image: "circle")
+        let checkmark = setupCheckmark(
+            image: "circle",
+            tag: 1)
         return checkmark
     }()
     
     private lazy var labelFirst: UILabel = {
         let label = setupLabel(
             title: questions.buttonFirst[currentQuestion].name,
-            size: 23)
+            size: 23,
+            tag: 1)
         return label
     }()
     
     private lazy var buttonSecond: UIButton = {
         let button = setButton(
             image: checkmarkSecond,
-            label: labelSecond)
+            label: labelSecond,
+            tag: 2,
+            action: #selector(buttonPress))
         return button
     }()
     
     private lazy var checkmarkSecond: UIImageView = {
-        let checkmark = setupCheckmark(image: "circle")
+        let checkmark = setupCheckmark(
+            image: "circle",
+            tag: 2)
         return checkmark
     }()
     
     private lazy var labelSecond: UILabel = {
         let label = setupLabel(
             title: questions.buttonSecond[currentQuestion].name,
-            size: 23)
+            size: 23,
+            tag: 2)
         return label
     }()
     
     private lazy var buttonThird: UIButton = {
         let button = setButton(
             image: checkmarkThird,
-            label: labelThird)
+            label: labelThird,
+            tag: 3,
+            action: #selector(buttonPress))
         return button
     }()
     
     private lazy var checkmarkThird: UIImageView = {
-        let checkmark = setupCheckmark(image: "circle")
+        let checkmark = setupCheckmark(
+            image: "circle",
+            tag: 3)
         return checkmark
     }()
     
     private lazy var labelThird: UILabel = {
         let label = setupLabel(
             title: questions.buttonThird[currentQuestion].name,
-            size: 23)
+            size: 23,
+            tag: 3)
         return label
     }()
     
     private lazy var buttonFourth: UIButton = {
         let button = setButton(
             image: checkmarkFourth,
-            label: labelFourth)
+            label: labelFourth,
+            tag: 4,
+            action: #selector(buttonPress))
         return button
     }()
     
     private lazy var checkmarkFourth: UIImageView = {
-        let checkmark = setupCheckmark(image: "circle")
+        let checkmark = setupCheckmark(
+            image: "circle",
+            tag: 4)
         return checkmark
     }()
     
     private lazy var labelFourth: UILabel = {
         let label = setupLabel(
             title: questions.buttonFourth[currentQuestion].name,
-            size: 23)
+            size: 23,
+            tag: 4)
         return label
     }()
     
@@ -134,8 +154,11 @@ class QuestionnaireViewController: UIViewController {
     var mode: Setting!
     var game: Games!
     
+    private var imageFlagSpring: NSLayoutConstraint!
+    private var stackViewSprint: NSLayoutConstraint!
+    
     private var timer = Timer()
-    private let questions = Countries.getQuestions()
+    private var questions = Countries.getQuestions()
     private var shapeLayer = CAShapeLayer()
     
     private var currentQuestion = 0
@@ -146,6 +169,10 @@ class QuestionnaireViewController: UIViewController {
         setupBarButton()
         setupSubviews()
         setupConstraints()
+        moveSubviews()
+        setupOpacityLabel()
+        setupEnabledButtons()
+        startGame()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -172,20 +199,266 @@ class QuestionnaireViewController: UIViewController {
         }
     }
     
+    private func setupOpacityLabel() {
+        setupOpacity(subviews: labelQuiz, opacity: 0)
+    }
+    
+    private func setupEnabledButtons() {
+        setupEnabled(subviews: buttonFirst, buttonSecond,
+                     buttonThird, buttonFourth, isEnabled: false)
+    }
+    
     private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
         subviews.forEach { subview in
             subviewOther.addSubview(subview)
         }
     }
     
+    private func setupOpacity(subviews: UIView..., opacity: Float) {
+        subviews.forEach { subview in
+            subview.layer.opacity = opacity
+        }
+    }
+    
+    private func setupEnabled(subviews: UIControl..., isEnabled: Bool) {
+        subviews.forEach { subview in
+            subview.isEnabled = isEnabled
+        }
+    }
+    
     private func setupCircles() {
-        circleShadow()
-        circle(strokeEnd: 0)
-        animationTimeReset()
+        if mode.timeElapsed.timeElapsed {
+            circleShadow()
+            circle(strokeEnd: 0)
+            animationTimeReset()
+        }
     }
     
     @objc private func backToGameType() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    private func moveSubviews() {
+        let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
+        imageFlagSpring.constant += view.frame.width * pointX
+        stackViewSprint.constant += view.frame.width * pointX
+    }
+    
+    private func startGame() {
+        timer = Timer.scheduledTimer(
+            timeInterval: 1, target: self, selector: #selector(showSubviews),
+            userInfo: nil, repeats: false)
+    }
+    
+    @objc private func showSubviews() {
+        timer.invalidate()
+        
+        if currentQuestion < 1 {
+            UIView.animate(withDuration: 1) { [self] in
+                setupOpacity(subviews: labelQuiz, opacity: 1)
+            }
+        }
+        animationSubviews(duration: 0.5)
+        
+        timer = Timer.scheduledTimer(
+            timeInterval: 0.5, target: self, selector: #selector(isEnabledSubviews),
+            userInfo: nil, repeats: false)
+    }
+    
+    private func animationSubviews(duration: CGFloat) {
+        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut) { [self] in
+            imageFlagSpring.constant -= view.bounds.width
+            stackViewSprint.constant -= view.bounds.width
+            view.layoutIfNeeded()
+        }
+    }
+    
+    @objc private func isEnabledSubviews() {
+        timer.invalidate()
+        setupEnabled(subviews: buttonFirst, buttonSecond,
+                     buttonThird, buttonFourth, isEnabled: true)
+        labelNumber.text = "\(currentQuestion + 1) / \(mode.countQuestions)"
+    }
+    
+    @objc private func buttonPress(button: UIButton) {
+        switch button {
+        case buttonFirst:
+            select(button: buttonFirst)
+            buttonSelect(button: buttonFirst)
+            imageSelect(image: checkmarkFirst)
+            labelSelect(label: labelFirst)
+        case buttonSecond:
+            select(button: buttonSecond)
+            buttonSelect(button: buttonSecond)
+            imageSelect(image: checkmarkSecond)
+            labelSelect(label: labelSecond)
+        case buttonThird:
+            select(button: buttonThird)
+            buttonSelect(button: buttonThird)
+            imageSelect(image: checkmarkThird)
+            labelSelect(label: labelThird)
+        default:
+            select(button: buttonFourth)
+            buttonSelect(button: buttonFourth)
+            imageSelect(image: checkmarkFourth)
+            labelSelect(label: labelFourth)
+        }
+        
+        setupNextQuestion()
+    }
+    
+    private func select(button: UIButton) {
+        let tag = button.tag
+        var number = 0
+        while number < 4 {
+            number += 1
+            if !(number == tag) {
+                selectIsEnabled(tag: number, bool: false)
+            }
+        }
+        selectIsEnabled(tag: tag, bool: true)
+    }
+    
+    private func buttonSelect(button: UIButton) {
+        let tag = button.tag
+        selectButtonDisabled(buttons: buttonFirst, buttonSecond,
+                             buttonThird, buttonFourth, tag: tag)
+        buttonIsEnabled(button: button, color: .white)
+    }
+    
+    private func imageSelect(image: UIImageView) {
+        let tag = image.tag
+        selectImageDisabled(images: checkmarkFirst, checkmarkSecond,
+                            checkmarkThird, checkmarkFourth, tag: tag)
+        imageIsEnabled(image: image, color: .greenHarlequin, symbol: "checkmark.circle.fill")
+    }
+    
+    private func labelSelect(label: UILabel) {
+        let tag = label.tag
+        selectLabelDisabled(labels: labelFirst, labelSecond,
+                            labelThird, labelFourth, tag: tag)
+        labelIsEnabled(label: label, color: .greenHarlequin)
+    }
+    
+    private func selectButtonDisabled(buttons: UIButton..., tag: Int) {
+        buttons.forEach { button in
+            if !(button.tag == tag) {
+                buttonIsEnabled(button: button, color: .clear)
+            }
+        }
+    }
+    
+    private func selectImageDisabled(images: UIImageView..., tag: Int) {
+        images.forEach { image in
+            if !(image.tag == tag) {
+                imageIsEnabled(image: image, color: .white, symbol: "circle")
+            }
+        }
+    }
+    
+    private func selectLabelDisabled(labels: UILabel..., tag: Int) {
+        labels.forEach { label in
+            if !(label.tag == tag) {
+                labelIsEnabled(label: label, color: .white)
+            }
+        }
+    }
+    
+    private func buttonIsEnabled(button: UIButton, color: UIColor) {
+        UIView.animate(withDuration: 0.3) {
+            button.backgroundColor = color
+        }
+    }
+    
+    private func imageIsEnabled(image: UIImageView, color: UIColor, symbol: String) {
+        UIView.animate(withDuration: 0.3) {
+            let size = UIImage.SymbolConfiguration(pointSize: 30)
+            image.tintColor = color
+            image.image = UIImage(systemName: symbol, withConfiguration: size)
+        }
+    }
+    
+    private func labelIsEnabled(label: UILabel, color: UIColor) {
+        UIView.animate(withDuration: 0.3) {
+            label.textColor = color
+        }
+    }
+    
+    private func selectIsEnabled(tag: Int, bool: Bool) {
+        switch tag {
+        case 1: questions.buttonFirst[currentQuestion].select = bool
+        case 2: questions.buttonSecond[currentQuestion].select = bool
+        case 3: questions.buttonThird[currentQuestion].select = bool
+        default: questions.buttonFourth[currentQuestion].select = bool
+        }
+    }
+    
+    private func setupNextQuestion() {
+        timer = Timer.scheduledTimer(
+            timeInterval: 1, target: self, selector: #selector(nextQuestion),
+            userInfo: nil, repeats: false)
+    }
+    
+    @objc private func nextQuestion() {
+        timer.invalidate()
+        setupEnabled(subviews: buttonFirst, buttonSecond,
+                     buttonThird, buttonFourth, isEnabled: false)
+        animationSubviews(duration: 0.25)
+        timer = Timer.scheduledTimer(
+            timeInterval: 0.25, target: self, selector: #selector(showNextQuestion),
+            userInfo: nil, repeats: false)
+    }
+    
+    @objc private func showNextQuestion() {
+        timer.invalidate()
+        currentQuestion += 1
+        moveSubviews()
+        refreshFlagAndNumber()
+        refreshImages()
+        refreshLabels()
+        refreshButtons()
+        timer = Timer.scheduledTimer(
+            timeInterval: 0.1, target: self, selector: #selector(finishNextQuestion),
+            userInfo: nil, repeats: false)
+    }
+    
+    @objc private func finishNextQuestion() {
+        timer.invalidate()
+        animationSubviews(duration: 0.25)
+        timer = Timer.scheduledTimer(
+            timeInterval: 0.25, target: self, selector: #selector(startNextQuestion),
+            userInfo: nil, repeats: false)
+    }
+    
+    @objc private func startNextQuestion() {
+        timer.invalidate()
+        setupEnabled(subviews: buttonFirst, buttonSecond,
+                     buttonThird, buttonFourth, isEnabled: true)
+    }
+    
+    private func refreshFlagAndNumber() {
+        imageFlag.image = UIImage(named: questions.questions[currentQuestion].flag)
+        labelNumber.text = "\(currentQuestion + 1) / \(mode.countQuestions)"
+    }
+    
+    private func refreshImages() {
+        selectImageDisabled(images: checkmarkFirst, checkmarkSecond,
+                            checkmarkThird, checkmarkFourth, tag: 0)
+    }
+    
+    private func refreshLabels() {
+        labelFirst.text = questions.buttonFirst[currentQuestion].name
+        labelSecond.text = questions.buttonSecond[currentQuestion].name
+        labelThird.text = questions.buttonThird[currentQuestion].name
+        labelFourth.text = questions.buttonFourth[currentQuestion].name
+        
+        selectLabelDisabled(labels: labelFirst, labelSecond,
+                            labelThird, labelFourth, tag: 0)
+    }
+    
+    private func refreshButtons() {
+        selectButtonDisabled(buttons: buttonFirst, buttonSecond,
+                             buttonThird, buttonFourth, tag: 0)
     }
 }
 // MARK: - Setup buttons
@@ -204,25 +477,29 @@ extension QuestionnaireViewController {
         return button
     }
     
-    private func setButton(image: UIImageView, label: UILabel) -> UIButton {
+    private func setButton(image: UIImageView, label: UILabel, tag: Int,
+                           action: Selector) -> UIButton {
         let button = UIButton(type: .custom)
         button.layer.borderWidth = 1.5
         button.layer.borderColor = UIColor.white.cgColor
         button.layer.cornerRadius = 12
+        button.tag = tag
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
         setupSubviews(subviews: image, label, on: button)
         return button
     }
 }
 // MARK: - Setup label
 extension QuestionnaireViewController {
-    private func setupLabel(title: String, size: CGFloat) -> UILabel {
+    private func setupLabel(title: String, size: CGFloat, tag: Int? = nil) -> UILabel {
         let label = UILabel()
         label.text = title
         label.font = UIFont(name: "mr_fontick", size: size)
         label.textAlignment = .center
         label.textColor = .white
         label.numberOfLines = 0
+        label.tag = tag ?? 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
@@ -315,11 +592,12 @@ extension QuestionnaireViewController {
         return imageView
     }
     
-    private func setupCheckmark(image: String) -> UIImageView {
+    private func setupCheckmark(image: String, tag: Int) -> UIImageView {
         let size = UIImage.SymbolConfiguration(pointSize: 30)
         let image = UIImage(systemName: image, withConfiguration: size)
         let imageView = UIImageView(image: image)
         imageView.tintColor = .white
+        imageView.tag = tag
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }
@@ -346,9 +624,12 @@ extension QuestionnaireViewController {
             constraintsTimer()
         }
         
+        imageFlagSpring = NSLayoutConstraint(
+            item: imageFlag, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(imageFlagSpring)
         NSLayoutConstraint.activate([
             imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            imageFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageFlag.widthAnchor.constraint(equalToConstant: 300),
             imageFlag.heightAnchor.constraint(equalToConstant: 180)
         ])
@@ -368,9 +649,12 @@ extension QuestionnaireViewController {
             labelQuiz.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
+        stackViewSprint = NSLayoutConstraint(
+            item: stackView, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(stackViewSprint)
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackView.widthAnchor.constraint(equalToConstant: view.frame.width - 40),
             stackView.heightAnchor.constraint(equalToConstant: 215)
         ])

@@ -182,6 +182,7 @@ class QuestionnaireViewController: UIViewController {
     private var timer = Timer()
     private var questions = Countries.getQuestions()
     private var shapeLayer = CAShapeLayer()
+    private var lastQuestion = false
     
     private var currentQuestion = 0
     private var numberQuestion = 0
@@ -201,7 +202,7 @@ class QuestionnaireViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         setupCircles()
     }
-    
+    // MARK: - General methods
     private func setupDesign() {
         view.backgroundColor = game.background
         navigationItem.hidesBackButton = true
@@ -287,24 +288,7 @@ class QuestionnaireViewController: UIViewController {
             animationTimeReset()
         }
     }
-    
-    @objc private func exitToGameType() {
-        navigationController?.popViewController(animated: true)
-    }
-    
-    @objc private func back() {
-        buttonsIsEnabled(bool: false)
-        setupIsEnabled(subviews: buttonBack, buttonForward, isEnabled: false)
-        animationBackSubviews()
-        timer = runTimer(duration: 0.25, action: #selector(refreshBackQuestion), repeats: false)
-    }
-    
-    @objc private func forward() {
-        buttonsIsEnabled(bool: false)
-        setupIsEnabled(subviews: buttonBack, buttonForward, isEnabled: false)
-        runAnimationSubviews()
-    }
-    
+    // MARK: - Move flags and buttons
     private func moveSubviews() {
         let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
         imageFlagSpring.constant += view.frame.width * pointX
@@ -315,22 +299,7 @@ class QuestionnaireViewController: UIViewController {
         imageFlagSpring.constant -= view.frame.width * 2
         stackViewSprint.constant -= view.frame.width * 2
     }
-    
-    private func startGame() {
-        timer = runTimer(duration: 1, action: #selector(showSubviews), repeats: false)
-    }
-    
-    @objc private func showSubviews() {
-        timer.invalidate()
-        
-        if currentQuestion < 1 {
-            labelAnimation(label: labelQuiz, duration: 1, opacity: 1)
-        }
-        animationSubviews(duration: 0.5)
-        
-        timer = runTimer(duration: 0.5, action: #selector(isEnabledSubviews), repeats: false)
-    }
-    
+    // MARK: - Animations label quiz and description
     private func labelAnimation(label: UILabel, duration: CGFloat, opacity: Float) {
         UIView.animate(withDuration: duration) { [self] in
             setupOpacity(subviews: label, opacity: opacity)
@@ -343,6 +312,11 @@ class QuestionnaireViewController: UIViewController {
         })
     }
     
+    private func showFinishLabel() {
+        labelAnimation(label: labelQuiz, duration: 0.5, opacity: 0)
+        labelDescriptionAnimation()
+    }
+    // MARK: - Animations flags and buttons
     private func animationSubviews(duration: CGFloat) {
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut) { [self] in
             imageFlagSpring.constant -= view.bounds.width
@@ -358,40 +332,7 @@ class QuestionnaireViewController: UIViewController {
             view.layoutIfNeeded()
         }
     }
-    
-    @objc private func isEnabledSubviews() {
-        timer.invalidate()
-        buttonsIsEnabled(bool: true)
-        labelNumber.text = "\(currentQuestion + 1) / \(mode.countQuestions)"
-    }
-    
-    @objc private func buttonPress(button: UIButton) {
-        switch button {
-        case buttonFirst:
-            action(button: buttonFirst, image: checkmarkFirst, label: labelFirst)
-        case buttonSecond:
-            action(button: buttonSecond, image: checkmarkSecond, label: labelSecond)
-        case buttonThird:
-            action(button: buttonThird, image: checkmarkThird, label: labelThird)
-        default:
-            action(button: buttonFourth, image: checkmarkFourth, label: labelFourth)
-        }
-        setupNextQuestion()
-    }
-    
-    private func action(button: UIButton, image: UIImageView, label: UILabel) {
-        select(button: button)
-        buttonSelect(button: button)
-        imageSelect(image: image)
-        labelSelect(label: label)
-        
-        buttonsIsEnabled(bool: false)
-        checkLastQuestion()
-        
-        guard numberQuestion == currentQuestion else { return }
-        setProgressView()
-    }
-    
+    // MARK: - Save data for select answer by user
     private func select(button: UIButton) {
         let question = checkQuestion()
         let tag = button.tag
@@ -405,6 +346,15 @@ class QuestionnaireViewController: UIViewController {
         selectIsEnabled(tag: tag, bool: true, number: question)
     }
     
+    private func selectIsEnabled(tag: Int, bool: Bool, number: Int) {
+        switch tag {
+        case 1: questions.buttonFirst[number].select = bool
+        case 2: questions.buttonSecond[number].select = bool
+        case 3: questions.buttonThird[number].select = bool
+        default: questions.buttonFourth[number].select = bool
+        }
+    }
+    // MARK: - Animations buttons when user press button
     private func buttonSelect(button: UIButton) {
         let tag = button.tag
         setupButtonsDisabled(tag: tag)
@@ -481,66 +431,7 @@ class QuestionnaireViewController: UIViewController {
             label.textColor = color
         }
     }
-    
-    private func selectIsEnabled(tag: Int, bool: Bool, number: Int) {
-        switch tag {
-        case 1: questions.buttonFirst[number].select = bool
-//            print("tag: \(tag), bool: \(bool), number: \(number)")
-        case 2: questions.buttonSecond[number].select = bool
-//            print("tag: \(tag), bool: \(bool), number: \(number)")
-        case 3: questions.buttonThird[number].select = bool
-//            print("tag: \(tag), bool: \(bool), number: \(number)")
-        default: questions.buttonFourth[number].select = bool
-//            print("tag: \(tag), bool: \(bool), number: \(number)")
-        }
-    }
-    
-    private func setupNextQuestion() {
-        if currentQuestion + 1 < mode.countQuestions {
-            timer = runTimer(duration: 1, action: #selector(hideQuestion), repeats: false)
-        } else {
-            finishQuestionnaire()
-        }
-    }
-    
-    @objc private func hideQuestion() {
-        timer.invalidate()
-        runAnimationSubviews()
-    }
-    
-    private func runAnimationSubviews() {
-        animationSubviews(duration: 0.25)
-        timer = runTimer(duration: 0.25, action: #selector(refreshQuestion), repeats: false)
-    }
-    
-    @objc private func refreshQuestion() {
-        timer.invalidate()
-        if numberQuestion == currentQuestion {
-            currentQuestion += 1
-            numberQuestion += 1
-        } else {
-            numberQuestion += 1
-            checkFinish()
-        }
-        moveSubviews()
-        
-        refresh()
-        
-        timer = runTimer(duration: 0.1, action: #selector(showQuestion), repeats: false)
-    }
-    
-    @objc private func showQuestion() {
-        timer.invalidate()
-        animationSubviews(duration: 0.25)
-        timer = runTimer(duration: 0.25, action: #selector(nextQuestion), repeats: false)
-    }
-    
-    @objc private func nextQuestion() {
-        timer.invalidate()
-        buttonsIsEnabled(bool: true)
-        buttonsOnOff()
-    }
-    
+    // MARK: - Refresh data for show next question
     private func refresh() {
         refreshFlagAndNumber()
         refreshLabels()
@@ -549,33 +440,15 @@ class QuestionnaireViewController: UIViewController {
         setupLabelsDisabled(tag: 0)
         setupButtonsDisabled(tag: 0)
         
-        guard !(numberQuestion == currentQuestion) else { return }
+        print("""
+        numberQuestion: \(numberQuestion)
+        currentQuestion: \(currentQuestion)
+        """)
+        
         checkSelect(selects: questions.buttonFirst[numberQuestion].select,
                     questions.buttonSecond[numberQuestion].select,
                     questions.buttonThird[numberQuestion].select,
                     questions.buttonFourth[numberQuestion].select)
-    }
-    
-    @objc private func refreshBackQuestion() {
-        timer.invalidate()
-        if numberQuestion > currentQuestion {
-            numberQuestion -= 2
-            labelAnimation(label: labelDescription, duration: 0, opacity: 0)
-            labelAnimation(label: labelQuiz, duration: 1, opacity: 1)
-        } else {
-            numberQuestion -= 1
-        }
-        moveBackSubviews()
-        
-        refresh()
-        
-        timer = runTimer(duration: 0.1, action: #selector(showBackQuestion), repeats: false)
-    }
-    
-    @objc private func showBackQuestion() {
-        timer.invalidate()
-        animationBackSubviews()
-        timer = runTimer(duration: 0.25, action: #selector(nextQuestion), repeats: false)
     }
     
     private func checkSelect(selects: Bool...) {
@@ -603,6 +476,162 @@ class QuestionnaireViewController: UIViewController {
         labelSelect(label: label)
     }
     
+    private func refreshFlagAndNumber() {
+        let number = checkQuestion()
+        imageFlag.image = UIImage(named: questions.questions[number].flag)
+        labelNumber.text = "\(number + 1) / \(mode.countQuestions)"
+    }
+    
+    private func refreshLabels() {
+        let number = checkQuestion()
+        labelFirst.text = questions.buttonFirst[number].name
+        labelSecond.text = questions.buttonSecond[number].name
+        labelThird.text = questions.buttonThird[number].name
+        labelFourth.text = questions.buttonFourth[number].name
+    }
+    // MARK: - Show of hide buttons back and forward
+    private func buttonsBackForward(buttonBack: UIButton, buttonForward: UIButton,
+                                    opacityBack: Float, opacityForward: Float,
+                                    isEnabledBack: Bool, isEnabledForward: Bool) {
+        UIView.animate(withDuration: 0.3) { [self] in
+            setupOpacity(subviews: buttonBack, opacity: opacityBack)
+            setupOpacity(subviews: buttonForward, opacity: opacityForward)
+        }
+        setupIsEnabled(subviews: buttonBack, isEnabled: isEnabledBack)
+        setupIsEnabled(subviews: buttonForward, isEnabled: isEnabledForward)
+    }
+    // MARK: - Business logic
+    @objc private func exitToGameType() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func back() {
+        buttonsIsEnabled(bool: false)
+        setupIsEnabled(subviews: buttonBack, buttonForward, isEnabled: false)
+        animationBackSubviews()
+        timer = runTimer(duration: 0.25, action: #selector(refreshBackQuestion), repeats: false)
+    }
+    
+    @objc private func forward() {
+        buttonsIsEnabled(bool: false)
+        setupIsEnabled(subviews: buttonBack, buttonForward, isEnabled: false)
+        runAnimationSubviews()
+    }
+    // MARK: - Start game
+    private func startGame() {
+        timer = runTimer(duration: 1, action: #selector(showSubviews), repeats: false)
+    }
+    
+    @objc private func showSubviews() {
+        timer.invalidate()
+        
+        if currentQuestion < 1 {
+            labelAnimation(label: labelQuiz, duration: 1, opacity: 1)
+        }
+        animationSubviews(duration: 0.5)
+        
+        timer = runTimer(duration: 0.5, action: #selector(isEnabledSubviews), repeats: false)
+    }
+    
+    @objc private func isEnabledSubviews() {
+        timer.invalidate()
+        buttonsIsEnabled(bool: true)
+        labelNumber.text = "\(currentQuestion + 1) / \(mode.countQuestions)"
+    }
+    // MARK: - Actions for press button
+    @objc private func buttonPress(button: UIButton) {
+        switch button {
+        case buttonFirst:
+            action(button: buttonFirst, image: checkmarkFirst, label: labelFirst)
+        case buttonSecond:
+            action(button: buttonSecond, image: checkmarkSecond, label: labelSecond)
+        case buttonThird:
+            action(button: buttonThird, image: checkmarkThird, label: labelThird)
+        default:
+            action(button: buttonFourth, image: checkmarkFourth, label: labelFourth)
+        }
+        setupNextQuestion()
+    }
+    
+    private func action(button: UIButton, image: UIImageView, label: UILabel) {
+        select(button: button)
+        buttonSelect(button: button)
+        imageSelect(image: image)
+        labelSelect(label: label)
+        
+        buttonsIsEnabled(bool: false)
+        checkLastQuestion()
+        
+        guard numberQuestion == currentQuestion else { return }
+        setProgressView()
+    }
+    // MARK: - Run for show next question
+    private func setupNextQuestion() {
+        if numberQuestion + 1 < mode.countQuestions {
+            timer = runTimer(duration: 1, action: #selector(hideQuestion), repeats: false)
+        } else {
+            finishQuestionnaire()
+        }
+    }
+    
+    @objc private func hideQuestion() {
+        timer.invalidate()
+        runAnimationSubviews()
+    }
+    
+    private func runAnimationSubviews() {
+        animationSubviews(duration: 0.25)
+        timer = runTimer(duration: 0.25, action: #selector(refreshQuestion), repeats: false)
+    }
+    
+    @objc private func refreshQuestion() {
+        timer.invalidate()
+        if numberQuestion == currentQuestion {
+            currentQuestion += 1
+            numberQuestion += 1
+        } else {
+            numberQuestion += 1
+        }
+        moveSubviews()
+        
+        refresh()
+        
+        timer = runTimer(duration: 0.1, action: #selector(showQuestion), repeats: false)
+    }
+    
+    @objc private func showQuestion() {
+        timer.invalidate()
+        animationSubviews(duration: 0.25)
+        timer = runTimer(duration: 0.25, action: #selector(nextQuestion), repeats: false)
+    }
+    
+    @objc private func nextQuestion() {
+        timer.invalidate()
+        buttonsIsEnabled(bool: true)
+        buttonsOnOff()
+        checkFinish()
+    }
+    // MARK: - Show prevoius question
+    @objc private func refreshBackQuestion() {
+        timer.invalidate()
+        numberQuestion -= 1
+        if lastQuestion {
+            labelAnimation(label: labelDescription, duration: 0, opacity: 0)
+            labelAnimation(label: labelQuiz, duration: 1, opacity: 1)
+        }
+        moveBackSubviews()
+        
+        refresh()
+        
+        timer = runTimer(duration: 0.1, action: #selector(showBackQuestion), repeats: false)
+    }
+    
+    @objc private func showBackQuestion() {
+        timer.invalidate()
+        animationBackSubviews()
+        timer = runTimer(duration: 0.25, action: #selector(nextQuestion), repeats: false)
+    }
+    // MARK: - Show or hide buttons back and forward
     private func buttonsOnOff() {
         if numberQuestion == currentQuestion {
             buttonsBackForward(buttonBack: buttonBack, buttonForward: buttonForward,
@@ -618,48 +647,22 @@ class QuestionnaireViewController: UIViewController {
                                isEnabledBack: false, isEnabledForward: true)
         }
     }
-    
-    private func buttonsBackForward(buttonBack: UIButton, buttonForward: UIButton,
-                                    opacityBack: Float, opacityForward: Float,
-                                    isEnabledBack: Bool, isEnabledForward: Bool) {
-        UIView.animate(withDuration: 0.3) { [self] in
-            setupOpacity(subviews: buttonBack, opacity: opacityBack)
-            setupOpacity(subviews: buttonForward, opacity: opacityForward)
-        }
-        setupIsEnabled(subviews: buttonBack, isEnabled: isEnabledBack)
-        setupIsEnabled(subviews: buttonForward, isEnabled: isEnabledForward)
-    }
-    
-    private func refreshFlagAndNumber() {
-        let number = checkQuestion()
-        imageFlag.image = UIImage(named: questions.questions[number].flag)
-        labelNumber.text = "\(number + 1) / \(mode.countQuestions)"
-    }
-    
-    private func refreshLabels() {
-        let number = checkQuestion()
-        labelFirst.text = questions.buttonFirst[number].name
-        labelSecond.text = questions.buttonSecond[number].name
-        labelThird.text = questions.buttonThird[number].name
-        labelFourth.text = questions.buttonFourth[number].name
-    }
-    
+    // MARK: - Finish game
     private func checkFinish() {
-        guard numberQuestion == mode.countQuestions else { return }
-        finishQuestionnaire()
+        guard lastQuestion, numberQuestion == currentQuestion else { return }
+        showFinishLabel()
     }
     
     private func finishQuestionnaire() {
-        numberQuestion += 1
-        labelAnimation(label: labelQuiz, duration: 0.5, opacity: 0)
-        labelDescriptionAnimation()
+        lastQuestion = true
+        showFinishLabel()
     }
 }
 // MARK: - Touches began
 extension QuestionnaireViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        guard numberQuestion > currentQuestion else { return }
+        guard lastQuestion, numberQuestion == currentQuestion else { return }
         exitToGameType()
     }
 }

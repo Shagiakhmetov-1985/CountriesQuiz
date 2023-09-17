@@ -17,7 +17,7 @@ class QuestionnaireViewController: UIViewController {
     
     private lazy var labelTimer: UILabel = {
         let label = setupLabel(
-            title: "\(seconds())",
+            title: "\(time())",
             size: 35)
         return label
     }()
@@ -180,12 +180,14 @@ class QuestionnaireViewController: UIViewController {
     private var stackViewSprint: NSLayoutConstraint!
     
     private var timer = Timer()
+    private var countdown = Timer()
     private var questions = Countries.getQuestions()
     private var shapeLayer = CAShapeLayer()
     private var lastQuestion = false
     
     private var currentQuestion = 0
     private var numberQuestion = 0
+    private var seconds = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -287,6 +289,35 @@ class QuestionnaireViewController: UIViewController {
             circle(strokeEnd: 0)
             animationTimeReset()
         }
+    }
+    // MARK: - Run timer
+    private func runTimer() {
+        let timeMode = time()
+        seconds = timeMode * 10
+        countdown = runTimer(duration: 0.1, action: #selector(runCountdown), repeats: true)
+    }
+    
+    @objc private func runCountdown() {
+        seconds -= 1
+        
+        guard seconds.isMultiple(of: 10) else { return }
+        let text = seconds / 10
+        labelTimer.text = "\(text)"
+        
+        guard seconds == 0 else { return }
+        timeUp()
+    }
+    
+    private func timeUp() {
+        countdown.invalidate()
+        setupIsEnabled(subviews: buttonBack, buttonForward, buttonExit, isEnabled: false)
+        buttonsIsEnabled(bool: false)
+        endGame()
+    }
+    
+    private func endGame() {
+        labelDescription.text = "Время вышло! Коснитесь экрана, чтобы завершить"
+        showFinishLabel()
     }
     // MARK: - Move flags and buttons
     private func moveSubviews() {
@@ -440,11 +471,6 @@ class QuestionnaireViewController: UIViewController {
         setupLabelsDisabled(tag: 0)
         setupButtonsDisabled(tag: 0)
         
-        print("""
-        numberQuestion: \(numberQuestion)
-        currentQuestion: \(currentQuestion)
-        """)
-        
         checkSelect(selects: questions.buttonFirst[numberQuestion].select,
                     questions.buttonSecond[numberQuestion].select,
                     questions.buttonThird[numberQuestion].select,
@@ -537,6 +563,10 @@ class QuestionnaireViewController: UIViewController {
         timer.invalidate()
         buttonsIsEnabled(bool: true)
         labelNumber.text = "\(currentQuestion + 1) / \(mode.countQuestions)"
+        
+        runTimer()
+        shapeLayer.strokeEnd = 1
+        animationTimeElapsed()
     }
     // MARK: - Actions for press button
     @objc private func buttonPress(button: UIButton) {
@@ -568,7 +598,7 @@ class QuestionnaireViewController: UIViewController {
     // MARK: - Run for show next question
     private func setupNextQuestion() {
         if numberQuestion + 1 < mode.countQuestions {
-            timer = runTimer(duration: 1, action: #selector(hideQuestion), repeats: false)
+            timer = runTimer(duration: 0.7, action: #selector(hideQuestion), repeats: false)
         } else {
             finishQuestionnaire()
         }
@@ -662,7 +692,7 @@ class QuestionnaireViewController: UIViewController {
 extension QuestionnaireViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        guard lastQuestion, numberQuestion == currentQuestion else { return }
+        guard lastQuestion, numberQuestion == currentQuestion || seconds == 0 else { return }
         exitToGameType()
     }
 }
@@ -711,7 +741,7 @@ extension QuestionnaireViewController {
         return label
     }
     
-    private func seconds() -> Int {
+    private func time() -> Int {
         mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
     }
 }
@@ -757,7 +787,7 @@ extension QuestionnaireViewController {
     }
     
     private func animationTimeElapsed() {
-        let timer = seconds()
+        let timer = time()
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.toValue = 0
         animation.duration = CFTimeInterval(timer)

@@ -10,6 +10,9 @@ import UIKit
 class GameType {
     static let shared = GameType()
     
+    let gameType: [TypeOfGame] = [.quizOfFlag, .questionnaire, .quizOfMap,
+                                .scrabble, .quizOfCapitals]
+    
     let names = ["Викторина флагов", "Опрос", "Викторина карт", "Эрудит",
                  "Викторина столиц"]
     
@@ -36,4 +39,12 @@ class GameType {
                                   .blueSlate, .brownRed]
     
     private init() {}
+}
+
+enum TypeOfGame {
+    case quizOfFlag
+    case questionnaire
+    case quizOfMap
+    case scrabble
+    case quizOfCapitals
 }

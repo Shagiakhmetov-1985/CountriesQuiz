@@ -8,6 +8,7 @@
 import UIKit
 
 struct Games {
+    let gameType: TypeOfGame
     let name: String
     let image: String
     let description: String
@@ -21,6 +22,7 @@ extension Games {
     static func getGames() -> [Games] {
         var games: [Games] = []
         
+        let gameType = GameType.shared.gameType
         let names = GameType.shared.names
         let images = GameType.shared.images
         let descriptions = GameType.shared.descriptions
@@ -34,6 +36,7 @@ extension Games {
         
         for index in 0..<iterrationCount {
             let information = Games(
+                gameType: gameType[index],
                 name: names[index],
                 image: images[index],
                 description: descriptions[index],

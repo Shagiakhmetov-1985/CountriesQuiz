@@ -189,6 +189,9 @@ class QuestionnaireViewController: UIViewController {
     private var numberQuestion = 0
     private var seconds = 0
     
+    private var results: [Results] = []
+    private var spendTime: [CGFloat] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDesign()
@@ -526,6 +529,57 @@ class QuestionnaireViewController: UIViewController {
         setupIsEnabled(subviews: buttonBack, isEnabled: isEnabledBack)
         setupIsEnabled(subviews: buttonForward, isEnabled: isEnabledForward)
     }
+    // MARK: - Check answer, when user select wrong answer
+    private func selectAnswer(tag: Int) {
+        if checkAnswer(tag: tag) {
+            deleteWrongAnswer()
+        } else {
+            setupResults(tag: tag)
+        }
+    }
+    
+    private func checkAnswer(tag: Int) -> Bool {
+        switch tag {
+        case 1:
+            return questions.questions[numberQuestion].flag ==
+            questions.buttonFirst[numberQuestion].flag ? true : false
+        case 2:
+            return questions.questions[numberQuestion].flag ==
+            questions.buttonSecond[numberQuestion].flag ? true : false
+        case 3:
+            return questions.questions[numberQuestion].flag ==
+            questions.buttonThird[numberQuestion].flag ? true : false
+        default:
+            return questions.questions[numberQuestion].flag ==
+            questions.buttonFourth[numberQuestion].flag ? true : false
+        }
+    }
+    
+    private func deleteWrongAnswer() {
+        guard !results.isEmpty else { return }
+        
+    }
+    
+    private func setupResults(tag: Int) {
+        setupResults(numberQuestion: numberQuestion + 1, tag: tag,
+                     question: questions.questions[numberQuestion],
+                     buttonFirst: questions.buttonFirst[numberQuestion],
+                     buttonSecond: questions.buttonSecond[numberQuestion],
+                     buttonThird: questions.buttonThird[numberQuestion],
+                     buttonFourth: questions.buttonFourth[numberQuestion],
+                     timeUp: false)
+    }
+    
+    private func setupResults(numberQuestion: Int, tag: Int, question: Countries,
+                              buttonFirst: Countries, buttonSecond: Countries,
+                              buttonThird: Countries, buttonFourth: Countries,
+                              timeUp: Bool) {
+        let result = Results(currentQuestion: numberQuestion, tag: tag,
+                             question: question, buttonFirst: buttonFirst,
+                             buttonSecond: buttonSecond, buttonThird: buttonThird,
+                             buttonFourth: buttonFourth, timeUp: timeUp)
+        results.append(result)
+    }
     // MARK: - Business logic
     @objc private func exitToGameType() {
         navigationController?.popViewController(animated: true)
@@ -581,6 +635,7 @@ class QuestionnaireViewController: UIViewController {
             action(button: buttonFourth, image: checkmarkFourth, label: labelFourth)
         }
         setupNextQuestion()
+        selectAnswer(tag: button.tag)
     }
     
     private func action(button: UIButton, image: UIImageView, label: UILabel) {
@@ -693,7 +748,24 @@ extension QuestionnaireViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         guard lastQuestion, numberQuestion == currentQuestion || seconds == 0 else { return }
-        exitToGameType()
+        countdown.invalidate()
+        checkTimeSpent()
+        resultsVC()
+    }
+    
+    private func checkTimeSpent() {
+        let circleTimeSpent = 1 - shapeLayer.strokeEnd
+        let time = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
+        let timeSpent = circleTimeSpent * CGFloat(time)
+        spendTime.append(timeSpent)
+    }
+    
+    private func resultsVC() {
+        let resultsVC = ResultsViewController()
+        resultsVC.mode = mode
+        resultsVC.results = results
+        resultsVC.spendTime = spendTime
+        navigationController?.pushViewController(resultsVC, animated: true)
     }
 }
 // MARK: - Setup buttons

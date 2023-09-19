@@ -312,10 +312,13 @@ class ResultsViewController: UIViewController {
         }
     }
     
+    private func runTimer(interval: CGFloat, action: Selector) -> Timer {
+        Timer.scheduledTimer(timeInterval: interval, target: self,
+                             selector: action, userInfo: nil, repeats: false)
+    }
+    
     private func setupTimer() {
-        timer = Timer.scheduledTimer(
-            timeInterval: 0.3, target: self, selector: #selector(circleCurrentQuestions),
-            userInfo: nil, repeats: false)
+        timer = runTimer(interval: 0.3, action: #selector(circleCurrentQuestions))
     }
     
     @objc private func circleCurrentQuestions() {
@@ -328,9 +331,7 @@ class ResultsViewController: UIViewController {
         setCircle(color: .greenHarlequin, radius: 80, strokeEnd: 0, value: value, duration: delay)
         showAnimate(stackView: stackViewCurrent)
         
-        timer = Timer.scheduledTimer(
-            timeInterval: delayTimer, target: self, selector: #selector(circleWrongQuestions),
-            userInfo: nil, repeats: false)
+        timer = runTimer(interval: delayTimer, action: #selector(circleWrongQuestions))
     }
     
     @objc private func circleWrongQuestions() {
@@ -343,9 +344,7 @@ class ResultsViewController: UIViewController {
         setCircle(color: .redTangerineTango, radius: 61, strokeEnd: 0, value: value, duration: delay)
         showAnimate(stackView: stackViewWrong)
         
-        timer = Timer.scheduledTimer(
-            timeInterval: delayTimer, target: self, selector: #selector(circleSpendTime),
-            userInfo: nil, repeats: false)
+        timer = runTimer(interval: delayTimer, action: #selector(circleSpendTime))
     }
     
     @objc private func circleSpendTime() {

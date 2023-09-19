@@ -293,13 +293,23 @@ class GameTypeViewController: UIViewController {
     
     private func checkTimeElapsed() -> String {
         mode.timeElapsed.questionSelect.oneQuestion ?
-        "\(mode.timeElapsed.questionSelect.questionTime.oneQuestionTime)" :
+        "\(checkTimeGameType())" :
         "\(mode.timeElapsed.questionSelect.questionTime.allQuestionsTime)"
+    }
+    
+    private func checkTimeGameType() -> String {
+        game.gameType == .questionnaire ?
+        "\(mode.timeElapsed.questionSelect.questionTime.allQuestionsTime)" :
+        "\(mode.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
     }
     
     private func checkTimeElapsedDescription() -> String {
         mode.timeElapsed.questionSelect.oneQuestion ?
-        "Время одного вопроса" : "Время всех вопросов"
+        "\(checkTitleGameType())" : "Время всех вопросов"
+    }
+    
+    private func checkTitleGameType() -> String {
+        game.gameType == .questionnaire ? "Время всех вопросов" : "Время одного вопроса"
     }
     
     @objc private func favourites() {

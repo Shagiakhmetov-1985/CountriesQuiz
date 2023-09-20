@@ -725,7 +725,7 @@ extension QuizOfFlagsViewController {
                 hideSubviews()
             } else {
                 let resultsVC = ResultsViewController()
-                resultsVC.results = results
+                resultsVC.incorrectAnswers = results
                 resultsVC.mode = mode
                 resultsVC.spendTime = spendTime
                 navigationController?.pushViewController(resultsVC, animated: true)

@@ -20,8 +20,8 @@ class ResultsViewController: UIViewController {
     private lazy var buttonDetails: UIButton = {
         let button = setButton(
             image: "lightbulb",
-            color: results.count > 0 ? .blueBlackSea : .grayStone,
-            isEnabled: results.count > 0 ? true : false,
+            color: incorrectAnswers.count > 0 ? .blueBlackSea : .grayStone,
+            isEnabled: incorrectAnswers.count > 0 ? true : false,
             action: #selector(showWrongAnswers))
         return button
     }()
@@ -33,19 +33,19 @@ class ResultsViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var viewCurrentQuestions: UIView = {
+    private lazy var viewCorrectAnswers: UIView = {
         let view = setView(
             color: .greenHarlequin,
-            labelFirst: labelNumberQuestions,
-            image: imageCurrentQuestions,
-            labelSecond: labelCurrentQuestions,
+            labelFirst: labelCorrectCount,
+            image: imageCorrectAnswers,
+            labelSecond: labelCorrectTitle,
             radius: 20)
         return view
     }()
     
-    private lazy var labelNumberQuestions: UILabel = {
+    private lazy var labelCorrectCount: UILabel = {
         let label = setLabel(
-            title: "\(mode.countQuestions - results.count)",
+            title: "\(correctAnswers.count)",
             style: "mr_fontick",
             size: 35,
             color: .white,
@@ -53,14 +53,14 @@ class ResultsViewController: UIViewController {
         return label
     }()
     
-    private lazy var imageCurrentQuestions: UIImageView = {
+    private lazy var imageCorrectAnswers: UIImageView = {
         let image = setImage(
             image: "checkmark",
             size: 26)
         return image
     }()
     
-    private lazy var labelCurrentQuestions: UILabel = {
+    private lazy var labelCorrectTitle: UILabel = {
         let label = setLabel(
             title: "Правильные ответы",
             style: "mr_fontick",
@@ -70,19 +70,19 @@ class ResultsViewController: UIViewController {
         return label
     }()
     
-    private lazy var viewWrongQuestions: UIView = {
+    private lazy var viewIncorrectAnswers: UIView = {
         let view = setView(
             color: .redTangerineTango,
-            labelFirst: labelNumberWrongQuestions,
-            image: imageWrongQuestions,
-            labelSecond: labelWrongQuestions,
+            labelFirst: labelIncorrectCount,
+            image: imageIncorrectAnswers,
+            labelSecond: labelIncorrectTitle,
             radius: 20)
         return view
     }()
     
-    private lazy var labelNumberWrongQuestions: UILabel = {
+    private lazy var labelIncorrectCount: UILabel = {
         let label = setLabel(
-            title: "\(results.count)",
+            title: "\(incorrectAnswers.count)",
             style: "mr_fontick",
             size: 35,
             color: .white,
@@ -90,14 +90,14 @@ class ResultsViewController: UIViewController {
         return label
     }()
     
-    private lazy var imageWrongQuestions: UIImageView = {
+    private lazy var imageIncorrectAnswers: UIImageView = {
         let image = setImage(
             image: "multiply",
             size: 26)
         return image
     }()
     
-    private lazy var labelWrongQuestions: UILabel = {
+    private lazy var labelIncorrectTitle: UILabel = {
         let label = setLabel(
             title: "Неправильные ответы",
             style: "mr_fontick",
@@ -154,14 +154,14 @@ class ResultsViewController: UIViewController {
     private lazy var viewCountQuestions: UIView = {
         let view = setView(
             color: .gummigut,
-            labelFirst: labelNumberCountQuestions,
+            labelFirst: labelCountQuestions,
             image: imageCountQuestions,
-            labelSecond: labelCountQuestions,
+            labelSecond: labelCountTitle,
             radius: 20)
         return view
     }()
     
-    private lazy var labelNumberCountQuestions: UILabel = {
+    private lazy var labelCountQuestions: UILabel = {
         let label = setLabel(
             title: "\(mode.countQuestions)",
             style: "mr_fontick",
@@ -178,7 +178,7 @@ class ResultsViewController: UIViewController {
         return image
     }()
     
-    private lazy var labelCountQuestions: UILabel = {
+    private lazy var labelCountTitle: UILabel = {
         let label = setLabel(
             title: "Количество вопросов",
             style: "mr_fontick",
@@ -270,7 +270,8 @@ class ResultsViewController: UIViewController {
         return button
     }()
     
-    var results: [Results]!
+    var correctAnswers: [Countries]!
+    var incorrectAnswers: [Results]!
     var mode: Setting!
     var spendTime: [CGFloat]!
     
@@ -291,8 +292,8 @@ class ResultsViewController: UIViewController {
     }
     
     private func setupSubviews() {
-        setupSubviews(subviews: stackViewDetails, viewCurrentQuestions,
-                      viewWrongQuestions, viewTimeSpend,
+        setupSubviews(subviews: stackViewDetails, viewCorrectAnswers,
+                      viewIncorrectAnswers, viewTimeSpend,
                       viewCountQuestions, imageInfinity, stackViews,
                       buttonComplete,
                       on: view)
@@ -325,7 +326,7 @@ class ResultsViewController: UIViewController {
         timer.invalidate()
         let delay = 0.75
         let delayTimer = delay + 0.3
-        let currentQuestions = CGFloat(mode.countQuestions - results.count)
+        let currentQuestions = CGFloat(mode.countQuestions - incorrectAnswers.count)
         let value = currentQuestions / CGFloat(mode.countQuestions)
         setCircle(color: .greenHarlequin.withAlphaComponent(0.3), radius: 80, strokeEnd: 1)
         setCircle(color: .greenHarlequin, radius: 80, strokeEnd: 0, value: value, duration: delay)
@@ -338,7 +339,7 @@ class ResultsViewController: UIViewController {
         timer.invalidate()
         let delay = 0.75
         let delayTimer = delay + 0.3
-        let wrongQuestions = CGFloat(results.count)
+        let wrongQuestions = CGFloat(incorrectAnswers.count)
         let value = wrongQuestions / CGFloat(mode.countQuestions)
         setCircle(color: .redTangerineTango.withAlphaComponent(0.3), radius: 61, strokeEnd: 1)
         setCircle(color: .redTangerineTango, radius: 61, strokeEnd: 0, value: value, duration: delay)
@@ -434,13 +435,13 @@ class ResultsViewController: UIViewController {
     }
     
     private func percentCurrentQuestions() -> String {
-        let currentQuestions = mode.countQuestions - results.count
+        let currentQuestions = mode.countQuestions - incorrectAnswers.count
         let percent = CGFloat(currentQuestions) / CGFloat(mode.countQuestions) * 100
         return stringWithoutNull(count: percent) + "%"
     }
     
     private func percentWrongQuestions() -> String {
-        let wrongQuestions = results.count
+        let wrongQuestions = incorrectAnswers.count
         let percent = CGFloat(wrongQuestions) / CGFloat(mode.countQuestions) * 100
         return stringWithoutNull(count: percent) + "%"
     }
@@ -487,7 +488,7 @@ class ResultsViewController: UIViewController {
     @objc private func showWrongAnswers() {
         let wrongAnswersVC = WrongAnswersViewController()
         wrongAnswersVC.mode = mode
-        wrongAnswersVC.results = results
+        wrongAnswersVC.results = incorrectAnswers
         wrongAnswersVC.modalPresentationStyle = .custom
         present(wrongAnswersVC, animated: true)
     }
@@ -640,22 +641,22 @@ extension ResultsViewController {
         ])
         setupSquare(subview: buttonDetails, sizes: 40)
         
-        constraintsView(subview: viewCurrentQuestions, layout: view.topAnchor,
+        constraintsView(subview: viewCorrectAnswers, layout: view.topAnchor,
                         constant: 335, leading: 20, trailing: -widthHalf(),
-                        height: 110, labelFirst: labelNumberQuestions,
-                        image: imageCurrentQuestions, labelSecond: labelCurrentQuestions)
-        constraintsView(subview: viewWrongQuestions, layout: viewCurrentQuestions.bottomAnchor,
+                        height: 110, labelFirst: labelCorrectCount,
+                        image: imageCorrectAnswers, labelSecond: labelCorrectTitle)
+        constraintsView(subview: viewIncorrectAnswers, layout: viewCorrectAnswers.bottomAnchor,
                         constant: 20, leading: 20, trailing: -widthHalf(),
-                        height: 110, labelFirst: labelNumberWrongQuestions,
-                        image: imageWrongQuestions, labelSecond: labelWrongQuestions)
+                        height: 110, labelFirst: labelIncorrectCount,
+                        image: imageIncorrectAnswers, labelSecond: labelIncorrectTitle)
         constraintsView(subview: viewTimeSpend, layout: view.topAnchor,
                         constant: 335, leading: widthHalf(), trailing: -20,
                         height: 120, labelFirst: labelNumberTimeSpend,
                         image: imageTimeSpend, labelSecond: labelTimeSpend)
         constraintsView(subview: viewCountQuestions, layout: viewTimeSpend.bottomAnchor,
                         constant: 20, leading: widthHalf(), trailing: -20,
-                        height: 100, labelFirst: labelNumberCountQuestions,
-                        image: imageCountQuestions, labelSecond: labelCountQuestions)
+                        height: 100, labelFirst: labelCountQuestions,
+                        image: imageCountQuestions, labelSecond: labelCountTitle)
         
         setupCenterSubview(subview: imageInfinity, on: labelNumberTimeSpend)
         

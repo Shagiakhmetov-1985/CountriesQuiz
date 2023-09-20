@@ -189,7 +189,8 @@ class QuestionnaireViewController: UIViewController {
     private var numberQuestion = 0
     private var seconds = 0
     
-    private var results: [Results] = []
+    private var correctAnswers: [Countries] = []
+    private var incorrectAnswers: [Results] = []
     private var spendTime: [CGFloat] = []
     
     override func viewDidLoad() {
@@ -321,6 +322,7 @@ class QuestionnaireViewController: UIViewController {
     private func endGame() {
         labelDescription.text = "Время вышло! Коснитесь экрана, чтобы завершить"
         showFinishLabel()
+        lastQuestion = true
     }
     // MARK: - Move flags and buttons
     private func moveSubviews() {
@@ -529,12 +531,14 @@ class QuestionnaireViewController: UIViewController {
         setupIsEnabled(subviews: buttonBack, isEnabled: isEnabledBack)
         setupIsEnabled(subviews: buttonForward, isEnabled: isEnabledForward)
     }
-    // MARK: - Check answer, when user select wrong answer
+    // MARK: - Check answer, select correct or incorrect answer by user
     private func selectAnswer(tag: Int) {
         if checkAnswer(tag: tag) {
-            deleteWrongAnswer()
+            correctAnswer()
+            deleteIncorrectAnswer()
         } else {
-            setupResults(tag: tag)
+            incorrectAnswer(tag: tag)
+            deleteCorrectAnswer()
         }
     }
     
@@ -555,30 +559,44 @@ class QuestionnaireViewController: UIViewController {
         }
     }
     
-    private func deleteWrongAnswer() {
-        guard !results.isEmpty else { return }
-        
+    private func deleteCorrectAnswer() {
+        guard !correctAnswers.isEmpty else { return }
+        let question = questions.questions[numberQuestion]
+        guard let index = correctAnswers.firstIndex(of: question) else { return }
+        correctAnswers.remove(at: index)
     }
     
-    private func setupResults(tag: Int) {
-        setupResults(numberQuestion: numberQuestion + 1, tag: tag,
-                     question: questions.questions[numberQuestion],
-                     buttonFirst: questions.buttonFirst[numberQuestion],
-                     buttonSecond: questions.buttonSecond[numberQuestion],
-                     buttonThird: questions.buttonThird[numberQuestion],
-                     buttonFourth: questions.buttonFourth[numberQuestion],
-                     timeUp: false)
+    private func correctAnswer() {
+        correctAnswers.append(questions.questions[numberQuestion])
     }
     
-    private func setupResults(numberQuestion: Int, tag: Int, question: Countries,
-                              buttonFirst: Countries, buttonSecond: Countries,
-                              buttonThird: Countries, buttonFourth: Countries,
-                              timeUp: Bool) {
+    private func deleteIncorrectAnswer() {
+        guard !incorrectAnswers.isEmpty else { return }
+        let topics = incorrectAnswers.map({ $0.question })
+        let question = questions.questions[numberQuestion]
+        guard let index = topics.firstIndex(of: question) else { return }
+        incorrectAnswers.remove(at: index)
+    }
+    
+    private func incorrectAnswer(tag: Int) {
+        incorrectAnswer(numberQuestion: numberQuestion + 1, tag: tag,
+                        question: questions.questions[numberQuestion],
+                        buttonFirst: questions.buttonFirst[numberQuestion],
+                        buttonSecond: questions.buttonSecond[numberQuestion],
+                        buttonThird: questions.buttonThird[numberQuestion],
+                        buttonFourth: questions.buttonFourth[numberQuestion],
+                        timeUp: false)
+    }
+    
+    private func incorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
+                                 buttonFirst: Countries, buttonSecond: Countries,
+                                 buttonThird: Countries, buttonFourth: Countries,
+                                 timeUp: Bool) {
         let result = Results(currentQuestion: numberQuestion, tag: tag,
                              question: question, buttonFirst: buttonFirst,
                              buttonSecond: buttonSecond, buttonThird: buttonThird,
                              buttonFourth: buttonFourth, timeUp: timeUp)
-        results.append(result)
+        incorrectAnswers.append(result)
     }
     // MARK: - Business logic
     @objc private func exitToGameType() {
@@ -692,9 +710,13 @@ class QuestionnaireViewController: UIViewController {
     
     @objc private func nextQuestion() {
         timer.invalidate()
-        buttonsIsEnabled(bool: true)
         buttonsOnOff()
         checkFinish()
+        if seconds > 0 {
+            buttonsIsEnabled(bool: true)
+        } else {
+            timeUp()
+        }
     }
     // MARK: - Show prevoius question
     @objc private func refreshBackQuestion() {
@@ -747,7 +769,7 @@ class QuestionnaireViewController: UIViewController {
 extension QuestionnaireViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        guard lastQuestion, numberQuestion == currentQuestion || seconds == 0 else { return }
+        guard lastQuestion, numberQuestion == currentQuestion else { return }
         countdown.invalidate()
         checkTimeSpent()
         resultsVC()
@@ -763,7 +785,8 @@ extension QuestionnaireViewController {
     private func resultsVC() {
         let resultsVC = ResultsViewController()
         resultsVC.mode = mode
-        resultsVC.results = results
+        resultsVC.correctAnswers = correctAnswers
+        resultsVC.incorrectAnswers = incorrectAnswers
         resultsVC.spendTime = spendTime
         navigationController?.pushViewController(resultsVC, animated: true)
     }

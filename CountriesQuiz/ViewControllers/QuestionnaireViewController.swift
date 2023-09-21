@@ -370,16 +370,27 @@ class QuestionnaireViewController: UIViewController {
     }
     // MARK: - Save data for select answer by user
     private func select(button: UIButton) {
+        guard !checkSelect(tag: button.tag) else { return }
+        
         let question = checkQuestion()
-        let tag = button.tag
         var number = 0
         while number < 4 {
             number += 1
-            if !(number == tag) {
+            if !(number == button.tag) {
                 selectIsEnabled(tag: number, bool: false, number: question)
             }
         }
-        selectIsEnabled(tag: tag, bool: true, number: question)
+        selectIsEnabled(tag: button.tag, bool: true, number: question)
+        selectAnswer(tag: button.tag)
+    }
+    
+    private func checkSelect(tag: Int) -> Bool {
+        switch tag {
+        case 1: return questions.buttonFirst[numberQuestion].select
+        case 2: return questions.buttonSecond[numberQuestion].select
+        case 3: return questions.buttonThird[numberQuestion].select
+        default: return questions.buttonFourth[numberQuestion].select
+        }
     }
     
     private func selectIsEnabled(tag: Int, bool: Bool, number: Int) {
@@ -653,7 +664,6 @@ class QuestionnaireViewController: UIViewController {
             action(button: buttonFourth, image: checkmarkFourth, label: labelFourth)
         }
         setupNextQuestion()
-        selectAnswer(tag: button.tag)
     }
     
     private func action(button: UIButton, image: UIImageView, label: UILabel) {
@@ -770,12 +780,22 @@ extension QuestionnaireViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         guard lastQuestion, numberQuestion == currentQuestion else { return }
-        countdown.invalidate()
+        stopTimer()
         checkTimeSpent()
         resultsVC()
     }
     
+    private func stopTimer() {
+        guard seconds > 0 else { return }
+        countdown.invalidate()
+        let time = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime * 10
+        let timeSpent = CGFloat(seconds) / CGFloat(time)
+        let strokeEnd = round(timeSpent * 100) / 100
+        shapeLayer.strokeEnd = strokeEnd
+    }
+    
     private func checkTimeSpent() {
+        guard seconds > 0 else { return }
         let circleTimeSpent = 1 - shapeLayer.strokeEnd
         let time = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
         let timeSpent = circleTimeSpent * CGFloat(time)
@@ -785,6 +805,7 @@ extension QuestionnaireViewController {
     private func resultsVC() {
         let resultsVC = ResultsViewController()
         resultsVC.mode = mode
+        resultsVC.game = game
         resultsVC.correctAnswers = correctAnswers
         resultsVC.incorrectAnswers = incorrectAnswers
         resultsVC.spendTime = spendTime

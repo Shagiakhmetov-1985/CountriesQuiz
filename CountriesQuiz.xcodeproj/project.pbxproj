@@ -21,7 +21,7 @@
 		C376AC0929474EB400DE5E86 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C376AC0829474EB400DE5E86 /* StorageManager.swift */; };
 		C38139EB293C9A890067D374 /* echorevival.otf in Resources */ = {isa = PBXBuildFile; fileRef = C38139EA293C9A890067D374 /* echorevival.otf */; };
 		C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38C023E2981025C008C2202 /* ResultsViewController.swift */; };
-		C38DF4DB2A8E4BF000550BCC /* WrongAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DA2A8E4BF000550BCC /* WrongAnswersViewController.swift */; };
+		C38DF4DB2A8E4BF000550BCC /* IncorrectAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */; };
 		C38DF4DE2A8F4A5B00550BCC /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */; };
 		C3B35F20293FADC300A8493F /* fontick.otf in Resources */ = {isa = PBXBuildFile; fileRef = C3B35F1F293FADC300A8493F /* fontick.otf */; };
 		C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D292EA293F5F0900786752 /* SettingViewController.swift */; };
@@ -51,7 +51,7 @@
 		C376AC0829474EB400DE5E86 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		C38139EA293C9A890067D374 /* echorevival.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = echorevival.otf; sourceTree = "<group>"; };
 		C38C023E2981025C008C2202 /* ResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsViewController.swift; sourceTree = "<group>"; };
-		C38DF4DA2A8E4BF000550BCC /* WrongAnswersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrongAnswersViewController.swift; sourceTree = "<group>"; };
+		C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectAnswersViewController.swift; sourceTree = "<group>"; };
 		C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		C3B35F1F293FADC300A8493F /* fontick.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontick.otf; sourceTree = "<group>"; };
 		C3D292EA293F5F0900786752 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
@@ -174,7 +174,7 @@
 				C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */,
 				C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */,
 				C38C023E2981025C008C2202 /* ResultsViewController.swift */,
-				C38DF4DA2A8E4BF000550BCC /* WrongAnswersViewController.swift */,
+				C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */,
 				C3D292EA293F5F0900786752 /* SettingViewController.swift */,
 			);
 			path = ViewControllers;
@@ -304,7 +304,7 @@
 				C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */,
 				C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */,
 				C36F58F82A7288FB0023E98F /* UIButton + Extension.swift in Sources */,
-				C38DF4DB2A8E4BF000550BCC /* WrongAnswersViewController.swift in Sources */,
+				C38DF4DB2A8E4BF000550BCC /* IncorrectAnswersViewController.swift in Sources */,
 				C36773F3296C3B880096BCC5 /* Transition.swift in Sources */,
 				C3613A712A7FB82C006C0F1E /* GameTypeManager.swift in Sources */,
 				C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */,

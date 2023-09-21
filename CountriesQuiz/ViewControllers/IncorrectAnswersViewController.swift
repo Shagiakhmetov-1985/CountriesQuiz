@@ -1,5 +1,5 @@
 //
-//  WrongAnswersViewController.swift
+//  IncorrectAnswersViewController.swift
 //  CountriesQuiz
 //
 //  Created by Marat Shagiakhmetov on 17.08.2023.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WrongAnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     private lazy var buttonBack: UIButton = {
         let button = setupButton(
             image: "multiply",
@@ -26,6 +26,7 @@ class WrongAnswersViewController: UIViewController, UITableViewDelegate, UITable
     }()
     
     var mode: Setting!
+    var game: Games!
     var results: [Results]!
     
     override func viewDidLoad() {
@@ -204,7 +205,7 @@ class WrongAnswersViewController: UIViewController, UITableViewDelegate, UITable
     }
 }
 // MARK: - Setup buttons
-extension WrongAnswersViewController {
+extension IncorrectAnswersViewController {
     private func setupButton(image: String, action: Selector) -> UIButton {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: image, withConfiguration: size)
@@ -220,7 +221,7 @@ extension WrongAnswersViewController {
     }
 }
 // MARK: - Setup labels
-extension WrongAnswersViewController {
+extension IncorrectAnswersViewController {
     private func setupLabel(title: String) -> UILabel {
         let label = UILabel()
         label.text = title
@@ -232,7 +233,7 @@ extension WrongAnswersViewController {
     }
 }
 // MARK: - Setup table view
-extension WrongAnswersViewController {
+extension IncorrectAnswersViewController {
     private func setupTableView() -> UITableView {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.register(checkCell(), forCellReuseIdentifier: "cell")
@@ -245,7 +246,7 @@ extension WrongAnswersViewController {
     }
 }
 // MARK: - Setup constraints
-extension WrongAnswersViewController {
+extension IncorrectAnswersViewController {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             buttonBack.topAnchor.constraint(equalTo: view.topAnchor, constant: topAnchorCheck()),

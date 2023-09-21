@@ -8,44 +8,82 @@
 import UIKit
 
 class QuestionnaireCell: UITableViewCell {
+    let view = UIView()
     let image = UIImageView()
-    let title = UILabel()
+    let progressView = UIProgressView()
+    let labelNumber = UILabel()
+    let buttonFirst = UILabel()
+    let checkmarkFirst = UIImageView()
+    let titleFirst = UILabel()
+    let buttonSecond = UILabel()
+    let checkmarkSecond = UIImageView()
+    let titleSecond = UILabel()
+    let buttonThird = UILabel()
+    let checkmarkThird = UIImageView()
+    let titleThird = UILabel()
+    let buttonFoutrh = UILabel()
+    let checkmarkFourth = UIImageView()
+    let titleFourth = UILabel()
+    let timeUp = UILabel()
+    let stackView = UIStackView()
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+        setupSubviews()
+        setupDesign()
         configure()
     }
     
-    private func configure() {
-        title.font = UIFont(name: "mr_fontick", size: 23)
-        title.numberOfLines = 0
-        title.textAlignment = .center
-        
-        addSubviews(subviews: image, title)
-        setupConstraints()
+    private func setupSubviews() {
+        addSubviews(subviews: view, on: contentView)
     }
     
-    private func addSubviews(subviews: UIView...) {
+    private func addSubviews(subviews: UIView..., on otherSubview: UIView) {
         subviews.forEach { subview in
-            contentView.addSubview(subview)
+            otherSubview.addSubview(subview)
             subview.translatesAutoresizingMaskIntoConstraints = false
         }
+    }
+    
+    private func setupDesign() {
+        contentView.backgroundColor = .white
+    }
+    
+    private func configure() {
+        setView(subview: view)
+        
+        image.layer.borderWidth = 1
+        
+        setProgressView(subview: progressView)
+        
+        
+        setupConstraints()
+    }
+}
+// MARK: - Setup view
+extension QuestionnaireCell {
+    private func setView(subview: UIView) {
+        subview.backgroundColor = .greenHarlequin
+        subview.layer.cornerRadius = 15
+        subview.layer.shadowColor = UIColor.greenHarlequin.cgColor
+        subview.layer.shadowOpacity = 0.6
+        subview.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
+        addSubviews(subviews: image, progressView, labelNumber, stackView, timeUp,
+                    on: subview)
+    }
+}
+// MARK: - Setup progress view
+extension QuestionnaireCell {
+    private func setProgressView(subview: UIProgressView) {
+        subview.progressTintColor = .white
+        subview.trackTintColor = .white.withAlphaComponent(0.3)
+        subview.layer.cornerRadius = 4
+        subview.clipsToBounds = true
     }
 }
 // MARK: - Setup constraints
 extension QuestionnaireCell {
     private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            image.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            image.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            image.heightAnchor.constraint(equalToConstant: 50),
-            image.widthAnchor.constraint(equalToConstant: 50)
-        ])
         
-        NSLayoutConstraint.activate([
-            title.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            title.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 10),
-            title.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
-        ])
     }
 }

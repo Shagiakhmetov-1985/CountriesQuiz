@@ -22,7 +22,7 @@ class ResultsViewController: UIViewController {
             image: "lightbulb",
             color: incorrectAnswers.count > 0 ? .blueBlackSea : .grayStone,
             isEnabled: incorrectAnswers.count > 0 ? true : false,
-            action: #selector(showWrongAnswers))
+            action: #selector(showIncorrectAnswers))
         return button
     }()
     
@@ -188,49 +188,49 @@ class ResultsViewController: UIViewController {
         return label
     }()
     
-    private lazy var viewPercentCurrent: UIView = {
+    private lazy var viewPercentCorrect: UIView = {
         let view = setView(
             color: .greenHarlequin,
             radius: radiusView())
         return view
     }()
     
-    private lazy var labelPercentCurrent: UILabel = {
+    private lazy var labelPercentCorrect: UILabel = {
         let label = setLabel(
-            title: "\(percentCurrentQuestions())",
+            title: "\(percentCorrectAnswers())",
             style: "mr_fontick",
             size: 26,
             color: .blueBlackSea)
         return label
     }()
     
-    private lazy var stackViewCurrent: UIStackView = {
+    private lazy var stackViewCorrect: UIStackView = {
         let stackView = setupStackView(
-            view: viewPercentCurrent,
-            label: labelPercentCurrent)
+            view: viewPercentCorrect,
+            label: labelPercentCorrect)
         return stackView
     }()
     
-    private lazy var viewPercentWrong: UIView = {
+    private lazy var viewPercentIncorrect: UIView = {
         let view = setView(
             color: .redTangerineTango,
             radius: radiusView())
         return view
     }()
     
-    private lazy var labelPercentWrong: UILabel = {
+    private lazy var labelPercentIncorrect: UILabel = {
         let label = setLabel(
-            title: "\(percentWrongQuestions())",
+            title: "\(percentIncorrectAnswers())",
             style: "mr_fontick",
             size: 26,
             color: .blueBlackSea)
         return label
     }()
     
-    private lazy var stackViewWrong: UIStackView = {
+    private lazy var stackViewIncorrect: UIStackView = {
         let stackView = setupStackView(
-            view: viewPercentWrong,
-            label: labelPercentWrong)
+            view: viewPercentIncorrect,
+            label: labelPercentIncorrect)
         return stackView
     }()
     
@@ -259,8 +259,8 @@ class ResultsViewController: UIViewController {
     
     private lazy var stackViews: UIStackView = {
         let stackView = setupStackView(
-            stackViewFirst: stackViewCurrent,
-            stackViewSecond: stackViewWrong,
+            stackViewFirst: stackViewCorrect,
+            stackViewSecond: stackViewIncorrect,
             stackViewThird: stackViewTimeSpend)
         return stackView
     }()
@@ -273,6 +273,7 @@ class ResultsViewController: UIViewController {
     var correctAnswers: [Countries]!
     var incorrectAnswers: [Results]!
     var mode: Setting!
+    var game: Games!
     var spendTime: [CGFloat]!
     
     private var timer = Timer()
@@ -297,7 +298,7 @@ class ResultsViewController: UIViewController {
                       viewCountQuestions, imageInfinity, stackViews,
                       buttonComplete,
                       on: view)
-        opacity(subviews: stackViewCurrent, stackViewWrong, stackViewTimeSpend,
+        opacity(subviews: stackViewCorrect, stackViewIncorrect, stackViewTimeSpend,
                 opacity: 0)
     }
     
@@ -319,41 +320,39 @@ class ResultsViewController: UIViewController {
     }
     
     private func setupTimer() {
-        timer = runTimer(interval: 0.3, action: #selector(circleCurrentQuestions))
+        timer = runTimer(interval: 0.3, action: #selector(circleCorrectAnswers))
     }
     
-    @objc private func circleCurrentQuestions() {
+    @objc private func circleCorrectAnswers() {
         timer.invalidate()
         let delay = 0.75
         let delayTimer = delay + 0.3
-        let currentQuestions = CGFloat(mode.countQuestions - incorrectAnswers.count)
-        let value = currentQuestions / CGFloat(mode.countQuestions)
+        let correctAnswers = Float(correctAnswers.count)
+        let value = correctAnswers / Float(mode.countQuestions)
         setCircle(color: .greenHarlequin.withAlphaComponent(0.3), radius: 80, strokeEnd: 1)
         setCircle(color: .greenHarlequin, radius: 80, strokeEnd: 0, value: value, duration: delay)
-        showAnimate(stackView: stackViewCurrent)
+        showAnimate(stackView: stackViewCorrect)
         
-        timer = runTimer(interval: delayTimer, action: #selector(circleWrongQuestions))
+        timer = runTimer(interval: delayTimer, action: #selector(circleIncorrectAnswers))
     }
     
-    @objc private func circleWrongQuestions() {
+    @objc private func circleIncorrectAnswers() {
         timer.invalidate()
         let delay = 0.75
         let delayTimer = delay + 0.3
-        let wrongQuestions = CGFloat(incorrectAnswers.count)
-        let value = wrongQuestions / CGFloat(mode.countQuestions)
+        let incorrectAnswers = Float(incorrectAnswers.count)
+        let value = incorrectAnswers / Float(mode.countQuestions)
         setCircle(color: .redTangerineTango.withAlphaComponent(0.3), radius: 61, strokeEnd: 1)
         setCircle(color: .redTangerineTango, radius: 61, strokeEnd: 0, value: value, duration: delay)
-        showAnimate(stackView: stackViewWrong)
+        showAnimate(stackView: stackViewIncorrect)
         
-        timer = runTimer(interval: delayTimer, action: #selector(circleSpendTime))
+        timer = runTimer(interval: delayTimer, action: #selector(circleSpentTime))
     }
     
-    @objc private func circleSpendTime() {
+    @objc private func circleSpentTime() {
         timer.invalidate()
         let delay = 0.75
-        let averageTime = spendTime.reduce(0.0, +) / CGFloat(spendTime.count)
-        let timeForQuestion = oneQuestionSeconds()
-        let value = averageTime / CGFloat(timeForQuestion)
+        let value = checkCircleTime() / 100
         setCircle(color: .blueMiddlePersian.withAlphaComponent(0.3), radius: 42, strokeEnd: 1)
         setCircle(color: .blueMiddlePersian, radius: 42, strokeEnd: 0, value: value, duration: delay)
         showAnimate(stackView: stackViewTimeSpend)
@@ -363,6 +362,10 @@ class ResultsViewController: UIViewController {
         UIView.animate(withDuration: 1) {
             self.opacity(subviews: stackView, opacity: 1)
         }
+    }
+    
+    private func checkCircleTime() -> Float {
+        roundf(Float(percentTimeCheck() * 100)) / 100
     }
     
     private func oneQuestionSeconds() -> Int {
@@ -388,7 +391,11 @@ class ResultsViewController: UIViewController {
     }
     
     private func labelCheckTimeSpend() -> String {
-        oneQuestionCheck() ? "Среднее время на вопрос" : labelCheckAllQuestions()
+        oneQuestionCheck() ? labelQuestionnaireTimeSpend() : labelCheckAllQuestions()
+    }
+    
+    private func labelQuestionnaireTimeSpend() -> String {
+        game.gameType == .questionnaire ? labelCheckAllQuestions() : "Среднее время на вопрос"
     }
     
     private func labelCheckAllQuestions() -> String {
@@ -434,15 +441,15 @@ class ResultsViewController: UIViewController {
         return text
     }
     
-    private func percentCurrentQuestions() -> String {
-        let currentQuestions = mode.countQuestions - incorrectAnswers.count
-        let percent = CGFloat(currentQuestions) / CGFloat(mode.countQuestions) * 100
+    private func percentCorrectAnswers() -> String {
+        let correctAnswers = CGFloat(correctAnswers.count)
+        let percent = correctAnswers / CGFloat(mode.countQuestions) * 100
         return stringWithoutNull(count: percent) + "%"
     }
     
-    private func percentWrongQuestions() -> String {
-        let wrongQuestions = incorrectAnswers.count
-        let percent = CGFloat(wrongQuestions) / CGFloat(mode.countQuestions) * 100
+    private func percentIncorrectAnswers() -> String {
+        let incorrectAnswers = CGFloat(incorrectAnswers.count)
+        let percent = incorrectAnswers / CGFloat(mode.countQuestions) * 100
         return stringWithoutNull(count: percent) + "%"
     }
     
@@ -451,7 +458,23 @@ class ResultsViewController: UIViewController {
     }
     
     private func percentTimeCheck() -> CGFloat {
-        oneQuestionCheck() ? averageTime() : timeSpend()
+        oneQuestionCheck() ? checkGameType() : timeSpend()
+    }
+    
+    private func checkGameType() -> CGFloat {
+        game.gameType == .questionnaire ? questionnaireTime() : averageTime()
+    }
+    
+    private func questionnaireTime() -> CGFloat {
+        var seconds: CGFloat
+        if spendTime.isEmpty {
+            seconds = 0
+        } else {
+            let time = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
+            let timeSpent = spendTime.first ?? 0
+            seconds = timeSpent / CGFloat(time) * 100
+        }
+        return seconds
     }
     
     private func averageTime() -> CGFloat {
@@ -464,7 +487,8 @@ class ResultsViewController: UIViewController {
         if spendTime.isEmpty {
             seconds = 0
         } else {
-            seconds = spendTime.first ?? 0
+            let timeSpent = spendTime.first ?? 0
+            seconds = timeSpent / CGFloat(oneQuestionSeconds()) * 100
         }
         return seconds
     }
@@ -485,15 +509,15 @@ class ResultsViewController: UIViewController {
         navigationController?.popToRootViewController(animated: true)
     }
     
-    @objc private func showWrongAnswers() {
-        let wrongAnswersVC = WrongAnswersViewController()
-        wrongAnswersVC.mode = mode
-        wrongAnswersVC.results = incorrectAnswers
-        wrongAnswersVC.modalPresentationStyle = .custom
-        present(wrongAnswersVC, animated: true)
+    @objc private func showIncorrectAnswers() {
+        let incorrectAnswersVC = IncorrectAnswersViewController()
+        incorrectAnswersVC.mode = mode
+        incorrectAnswersVC.game = game
+        incorrectAnswersVC.results = incorrectAnswers
+        incorrectAnswersVC.modalPresentationStyle = .custom
+        present(incorrectAnswersVC, animated: true)
     }
 }
-
 // MARK: - Setup view
 extension ResultsViewController {
     private func setView(color: UIColor, labelFirst: UILabel? = nil, image: UIImageView? = nil,
@@ -597,7 +621,7 @@ extension ResultsViewController {
 // MARK: - Setup circle shapes
 extension ResultsViewController {
     private func setCircle(color: UIColor, radius: CGFloat, strokeEnd: CGFloat,
-                           value: CGFloat? = nil, duration: CGFloat? = nil) {
+                           value: Float? = nil, duration: CGFloat? = nil) {
         let center = CGPoint(x: view.frame.width / 3, y: 230)
         let endAngle = CGFloat.pi / 2
         let startAngle = 2 * CGFloat.pi + endAngle
@@ -622,7 +646,7 @@ extension ResultsViewController {
         }
     }
     
-    private func animateCircle(shape: CAShapeLayer, value: CGFloat, duration: CGFloat) {
+    private func animateCircle(shape: CAShapeLayer, value: Float, duration: CGFloat) {
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.toValue = value
         animation.duration = CFTimeInterval(duration)
@@ -660,8 +684,8 @@ extension ResultsViewController {
         
         setupCenterSubview(subview: imageInfinity, on: labelNumberTimeSpend)
         
-        setupSquare(subview: viewPercentCurrent, sizes: radiusView() * 2)
-        setupSquare(subview: viewPercentWrong, sizes: radiusView() * 2)
+        setupSquare(subview: viewPercentCorrect, sizes: radiusView() * 2)
+        setupSquare(subview: viewPercentIncorrect, sizes: radiusView() * 2)
         setupSquare(subview: viewPercentTimeSpend, sizes: radiusView() * 2)
         NSLayoutConstraint.activate([
             stackViews.centerYAnchor.constraint(equalTo: view.topAnchor, constant: 230),

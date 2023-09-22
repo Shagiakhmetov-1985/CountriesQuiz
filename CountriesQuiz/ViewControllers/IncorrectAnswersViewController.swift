@@ -48,13 +48,26 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
+        switch game.gameType {
+        case .quizOfFlag:
+            quizOfFlagsCell(cell: cell, indexPath: indexPath)
+        default:
+            questionnaireCell(cell: cell, indexPath: indexPath)
+        }
+        
+        return cell
+    }
+    
+    private func quizOfFlagsCell(cell: UITableViewCell, indexPath: IndexPath) {
         if mode.flag {
             flagCell(cell: cell as! CustomCell, indexPath: indexPath)
         } else {
             labelCell(cell: cell as! CustomLabelCell, indexPath: indexPath)
         }
-        
-        return cell
+    }
+    
+    private func questionnaireCell(cell: UITableViewCell, indexPath: IndexPath) {
+        questionnaireCell(cell: cell as! QuestionnaireCell, indexPath: indexPath)
     }
     
     private func setupDesign() {
@@ -110,23 +123,89 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         }
     }
     
+    private func questionnaireBackground(question: Countries, answer: Countries,
+                                         tag: Int, select: Int) -> UIColor {
+        switch true {
+        case question == answer:
+            return .white
+        case tag == select:
+            return .white.withAlphaComponent(0.7)
+        default:
+            return .clear
+        }
+    }
+    
+    private func questionnaireColorText(question: Countries, answer: Countries,
+                                        tag: Int, select: Int) -> UIColor {
+        switch true {
+        case question == answer || tag == select:
+            return .greenHarlequin
+        default:
+            return .white
+        }
+    }
+    
+    private func setImage(question: Countries, answer: Countries,
+                          tag: Int, select: Int) -> String {
+        switch true {
+        case question == answer && (tag == select || !(tag == select)):
+            return "checkmark.circle.fill"
+        case !(question == answer) && tag == select:
+            return "xmark.circle.fill"
+        default:
+            return "circle"
+        }
+    }
+    
+    private func setColorImage(question: Countries, answer: Countries,
+                               tag: Int, select: Int) -> UIColor {
+        switch true {
+        case question == answer && (tag == select || !(tag == select)):
+            return .greenHarlequin
+        case !(question == answer) && tag == select:
+            return .greenHarlequin
+        default:
+            return .white
+        }
+    }
+    
     private func timeUpCheck(bool: Bool) -> String {
         bool ? "Истекло время!" : ""
     }
     
     private func checkCell() -> AnyClass {
+        switch game.gameType {
+        case .quizOfFlag:
+            return quizOfFlagsCell()
+        default:
+            return questionnaireCell()
+        }
+    }
+    
+    private func quizOfFlagsCell() -> AnyClass {
         mode.flag ? CustomCell.self : CustomLabelCell.self
     }
     
+    private func questionnaireCell() -> AnyClass {
+        QuestionnaireCell.self
+    }
+    
     private func checkHeight() -> CGFloat {
-        mode.flag ? 350 : 315
+        switch game.gameType {
+        case .quizOfFlag:
+            return mode.flag ? 350 : 315
+        default:
+            return 350
+        }
     }
     
     private func flagCell(cell: CustomCell, indexPath: IndexPath) {
         cell.image.image = UIImage(named: results[indexPath.section].question.flag)
         
-        cell.progressView.progress = setProgress(value: results[indexPath.section].currentQuestion)
-        cell.labelNumber.text = setText(value: results[indexPath.section].currentQuestion)
+        setProgressViewAndLabel(progressView: cell.progressView, label: cell.labelNumber,
+                                currentQuestion: results[indexPath.section].currentQuestion)
+//        cell.progressView.progress = setProgress(value: results[indexPath.section].currentQuestion)
+//        cell.labelNumber.text = setText(value: results[indexPath.section].currentQuestion)
         
         cell.buttonFirst.text = results[indexPath.section].buttonFirst.name
         cell.buttonFirst.textColor = setColorTitle(
@@ -174,8 +253,10 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     private func labelCell(cell: CustomLabelCell, indexPath: IndexPath) {
         cell.labelName.text = results[indexPath.section].question.name
         
-        cell.progressView.progress = setProgress(value: results[indexPath.section].currentQuestion)
-        cell.labelNumber.text = setText(value: results[indexPath.section].currentQuestion)
+        setProgressViewAndLabel(progressView: cell.progressView, label: cell.labelNumber,
+                                currentQuestion: results[indexPath.section].currentQuestion)
+//        cell.progressView.progress = setProgress(value: results[indexPath.section].currentQuestion)
+//        cell.labelNumber.text = setText(value: results[indexPath.section].currentQuestion)
         
         cell.imageFirst.image = UIImage(named: results[indexPath.section].buttonFirst.flag)
         cell.viewFirst.backgroundColor = setColorBackground(
@@ -202,6 +283,82 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
             select: results[indexPath.section].tag)
         
         cell.timeUp.text = timeUpCheck(bool: results[indexPath.section].timeUp)
+    }
+    
+    private func questionnaireCell(cell: QuestionnaireCell, indexPath: IndexPath) {
+        cell.image.image = UIImage(named: results[indexPath.section].question.flag)
+        
+        setProgressViewAndLabel(progressView: cell.progressView, label: cell.labelNumber,
+                                currentQuestion: results[indexPath.section].currentQuestion,
+                                color: .white)
+        
+        configure(indexPath: indexPath, button: cell.buttonFirst,
+                  label: cell.titleFirst, image: cell.checkmarkFirst,
+                  answer: results[indexPath.section].buttonFirst, tag: 1)
+        
+        configure(indexPath: indexPath, button: cell.buttonSecond,
+                  label: cell.titleSecond, image: cell.checkmarkSecond,
+                  answer: results[indexPath.section].buttonSecond, tag: 2)
+        
+        configure(indexPath: indexPath, button: cell.buttonThird,
+                  label: cell.titleThird, image: cell.checkmarkThird,
+                  answer: results[indexPath.section].buttonThird, tag: 3)
+        
+        configure(indexPath: indexPath, button: cell.buttonFourth,
+                  label: cell.titleFourth, image: cell.checkmarkFourth,
+                  answer: results[indexPath.section].buttonFourth, tag: 4)
+    }
+    
+    private func configure(indexPath: IndexPath, button: UIView, label: UILabel,
+                           image: UIImageView, answer: Countries, tag: Int) {
+        buttonBackground(button: button, answer: answer, indexPath: indexPath, tag: tag)
+        labelText(label: label, answer: answer)
+        labelColor(label: label, answer: answer, indexPath: indexPath, tag: tag)
+        setImage(image: image, answer: answer, indexPath: indexPath, tag: tag)
+        setImageColor(image: image, answer: answer, indexPath: indexPath, tag: tag)
+    }
+    
+    private func setProgressViewAndLabel(progressView: UIProgressView, label: UILabel,
+                                         currentQuestion: Int, color: UIColor? = nil) {
+        progressView.progress = setProgress(value: currentQuestion)
+        label.text = setText(value: currentQuestion)
+        if let color = color {
+            label.textColor = color
+        }
+    }
+    
+    private func buttonBackground(button: UIView, answer: Countries,
+                                  indexPath: IndexPath, tag: Int) {
+        button.backgroundColor = questionnaireBackground(
+            question: results[indexPath.section].question,
+            answer: answer, tag: tag, select: results[indexPath.section].tag)
+    }
+    
+    private func labelText(label: UILabel, answer: Countries) {
+        label.text = answer.name
+    }
+    
+    private func labelColor(label: UILabel, answer: Countries,
+                            indexPath: IndexPath, tag: Int) {
+        label.textColor = questionnaireColorText(
+            question: results[indexPath.section].question,
+            answer: answer, tag: tag, select: results[indexPath.section].tag)
+    }
+    
+    private func setImage(image: UIImageView, answer: Countries,
+                          indexPath: IndexPath, tag: Int) {
+        let size = UIImage.SymbolConfiguration(pointSize: 22)
+        image.image = UIImage(
+            systemName: setImage(question: results[indexPath.section].question,
+            answer: answer, tag: tag, select: results[indexPath.section].tag),
+            withConfiguration: size)
+    }
+    
+    private func setImageColor(image: UIImageView, answer: Countries,
+                               indexPath: IndexPath, tag: Int) {
+        image.tintColor = setColorImage(
+            question: results[indexPath.section].question,
+            answer: answer, tag: tag, select: results[indexPath.section].tag)
     }
 }
 // MARK: - Setup buttons

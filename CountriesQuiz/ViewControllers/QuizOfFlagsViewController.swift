@@ -221,7 +221,8 @@ class QuizOfFlagsViewController: UIViewController {
     private var questions = Countries.getQuestions()
     private var answerSelect = false
     
-    private var results: [Results] = []
+    private var correctAnswers: [Countries] = []
+    private var incorrectAnswers: [Results] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -241,7 +242,7 @@ class QuizOfFlagsViewController: UIViewController {
             animationTimeReset()
         }
     }
-    
+    // MARK: - General methods
     private func setupDesign() {
         view.backgroundColor = game.background
         navigationItem.hidesBackButton = true
@@ -296,20 +297,10 @@ class QuizOfFlagsViewController: UIViewController {
         mode.flag ? true : false
     }
     
-    private func setupMoveSubviews() {
-        let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
-        if checkFlag() {
-            imageFlagSpring.constant += view.bounds.width * pointX
-        } else {
-            labelNameSpring.constant += view.bounds.width * pointX
-        }
-        stackViewSpring.constant += view.bounds.width * pointX
-    }
-    
     private func startHideSubviews() {
         setupOpacityLabels(labels: labelQuiz, opacity: 0)
     }
-    
+    // MARK: - Opacity, hidden and enable subviews
     private func setupOpacityLabels(labels: UILabel..., opacity: Float) {
         labels.forEach { label in
             label.layer.opacity = opacity
@@ -328,85 +319,17 @@ class QuizOfFlagsViewController: UIViewController {
         }
     }
     
-    private func startGame() {
-        timerFirst = Timer.scheduledTimer(
-            timeInterval: 1, target: self, selector: #selector(showSubviews),
-            userInfo: nil, repeats: false)
-        timerSecond = Timer.scheduledTimer(
-            timeInterval: 1.5, target: self, selector: #selector(isEnabledButton),
-            userInfo: nil, repeats: false)
+    private func runTimer(time: CGFloat, action: Selector, repeats: Bool) -> Timer {
+        Timer.scheduledTimer(timeInterval: time, target: self, selector: action,
+                             userInfo: nil, repeats: repeats)
     }
-    
-    @objc private func showSubviews() {
-        timerFirst.invalidate()
-        
-        setupHiddenSubviews(views: imageFlag, buttonAnswerFirst,
-                            buttonAnswerSecond, buttonAnswerThird,
-                            buttonAnswerFourth, isHidden: false)
-        
-        if currentQuestion < 1 {
-            UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) { [self] in
-                setupOpacityLabels(labels: labelQuiz, opacity: 1)
-            }
-        }
-        
-        animationSubviews()
-        if oneQuestionCheck() && mode.timeElapsed.timeElapsed {
-            shapeLayer.strokeEnd = 1
-        } else if !oneQuestionCheck() && mode.timeElapsed.timeElapsed && currentQuestion < 1 {
-            shapeLayer.strokeEnd = 1
-        }
-    }
-    
-    private func animationSubviews() {
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
-            if self.checkFlag() {
-                self.imageFlagSpring.constant -= self.view.bounds.width
-            } else {
-                self.labelNameSpring.constant -= self.view.bounds.width
-            }
-            self.stackViewSpring.constant -= self.view.bounds.width
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    @objc private func isEnabledButton() {
-        timerSecond.invalidate()
-        setupEnabledSubviews(controls: buttonAnswerFirst, buttonAnswerSecond,
-                             buttonAnswerThird, buttonAnswerFourth,
-                             isEnabled: true)
-        setProgressView()
-        labelNumberQuiz.text = "\(currentQuestion + 1) / \(mode.countQuestions)"
-        
-        if mode.timeElapsed.timeElapsed {
-            checkSeconds()
-            animationTimeElapsed()
-            runTimer()
-        }
-    }
-    
-    private func setProgressView() {
-        let time = TimeInterval(mode.countQuestions)
-        let interval = 1 / time
-        let progress = progressView.progress + Float(interval)
-        
-        UIView.animate(withDuration: 0.5) {
-            self.progressView.setProgress(progress, animated: true)
-        }
-    }
-    
+    // MARK: - Time for label, seconds and circle timer
     private func checkSeconds() {
         if !oneQuestionCheck(), currentQuestion < 1 {
             seconds = oneQuestionSeconds() * 10
         } else if oneQuestionCheck() {
             seconds = oneQuestionSeconds() * 10
         }
-    }
-    
-    private func runTimer() {
-        timerSecond = Timer.scheduledTimer(
-            timeInterval: 0.1, target: self, selector: #selector(timeElapsedText),
-            userInfo: nil, repeats: true)
     }
     
     private func oneQuestionSeconds() -> Int {
@@ -432,6 +355,111 @@ class QuizOfFlagsViewController: UIViewController {
     private func oneQuestionCheck() -> Bool {
         mode.timeElapsed.questionSelect.oneQuestion ? true : false
     }
+    // MARK: - Move flag and buttons
+    private func setupMoveSubviews() {
+        let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
+        if checkFlag() {
+            imageFlagSpring.constant += view.bounds.width * pointX
+        } else {
+            labelNameSpring.constant += view.bounds.width * pointX
+        }
+        stackViewSpring.constant += view.bounds.width * pointX
+    }
+    // MARK: - Animation move subviews
+    private func animationSubviews() {
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+            if self.checkFlag() {
+                self.imageFlagSpring.constant -= self.view.bounds.width
+            } else {
+                self.labelNameSpring.constant -= self.view.bounds.width
+            }
+            self.stackViewSpring.constant -= self.view.bounds.width
+            self.view.layoutIfNeeded()
+        }
+    }
+    // MARK: - Animation label description and label number
+    private func showDescription() {
+        if currentQuestion == questions.questions.count - 1 {
+            let red = UIColor.lightPurplePink
+            labelDescription.text = "Коснитесь экрана, чтобы завершить"
+            labelDescription.textColor = red
+        }
+        
+        animationShowLabelDescription()
+    }
+    
+    private func animationHideLabelDescription() {
+        UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) {
+            self.labelQuiz.layer.opacity = 1
+        }
+        
+        labelDescription.layer.opacity = 0
+    }
+    
+    private func animationShowLabelDescription() {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.labelQuiz.layer.opacity = 0
+        })
+        
+        UIView.animate(withDuration: 1, delay: 0, options: [.repeat, .autoreverse], animations: {
+            self.labelDescription.layer.opacity = 1
+        })
+    }
+    // MARK: - Start game
+    private func startGame() {
+        timerFirst = runTimer(time: 1, action: #selector(showSubviews), repeats: false)
+        timerSecond = runTimer(time: 1.5, action: #selector(isEnabledButton), repeats: false)
+    }
+    
+    @objc private func showSubviews() {
+        timerFirst.invalidate()
+        
+        setupHiddenSubviews(views: imageFlag, buttonAnswerFirst,
+                            buttonAnswerSecond, buttonAnswerThird,
+                            buttonAnswerFourth, isHidden: false)
+        
+        if currentQuestion < 1 {
+            UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) { [self] in
+                setupOpacityLabels(labels: labelQuiz, opacity: 1)
+            }
+        }
+        
+        animationSubviews()
+        if oneQuestionCheck() && mode.timeElapsed.timeElapsed {
+            shapeLayer.strokeEnd = 1
+        } else if !oneQuestionCheck() && mode.timeElapsed.timeElapsed && currentQuestion < 1 {
+            shapeLayer.strokeEnd = 1
+        }
+    }
+    // MARK: - Enable subviews
+    @objc private func isEnabledButton() {
+        timerSecond.invalidate()
+        setupEnabledSubviews(controls: buttonAnswerFirst, buttonAnswerSecond,
+                             buttonAnswerThird, buttonAnswerFourth,
+                             isEnabled: true)
+        setProgressView()
+        labelNumberQuiz.text = "\(currentQuestion + 1) / \(mode.countQuestions)"
+        
+        if mode.timeElapsed.timeElapsed {
+            checkSeconds()
+            animationTimeElapsed()
+            runTimer()
+        }
+    }
+    
+    private func setProgressView() {
+        let time = TimeInterval(mode.countQuestions)
+        let interval = 1 / time
+        let progress = progressView.progress + Float(interval)
+        
+        UIView.animate(withDuration: 0.5) {
+            self.progressView.setProgress(progress, animated: true)
+        }
+    }
+    // MARK: - Run timer
+    private func runTimer() {
+        timerSecond = runTimer(time: 0.1, action: #selector(timeElapsedText), repeats: true)
+    }
     
     @objc private func timeElapsedText() {
         seconds -= 1
@@ -448,23 +476,16 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func timeUp() {
         answerSelect.toggle()
-        setupResultsTimeUp()
+        incorrectAnswerTimeUp()
         
         if !oneQuestionCheck() {
             currentQuestion = questions.questions.count - 1
         }
         
         showDescription()
-        
-        if mode.flag {
-            disableButtonFlag(buttons: buttonAnswerFirst, buttonAnswerSecond,
-                              buttonAnswerThird, buttonAnswerFourth, tag: 0)
-        } else {
-            disableButtonLabel(buttons: buttonAnswerFirst, buttonAnswerSecond,
-                               buttonAnswerThird, buttonAnswerFourth, tag: 0)
-        }
+        animationColorDisableButton()
     }
-    
+    // MARK: - Buttons back
     @objc private func backToGameType() {
         navigationController?.popViewController(animated: true)
     }
@@ -472,22 +493,13 @@ class QuizOfFlagsViewController: UIViewController {
     @objc private func backToMenu() {
         navigationController?.popToRootViewController(animated: true)
     }
-    
+    // MARK: - Button action when user select answer
     @objc private func buttonPress(button: UIButton) {
         timerFirst.invalidate()
         timerSecond.invalidate()
         answerSelect.toggle()
         
-        if checkFlag() {
-            checkAnswerFlag(tag: button.tag, button: button)
-            disableButtonFlag(buttons: buttonAnswerFirst, buttonAnswerSecond,
-                          buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
-        } else {
-            checkAnswerLabel(tag: button.tag, button: button)
-            disableButtonLabel(buttons: buttonAnswerFirst, buttonAnswerSecond,
-                               buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
-        }
-        
+        animationColorButtons(button: button)
         showDescription()
         
         if mode.timeElapsed.timeElapsed {
@@ -501,6 +513,28 @@ class QuizOfFlagsViewController: UIViewController {
         }
     }
     
+    private func animationColorDisableButton() {
+        if checkFlag() {
+            disableButtonFlag(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                              buttonAnswerThird, buttonAnswerFourth, tag: 0)
+        } else {
+            disableButtonLabel(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                               buttonAnswerThird, buttonAnswerFourth, tag: 0)
+        }
+    }
+    
+    private func animationColorButtons(button: UIButton) {
+        if checkFlag() {
+            checkAnswerFlag(tag: button.tag, button: button)
+            disableButtonFlag(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                              buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
+        } else {
+            checkAnswerLabel(tag: button.tag, button: button)
+            disableButtonLabel(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                               buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
+        }
+    }
+    
     private func checkAnswerFlag(tag: Int, button: UIButton) {
         let green = UIColor.greenYellowBrilliant
         let red = UIColor.redTangerineTango
@@ -508,9 +542,10 @@ class QuizOfFlagsViewController: UIViewController {
         
         if checkAnswer(tag: tag) {
             setButtonColor(button: button, color: green, titleColor: white)
+            correctAnswer()
         } else {
             setButtonColor(button: button, color: red, titleColor: white)
-            setupResults(tag: tag)
+            incorrectAnswer(tag: tag)
         }
     }
     
@@ -520,9 +555,10 @@ class QuizOfFlagsViewController: UIViewController {
         
         if checkAnswer(tag: tag) {
             setButtonColor(button: button, color: green)
+            correctAnswer()
         } else {
             setButtonColor(button: button, color: red)
-            setupResults(tag: tag)
+            incorrectAnswer(tag: tag)
         }
     }
     
@@ -534,37 +570,11 @@ class QuizOfFlagsViewController: UIViewController {
         }
     }
     
-    private func setupResults(tag: Int) {
-        setupResults(numberQuestion: currentQuestion + 1, tag: tag,
-                     question: questions.questions[currentQuestion],
-                     buttonFirst: questions.buttonFirst[currentQuestion],
-                     buttonSecond: questions.buttonSecond[currentQuestion],
-                     buttonThird: questions.buttonThird[currentQuestion],
-                     buttonFourth: questions.buttonFourth[currentQuestion],
-                     timeUp: false)
-    }
-    
-    private func setupResultsTimeUp() {
-        setupResults(numberQuestion: currentQuestion + 1, tag: 0,
-                     question: questions.questions[currentQuestion],
-                     buttonFirst: questions.buttonFirst[currentQuestion],
-                     buttonSecond: questions.buttonSecond[currentQuestion],
-                     buttonThird: questions.buttonThird[currentQuestion],
-                     buttonFourth: questions.buttonFourth[currentQuestion],
-                     timeUp: true)
-    }
-    
-    private func checkAnswer(tag: Int) -> Bool {
-        switch tag {
-        case 1:
-            return questions.questions[currentQuestion] == questions.buttonFirst[currentQuestion] ? true : false
-        case 2:
-            return questions.questions[currentQuestion] == questions.buttonSecond[currentQuestion] ? true : false
-        case 3:
-            return questions.questions[currentQuestion] == questions.buttonThird[currentQuestion] ? true : false
-        default:
-            return questions.questions[currentQuestion] == questions.buttonFourth[currentQuestion] ? true : false
-        }
+    private func setTimeSpent() {
+        let circleTimeSpent = 1 - shapeLayer.strokeEnd
+        let seconds = oneQuestionSeconds()
+        let timeSpent = circleTimeSpent * CGFloat(seconds)
+        spendTime.append(timeSpent)
     }
     
     private func disableButtonFlag(buttons: UIButton..., tag: Int) {
@@ -594,19 +604,58 @@ class QuizOfFlagsViewController: UIViewController {
     
     private func delay() {
         if currentQuestion + 1 < questions.questions.count {
-            timerFirst = Timer.scheduledTimer(
-                timeInterval: 5, target: self, selector: #selector(hideSubviews),
-                userInfo: nil, repeats: false)
+            timerFirst = runTimer(time: 5, action: #selector(hideSubviews), repeats: false)
+        }
+    }
+    // MARK: - Add correct or incorrect answers
+    private func checkAnswer(tag: Int) -> Bool {
+        switch tag {
+        case 1:
+            return questions.questions[currentQuestion] == questions.buttonFirst[currentQuestion] ? true : false
+        case 2:
+            return questions.questions[currentQuestion] == questions.buttonSecond[currentQuestion] ? true : false
+        case 3:
+            return questions.questions[currentQuestion] == questions.buttonThird[currentQuestion] ? true : false
+        default:
+            return questions.questions[currentQuestion] == questions.buttonFourth[currentQuestion] ? true : false
         }
     }
     
-    private func setTimeSpent() {
-        let circleTimeSpent = 1 - shapeLayer.strokeEnd
-        let seconds = oneQuestionSeconds()
-        let timeSpent = circleTimeSpent * CGFloat(seconds)
-        spendTime.append(timeSpent)
+    private func correctAnswer() {
+        correctAnswers.append(questions.questions[currentQuestion])
     }
     
+    private func incorrectAnswer(tag: Int) {
+        incorrectAnswer(numberQuestion: currentQuestion + 1, tag: tag,
+                        question: questions.questions[currentQuestion],
+                        buttonFirst: questions.buttonFirst[currentQuestion],
+                        buttonSecond: questions.buttonSecond[currentQuestion],
+                        buttonThird: questions.buttonThird[currentQuestion],
+                        buttonFourth: questions.buttonFourth[currentQuestion],
+                        timeUp: false)
+    }
+    
+    private func incorrectAnswerTimeUp() {
+        incorrectAnswer(numberQuestion: currentQuestion + 1, tag: 0,
+                        question: questions.questions[currentQuestion],
+                        buttonFirst: questions.buttonFirst[currentQuestion],
+                        buttonSecond: questions.buttonSecond[currentQuestion],
+                        buttonThird: questions.buttonThird[currentQuestion],
+                        buttonFourth: questions.buttonFourth[currentQuestion],
+                        timeUp: true)
+    }
+    
+    private func incorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
+                                 buttonFirst: Countries, buttonSecond: Countries,
+                                 buttonThird: Countries, buttonFourth: Countries,
+                                 timeUp: Bool) {
+        let answer = Results(currentQuestion: numberQuestion, tag: tag,
+                             question: question, buttonFirst: buttonFirst,
+                             buttonSecond: buttonSecond, buttonThird: buttonThird,
+                             buttonFourth: buttonFourth, timeUp: timeUp)
+        incorrectAnswers.append(answer)
+    }
+    // MARK: - Refresh data for next question
     private func showNewDataForNextQuestion() {
         if mode.timeElapsed.timeElapsed {
             resetTimer()
@@ -650,14 +699,6 @@ class QuizOfFlagsViewController: UIViewController {
         labelTimer.text = "\(seconds)"
     }
     
-    private func showLabelsWithAnimation() {
-        UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) {
-            self.labelQuiz.layer.opacity = 1
-        }
-        
-        labelDescription.layer.opacity = 0
-    }
-    
     private func resetColorButton(buttons: UIButton...) {
         let white = UIColor.white
         let blue = UIColor.blueBlackSea
@@ -665,42 +706,13 @@ class QuizOfFlagsViewController: UIViewController {
             setButtonColor(button: button, color: white, titleColor: blue)
         }
     }
-    
+    // MARK: - Run next question
     @objc private func hideSubviews() {
         timerFirst.invalidate()
         answerSelect.toggle()
         
         animationSubviews()
-        timerFirst = Timer.scheduledTimer(
-            timeInterval: 1, target: self, selector: #selector(nextQuestion),
-            userInfo: nil, repeats: false)
-    }
-    
-    private func setupResults(numberQuestion: Int, tag: Int, question: Countries,
-                              buttonFirst: Countries, buttonSecond: Countries,
-                              buttonThird: Countries, buttonFourth: Countries,
-                              timeUp: Bool) {
-        let result = Results(currentQuestion: numberQuestion, tag: tag,
-                             question: question, buttonFirst: buttonFirst,
-                             buttonSecond: buttonSecond, buttonThird: buttonThird,
-                             buttonFourth: buttonFourth, timeUp: timeUp)
-        results.append(result)
-    }
-    
-    private func showDescription() {
-        if currentQuestion == questions.questions.count - 1 {
-            let red = UIColor.lightPurplePink
-            labelDescription.text = "Коснитесь экрана, чтобы завершить"
-            labelDescription.textColor = red
-        }
-        
-        UIView.animate(withDuration: 0.5, animations: {
-            self.labelQuiz.layer.opacity = 0
-        })
-        
-        UIView.animate(withDuration: 1, delay: 0, options: [.repeat, .autoreverse], animations: {
-            self.labelDescription.layer.opacity = 1
-        })
+        timerFirst = runTimer(time: 1, action: #selector(nextQuestion), repeats: false)
     }
     
     @objc private func nextQuestion() {
@@ -709,13 +721,13 @@ class QuizOfFlagsViewController: UIViewController {
         currentQuestion += 1
         setupMoveSubviews()
         showNewDataForNextQuestion()
-        showLabelsWithAnimation()
+        animationHideLabelDescription()
         resetColorButton(buttons: buttonAnswerFirst, buttonAnswerSecond,
                          buttonAnswerThird, buttonAnswerFourth)
         startGame()
     }
 }
-
+// MARK: - Touch on the screen
 extension QuizOfFlagsViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
@@ -725,8 +737,10 @@ extension QuizOfFlagsViewController {
                 hideSubviews()
             } else {
                 let resultsVC = ResultsViewController()
-                resultsVC.incorrectAnswers = results
+                resultsVC.correctAnswers = correctAnswers
+                resultsVC.incorrectAnswers = incorrectAnswers
                 resultsVC.mode = mode
+                resultsVC.game = game
                 resultsVC.spendTime = spendTime
                 navigationController?.pushViewController(resultsVC, animated: true)
             }

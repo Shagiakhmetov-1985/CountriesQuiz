@@ -603,11 +603,11 @@ class QuestionnaireViewController: UIViewController {
                                  buttonFirst: Countries, buttonSecond: Countries,
                                  buttonThird: Countries, buttonFourth: Countries,
                                  timeUp: Bool) {
-        let result = Results(currentQuestion: numberQuestion, tag: tag,
+        let answer = Results(currentQuestion: numberQuestion, tag: tag,
                              question: question, buttonFirst: buttonFirst,
                              buttonSecond: buttonSecond, buttonThird: buttonThird,
                              buttonFourth: buttonFourth, timeUp: timeUp)
-        incorrectAnswers.append(result)
+        incorrectAnswers.append(answer)
     }
     // MARK: - Business logic
     @objc private func exitToGameType() {

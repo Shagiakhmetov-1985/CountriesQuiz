@@ -94,17 +94,6 @@ extension QuestionnaireCell {
         subview.clipsToBounds = true
     }
 }
-// MARK: - Setup image of checkmark
-extension QuestionnaireCell {
-    private func setupCheckmark(images: UIImageView...) {
-        images.forEach { image in
-            let size = UIImage.SymbolConfiguration(pointSize: 22)
-            let image = UIImage(systemName: "circle", withConfiguration: size)
-            let imageView = UIImageView(image: image)
-            imageView.tintColor = .white
-        }
-    }
-}
 // MARK: - Setup labels
 extension QuestionnaireCell {
     private func setupLabel(labels: UILabel...) {
@@ -159,10 +148,10 @@ extension QuestionnaireCell {
             labelNumber.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
         ])
         
-        constraintsOnButton(image: checkmarkFirst, label: titleFirst, view: buttonFirst)
-        constraintsOnButton(image: checkmarkSecond, label: titleSecond, view: buttonSecond)
-        constraintsOnButton(image: checkmarkThird, label: titleThird, view: buttonThird)
-        constraintsOnButton(image: checkmarkFourth, label: titleFourth, view: buttonFourth)
+        constraintsOnButton(image: checkmarkFirst, label: titleFirst, button: buttonFirst)
+        constraintsOnButton(image: checkmarkSecond, label: titleSecond, button: buttonSecond)
+        constraintsOnButton(image: checkmarkThird, label: titleThird, button: buttonThird)
+        constraintsOnButton(image: checkmarkFourth, label: titleFourth, button: buttonFourth)
         
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: labelNumber.bottomAnchor, constant: 15),
@@ -172,13 +161,13 @@ extension QuestionnaireCell {
         setHeight(subviews: buttonFirst, buttonSecond, buttonThird, buttonFourth)
     }
     
-    private func constraintsOnButton(image: UIImageView, label: UILabel, view: UIView) {
+    private func constraintsOnButton(image: UIImageView, label: UILabel, button: UIView) {
         NSLayoutConstraint.activate([
-            image.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            image.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
+            image.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            image.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 8),
             label.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 8),
-            label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -8),
+            label.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
         setupSquare(subview: image, sizes: 22)
     }

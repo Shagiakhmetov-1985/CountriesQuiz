@@ -24,6 +24,7 @@
 		C38DF4DB2A8E4BF000550BCC /* IncorrectAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */; };
 		C38DF4DE2A8F4A5B00550BCC /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */; };
 		C3B35F20293FADC300A8493F /* fontick.otf in Resources */ = {isa = PBXBuildFile; fileRef = C3B35F1F293FADC300A8493F /* fontick.otf */; };
+		C3C2583B2AC1CE700010E5B0 /* QuestionnaireLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C2583A2AC1CE700010E5B0 /* QuestionnaireLabelCell.swift */; };
 		C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D292EA293F5F0900786752 /* SettingViewController.swift */; };
 		C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */; };
 		C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */; };
@@ -54,6 +55,7 @@
 		C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectAnswersViewController.swift; sourceTree = "<group>"; };
 		C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		C3B35F1F293FADC300A8493F /* fontick.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontick.otf; sourceTree = "<group>"; };
+		C3C2583A2AC1CE700010E5B0 /* QuestionnaireLabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireLabelCell.swift; sourceTree = "<group>"; };
 		C3D292EA293F5F0900786752 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		C3E2EB2C2938E7F300AB40AD /* CountriesQuiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CountriesQuiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */,
 				C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */,
 				C34BA42E2A9F29C5006E191D /* QuestionnaireCell.swift */,
+				C3C2583A2AC1CE700010E5B0 /* QuestionnaireLabelCell.swift */,
 			);
 			path = UITableViewCell;
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 				C34BA42D2A9F20CD006E191D /* CustomHeader.swift in Sources */,
 				C376AC0929474EB400DE5E86 /* StorageManager.swift in Sources */,
 				C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */,
+				C3C2583B2AC1CE700010E5B0 /* QuestionnaireLabelCell.swift in Sources */,
 				C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -67,7 +67,11 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     private func questionnaireCell(cell: UITableViewCell, indexPath: IndexPath) {
-        questionnaireCell(cell: cell as! QuestionnaireCell, indexPath: indexPath)
+        if mode.flag {
+            questionnaireCell(cell: cell as! QuestionnaireCell, indexPath: indexPath)
+        } else {
+            questionnaireCell(cell: cell as! QuestionnaireLabelCell, indexPath: indexPath)
+        }
     }
     
     private func setupDesign() {
@@ -119,7 +123,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     private func questionnaireCell() -> AnyClass {
-        QuestionnaireCell.self
+        mode.flag ? QuestionnaireCell.self : QuestionnaireLabelCell.self
     }
     
     private func checkHeight() -> CGFloat {
@@ -266,6 +270,30 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
                   label: cell.titleFourth, image: cell.checkmarkFourth,
                   answer: results[indexPath.section].buttonFourth, tag: 4)
     }
+    // MARK: - Custom cell for questionnaire, question of country name
+    private func questionnaireCell(cell: QuestionnaireLabelCell, indexPath: IndexPath) {
+        cell.labelCountry.text = results[indexPath.section].question.name
+        
+        setProgressViewAndLabel(progressView: cell.progressView,
+                                label: cell.labelNumber,
+                                currentQuestion: results[indexPath.section].currentQuestion)
+        
+        configure(indexPath: indexPath, button: cell.buttonFirst,
+                  checkmark: cell.checkmarkFirst, flag: cell.imageFirst,
+                  answer: results[indexPath.section].buttonFirst, tag: 1)
+        
+        configure(indexPath: indexPath, button: cell.buttonSecond,
+                  checkmark: cell.checkmarkSecond, flag: cell.imageSecond,
+                  answer: results[indexPath.section].buttonSecond, tag: 2)
+        
+        configure(indexPath: indexPath, button: cell.buttonThird,
+                  checkmark: cell.checkmarkThird, flag: cell.imageThird,
+                  answer: results[indexPath.section].buttonThird, tag: 3)
+        
+        configure(indexPath: indexPath, button: cell.buttonFourth,
+                  checkmark: cell.checkmarkFourth, flag: cell.imageFourth,
+                  answer: results[indexPath.section].buttonFourth, tag: 4)
+    }
     // MARK: - Set subviews for any game type
     private func setProgressViewAndLabel(progressView: UIProgressView, label: UILabel,
                                          currentQuestion: Int, color: UIColor? = nil) {
@@ -346,6 +374,14 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         setImageColor(image: image, answer: answer, indexPath: indexPath, tag: tag)
     }
     
+    private func configure(indexPath: IndexPath, button: UIView, checkmark: UIImageView,
+                           flag: UIImageView, answer: Countries, tag: Int) {
+        buttonBackground(button: button, answer: answer, indexPath: indexPath, tag: tag)
+        setImage(image: checkmark, answer: answer, indexPath: indexPath, tag: tag)
+        setImageColor(image: checkmark, answer: answer, indexPath: indexPath, tag: tag)
+        setFlag(flag: flag, answer: answer)
+    }
+    
     private func setImage(image: UIImageView, answer: Countries,
                           indexPath: IndexPath, tag: Int) {
         let size = UIImage.SymbolConfiguration(pointSize: 22)
@@ -360,6 +396,10 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         image.tintColor = setColorImage(
             question: results[indexPath.section].question,
             answer: answer, tag: tag, select: results[indexPath.section].tag)
+    }
+    
+    private func setFlag(flag: UIImageView, answer: Countries) {
+        flag.image = UIImage(named: answer.flag)
     }
 }
 // MARK: - Setup buttons

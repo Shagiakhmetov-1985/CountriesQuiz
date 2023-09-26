@@ -66,6 +66,7 @@ class QuestionnaireLabelCell: UITableViewCell {
                            flag: imageThird)
         setupViewForButton(subview: buttonFourth, checkmark: checkmarkFourth,
                            flag: imageFourth)
+        setupImages(flags: imageFirst, imageSecond, imageThird, imageFourth)
         
         setupStackView(buttonFirst: buttonFirst, buttonSecond: buttonSecond,
                        stackView: stackViewTop)
@@ -83,13 +84,14 @@ extension QuestionnaireLabelCell {
         subview.backgroundColor = .greenHarlequin
         subview.layer.cornerRadius = 15
         subview.layer.shadowColor = UIColor.greenHarlequin.cgColor
-        subview.layer.opacity = 0.6
+        subview.layer.shadowOpacity = 0.6
         subview.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
         addSubviews(subviews: labelCountry, progressView, labelNumber,
                     stackView, on: subview)
     }
     
-    private func setupViewForButton(subview: UIView, checkmark: UIImageView, flag: UIImageView) {
+    private func setupViewForButton(subview: UIView, checkmark: UIImageView,
+                                    flag: UIImageView) {
         subview.layer.cornerRadius = 8
         subview.layer.borderColor = UIColor.white.cgColor
         subview.layer.borderWidth = 1.5
@@ -109,7 +111,18 @@ extension QuestionnaireLabelCell {
 extension QuestionnaireLabelCell {
     private func setupLabel(label: UILabel, size: CGFloat) {
         label.font = UIFont(name: "mr_fontick", size: size)
+        label.textColor = .white
         label.textAlignment = .center
+    }
+}
+// MARK: - Setup images
+extension QuestionnaireLabelCell {
+    private func setupImages(flags: UIImageView...) {
+        flags.forEach { flag in
+            flag.layer.borderWidth = 1
+            flag.clipsToBounds = true
+            flag.layer.cornerRadius = 4
+        }
     }
 }
 // MARK: - Setup stack views
@@ -139,28 +152,28 @@ extension QuestionnaireLabelCell {
 extension QuestionnaireLabelCell {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 5),
+            view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
             view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
             view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
             view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5)
         ])
         
         NSLayoutConstraint.activate([
-            labelCountry.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
-            labelCountry.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            labelCountry.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
+            labelCountry.topAnchor.constraint(equalTo: view.topAnchor, constant: 7),
+            labelCountry.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            labelCountry.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
         ])
         
         NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: labelCountry.bottomAnchor, constant: 20),
-            progressView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            progressView.topAnchor.constraint(equalTo: view.topAnchor, constant: 78),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             progressView.heightAnchor.constraint(equalToConstant: 8)
         ])
         
         NSLayoutConstraint.activate([
             labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
             labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 10),
-            labelNumber.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
+            labelNumber.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
         ])
         
         constraintsOnButtons(checkmark: checkmarkFirst, flag: imageFirst, button: buttonFirst)
@@ -170,9 +183,9 @@ extension QuestionnaireLabelCell {
         
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: labelNumber.bottomAnchor, constant: 15),
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
-            stackView.heightAnchor.constraint(equalToConstant: 150)
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
+            stackView.heightAnchor.constraint(equalToConstant: 180)
         ])
     }
     

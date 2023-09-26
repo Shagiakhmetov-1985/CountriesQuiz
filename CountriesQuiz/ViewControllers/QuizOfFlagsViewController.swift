@@ -663,6 +663,7 @@ class QuizOfFlagsViewController: UIViewController {
         if checkFlag() {
             imageFlag.image = UIImage(named: questions.questions[currentQuestion].flag)
             refreshButtonsFlag()
+//            widthFlag(flag: imageFlag)
         } else {
             labelCountry.text = questions.questions[currentQuestion].name
             refreshButtonsLabel()
@@ -674,6 +675,12 @@ class QuizOfFlagsViewController: UIViewController {
         buttonAnswerSecond.setTitle(questions.buttonSecond[currentQuestion].name, for: .normal)
         buttonAnswerThird.setTitle(questions.buttonThird[currentQuestion].name, for: .normal)
         buttonAnswerFourth.setTitle(questions.buttonFourth[currentQuestion].name, for: .normal)
+    }
+    
+    private func widthFlag(flag: UIImageView) {
+        NSLayoutConstraint.activate([
+            flag.widthAnchor.constraint(equalToConstant: checkWidthFlag())
+        ])
     }
     
     private func refreshButtonsLabel() {
@@ -754,6 +761,8 @@ extension QuizOfFlagsViewController {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
         button.setTitleColor(.blueBlackSea, for: .normal)
+        button.titleLabel?.numberOfLines = 0
+        button.titleLabel?.textAlignment = .center
         button.titleLabel?.font = UIFont(name: "mr_fontick", size: 23)
         button.backgroundColor = color
         button.layer.cornerRadius = 12
@@ -943,7 +952,6 @@ extension QuizOfFlagsViewController {
         let imageView = UIImageView()
         imageView.image = UIImage(named: image)
         imageView.layer.borderWidth = 1
-        imageView.layer.borderColor = UIColor.black.cgColor
         imageView.layer.cornerRadius = radius ?? 0
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -1016,8 +1024,8 @@ extension QuizOfFlagsViewController {
         view.addConstraint(imageFlagSpring)
         NSLayoutConstraint.activate([
             imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            imageFlag.widthAnchor.constraint(equalToConstant: 300),
-            imageFlag.heightAnchor.constraint(equalToConstant: 180)
+            imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag()),
+            imageFlag.heightAnchor.constraint(equalToConstant: 168)
         ])
     }
     
@@ -1063,7 +1071,7 @@ extension QuizOfFlagsViewController {
         NSLayoutConstraint.activate([
             stackViewFlag.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
             stackViewFlag.widthAnchor.constraint(equalToConstant: setupConstraintFlag()),
-            stackViewFlag.heightAnchor.constraint(equalToConstant: 200)
+            stackViewFlag.heightAnchor.constraint(equalToConstant: 215)
         ])
     }
     
@@ -1075,7 +1083,7 @@ extension QuizOfFlagsViewController {
         NSLayoutConstraint.activate([
             stackViewLabel.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
             stackViewLabel.widthAnchor.constraint(equalToConstant: setupConstraintLabel()),
-            stackViewLabel.heightAnchor.constraint(equalToConstant: 220)
+            stackViewLabel.heightAnchor.constraint(equalToConstant: 235)
         ])
         
         setupImageButton(image: imageFirst, on: buttonAnswerFirst)
@@ -1091,6 +1099,13 @@ extension QuizOfFlagsViewController {
             image.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -5),
             image.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -5)
         ])
+    }
+    
+    private func checkWidthFlag() -> CGFloat {
+        switch questions.questions[currentQuestion].flag {
+        case "nepal", "vatican city", "switzerland": return 168
+        default: return 280
+        }
     }
     
     private func radius() -> CGFloat {

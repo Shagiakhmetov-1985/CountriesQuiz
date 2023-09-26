@@ -1155,8 +1155,8 @@ extension QuestionnaireViewController {
                                     constant: 140)
         }
         
-        constraintsButtons(button: buttonBack, constant: -167.5)
-        constraintsButtons(button: buttonForward, constant: 167.5)
+        constraintsButtons(button: buttonBack, constant: -setConstant())
+        constraintsButtons(button: buttonForward, constant: setConstant())
         
         NSLayoutConstraint.activate([
             labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
@@ -1238,7 +1238,7 @@ extension QuestionnaireViewController {
     
     private func constraintsButtons(button: UIButton, constant: CGFloat) {
         NSLayoutConstraint.activate([
-            button.centerYAnchor.constraint(equalTo: checkSubviewForButtons()),
+            button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 47.5),
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: constant)
         ])
         setupSquare(subview: button, sizes: 40)
@@ -1283,10 +1283,6 @@ extension QuestionnaireViewController {
         setupSquare(subview: checkmark, sizes: 30)
     }
     
-    private func checkSubviewForButtons() -> NSLayoutYAxisAnchor {
-        checkFlag() ? imageFlag.centerYAnchor : labelCountry.centerYAnchor
-    }
-    
     private func checkStackView() -> UIStackView {
         checkFlag() ? stackViewFlag : stackViewLabel
     }
@@ -1296,10 +1292,14 @@ extension QuestionnaireViewController {
     }
     
     private func setupConstraintLabel() -> CGFloat {
-        view.bounds.width - 20
+        view.bounds.width - 105
     }
     
     private func radius() -> CGFloat {
         6
+    }
+    
+    private func setConstant() -> CGFloat {
+        view.frame.width / 2 - 27.5
     }
 }

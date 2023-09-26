@@ -129,9 +129,9 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     private func checkHeight() -> CGFloat {
         switch game.gameType {
         case .quizOfFlag:
-            return mode.flag ? 350 : 315
+            return mode.flag ? 350 : 330
         default:
-            return 350
+            return mode.flag ? 335 : 320
         }
     }
     // MARK: - Set colors for game type quiz of flags

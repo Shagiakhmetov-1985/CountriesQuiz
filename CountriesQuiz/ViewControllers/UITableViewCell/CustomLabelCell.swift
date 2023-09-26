@@ -169,7 +169,7 @@ extension CustomLabelCell {
             stackView.topAnchor.constraint(equalTo: labelNumber.bottomAnchor, constant: 15),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            stackView.heightAnchor.constraint(equalToConstant: 170)
+            stackView.heightAnchor.constraint(equalToConstant: 185)
         ])
         setupImageButton(image: imageFirst, on: viewFirst)
         setupImageButton(image: imageSecond, on: viewSecond)

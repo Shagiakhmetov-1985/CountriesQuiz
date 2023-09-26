@@ -130,22 +130,22 @@ extension QuestionnaireCell {
         ])
         
         NSLayoutConstraint.activate([
-            image.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
-            image.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            image.topAnchor.constraint(equalTo: view.topAnchor, constant: 15),
+            image.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             image.widthAnchor.constraint(equalToConstant: 180),
             image.heightAnchor.constraint(equalToConstant: 110)
         ])
         
         NSLayoutConstraint.activate([
             progressView.topAnchor.constraint(equalTo: image.bottomAnchor, constant: 20),
-            progressView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             progressView.heightAnchor.constraint(equalToConstant: 8)
         ])
         
         NSLayoutConstraint.activate([
             labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
             labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 10),
-            labelNumber.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
+            labelNumber.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
         ])
         
         constraintsOnButton(image: checkmarkFirst, label: titleFirst, button: buttonFirst)
@@ -155,8 +155,8 @@ extension QuestionnaireCell {
         
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: labelNumber.bottomAnchor, constant: 15),
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
         ])
         setHeight(subviews: buttonFirst, buttonSecond, buttonThird, buttonFourth)
     }

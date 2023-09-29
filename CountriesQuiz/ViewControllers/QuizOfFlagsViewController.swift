@@ -211,6 +211,11 @@ class QuizOfFlagsViewController: UIViewController {
     private var labelNameSpring: NSLayoutConstraint!
     private var stackViewSpring: NSLayoutConstraint!
     
+    private var widthOfFlagFirst: NSLayoutConstraint!
+    private var widthOfFlagSecond: NSLayoutConstraint!
+    private var widthOfFlagThird: NSLayoutConstraint!
+    private var widthOfFlagFourth: NSLayoutConstraint!
+    
     private var timerFirst = Timer()
     private var timerSecond = Timer()
     private let shapeLayer = CAShapeLayer()
@@ -661,12 +666,14 @@ class QuizOfFlagsViewController: UIViewController {
             resetTimer()
         }
         if checkFlag() {
-            imageFlag.image = UIImage(named: questions.questions[currentQuestion].flag)
+            let flag = questions.questions[currentQuestion].flag
+            imageFlag.image = UIImage(named: flag)
             refreshButtonsFlag()
-//            widthFlag(flag: imageFlag)
+            widthOfFlagFirst.constant = checkWidthFlag(flag: flag)
         } else {
             labelCountry.text = questions.questions[currentQuestion].name
             refreshButtonsLabel()
+            refreshWidthFlags()
         }
     }
     
@@ -677,17 +684,18 @@ class QuizOfFlagsViewController: UIViewController {
         buttonAnswerFourth.setTitle(questions.buttonFourth[currentQuestion].name, for: .normal)
     }
     
-    private func widthFlag(flag: UIImageView) {
-        NSLayoutConstraint.activate([
-            flag.widthAnchor.constraint(equalToConstant: checkWidthFlag())
-        ])
-    }
-    
     private func refreshButtonsLabel() {
         imageFirst.image = UIImage(named: questions.buttonFirst[currentQuestion].flag)
         imageSecond.image = UIImage(named: questions.buttonSecond[currentQuestion].flag)
         imageThird.image = UIImage(named: questions.buttonThird[currentQuestion].flag)
         imageFourth.image = UIImage(named: questions.buttonFourth[currentQuestion].flag)
+    }
+    
+    private func refreshWidthFlags() {
+        widthOfFlagFirst.constant = widthFlag(flag: questions.buttonFirst[currentQuestion].flag)
+        widthOfFlagSecond.constant = widthFlag(flag: questions.buttonSecond[currentQuestion].flag)
+        widthOfFlagThird.constant = widthFlag(flag: questions.buttonThird[currentQuestion].flag)
+        widthOfFlagFourth.constant = widthFlag(flag: questions.buttonFourth[currentQuestion].flag)
     }
     
     private func resetTimer() {
@@ -838,14 +846,6 @@ extension QuizOfFlagsViewController {
 }
 // MARK: - Setup stack views
 extension QuizOfFlagsViewController {
-    private func setStackView(progressView: UIProgressView, label: UILabel) -> UIStackView {
-        let stackView = UIStackView(
-            arrangedSubviews: [progressView, label])
-        stackView.spacing = 20
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-    
     private func setStackViewButtons(buttonFirst: UIButton,
                                      buttonSecond: UIButton,
                                      buttonThird: UIButton,
@@ -1018,13 +1018,16 @@ extension QuizOfFlagsViewController {
     }
     
     private func constraintsFlag() {
+        let flag = questions.questions[currentQuestion].flag
+        widthOfFlagFirst = imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag(flag: flag))
+        
         imageFlagSpring = NSLayoutConstraint(
             item: imageFlag, attribute: .centerX, relatedBy: .equal,
             toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
         view.addConstraint(imageFlagSpring)
         NSLayoutConstraint.activate([
             imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag()),
+            widthOfFlagFirst,
             imageFlag.heightAnchor.constraint(equalToConstant: 168)
         ])
     }
@@ -1083,33 +1086,82 @@ extension QuizOfFlagsViewController {
         NSLayoutConstraint.activate([
             stackViewLabel.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
             stackViewLabel.widthAnchor.constraint(equalToConstant: setupConstraintLabel()),
-            stackViewLabel.heightAnchor.constraint(equalToConstant: 235)
+            stackViewLabel.heightAnchor.constraint(equalToConstant: heightStackView())
         ])
         
-        setupImageButton(image: imageFirst, on: buttonAnswerFirst)
-        setupImageButton(image: imageSecond, on: buttonAnswerSecond)
-        setupImageButton(image: imageThird, on: buttonAnswerThird)
-        setupImageButton(image: imageFourth, on: buttonAnswerFourth)
+        setupImageButtonFirst(image: imageFirst, on: buttonAnswerFirst,
+                         flag: questions.buttonFirst[currentQuestion].flag)
+        setupImageButtonSecond(image: imageSecond, on: buttonAnswerSecond,
+                         flag: questions.buttonSecond[currentQuestion].flag)
+        setupImageButtonThird(image: imageThird, on: buttonAnswerThird,
+                         flag: questions.buttonThird[currentQuestion].flag)
+        setupImageButtonFourth(image: imageFourth, on: buttonAnswerFourth,
+                         flag: questions.buttonFourth[currentQuestion].flag)
     }
     
-    private func setupImageButton(image: UIView, on button: UIView) {
+    private func setupImageButtonFirst(image: UIImageView, on button: UIButton, flag: String) {
+        widthOfFlagFirst = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag: flag))
+        setImageOnButton(layout: widthOfFlagFirst, image: image, button: button)
+    }
+    
+    private func setupImageButtonSecond(image: UIImageView, on button: UIView, flag: String) {
+        widthOfFlagSecond = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag: flag))
+        setImageOnButton(layout: widthOfFlagSecond, image: image, button: button)
+    }
+    
+    private func setupImageButtonThird(image: UIImageView, on button: UIView, flag: String) {
+        widthOfFlagThird = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag: flag))
+        setImageOnButton(layout: widthOfFlagThird, image: image, button: button)
+    }
+    
+    private func setupImageButtonFourth(image: UIImageView, on button: UIView, flag: String) {
+        widthOfFlagFourth = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag: flag))
+        setImageOnButton(layout: widthOfFlagFourth, image: image, button: button)
+    }
+    
+    private func setImageOnButton(layout: NSLayoutConstraint, image: UIImageView, button: UIView) {
         NSLayoutConstraint.activate([
-            image.topAnchor.constraint(equalTo: button.topAnchor, constant: 5),
-            image.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 5),
-            image.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -5),
-            image.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -5)
+            image.heightAnchor.constraint(equalToConstant: setHeight()),
+            layout,
+            image.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
     }
     
-    private func checkWidthFlag() -> CGFloat {
-        switch questions.questions[currentQuestion].flag {
+    private func setWidth() -> CGFloat {
+        let buttonWidth = ((view.frame.width - 20) / 2) - 4
+        return buttonWidth - 10
+    }
+    
+    private func setHeight() -> CGFloat {
+        let buttonHeight = heightStackView() / 2 - 4
+        return buttonHeight - 10
+    }
+    
+    private func checkWidthFlag(flag: String) -> CGFloat {
+        switch flag {
         case "nepal", "vatican city", "switzerland": return 168
         default: return 280
         }
     }
     
+    private func widthFlag(flag: String) -> CGFloat {
+        switch flag {
+        case "nepal", "vatican city", "switzerland": return setHeight()
+        default: return setWidth()
+        }
+    }
+    
     private func radius() -> CGFloat {
         6
+    }
+    
+    private func heightStackView() -> CGFloat {
+        235
     }
     
     private func setupConstraintFlag() -> CGFloat {

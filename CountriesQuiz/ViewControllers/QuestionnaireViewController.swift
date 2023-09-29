@@ -256,6 +256,11 @@ class QuestionnaireViewController: UIViewController {
     private var labelNameSpring: NSLayoutConstraint!
     private var stackViewSpring: NSLayoutConstraint!
     
+    private var widthOfFlagFirst: NSLayoutConstraint!
+    private var widthOfFlagSecond: NSLayoutConstraint!
+    private var widthOfFlagThird: NSLayoutConstraint!
+    private var widthOfFlagFourth: NSLayoutConstraint!
+    
     private var timer = Timer()
     private var countdown = Timer()
     private var questions = Countries.getQuestions()
@@ -600,8 +605,7 @@ class QuestionnaireViewController: UIViewController {
     }
     // MARK: - Refresh data for show next question
     private func refresh() {
-        refreshFlagAndNumber()
-        refreshLabels()
+        refreshData()
         
         setupCheckmarksDisabled(tag: 0)
         setupButtonsDisabled(tag: 0)
@@ -646,29 +650,43 @@ class QuestionnaireViewController: UIViewController {
         }
     }
     
-    private func refreshFlagAndNumber() {
+    private func refreshData() {
         let number = checkQuestion()
         if checkFlag() {
-            imageFlag.image = UIImage(named: questions.questions[number].flag)
+            let flag = questions.questions[number].flag
+            imageFlag.image = UIImage(named: flag)
+            widthOfFlagFirst.constant = checkWidthFlag(flag: flag)
+            refreshLabels()
         } else {
             labelCountry.text = questions.questions[number].name
+            refreshImages()
+            refreshWidthFlag()
         }
         labelNumber.text = "\(number + 1) / \(mode.countQuestions)"
     }
     
     private func refreshLabels() {
         let number = checkQuestion()
-        if checkFlag() {
-            labelFirst.text = questions.buttonFirst[number].name
-            labelSecond.text = questions.buttonSecond[number].name
-            labelThird.text = questions.buttonThird[number].name
-            labelFourth.text = questions.buttonFourth[number].name
-        } else {
-            imageFirst.image = UIImage(named: questions.buttonFirst[number].flag)
-            imageSecond.image = UIImage(named: questions.buttonSecond[number].flag)
-            imageThird.image = UIImage(named: questions.buttonThird[number].flag)
-            imageFourth.image = UIImage(named: questions.buttonFourth[number].flag)
-        }
+        labelFirst.text = questions.buttonFirst[number].name
+        labelSecond.text = questions.buttonSecond[number].name
+        labelThird.text = questions.buttonThird[number].name
+        labelFourth.text = questions.buttonFourth[number].name
+    }
+    
+    private func refreshImages() {
+        let number = checkQuestion()
+        imageFirst.image = UIImage(named: questions.buttonFirst[number].flag)
+        imageSecond.image = UIImage(named: questions.buttonSecond[number].flag)
+        imageThird.image = UIImage(named: questions.buttonThird[number].flag)
+        imageFourth.image = UIImage(named: questions.buttonFourth[number].flag)
+    }
+    
+    private func refreshWidthFlag() {
+        let number = checkQuestion()
+        widthOfFlagFirst.constant = widthFlag(flag: questions.buttonFirst[number].flag)
+        widthOfFlagSecond.constant = widthFlag(flag: questions.buttonSecond[number].flag)
+        widthOfFlagThird.constant = widthFlag(flag: questions.buttonThird[number].flag)
+        widthOfFlagFourth.constant = widthFlag(flag: questions.buttonFourth[number].flag)
     }
     // MARK: - Show of hide buttons back and forward
     private func buttonsBackForward(buttonBack: UIButton, buttonForward: UIButton,
@@ -1199,13 +1217,16 @@ extension QuestionnaireViewController {
     }
     
     private func constraintsQuestionFlag() {
+        let flag = questions.questions[numberQuestion].flag
+        widthOfFlagFirst = imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag(flag: flag))
+        
         imageFlagSpring = NSLayoutConstraint(
             item: imageFlag, attribute: .centerX, relatedBy: .equal,
             toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
         view.addConstraint(imageFlagSpring)
         NSLayoutConstraint.activate([
             imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            imageFlag.widthAnchor.constraint(equalToConstant: 280),
+            widthOfFlagFirst,
             imageFlag.heightAnchor.constraint(equalToConstant: 168)
         ])
     }
@@ -1251,10 +1272,14 @@ extension QuestionnaireViewController {
             constraintsOnButton(image: checkmarkThird, label: labelThird, button: buttonThird)
             constraintsOnButton(image: checkmarkFourth, label: labelFourth, button: buttonFourth)
         } else {
-            constraintsOnButton(checkmark: checkmarkFirst, flag: imageFirst, button: buttonFirst)
-            constraintsOnButton(checkmark: checkmarkSecond, flag: imageSecond, button: buttonSecond)
-            constraintsOnButton(checkmark: checkmarkThird, flag: imageThird, button: buttonThird)
-            constraintsOnButton(checkmark: checkmarkFourth, flag: imageFourth, button: buttonFourth)
+            imagesOnButtonFirst(checkmark: checkmarkFirst, image: imageFirst,
+                                button: buttonFirst, flag: questions.buttonFirst[numberQuestion].flag)
+            imagesOnButtonSecond(checkmark: checkmarkSecond, image: imageSecond,
+                                 button: buttonSecond, flag: questions.buttonSecond[numberQuestion].flag)
+            imagesOnButtonThird(checkmark: checkmarkThird, image: imageThird,
+                                button: buttonThird, flag: questions.buttonThird[numberQuestion].flag)
+            imagesOnButtonFourth(checkmark: checkmarkFourth, image: imageFourth,
+                                 button: buttonFourth, flag: questions.buttonFourth[numberQuestion].flag)
         }
     }
     
@@ -1270,15 +1295,47 @@ extension QuestionnaireViewController {
         setupSquare(subview: image, sizes: 30)
     }
     
-    private func constraintsOnButton(checkmark: UIImageView, flag: UIImageView,
-                                     button: UIButton) {
+    private func imagesOnButtonFirst(checkmark: UIImageView, image: UIImageView,
+                                     button: UIButton, flag: String) {
+        widthOfFlagFirst = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag: flag))
+        setImageOnButton(checkmark: checkmark, image: image, button: button,
+                         layout: widthOfFlagFirst)
+    }
+    
+    private func imagesOnButtonSecond(checkmark: UIImageView, image: UIImageView,
+                                      button: UIButton, flag: String) {
+        widthOfFlagSecond = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag: flag))
+        setImageOnButton(checkmark: checkmark, image: image, button: button,
+                         layout: widthOfFlagSecond)
+    }
+    
+    private func imagesOnButtonThird(checkmark: UIImageView, image: UIImageView,
+                                     button: UIButton, flag: String) {
+        widthOfFlagThird = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag: flag))
+        setImageOnButton(checkmark: checkmark, image: image, button: button,
+                         layout: widthOfFlagThird)
+    }
+    
+    private func imagesOnButtonFourth(checkmark: UIImageView, image: UIImageView,
+                                      button: UIButton, flag: String) {
+        widthOfFlagFourth = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag: flag))
+        setImageOnButton(checkmark: checkmark, image: image, button: button,
+                         layout: widthOfFlagFourth)
+    }
+    
+    private func setImageOnButton(checkmark: UIImageView, image: UIImageView,
+                                  button: UIButton, layout: NSLayoutConstraint) {
         NSLayoutConstraint.activate([
             checkmark.centerYAnchor.constraint(equalTo: button.centerYAnchor),
             checkmark.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 5),
-            flag.topAnchor.constraint(equalTo: button.topAnchor, constant: 5),
-            flag.leadingAnchor.constraint(equalTo: checkmark.trailingAnchor, constant: 5),
-            flag.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -5),
-            flag.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -5)
+            layout,
+            image.heightAnchor.constraint(equalToConstant: setHeight()),
+            image.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: setWidthAndCenterFlag().1),
+            image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
         setupSquare(subview: checkmark, sizes: 30)
     }
@@ -1288,11 +1345,38 @@ extension QuestionnaireViewController {
     }
     
     private func height() -> CGFloat {
-        checkFlag() ? 215 : 230
+        checkFlag() ? 215 : 235
     }
     
     private func setupConstraintLabel() -> CGFloat {
         view.bounds.width - 105
+    }
+    
+    private func checkWidthFlag(flag: String) -> CGFloat {
+        switch flag {
+        case "nepal", "vatican city", "switzerland": return 168
+        default: return 280
+        }
+    }
+    
+    private func widthFlag(flag: String) -> CGFloat {
+        switch flag {
+        case "nepal", "vatican city", "switzerland": return setHeight()
+        default: return setWidthAndCenterFlag().0
+        }
+    }
+    
+    private func setWidthAndCenterFlag() -> (CGFloat, CGFloat) {
+        let buttonWidth = ((view.frame.width - 20) / 2) - 4
+        let flagWidth = buttonWidth - 45
+        let centerFlag = flagWidth / 2 + 5
+        let constant = buttonWidth / 2 - centerFlag
+        return (flagWidth, constant)
+    }
+    
+    private func setHeight() -> CGFloat {
+        let buttonHeight = height() / 2 - 4
+        return buttonHeight - 10
     }
     
     private func radius() -> CGFloat {

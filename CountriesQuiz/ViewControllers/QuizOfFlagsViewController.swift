@@ -957,15 +957,6 @@ extension QuizOfFlagsViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }
-    
-    private func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView {
-        let size = UIImage.SymbolConfiguration(pointSize: size)
-        let image = UIImage(systemName: image, withConfiguration: size)
-        let imageView = UIImageView(image: image)
-        imageView.tintColor = color
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }
 }
 // MARK: - Setup constraints
 extension QuizOfFlagsViewController {
@@ -1125,8 +1116,8 @@ extension QuizOfFlagsViewController {
     
     private func setImageOnButton(layout: NSLayoutConstraint, image: UIImageView, button: UIView) {
         NSLayoutConstraint.activate([
-            image.heightAnchor.constraint(equalToConstant: setHeight()),
             layout,
+            image.heightAnchor.constraint(equalToConstant: setHeight()),
             image.centerXAnchor.constraint(equalTo: button.centerXAnchor),
             image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])

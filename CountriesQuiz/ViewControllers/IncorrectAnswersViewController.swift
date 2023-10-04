@@ -38,11 +38,11 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        1
+        results.count
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        results.count
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        checkHeight()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -56,6 +56,16 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailsVC = DetailsViewController()
+        detailsVC.mode = mode
+        detailsVC.game = game
+        detailsVC.result = results[indexPath.row]
+        present(detailsVC, animated: true)
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     // MARK: - General methods
     private func quizOfFlagsCell(cell: UITableViewCell, indexPath: IndexPath) {
@@ -129,9 +139,9 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     private func checkHeight() -> CGFloat {
         switch game.gameType {
         case .quizOfFlag:
-            return mode.flag ? 350 : 330
+            return mode.flag ? 80 : 80
         default:
-            return mode.flag ? 335 : 320
+            return mode.flag ? 80 : 80
         }
     }
     // MARK: - Set colors for game type quiz of flags
@@ -206,8 +216,11 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     // MARK: - Custom cell for quiz of flags, quiestions of flags
     private func flagCell(cell: CustomCell, indexPath: IndexPath) {
-        cell.image.image = UIImage(named: results[indexPath.section].question.flag)
-        
+        cell.image.image = UIImage(named: results[indexPath.row].question.flag)
+        cell.progressView.progress = setProgress(value: results[indexPath.row].currentQuestion)
+        cell.labelNumber.text = setText(value: results[indexPath.row].currentQuestion)
+        cell.contentView.backgroundColor = game.background
+        /*
         setProgressViewAndLabel(progressView: cell.progressView, label: cell.labelNumber,
                                 currentQuestion: results[indexPath.section].currentQuestion)
         
@@ -224,6 +237,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
                   answer: results[indexPath.section].buttonFourth, tag: 4)
         
         cell.timeUp.text = timeUpCheck(bool: results[indexPath.section].timeUp)
+         */
     }
     // MARK: - Custom cell for quiz of flags, questions of country name
     private func labelCell(cell: CustomLabelCell, indexPath: IndexPath) {
@@ -433,12 +447,11 @@ extension IncorrectAnswersViewController {
 // MARK: - Setup table view
 extension IncorrectAnswersViewController {
     private func setupTableView() -> UITableView {
-        let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        let tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(checkCell(), forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = checkHeight()
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = game.background
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }

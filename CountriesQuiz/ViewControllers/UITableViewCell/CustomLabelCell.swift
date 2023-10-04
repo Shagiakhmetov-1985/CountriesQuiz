@@ -169,7 +169,7 @@ extension CustomLabelCell {
             stackView.topAnchor.constraint(equalTo: labelNumber.bottomAnchor, constant: 15),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            stackView.heightAnchor.constraint(equalToConstant: 185)
+            stackView.heightAnchor.constraint(equalToConstant: heightStackView())
         ])
         setupImageButton(image: imageFirst, on: viewFirst)
         setupImageButton(image: imageSecond, on: viewSecond)
@@ -182,12 +182,45 @@ extension CustomLabelCell {
         ])
     }
     
-    private func setupImageButton(image: UIView, on button: UIView) {
+    private func setupImageButton(image: UIImageView, on button: UIView) {
         NSLayoutConstraint.activate([
-            image.topAnchor.constraint(equalTo: button.topAnchor, constant: 4),
-            image.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 4),
-            image.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -4),
-            image.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -4)
+            image.widthAnchor.constraint(equalToConstant: imageWidth(image: image)),
+            image.heightAnchor.constraint(equalToConstant: setHeightImage()),
+            image.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
+    }
+    
+    private func heightStackView() -> CGFloat {
+        185
+    }
+    
+    private func setWidthImage() -> CGFloat {
+        let buttonWidth = (contentView.frame.width / 2) - 2
+        return buttonWidth - 8
+    }
+    
+    private func setHeightImage() -> CGFloat {
+        let buttonHeight = CGFloat(185 / 2 - 2)
+        return buttonHeight - 8
+    }
+    
+    private func imageWidth(image: UIImageView) -> CGFloat {
+        switch image.image {
+        case switzerland(), vaticanCity(), nepal(): return setHeightImage()
+        default: return setWidthImage()
+        }
+    }
+    
+    private func switzerland() -> UIImage? {
+        UIImage(named: "switzerland")
+    }
+    
+    private func vaticanCity() -> UIImage? {
+        UIImage(named: "vatican city")
+    }
+    
+    private func nepal() -> UIImage? {
+        UIImage(named: "nepal")
     }
 }

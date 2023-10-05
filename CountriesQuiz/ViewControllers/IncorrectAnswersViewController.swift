@@ -63,7 +63,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         detailsVC.mode = mode
         detailsVC.game = game
         detailsVC.result = results[indexPath.row]
-        present(detailsVC, animated: true)
+        navigationController?.pushViewController(detailsVC, animated: true)
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -89,7 +89,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     private func setupSubviews() {
-        setupSubviews(subviews: buttonBack, labelTitle, tableView, on: view)
+        setupSubviews(subviews: labelTitle, tableView, on: view)
     }
     
     private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -139,9 +139,9 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     private func checkHeight() -> CGFloat {
         switch game.gameType {
         case .quizOfFlag:
-            return mode.flag ? 80 : 80
+            return mode.flag ? 70 : 70
         default:
-            return mode.flag ? 80 : 80
+            return mode.flag ? 70 : 70
         }
     }
     // MARK: - Set colors for game type quiz of flags
@@ -220,24 +220,6 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         cell.progressView.progress = setProgress(value: results[indexPath.row].currentQuestion)
         cell.labelNumber.text = setText(value: results[indexPath.row].currentQuestion)
         cell.contentView.backgroundColor = game.background
-        /*
-        setProgressViewAndLabel(progressView: cell.progressView, label: cell.labelNumber,
-                                currentQuestion: results[indexPath.section].currentQuestion)
-        
-        configure(indexPath: indexPath, label: cell.buttonFirst,
-                  answer: results[indexPath.section].buttonFirst, tag: 1)
-        
-        configure(indexPath: indexPath, label: cell.buttonSecond,
-                  answer: results[indexPath.section].buttonSecond, tag: 2)
-        
-        configure(indexPath: indexPath, label: cell.buttonThird,
-                  answer: results[indexPath.section].buttonThird, tag: 3)
-        
-        configure(indexPath: indexPath, label: cell.buttonFourth,
-                  answer: results[indexPath.section].buttonFourth, tag: 4)
-        
-        cell.timeUp.text = timeUpCheck(bool: results[indexPath.section].timeUp)
-         */
     }
     // MARK: - Custom cell for quiz of flags, questions of country name
     private func labelCell(cell: CustomLabelCell, indexPath: IndexPath) {
@@ -459,14 +441,10 @@ extension IncorrectAnswersViewController {
 // MARK: - Setup constraints
 extension IncorrectAnswersViewController {
     private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            buttonBack.topAnchor.constraint(equalTo: view.topAnchor, constant: topAnchorCheck()),
-            buttonBack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
-        ])
         setupSquare(subview: buttonBack, sizes: 40)
         
         NSLayoutConstraint.activate([
-            labelTitle.topAnchor.constraint(equalTo: buttonBack.bottomAnchor, constant: 20),
+            labelTitle.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
             labelTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             labelTitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
@@ -484,9 +462,5 @@ extension IncorrectAnswersViewController {
             subview.widthAnchor.constraint(equalToConstant: sizes),
             subview.heightAnchor.constraint(equalToConstant: sizes)
         ])
-    }
-    
-    private func topAnchorCheck() -> CGFloat {
-        view.frame.height > 736 ? 60 : 30
     }
 }

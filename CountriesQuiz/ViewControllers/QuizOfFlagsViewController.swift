@@ -994,11 +994,7 @@ extension QuizOfFlagsViewController {
             labelDescription.centerYAnchor.constraint(equalTo: labelQuiz.centerYAnchor)
         ])
         
-        if checkFlag() {
-            constraintsButtonsFlag()
-        } else {
-            constraintsButtonsLabel()
-        }
+        checkFlag() ? constraintsButtonsFlag() : constraintsButtonsLabel()
     }
     
     private func constraintsTimer() {

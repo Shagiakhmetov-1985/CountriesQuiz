@@ -511,11 +511,12 @@ class ResultsViewController: UIViewController {
     
     @objc private func showIncorrectAnswers() {
         let incorrectAnswersVC = IncorrectAnswersViewController()
+        let navigationVC = UINavigationController(rootViewController: incorrectAnswersVC)
         incorrectAnswersVC.mode = mode
         incorrectAnswersVC.game = game
         incorrectAnswersVC.results = incorrectAnswers
-        incorrectAnswersVC.modalPresentationStyle = .custom
-        present(incorrectAnswersVC, animated: true)
+        navigationVC.modalPresentationStyle = .custom
+        present(navigationVC, animated: true)
     }
 }
 // MARK: - Setup view

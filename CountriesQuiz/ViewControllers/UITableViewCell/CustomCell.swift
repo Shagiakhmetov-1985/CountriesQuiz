@@ -11,6 +11,7 @@ class CustomCell: UITableViewCell {
     let image = UIImageView()
     let progressView = UIProgressView()
     let labelNumber = UILabel()
+    let imageArrow = UIImageView()
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -19,7 +20,8 @@ class CustomCell: UITableViewCell {
     }
     
     private func setupSubviews() {
-        addSubviews(subviews: image, progressView, labelNumber, on: contentView)
+        addSubviews(subviews: image, progressView, labelNumber, imageArrow,
+                    on: contentView)
     }
     
     private func addSubviews(subviews: UIView..., on otherSubview: UIView) {
@@ -33,6 +35,7 @@ class CustomCell: UITableViewCell {
         setupImage(image: image)
         setupProgressView(subview: progressView)
         setupLabel(label: labelNumber)
+        setupImageArrow(image: imageArrow)
         
         setupConstraints()
     }
@@ -43,6 +46,12 @@ extension CustomCell {
         image.layer.borderWidth = 1
         image.layer.cornerRadius = radius()
         image.clipsToBounds = true
+    }
+    
+    private func setupImageArrow(image: UIImageView) {
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
+        image.image = UIImage(systemName: "chevron.right", withConfiguration: size)
+        image.tintColor = .white
     }
 }
 // MARK: - Setup progress view
@@ -67,25 +76,30 @@ extension CustomCell {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             image.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            image.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            image.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             image.widthAnchor.constraint(equalToConstant: radius() * 2),
             image.heightAnchor.constraint(equalToConstant: radius() * 2)
         ])
         
         NSLayoutConstraint.activate([
             progressView.centerYAnchor.constraint(equalTo: image.centerYAnchor),
-            progressView.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 15),
+            progressView.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 10),
             progressView.heightAnchor.constraint(equalToConstant: 8)
         ])
         
         NSLayoutConstraint.activate([
             labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
             labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 10),
-            labelNumber.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
+            labelNumber.trailingAnchor.constraint(equalTo: imageArrow.leadingAnchor, constant: -10)
+        ])
+        
+        NSLayoutConstraint.activate([
+            imageArrow.centerYAnchor.constraint(equalTo: labelNumber.centerYAnchor),
+            imageArrow.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
         ])
     }
     
     private func radius() -> CGFloat {
-        32.5
+        27.5
     }
 }

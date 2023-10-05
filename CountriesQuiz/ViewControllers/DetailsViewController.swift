@@ -42,13 +42,20 @@ class DetailsViewController: UIViewController {
     }()
     
     private lazy var viewFirst: UIView = {
-        let view = setupView(
+        let view = checkFlag() ? setupView(
             color: setBackgroundColor(
                 question: result.question,
                 answer: result.buttonFirst,
                 tag: 1,
                 select: result.tag),
-            label: labelFirst)
+            label: labelFirst) :
+        setupView(
+            color: setBackgroundColor(
+                question: result.question,
+                answer: result.buttonFirst,
+                tag: 1,
+                select: result.tag),
+            image: imageFirst)
         return view
     }()
     
@@ -64,14 +71,26 @@ class DetailsViewController: UIViewController {
         return label
     }()
     
+    private lazy var imageFirst: UIImageView = {
+        let imageView = setupImage(image: result.buttonFirst.flag)
+        return imageView
+    }()
+    
     private lazy var viewSecond: UIView = {
-        let view = setupView(
+        let view = checkFlag() ? setupView(
             color: setBackgroundColor(
                 question: result.question,
                 answer: result.buttonSecond,
                 tag: 2,
                 select: result.tag),
-            label: labelSecond)
+            label: labelSecond) :
+        setupView(
+            color: setBackgroundColor(
+                question: result.question,
+                answer: result.buttonSecond,
+                tag: 2,
+                select: result.tag),
+            image: imageSecond)
         return view
     }()
     
@@ -87,14 +106,26 @@ class DetailsViewController: UIViewController {
         return label
     }()
     
+    private lazy var imageSecond: UIImageView = {
+        let imageView = setupImage(image: result.buttonSecond.flag)
+        return imageView
+    }()
+    
     private lazy var viewThird: UIView = {
-        let view = setupView(
+        let view = checkFlag() ? setupView(
             color: setBackgroundColor(
                 question: result.question,
                 answer: result.buttonThird,
                 tag: 3,
                 select: result.tag),
-            label: labelThird)
+            label: labelThird) :
+        setupView(
+            color: setBackgroundColor(
+                question: result.question,
+                answer: result.buttonThird,
+                tag: 3,
+                select: result.tag),
+            image: imageThird)
         return view
     }()
     
@@ -110,14 +141,26 @@ class DetailsViewController: UIViewController {
         return label
     }()
     
+    private lazy var imageThird: UIImageView = {
+        let imageView = setupImage(image: result.buttonThird.flag)
+        return imageView
+    }()
+    
     private lazy var viewFourth: UIView = {
-        let view = setupView(
+        let view = checkFlag() ? setupView(
             color: setBackgroundColor(
                 question: result.question,
-                answer: result.buttonFirst,
+                answer: result.buttonFourth,
                 tag: 4,
                 select: result.tag),
-            label: labelFourth)
+            label: labelFourth) :
+        setupView(
+            color: setBackgroundColor(
+                question: result.question,
+                answer: result.buttonFourth,
+                tag: 4,
+                select: result.tag),
+            image: imageFourth)
         return view
     }()
     
@@ -133,12 +176,38 @@ class DetailsViewController: UIViewController {
         return label
     }()
     
+    private lazy var imageFourth: UIImageView = {
+        let imageView = setupImage(image: result.buttonFourth.flag)
+        return imageView
+    }()
+    
     private lazy var stackViewFlag: UIStackView = {
         let stackView = setupStackView(
             viewFirst: viewFirst,
             viewSecond: viewSecond,
             viewThird: viewThird,
             viewFourth: viewFourth)
+        return stackView
+    }()
+    
+    private lazy var stackViewFirst: UIStackView = {
+        let stackView = setupStackView(
+            viewFirst: viewFirst,
+            viewSecond: viewSecond)
+        return stackView
+    }()
+    
+    private lazy var stackViewSecond: UIStackView = {
+        let stackView = setupStackView(
+            viewFirst: viewThird,
+            viewSecond: viewFourth)
+        return stackView
+    }()
+    
+    private lazy var stackViewLabel: UIStackView = {
+        let stackView = setupStackView(
+            stackViewFirst: stackViewFirst,
+            stackViewSecond: stackViewSecond)
         return stackView
     }()
     
@@ -149,6 +218,7 @@ class DetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDesign()
+        setupBarButton()
         setupSubviews()
         setupConstraints()
     }
@@ -158,15 +228,33 @@ class DetailsViewController: UIViewController {
         navigationItem.hidesBackButton = true
     }
     
+    private func setupBarButton() {
+        let barButton = UIBarButtonItem(customView: buttonBack)
+        navigationItem.leftBarButtonItem = barButton
+    }
+    
     private func setupSubviews() {
-        setupSubviews(subviews: buttonBack, imageFlag, progressView,
-                      labelNumberQuiz, stackViewFlag, on: view)
+        checkFlag() ? setupSubviewsFlag() : setupSubviewsLabel()
+    }
+    
+    private func setupSubviewsFlag() {
+        setupSubviews(subviews: imageFlag, progressView, labelNumberQuiz,
+                      stackViewFlag, on: view)
+    }
+    
+    private func setupSubviewsLabel() {
+        setupSubviews(subviews: labelCountry, progressView, labelNumberQuiz,
+                      stackViewLabel, on: view)
     }
     
     private func setupSubviews(subviews: UIView..., on otherSubview: UIView) {
         subviews.forEach { subview in
             otherSubview.addSubview(subview)
         }
+    }
+    
+    private func checkFlag() -> Bool {
+        mode.flag ? true : false
     }
     // MARK: - Set progress view and number of question
     private func setProgress() -> Float {
@@ -200,7 +288,7 @@ class DetailsViewController: UIViewController {
     }
     
     @objc private func backToIncorrectAnswers() {
-        dismiss(animated: true)
+        navigationController?.popViewController(animated: true)
     }
 }
 // MARK: - Setup button
@@ -236,6 +324,7 @@ extension DetailsViewController {
         label.text = title
         label.font = UIFont(name: "mr_fontick", size: size)
         label.textColor = color
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
@@ -266,6 +355,18 @@ extension DetailsViewController {
         setupSubviews(subviews: label, on: view)
         return view
     }
+    
+    private func setupView(color: UIColor, image: UIImageView) -> UIView {
+        let view = UIView()
+        view.backgroundColor = color
+        view.layer.cornerRadius = 12
+        view.layer.shadowColor = color.cgColor
+        view.layer.shadowOpacity = 0.4
+        view.layer.shadowOffset = CGSize(width: 0, height: 6)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        setupSubviews(subviews: image, on: view)
+        return view
+    }
 }
 // MARK: - Setup stack views
 extension DetailsViewController {
@@ -279,29 +380,37 @@ extension DetailsViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
+    
+    private func setupStackView(viewFirst: UIView, viewSecond: UIView) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [viewFirst, viewSecond])
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    private func setupStackView(stackViewFirst: UIStackView,
+                                stackViewSecond: UIStackView) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [stackViewFirst, stackViewSecond])
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
 }
 // MARK: - Setup constraints
 extension DetailsViewController {
     private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            buttonBack.topAnchor.constraint(equalTo: view.topAnchor, constant: topAnchorCheck()),
-            buttonBack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
-        ])
         setupSquare(subview: buttonBack, sizes: 40)
         
-        let flag = result.question.flag
-        NSLayoutConstraint.activate([
-            imageFlag.topAnchor.constraint(equalTo: buttonBack.bottomAnchor, constant: 50),
-            imageFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag(flag: flag)),
-            imageFlag.heightAnchor.constraint(equalToConstant: 168)
-        ])
-        
-        NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 30),
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            progressView.heightAnchor.constraint(equalToConstant: radius() * 2)
-        ])
+        if checkFlag() {
+            constraintsFlag()
+            constraintsProgressViewFlag()
+        } else {
+            constraintsLabel()
+            constraintsProgressViewLabel()
+        }
         
         NSLayoutConstraint.activate([
             labelNumberQuiz.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
@@ -310,6 +419,43 @@ extension DetailsViewController {
             labelNumberQuiz.widthAnchor.constraint(equalToConstant: 85)
         ])
         
+        checkFlag() ? constraintsStackViewFlag() : constraintsStackViewLabel()
+    }
+    
+    private func constraintsFlag() {
+        let flag = result.question.flag
+        NSLayoutConstraint.activate([
+            imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            imageFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag(flag: flag)),
+            imageFlag.heightAnchor.constraint(equalToConstant: 168)
+        ])
+    }
+    
+    private func constraintsLabel() {
+        NSLayoutConstraint.activate([
+            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            labelCountry.widthAnchor.constraint(equalToConstant: setupConstraintWidth())
+        ])
+    }
+    
+    private func constraintsProgressViewFlag() {
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 30),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            progressView.heightAnchor.constraint(equalToConstant: radius() * 2)
+        ])
+    }
+    
+    private func constraintsProgressViewLabel() {
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: labelCountry.bottomAnchor, constant: 30),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            progressView.heightAnchor.constraint(equalToConstant: radius() * 2)
+        ])
+    }
+    
+    private func constraintsStackViewFlag() {
         NSLayoutConstraint.activate([
             stackViewFlag.topAnchor.constraint(equalTo: labelNumberQuiz.bottomAnchor, constant: 25),
             stackViewFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -320,6 +466,15 @@ extension DetailsViewController {
         setupLabel(label: labelSecond, on: viewSecond)
         setupLabel(label: labelThird, on: viewThird)
         setupLabel(label: labelFourth, on: viewFourth)
+    }
+    
+    private func constraintsStackViewLabel() {
+        NSLayoutConstraint.activate([
+            stackViewLabel.topAnchor.constraint(equalTo: labelNumberQuiz.bottomAnchor, constant: 25),
+            stackViewLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackViewLabel.widthAnchor.constraint(equalToConstant: setupConstraintWidth()),
+            stackViewLabel.heightAnchor.constraint(equalToConstant: heightStackView())
+        ])
     }
     
     private func setupSquare(subview: UIView, sizes: CGFloat) {
@@ -336,10 +491,6 @@ extension DetailsViewController {
         ])
     }
     
-    private func topAnchorCheck() -> CGFloat {
-        view.frame.height > 736 ? 60 : 30
-    }
-    
     private func checkWidthFlag(flag: String) -> CGFloat {
         switch flag {
         case "nepal", "vatican city", "switzerland": return 168
@@ -353,5 +504,13 @@ extension DetailsViewController {
     
     private func setupConstraintFlag() -> CGFloat {
         view.bounds.width - 40
+    }
+    
+    private func setupConstraintWidth() -> CGFloat {
+        view.bounds.width - 20
+    }
+    
+    private func heightStackView() -> CGFloat {
+        235
     }
 }

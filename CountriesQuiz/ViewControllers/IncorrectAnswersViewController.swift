@@ -141,7 +141,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         case .quizOfFlag:
             return mode.flag ? 70 : 70
         default:
-            return mode.flag ? 70 : 70
+            return mode.flag ? 90 : 90
         }
     }
     // MARK: - Set colors for game type quiz of flags
@@ -223,24 +223,10 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     // MARK: - Custom cell for quiz of flags, questions of country name
     private func labelCell(cell: CustomLabelCell, indexPath: IndexPath) {
-        cell.labelName.text = results[indexPath.section].question.name
-        
-        setProgressViewAndLabel(progressView: cell.progressView, label: cell.labelNumber,
-                                currentQuestion: results[indexPath.section].currentQuestion)
-        
-        configure(indexPath: indexPath, image: cell.imageFirst, button: cell.viewFirst,
-                  answer: results[indexPath.section].buttonFirst, tag: 1)
-        
-        configure(indexPath: indexPath, image: cell.imageSecond, button: cell.viewSecond,
-                  answer: results[indexPath.section].buttonSecond, tag: 2)
-        
-        configure(indexPath: indexPath, image: cell.imageThird, button: cell.viewThird,
-                  answer: results[indexPath.section].buttonThird, tag: 3)
-        
-        configure(indexPath: indexPath, image: cell.imageFourth, button: cell.viewFourth,
-                  answer: results[indexPath.section].buttonFourth, tag: 4)
-        
-        cell.timeUp.text = timeUpCheck(bool: results[indexPath.section].timeUp)
+        cell.labelCountry.text = results[indexPath.row].question.name
+        cell.progressView.progress = setProgress(value: results[indexPath.row].currentQuestion)
+        cell.labelNumber.text = setText(value: results[indexPath.row].currentQuestion)
+        cell.contentView.backgroundColor = game.background
     }
     // MARK: - Custom cell for questionnaire, questions of flags
     private func questionnaireCell(cell: QuestionnaireCell, indexPath: IndexPath) {

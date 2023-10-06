@@ -8,32 +8,20 @@
 import UIKit
 
 class CustomLabelCell: UITableViewCell {
-    let view = UIView()
-    let labelName = UILabel()
+    let labelCountry = UILabel()
     let progressView = UIProgressView()
     let labelNumber = UILabel()
-    let viewFirst = UIView()
-    let viewSecond = UIView()
-    let viewThird = UIView()
-    let viewFourth = UIView()
-    let imageFirst = UIImageView()
-    let imageSecond = UIImageView()
-    let imageThird = UIImageView()
-    let imageFourth = UIImageView()
-    var stackViewFirst = UIStackView()
-    var stackViewSecond = UIStackView()
-    var stackView = UIStackView()
-    let timeUp = UILabel()
+    let imageArrow = UIImageView()
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         setupSubviews()
-        setupDesing()
         configure()
     }
     
     private func setupSubviews() {
-        addSubviews(subviews: view, on: contentView)
+        addSubviews(subviews: labelCountry, progressView, labelNumber,
+                    imageArrow, on: contentView)
     }
     
     private func addSubviews(subviews: UIView..., on otherSubview: UIView) {
@@ -43,51 +31,13 @@ class CustomLabelCell: UITableViewCell {
         }
     }
     
-    private func setupDesing() {
-        contentView.backgroundColor = .white
-    }
-    
     private func configure() {
-        stackViewFirst = setupStackView(
-            viewFirst: viewFirst, viewSecond: viewSecond)
-        stackViewSecond = setupStackView(
-            viewFirst: viewThird, viewSecond: viewFourth)
-        stackView = setupStackView(
-            stackViewFirst: stackViewFirst, stackViewSecond: stackViewSecond)
-        
-        setupView(subview: view)
-        
-        setupLabel(label: labelName, size: 28, color: .white)
-        
+        setupLabel(label: labelCountry, size: 26)
         setupProgressView(subview: progressView)
-        setupLabel(label: labelNumber, size: 20, color: .white)
-        
-        setupView(subview: viewFirst, image: imageFirst)
-        setupView(subview: viewSecond, image: imageSecond)
-        setupView(subview: viewThird, image: imageThird)
-        setupView(subview: viewFourth, image: imageFourth)
-        setupImage(images: imageFirst, imageSecond, imageThird, imageFourth)
-        
-        setupLabel(label: timeUp, size: 20, color: .lightPurplePink)
+        setupLabel(label: labelNumber, size: 23)
+        setupImageArrow(image: imageArrow)
         
         setupConstraints()
-    }
-}
-// MARK: - Setup view
-extension CustomLabelCell {
-    private func setupView(subview: UIView) {
-        subview.backgroundColor = .cyanDark
-        subview.layer.cornerRadius = 15
-        subview.layer.shadowColor = UIColor.cyanDark.cgColor
-        subview.layer.shadowOpacity = 0.6
-        subview.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
-        addSubviews(subviews: labelName, progressView, labelNumber, stackView,
-                    timeUp, on: subview)
-    }
-    
-    private func setupView(subview: UIView, image: UIImageView) {
-        subview.layer.cornerRadius = 8
-        addSubviews(subviews: image, on: subview)
     }
 }
 // MARK: - Setup progress view
@@ -101,126 +51,45 @@ extension CustomLabelCell {
 }
 // MARK: - Setup properties of labels
 extension CustomLabelCell {
-    private func setupLabel(label: UILabel, size: CGFloat, color: UIColor) {
+    private func setupLabel(label: UILabel, size: CGFloat) {
         label.font = UIFont(name: "mr_fontick", size: size)
-        label.textColor = color
+        label.textColor = .white
         label.numberOfLines = 0
         label.textAlignment = .center
     }
 }
 // MARK: - Setup images
 extension CustomLabelCell {
-    private func setupImage(images: UIImageView...) {
-        images.forEach { image in
-            image.layer.borderWidth = 1
-            image.clipsToBounds = true
-            image.layer.cornerRadius = 4
-        }
-    }
-}
-// MARK: - Setup stack views
-extension CustomLabelCell {
-    private func setupStackView(viewFirst: UIView, viewSecond: UIView) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [viewFirst, viewSecond])
-        stackView.spacing = 4
-        stackView.distribution = .fillEqually
-        return stackView
-    }
-    
-    private func setupStackView(stackViewFirst: UIStackView,
-                                stackViewSecond: UIStackView) -> UIStackView {
-        let stackView = UIStackView(
-            arrangedSubviews: [stackViewFirst, stackViewSecond])
-        stackView.axis = .vertical
-        stackView.spacing = 4
-        stackView.distribution = .fillEqually
-        return stackView
+    private func setupImageArrow(image: UIImageView) {
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
+        image.image = UIImage(systemName: "chevron.right", withConfiguration: size)
+        image.tintColor = .white
     }
 }
 // MARK: - Setup constraints
 extension CustomLabelCell {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
-            view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
-            view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
-            view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5)
+            labelCountry.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+            labelCountry.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            labelCountry.trailingAnchor.constraint(equalTo: imageArrow.trailingAnchor, constant: -10)
         ])
         
         NSLayoutConstraint.activate([
-            labelName.topAnchor.constraint(equalTo: view.topAnchor, constant: 7),
-            labelName.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
-            labelName.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5)
-        ])
-        
-        NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: view.topAnchor, constant: 73),
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            progressView.topAnchor.constraint(equalTo: labelCountry.bottomAnchor, constant: 10),
+            progressView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             progressView.heightAnchor.constraint(equalToConstant: 8)
         ])
         
         NSLayoutConstraint.activate([
             labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
             labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 10),
-            labelNumber.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
+            labelNumber.trailingAnchor.constraint(equalTo: imageArrow.leadingAnchor, constant: -10)
         ])
         
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: labelNumber.bottomAnchor, constant: 15),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            stackView.heightAnchor.constraint(equalToConstant: heightStackView())
+            imageArrow.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            imageArrow.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
         ])
-        setupImageButton(image: imageFirst, on: viewFirst)
-        setupImageButton(image: imageSecond, on: viewSecond)
-        setupImageButton(image: imageThird, on: viewThird)
-        setupImageButton(image: imageFourth, on: viewFourth)
-        
-        NSLayoutConstraint.activate([
-            timeUp.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 5),
-            timeUp.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-    }
-    
-    private func setupImageButton(image: UIImageView, on button: UIView) {
-        NSLayoutConstraint.activate([
-            image.widthAnchor.constraint(equalToConstant: imageWidth(image: image)),
-            image.heightAnchor.constraint(equalToConstant: setHeightImage()),
-            image.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-            image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
-        ])
-    }
-    
-    private func heightStackView() -> CGFloat {
-        185
-    }
-    
-    private func setWidthImage() -> CGFloat {
-        let buttonWidth = (contentView.frame.width / 2) - 2
-        return buttonWidth - 8
-    }
-    
-    private func setHeightImage() -> CGFloat {
-        let buttonHeight = CGFloat(185 / 2 - 2)
-        return buttonHeight - 8
-    }
-    
-    private func imageWidth(image: UIImageView) -> CGFloat {
-        switch image.image {
-        case switzerland(), vaticanCity(), nepal(): return setHeightImage()
-        default: return setWidthImage()
-        }
-    }
-    
-    private func switzerland() -> UIImage? {
-        UIImage(named: "switzerland")
-    }
-    
-    private func vaticanCity() -> UIImage? {
-        UIImage(named: "vatican city")
-    }
-    
-    private func nepal() -> UIImage? {
-        UIImage(named: "nepal")
     }
 }

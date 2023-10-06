@@ -72,7 +72,9 @@ class DetailsViewController: UIViewController {
     }()
     
     private lazy var imageFirst: UIImageView = {
-        let imageView = setupImage(image: result.buttonFirst.flag)
+        let imageView = setupImage(
+            image: result.buttonFirst.flag,
+            radius: 8)
         return imageView
     }()
     
@@ -107,7 +109,9 @@ class DetailsViewController: UIViewController {
     }()
     
     private lazy var imageSecond: UIImageView = {
-        let imageView = setupImage(image: result.buttonSecond.flag)
+        let imageView = setupImage(
+            image: result.buttonSecond.flag,
+            radius: 8)
         return imageView
     }()
     
@@ -142,7 +146,9 @@ class DetailsViewController: UIViewController {
     }()
     
     private lazy var imageThird: UIImageView = {
-        let imageView = setupImage(image: result.buttonThird.flag)
+        let imageView = setupImage(
+            image: result.buttonThird.flag,
+            radius: 8)
         return imageView
     }()
     
@@ -177,7 +183,9 @@ class DetailsViewController: UIViewController {
     }()
     
     private lazy var imageFourth: UIImageView = {
-        let imageView = setupImage(image: result.buttonFourth.flag)
+        let imageView = setupImage(
+            image: result.buttonFourth.flag,
+            radius: 8)
         return imageView
     }()
     
@@ -309,10 +317,12 @@ extension DetailsViewController {
 }
 // MARK: - Setup image
 extension DetailsViewController {
-    private func setupImage(image: String) -> UIImageView {
+    private func setupImage(image: String, radius: CGFloat? = nil) -> UIImageView {
         let imageView = UIImageView()
         imageView.image = UIImage(named: image)
         imageView.layer.borderWidth = 1
+        imageView.layer.cornerRadius = radius ?? 0
+        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }
@@ -434,7 +444,7 @@ extension DetailsViewController {
     
     private func constraintsLabel() {
         NSLayoutConstraint.activate([
-            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
             labelCountry.widthAnchor.constraint(equalToConstant: setupConstraintWidth())
         ])
     }
@@ -475,6 +485,15 @@ extension DetailsViewController {
             stackViewLabel.widthAnchor.constraint(equalToConstant: setupConstraintWidth()),
             stackViewLabel.heightAnchor.constraint(equalToConstant: heightStackView())
         ])
+        setImageOnButton(image: imageFirst, button: viewFirst, flag: result.buttonFirst.flag)
+        setImageOnButton(image: imageSecond, button: viewSecond, flag: result.buttonSecond.flag)
+        setImageOnButton(image: imageThird, button: viewThird, flag: result.buttonThird.flag)
+        setImageOnButton(image: imageFourth, button: viewFourth, flag: result.buttonFourth.flag)
+    }
+    
+    private func setImageOnButton(image: UIImageView, button: UIView, flag: String) {
+        let layout = image.widthAnchor.constraint(equalToConstant: widthFlag(flag: flag))
+        setImageOnButton(layout: layout, image: image, button: button)
     }
     
     private func setupSquare(subview: UIView, sizes: CGFloat) {
@@ -488,6 +507,16 @@ extension DetailsViewController {
         NSLayoutConstraint.activate([
             label.centerXAnchor.constraint(equalTo: button.centerXAnchor),
             label.centerYAnchor.constraint(equalTo: button.centerYAnchor)
+        ])
+    }
+    
+    private func setImageOnButton(layout: NSLayoutConstraint, image: UIImageView,
+                                  button: UIView) {
+        NSLayoutConstraint.activate([
+            image.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            image.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            layout,
+            image.heightAnchor.constraint(equalToConstant: setHeight())
         ])
     }
     
@@ -512,5 +541,22 @@ extension DetailsViewController {
     
     private func heightStackView() -> CGFloat {
         235
+    }
+    
+    private func setWidth() -> CGFloat {
+        let buttonWidth = ((view.frame.width - 20) / 2) - 4
+        return buttonWidth - 10
+    }
+    
+    private func setHeight() -> CGFloat {
+        let buttonHeight = heightStackView() / 2 - 4
+        return buttonHeight - 10
+    }
+    
+    private func widthFlag(flag: String) -> CGFloat {
+        switch flag {
+        case "nepal", "vatican city", "switzerland": return setHeight()
+        default: return setWidth()
+        }
     }
 }

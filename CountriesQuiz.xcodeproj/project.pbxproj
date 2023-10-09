@@ -11,8 +11,6 @@
 		C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */; };
 		C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */; };
 		C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */; };
-		C34BA42D2A9F20CD006E191D /* CustomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34BA42C2A9F20CD006E191D /* CustomHeader.swift */; };
-		C34BA42F2A9F29C5006E191D /* QuestionnaireCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34BA42E2A9F29C5006E191D /* QuestionnaireCell.swift */; };
 		C34EC0702986694900300585 /* Results.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34EC06F2986694900300585 /* Results.swift */; };
 		C3613A712A7FB82C006C0F1E /* GameTypeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */; };
 		C36773F1296BF9E10096BCC5 /* QuizOfFlagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */; };
@@ -25,7 +23,6 @@
 		C38DF4DB2A8E4BF000550BCC /* IncorrectAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */; };
 		C38DF4DE2A8F4A5B00550BCC /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */; };
 		C3B35F20293FADC300A8493F /* fontick.otf in Resources */ = {isa = PBXBuildFile; fileRef = C3B35F1F293FADC300A8493F /* fontick.otf */; };
-		C3C2583B2AC1CE700010E5B0 /* QuestionnaireLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C2583A2AC1CE700010E5B0 /* QuestionnaireLabelCell.swift */; };
 		C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D292EA293F5F0900786752 /* SettingViewController.swift */; };
 		C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */; };
 		C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */; };
@@ -43,8 +40,6 @@
 		C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabelCell.swift; sourceTree = "<group>"; };
 		C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorManager.swift; sourceTree = "<group>"; };
 		C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireViewController.swift; sourceTree = "<group>"; };
-		C34BA42C2A9F20CD006E191D /* CustomHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeader.swift; sourceTree = "<group>"; };
-		C34BA42E2A9F29C5006E191D /* QuestionnaireCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireCell.swift; sourceTree = "<group>"; };
 		C34EC06F2986694900300585 /* Results.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Results.swift; sourceTree = "<group>"; };
 		C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeManager.swift; sourceTree = "<group>"; };
 		C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfFlagsViewController.swift; sourceTree = "<group>"; };
@@ -57,7 +52,6 @@
 		C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectAnswersViewController.swift; sourceTree = "<group>"; };
 		C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		C3B35F1F293FADC300A8493F /* fontick.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontick.otf; sourceTree = "<group>"; };
-		C3C2583A2AC1CE700010E5B0 /* QuestionnaireLabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireLabelCell.swift; sourceTree = "<group>"; };
 		C3D292EA293F5F0900786752 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		C3E2EB2C2938E7F300AB40AD /* CountriesQuiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CountriesQuiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -92,14 +86,6 @@
 			path = "Extensions + UIKit";
 			sourceTree = "<group>";
 		};
-		C34BA42B2A9F206A006E191D /* UITableViewHeaderFooterView */ = {
-			isa = PBXGroup;
-			children = (
-				C34BA42C2A9F20CD006E191D /* CustomHeader.swift */,
-			);
-			path = UITableViewHeaderFooterView;
-			sourceTree = "<group>";
-		};
 		C36773F4296D541E0096BCC5 /* AnimatedTransition */ = {
 			isa = PBXGroup;
 			children = (
@@ -122,8 +108,6 @@
 			children = (
 				C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */,
 				C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */,
-				C34BA42E2A9F29C5006E191D /* QuestionnaireCell.swift */,
-				C3C2583A2AC1CE700010E5B0 /* QuestionnaireLabelCell.swift */,
 			);
 			path = UITableViewCell;
 			sourceTree = "<group>";
@@ -172,7 +156,6 @@
 		C3E2EB442938E88100AB40AD /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				C34BA42B2A9F206A006E191D /* UITableViewHeaderFooterView */,
 				C38DF4DC2A8F4A3D00550BCC /* UITableViewCell */,
 				C3E2EB332938E7F300AB40AD /* MenuViewController.swift */,
 				C3E7C9932A7B68AA0046A883 /* GameTypeViewController.swift */,
@@ -260,7 +243,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1410;
-				LastUpgradeCheck = 1410;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					C3E2EB2B2938E7F300AB40AD = {
 						CreatedOnToolsVersion = 14.1;
@@ -321,13 +304,10 @@
 				C3E7C9942A7B68AA0046A883 /* GameTypeViewController.swift in Sources */,
 				C34EC0702986694900300585 /* Results.swift in Sources */,
 				C376AC072947261D00DE5E86 /* Setting.swift in Sources */,
-				C34BA42F2A9F29C5006E191D /* QuestionnaireCell.swift in Sources */,
 				C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */,
 				C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */,
-				C34BA42D2A9F20CD006E191D /* CustomHeader.swift in Sources */,
 				C376AC0929474EB400DE5E86 /* StorageManager.swift in Sources */,
 				C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */,
-				C3C2583B2AC1CE700010E5B0 /* QuestionnaireLabelCell.swift in Sources */,
 				C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -339,6 +319,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -371,6 +352,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -385,7 +367,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -399,6 +381,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -431,6 +414,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -439,7 +423,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

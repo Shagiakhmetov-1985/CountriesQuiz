@@ -434,10 +434,10 @@ extension GameTypeViewController {
 extension GameTypeViewController {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            viewGameType.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            viewGameType.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -30),
             viewGameType.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
-        setupSquare(subview: viewGameType, sizes: 100)
+        setupSquare(subview: viewGameType, sizes: diameter())
         setupCenterSubview(subview: imageGameType, on: viewGameType)
         
         NSLayoutConstraint.activate([

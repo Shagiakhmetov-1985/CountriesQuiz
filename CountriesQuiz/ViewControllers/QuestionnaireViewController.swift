@@ -1258,11 +1258,16 @@ extension QuestionnaireViewController {
     }
     
     private func constraintsButtons(button: UIButton, constant: CGFloat) {
+        let layout = layoutConstraint()
         NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 47.5),
+            button.centerYAnchor.constraint(equalTo: layout),
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: constant)
         ])
         setupSquare(subview: button, sizes: 40)
+    }
+    
+    private func layoutConstraint() -> NSLayoutYAxisAnchor {
+        checkFlag() ? imageFlag.centerYAnchor : labelCountry.centerYAnchor
     }
     
     private func constraintsOnButton() {

@@ -43,34 +43,21 @@ class DetailsViewController: UIViewController {
     
     private lazy var viewFirst: UIView = {
         switch game.gameType {
-        case .quizOfFlag: checkFlag() ? setupView(
+        case .quizOfFlag: return setupView(
             color: setBackgroundColor(
                 question: result.question,
                 answer: result.buttonFirst,
                 tag: 1,
                 select: result.tag),
-            label: labelFirst) : setupView(
-                color: setBackgroundColor(
-                    question: result.question,
-                    answer: result.buttonFirst,
-                    tag: 1,
-                    select: result.tag),
-                image: imageFirst)
-        default: checkFlag() ? setupView(
+            subview: checkFlag() ? labelFirst : imageFirst)
+        default: return setupView(
             checkmark: checkmarkFirst,
             color: setButtonColor(
                 question: result.question,
                 answer: result.buttonFirst,
                 tag: 1,
                 select: result.tag),
-            label: labelFirst) : setupView(
-                checkmark: checkmarkFirst,
-                color: setButtonColor(
-                    question: result.question,
-                    answer: result.buttonFirst,
-                    tag: 1,
-                    select: result.tag),
-                flag: imageFirst)
+            subview: checkFlag() ? labelFirst : imageFirst)
         }
     }()
     
@@ -110,34 +97,21 @@ class DetailsViewController: UIViewController {
     
     private lazy var viewSecond: UIView = {
         switch game.gameType {
-        case .quizOfFlag: checkFlag() ? setupView(
+        case .quizOfFlag: return setupView(
             color: setBackgroundColor(
                 question: result.question,
                 answer: result.buttonSecond,
                 tag: 2,
                 select: result.tag),
-            label: labelSecond) : setupView(
-                color: setBackgroundColor(
-                    question: result.question,
-                    answer: result.buttonSecond,
-                    tag: 2,
-                    select: result.tag),
-                image: imageSecond)
-        default: checkFlag() ? setupView(
+            subview: checkFlag() ? labelSecond : imageSecond)
+        default: return setupView(
             checkmark: checkmarkSecond,
             color: setButtonColor(
                 question: result.question,
                 answer: result.buttonSecond,
                 tag: 2,
                 select: result.tag),
-            label: labelSecond) : setupView(
-                checkmark: checkmarkSecond,
-                color: setButtonColor(
-                    question: result.question,
-                    answer: result.buttonSecond,
-                    tag: 2,
-                    select: result.tag),
-                flag: imageSecond)
+            subview: checkFlag() ? labelSecond : imageSecond)
         }
     }()
     
@@ -177,34 +151,21 @@ class DetailsViewController: UIViewController {
     
     private lazy var viewThird: UIView = {
         switch game.gameType {
-        case .quizOfFlag: checkFlag() ? setupView(
+        case .quizOfFlag: return setupView(
             color: setBackgroundColor(
                 question: result.question,
                 answer: result.buttonThird,
                 tag: 3,
                 select: result.tag),
-            label: labelThird) : setupView(
-                color: setBackgroundColor(
-                    question: result.question,
-                    answer: result.buttonThird,
-                    tag: 3,
-                    select: result.tag),
-                image: imageThird)
-        default: checkFlag() ? setupView(
+            subview: checkFlag() ? labelThird : imageThird)
+        default: return setupView(
             checkmark: checkmarkThird,
             color: setButtonColor(
                 question: result.question,
                 answer: result.buttonThird,
                 tag: 3,
                 select: result.tag),
-            label: labelThird) : setupView(
-                checkmark: checkmarkThird,
-                color: setButtonColor(
-                    question: result.question,
-                    answer: result.buttonThird,
-                    tag: 3,
-                    select: result.tag),
-                flag: imageThird)
+            subview: checkFlag() ? labelThird : imageThird)
         }
     }()
     
@@ -244,34 +205,21 @@ class DetailsViewController: UIViewController {
     
     private lazy var viewFourth: UIView = {
         switch game.gameType {
-        case .quizOfFlag: checkFlag() ? setupView(
+        case .quizOfFlag: return setupView(
             color: setBackgroundColor(
                 question: result.question,
                 answer: result.buttonFourth,
                 tag: 4,
                 select: result.tag),
-            label: labelFourth) : setupView(
-                color: setBackgroundColor(
-                    question: result.question,
-                    answer: result.buttonFourth,
-                    tag: 4,
-                    select: result.tag),
-                image: imageFourth)
-        default: checkFlag() ? setupView(
+            subview: checkFlag() ? labelFourth : imageFourth)
+        default: return setupView(
             checkmark: checkmarkFourth,
             color: setButtonColor(
                 question: result.question,
                 answer: result.buttonFourth,
                 tag: 4,
                 select: result.tag),
-            label: labelFourth) : setupView(
-                checkmark: checkmarkFourth,
-                color: setButtonColor(
-                    question: result.question,
-                    answer: result.buttonFourth,
-                    tag: 4,
-                    select: result.tag),
-                flag: imageFourth)
+            subview: checkFlag() ? labelFourth : imageFourth)
         }
     }()
     
@@ -527,7 +475,7 @@ extension DetailsViewController {
 }
 // MARK: - Setup view
 extension DetailsViewController {
-    private func setupView(color: UIColor, label: UILabel) -> UIView {
+    private func setupView(color: UIColor, subview: UIView) -> UIView {
         let view = UIView()
         view.backgroundColor = color
         view.layer.cornerRadius = 12
@@ -535,43 +483,19 @@ extension DetailsViewController {
         view.layer.shadowOpacity = 0.4
         view.layer.shadowOffset = CGSize(width: 0, height: 6)
         view.translatesAutoresizingMaskIntoConstraints = false
-        setupSubviews(subviews: label, on: view)
-        return view
-    }
-    
-    private func setupView(color: UIColor, image: UIImageView) -> UIView {
-        let view = UIView()
-        view.backgroundColor = color
-        view.layer.cornerRadius = 12
-        view.layer.shadowColor = color.cgColor
-        view.layer.shadowOpacity = 0.4
-        view.layer.shadowOffset = CGSize(width: 0, height: 6)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        setupSubviews(subviews: image, on: view)
+        setupSubviews(subviews: subview, on: view)
         return view
     }
     
     private func setupView(checkmark: UIImageView, color: UIColor,
-                           label: UILabel) -> UIView {
+                           subview: UIView) -> UIView {
         let view = UIView()
         view.backgroundColor = color
         view.layer.cornerRadius = 12
         view.layer.borderColor = UIColor.white.cgColor
         view.layer.borderWidth = 1.5
         view.translatesAutoresizingMaskIntoConstraints = false
-        setupSubviews(subviews: checkmark, label, on: view)
-        return view
-    }
-    
-    private func setupView(checkmark: UIImageView, color: UIColor, 
-                           flag: UIImageView) -> UIView {
-        let view = UIView()
-        view.backgroundColor = color
-        view.layer.cornerRadius = 12
-        view.layer.borderColor = UIColor.white.cgColor
-        view.layer.borderWidth = 1.5
-        view.translatesAutoresizingMaskIntoConstraints = false
-        setupSubviews(subviews: checkmark, flag, on: view)
+        setupSubviews(subviews: checkmark, subview, on: view)
         return view
     }
 }

@@ -456,6 +456,7 @@ extension DetailsViewController {
         label.font = UIFont(name: "mr_fontick", size: size)
         label.textColor = color
         label.textAlignment = .center
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }

@@ -70,19 +70,19 @@ extension CustomLabelCell {
 extension CustomLabelCell {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            labelCountry.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+            labelCountry.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -15),
             labelCountry.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             labelCountry.trailingAnchor.constraint(equalTo: imageArrow.trailingAnchor, constant: -10)
         ])
         
         NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: labelCountry.bottomAnchor, constant: 10),
+            progressView.centerYAnchor.constraint(equalTo: labelNumber.centerYAnchor),
             progressView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             progressView.heightAnchor.constraint(equalToConstant: 8)
         ])
         
         NSLayoutConstraint.activate([
-            labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
+            labelNumber.topAnchor.constraint(equalTo: labelCountry.bottomAnchor, constant: 5),
             labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 10),
             labelNumber.trailingAnchor.constraint(equalTo: imageArrow.leadingAnchor, constant: -10)
         ])

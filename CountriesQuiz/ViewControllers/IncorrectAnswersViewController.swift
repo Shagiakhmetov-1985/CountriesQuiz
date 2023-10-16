@@ -42,7 +42,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        mode.flag ? 70 : 70
+        mode.flag ? 70 : 95
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

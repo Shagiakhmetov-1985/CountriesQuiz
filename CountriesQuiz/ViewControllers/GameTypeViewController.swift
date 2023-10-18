@@ -237,7 +237,8 @@ class GameTypeViewController: UIViewController {
     @objc private func startGame() {
         switch tag {
         case 0: quizOfFlagsViewController()
-        default: questionnaireViewController()
+        case 1: questionnaireViewController()
+        default: quizOfCapitalsViewController()
         }
     }
     
@@ -250,6 +251,13 @@ class GameTypeViewController: UIViewController {
     
     private func questionnaireViewController() {
         let startGameVC = QuestionnaireViewController()
+        startGameVC.mode = mode
+        startGameVC.game = game
+        navigationController?.pushViewController(startGameVC, animated: true)
+    }
+    
+    private func quizOfCapitalsViewController() {
+        let startGameVC = QuizOfCapitalsViewController()
         startGameVC.mode = mode
         startGameVC.game = game
         navigationController?.pushViewController(startGameVC, animated: true)

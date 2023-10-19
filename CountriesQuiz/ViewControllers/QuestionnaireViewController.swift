@@ -1211,7 +1211,7 @@ extension QuestionnaireViewController {
     
     private func constraintsTimer() {
         NSLayoutConstraint.activate([
-            labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 70),
+            labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
             labelTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }

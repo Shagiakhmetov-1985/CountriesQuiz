@@ -10,6 +10,7 @@ import Foundation
 struct Countries: Equatable {
     let flag: String
     let name: String
+    let capitals: String
     var select: Bool
 }
 
@@ -19,12 +20,14 @@ extension Countries {
         
         let flags = FlagsOfCountries.shared.images
         let names = FlagsOfCountries.shared.countries
-        let iterationCount = min(flags.count, names.count)
+        let capitals = FlagsOfCountries.shared.capitals
+        let iterationCount = min(flags.count, names.count, capitals.count)
         
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
                 name: names[index],
+                capitals: capitals[index],
                 select: false
             )
             countries.append(information)
@@ -38,12 +41,14 @@ extension Countries {
         
         let flags = FlagsOfCountries.shared.imagesOfAmericanContinent
         let names = FlagsOfCountries.shared.countriesOfAmericanContinent
+        let capitals = FlagsOfCountries.shared.capitalsOfAmericanContinent
         let iterationCount = min(flags.count, names.count)
         
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
                 name: names[index],
+                capitals: capitals[index],
                 select: false
             )
             countries.append(information)
@@ -57,12 +62,14 @@ extension Countries {
         
         let flags = FlagsOfCountries.shared.imagesOfEuropeanContinent
         let names = FlagsOfCountries.shared.countriesOfEuropeanContinent
+        let capitals = FlagsOfCountries.shared.capitalsOfEuropeanContinent
         let iterationCount = min(flags.count, names.count)
         
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
                 name: names[index],
+                capitals: capitals[index],
                 select: false
             )
             countries.append(information)
@@ -76,12 +83,14 @@ extension Countries {
         
         let flags = FlagsOfCountries.shared.imagesOfAfricanContinent
         let names = FlagsOfCountries.shared.countriesOfAfricanContinent
+        let capitals = FlagsOfCountries.shared.capitalsOfAfricanContinent
         let iterationCount = min(flags.count, names.count)
         
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
                 name: names[index],
+                capitals: capitals[index],
                 select: false
             )
             countries.append(information)
@@ -95,12 +104,14 @@ extension Countries {
         
         let flags = FlagsOfCountries.shared.imagesOfAsianContinent
         let names = FlagsOfCountries.shared.countriesOfAsianContinent
+        let capitals = FlagsOfCountries.shared.capitalsOfAsianContinent
         let iterationCount = min(flags.count, names.count)
         
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
                 name: names[index],
+                capitals: capitals[index],
                 select: false
             )
             countries.append(information)
@@ -114,12 +125,14 @@ extension Countries {
         
         let flags = FlagsOfCountries.shared.imagesOfOceanContinent
         let names = FlagsOfCountries.shared.countriesOfOceanContinent
+        let capitals = FlagsOfCountries.shared.capitalsOfOceanContinent
         let iterationCount = min(flags.count, names.count)
         
         for index in 0..<iterationCount {
             let information = Countries(
                 flag: flags[index],
                 name: names[index],
+                capitals: capitals[index],
                 select: false
             )
             countries.append(information)

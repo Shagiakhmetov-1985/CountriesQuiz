@@ -531,11 +531,13 @@ class QuizOfFlagsViewController: UIViewController {
     private func animationColorButtons(button: UIButton) {
         if checkFlag() {
             checkAnswerFlag(tag: button.tag, button: button)
+            disableButtonFlag(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                              buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
         } else {
             checkAnswerLabel(tag: button.tag, button: button)
+            disableButtonLabel(buttons: buttonAnswerFirst, buttonAnswerSecond,
+                               buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
         }
-        disableButtonLabel(buttons: buttonAnswerFirst, buttonAnswerSecond,
-                           buttonAnswerThird, buttonAnswerFourth, tag: button.tag)
     }
     
     private func checkAnswerFlag(tag: Int, button: UIButton) {

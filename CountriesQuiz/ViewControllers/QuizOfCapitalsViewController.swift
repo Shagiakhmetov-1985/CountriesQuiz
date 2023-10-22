@@ -83,7 +83,6 @@ class QuizOfCapitalsViewController: UIViewController {
     private var widthOfFlag: NSLayoutConstraint!
     
     private var timer = Timer()
-    private var timerSecond = Timer()
     private let shapeLayer = CAShapeLayer()
     
     private var currentQuestion = 0
@@ -321,13 +320,16 @@ class QuizOfCapitalsViewController: UIViewController {
         incorrectAnswerTimeUp()
         
         if !oneQuestionCheck() {
-            currentQuestion = questions.questions.count - 1
+            currentQuestion = mode.countQuestions - 1
         }
         showDescription()
         animationColorDisableButton()
     }
     // MARK: - Button back
     @objc private func exitToTypeGame() {
+        timer.invalidate()
+        seconds = 0
+        currentQuestion = 0
         navigationController?.popViewController(animated: true)
     }
     // MARK: - Button action when user select answer
@@ -337,10 +339,10 @@ class QuizOfCapitalsViewController: UIViewController {
         
         animationColorButton(button: button)
         showDescription()
-        checkTimeSpent()
         
         guard timeCheck() else { return }
         stopAnimationCircleTimer()
+        checkTimeSpent()
     }
     
     private func animationColorDisableButton() {
@@ -356,7 +358,7 @@ class QuizOfCapitalsViewController: UIViewController {
     
     private func checkButton(tag: Int, button: UIButton) {
         let green = UIColor.greenYellowBrilliant
-        let red = UIColor.redTangerineTango
+        let red = UIColor.bismarkFuriozo
         let white = UIColor.white
         
         if checkAnswer(tag: tag) {
@@ -382,7 +384,7 @@ class QuizOfCapitalsViewController: UIViewController {
         
         buttons.forEach { button in
             if !(button.tag == tag) {
-                setButtonColor(button: button, color: gray, titleColor: white)
+                setButtonColor(button: button, color: white, titleColor: gray)
             }
             button.isEnabled = false
         }
@@ -390,14 +392,14 @@ class QuizOfCapitalsViewController: UIViewController {
     }
     
     private func delay() {
-        guard currentQuestion + 1 < questions.questions.count else { return }
+        guard currentQuestion + 1 < mode.countQuestions else { return }
         timer = runTimer(time: 3, action: #selector(hideSubviews), repeats: false)
     }
     // MARK: - Time spent for every answer
     private func checkTimeSpent() {
         if oneQuestionCheck() {
             setTimeSpent()
-        } else if !oneQuestionCheck(), currentQuestion + 1 == questions.questions.count {
+        } else if !oneQuestionCheck(), currentQuestion + 1 == mode.countQuestions {
             setTimeSpent()
         }
     }
@@ -486,9 +488,9 @@ class QuizOfCapitalsViewController: UIViewController {
     }
     
     private func resetTimer() {
-        if oneQuestionCheck() && seconds > 0 {
+        if oneQuestionCheck(), seconds > 0 {
             resetTitleAndCircleTimer()
-        } else if oneQuestionCheck() && seconds == 0 {
+        } else if oneQuestionCheck(), seconds == 0 {
             circular(strokeEnd: 0)
             resetTitleAndCircleTimer()
         }
@@ -675,9 +677,9 @@ extension QuizOfCapitalsViewController {
     }
     
     private func checkSetCircularStrokeEnd() {
-        if timeCheck() {
+        if oneQuestionCheck(), timeCheck() {
             shapeLayer.strokeEnd = 1
-        } else if timeCheck() && currentQuestion < 1 {
+        } else if !oneQuestionCheck(), timeCheck(), currentQuestion < 1 {
             shapeLayer.strokeEnd = 1
         }
     }

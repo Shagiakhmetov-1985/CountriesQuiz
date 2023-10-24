@@ -289,7 +289,7 @@ class ResultsViewController: UIViewController {
     private func setupDesign() {
         view.backgroundColor = .skyCyanLight
         navigationItem.hidesBackButton = true
-        imageInfinity.isHidden = timeElapsedCheck() ? true : false
+        imageInfinity.isHidden = isTime() ? true : false
     }
     
     private func setupSubviews() {
@@ -382,12 +382,12 @@ class ResultsViewController: UIViewController {
         mode.timeElapsed.questionSelect.oneQuestion ? true : false
     }
     
-    private func timeElapsedCheck() -> Bool {
+    private func isTime() -> Bool {
         mode.timeElapsed.timeElapsed ? true : false
     }
     
     private func labelTimeElapsedOnOff() -> String {
-        timeElapsedCheck() ? "\(labelCheckTimeSpend())" : "Обратный отсчет выключен"
+        isTime() ? "\(labelCheckTimeSpend())" : "Обратный отсчет выключен"
     }
     
     private func labelCheckTimeSpend() -> String {
@@ -404,7 +404,7 @@ class ResultsViewController: UIViewController {
     }
     
     private func imageTimeElapsedOnOff() -> String {
-        timeElapsedCheck() ? "\(imageCheckTimeSpend())" : "clock.badge.xmark"
+        isTime() ? "\(imageCheckTimeSpend())" : "clock.badge.xmark"
     }
     
     private func imageCheckTimeSpend() -> String {
@@ -416,7 +416,7 @@ class ResultsViewController: UIViewController {
     }
     
     private func numberTimeElapsedOnOff() -> String {
-        timeElapsedCheck() ? "\(numberCheckTimeSpend())" : " "
+        isTime() ? "\(numberCheckTimeSpend())" : " "
     }
     
     private func numberCheckTimeSpend() -> String {
@@ -454,7 +454,7 @@ class ResultsViewController: UIViewController {
     }
     
     private func percentTimeSpend() -> String {
-        timeElapsedCheck() ? stringWithoutNull(count: percentTimeCheck()) + "%" : " "
+        isTime() ? stringWithoutNull(count: percentTimeCheck()) + "%" : " "
     }
     
     private func percentTimeCheck() -> CGFloat {

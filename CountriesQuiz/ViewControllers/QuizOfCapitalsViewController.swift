@@ -595,6 +595,7 @@ extension QuizOfCapitalsViewController {
         label.textColor = .white
         label.textAlignment = .center
         label.layer.opacity = opacity ?? 1
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }

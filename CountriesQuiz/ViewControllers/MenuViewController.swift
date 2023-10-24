@@ -24,7 +24,7 @@ class MenuViewController: UIViewController {
     
     private lazy var buttonSettings: UIButton = {
         let button = setButton(
-            color: .grayLight,
+            color: .blueMiddlePersian,
             image: imageSettings,
             action: #selector(setting))
         return button

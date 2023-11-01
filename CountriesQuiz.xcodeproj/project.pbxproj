@@ -22,6 +22,7 @@
 		C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38C023E2981025C008C2202 /* ResultsViewController.swift */; };
 		C38DF4DB2A8E4BF000550BCC /* IncorrectAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */; };
 		C38DF4DE2A8F4A5B00550BCC /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */; };
+		C3A6B9D32AF0DB3D00DBE77F /* PopUpDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A6B9D22AF0DB3D00DBE77F /* PopUpDescription.swift */; };
 		C3B187C82ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */; };
 		C3B35F20293FADC300A8493F /* fontick.otf in Resources */ = {isa = PBXBuildFile; fileRef = C3B35F1F293FADC300A8493F /* fontick.otf */; };
 		C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D292EA293F5F0900786752 /* SettingViewController.swift */; };
@@ -52,6 +53,7 @@
 		C38C023E2981025C008C2202 /* ResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsViewController.swift; sourceTree = "<group>"; };
 		C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectAnswersViewController.swift; sourceTree = "<group>"; };
 		C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
+		C3A6B9D22AF0DB3D00DBE77F /* PopUpDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpDescription.swift; sourceTree = "<group>"; };
 		C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfCapitalsViewController.swift; sourceTree = "<group>"; };
 		C3B35F1F293FADC300A8493F /* fontick.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontick.otf; sourceTree = "<group>"; };
 		C3D292EA293F5F0900786752 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
@@ -122,6 +124,14 @@
 			path = "Alert controller";
 			sourceTree = "<group>";
 		};
+		C3A6B9CF2AF0D9C800DBE77F /* PopupViews */ = {
+			isa = PBXGroup;
+			children = (
+				C3A6B9D22AF0DB3D00DBE77F /* PopUpDescription.swift */,
+			);
+			path = PopupViews;
+			sourceTree = "<group>";
+		};
 		C3E2EB232938E7F300AB40AD = {
 			isa = PBXGroup;
 			children = (
@@ -158,6 +168,7 @@
 		C3E2EB442938E88100AB40AD /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				C3A6B9CF2AF0D9C800DBE77F /* PopupViews */,
 				C38DF4DC2A8F4A3D00550BCC /* UITableViewCell */,
 				C3E2EB332938E7F300AB40AD /* MenuViewController.swift */,
 				C3E7C9932A7B68AA0046A883 /* GameTypeViewController.swift */,
@@ -306,6 +317,7 @@
 				C3E7C9962A7C19F80046A883 /* GameType.swift in Sources */,
 				C3B187C82ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift in Sources */,
 				C3E7C9942A7B68AA0046A883 /* GameTypeViewController.swift in Sources */,
+				C3A6B9D32AF0DB3D00DBE77F /* PopUpDescription.swift in Sources */,
 				C34EC0702986694900300585 /* Results.swift in Sources */,
 				C376AC072947261D00DE5E86 /* Setting.swift in Sources */,
 				C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */,

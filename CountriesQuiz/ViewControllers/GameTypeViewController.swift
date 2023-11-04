@@ -33,16 +33,6 @@ class GameTypeViewController: UIViewController {
         return label
     }()
     
-    private lazy var labelDescription: UILabel = {
-        let label = setupLabel(
-            title: "\(game.description)",
-            color: .white,
-            style: "Gill Sans",
-            size: 19,
-            alignment: .left)
-        return label
-    }()
-    
     private lazy var buttonBack: UIButton = {
         let button = setupButton(
             image: "multiply",
@@ -57,11 +47,34 @@ class GameTypeViewController: UIViewController {
         return button
     }()
     
+    private lazy var labelDescription: UILabel = {
+        let label = setupLabel(
+            title: "\(game.description)",
+            color: .white,
+            style: "Gill Sans",
+            size: 19,
+            alignment: .left)
+        return label
+    }()
+    
+    private lazy var labelBulletsList: UILabel = {
+        let label = bulletsList(list: bulletsListGameType())
+        return label
+    }()
+    /*
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.frame = view.bounds
+        scrollView.contentSize = contentSize
+        return scrollView
+    }()
+    */
     private lazy var viewDescription: UIView = {
-        let view = setupView(color: game.background)
-        view.layer.cornerRadius = 15
+        let view = setupView(color: game.background, radius: 15)
         view.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        setupSubviews(subviews: labelDescription, on: view)
+        view.frame.size = contentSize
+        setupSubviews(subviews: labelDescription, labelBulletsList, on: view)
+        settingLabel(label: labelBulletsList, size: 19)
         return view
     }()
     
@@ -238,6 +251,12 @@ class GameTypeViewController: UIViewController {
     var mode: Setting!
     var game: Games!
     var tag: Int!
+    
+    private var contentSize: CGSize {
+        CGSize(width: view.frame.width * 0.9, height: view.frame.height * 0.7 + 150)
+    }
+    
+    typealias ParagraphData = (bullet: String, paragraph: String)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -450,6 +469,77 @@ extension GameTypeViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
+    
+    private func settingLabel(label: UILabel, size: CGFloat) {
+        label.textColor = .white
+        label.font = UIFont(name: "Gill Sans", size: size)
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    private func bulletsListGameType() -> [String] {
+        switch tag {
+        case 0: return GameType.shared.bulletsQuizOfFlags
+        case 1: return GameType.shared.bulletsQuestionnaire
+        case 2: return GameType.shared.bulletsQuizOfMaps
+        case 3: return GameType.shared.bulletsScrabble
+        default: return GameType.shared.bulletsQuizOfCapitals
+        }
+    }
+    
+    private func bulletsList(list: [String]) -> UILabel {
+        let label = UILabel()
+        let paragraphDataPairs: [ParagraphData] = bullets(list: list)
+        let stringAttributes: [NSAttributedString.Key: Any] = [.font: label.font!]
+        let bulletedAttributedString = makeBulletedAttributedString(
+            paragraphDataPairs: paragraphDataPairs,
+            attributes: stringAttributes)
+        label.attributedText = bulletedAttributedString
+        return label
+    }
+    
+    private func bullets(list: [String]) -> [ParagraphData] {
+        var paragraphData: [ParagraphData] = []
+        list.forEach { text in
+            let pair = ("➤ ", "\(text)")
+            paragraphData.append(pair)
+        }
+        return paragraphData
+    }
+    
+    private func makeBulletedAttributedString(
+        paragraphDataPairs: [ParagraphData],
+        attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
+        let fullAttributedString = NSMutableAttributedString()
+            paragraphDataPairs.forEach { paragraphData in
+                let attributedString = makeBulletString(
+                    bullet: paragraphData.bullet,
+                    content: paragraphData.paragraph,
+                    attributes: attributes)
+                fullAttributedString.append(attributedString)
+            }
+        return fullAttributedString
+    }
+    
+    private func makeBulletString(bullet: String, content: String,
+                                  attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
+        let formattedString: String = "\(bullet)\(content)\n"
+        let attributedString: NSMutableAttributedString = NSMutableAttributedString(
+            string: formattedString,
+            attributes: attributes)
+        
+        let headerIndent = (bullet as NSString).size(withAttributes: attributes).width + 6
+        attributedString.addAttributes([.paragraphStyle: makeParagraphStyle(headIndent: headerIndent)],
+                                       range: NSMakeRange(0, attributedString.length))
+        return attributedString
+    }
+    
+    private func makeParagraphStyle(headIndent: CGFloat) -> NSParagraphStyle {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.firstLineHeadIndent = 0
+        paragraphStyle.headIndent = headIndent
+        return paragraphStyle
+    }
 }
 // MARK: - Setup buttons
 extension GameTypeViewController {
@@ -602,7 +692,6 @@ extension GameTypeViewController {
             viewHelp.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
         ])
         
-        
         NSLayoutConstraint.activate([
             viewDescription.topAnchor.constraint(equalTo: viewHelp.topAnchor, constant: 63.75),
             viewDescription.leadingAnchor.constraint(equalTo: viewHelp.leadingAnchor),
@@ -614,6 +703,12 @@ extension GameTypeViewController {
             labelDescription.topAnchor.constraint(equalTo: viewDescription.topAnchor, constant: 15),
             labelDescription.leadingAnchor.constraint(equalTo: viewDescription.leadingAnchor, constant: 15),
             labelDescription.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
+        ])
+        
+        NSLayoutConstraint.activate([
+            labelBulletsList.topAnchor.constraint(equalTo: labelDescription.bottomAnchor, constant: 19),
+            labelBulletsList.leadingAnchor.constraint(equalTo: viewDescription.leadingAnchor, constant: 15),
+            labelBulletsList.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
         ])
     }
     

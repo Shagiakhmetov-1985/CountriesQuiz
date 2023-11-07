@@ -17,65 +17,105 @@ class GameTypeViewController: UIViewController {
     }()
     
     private lazy var imageGameType: UIImageView = {
-        let imageView = setupImage(
-            image: "\(game.image)",
-            color: game.background,
-            size: 60)
-        return imageView
+        setupImage(image: "\(game.image)", color: game.background, size: 60)
     }()
     
     private lazy var labelGameName: UILabel = {
-        let label = setupLabel(
-            title: "\(game.name)",
-            color: .white,
-            style: "Gill Sans",
-            size: 30)
-        return label
+        setupLabel(title: "\(game.name)", size: 30)
     }()
     
     private lazy var buttonBack: UIButton = {
-        let button = setupButton(
-            image: "multiply",
-            action: #selector(backToMenu))
-        return button
+        setupButton(image: "multiply", action: #selector(backToMenu))
     }()
     
     private lazy var buttonHelp: UIButton = {
-        let button = setupButton(
-            image: "questionmark",
-            action: #selector(showDescription))
-        return button
+        setupButton(image: "questionmark", action: #selector(showDescription))
     }()
     
     private lazy var labelDescription: UILabel = {
-        let label = setupLabel(
-            title: "\(game.description)",
-            color: .white,
-            style: "Gill Sans",
-            size: 19,
-            alignment: .left)
-        return label
+        setupLabel(title: "\(game.description)", size: 19, alignment: .left)
     }()
     
     private lazy var labelBulletsList: UILabel = {
-        let label = bulletsList(list: bulletsListGameType())
-        return label
+        bulletsList(list: bulletsListGameType())
     }()
-    /*
-    private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.frame = view.bounds
-        scrollView.contentSize = contentSize
-        return scrollView
+    
+    private lazy var imageFirstSwap: UIImageView = {
+        setupImage(image: "flag", color: .white, size: 25)
     }()
-    */
+    
+    private lazy var viewFirstSwap: UIView = {
+        setupView(color: game.swap, radius: 12, addSubview: imageFirstSwap)
+    }()
+    
+    private lazy var labelFirstSwap: UILabel = {
+        setupLabel(
+            title: "Режим флага",
+            size: 24,
+            alignment: .left)
+    }()
+    
+    private lazy var labelFirstDescriptionSwap: UILabel = {
+        setupLabel(
+            title: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования страны.",
+            size: 19,
+            alignment: .left)
+    }()
+    
+    private lazy var stackViewFirst: UIStackView = {
+        setupStackView(labelTop: labelFirstSwap, labelBottom: labelFirstDescriptionSwap)
+    }()
+    
+    private lazy var stackViewFirstSwap: UIStackView = {
+        setupStackView(view: viewFirstSwap, stackView: stackViewFirst)
+    }()
+    
+    private lazy var imageSecondSwap: UIImageView = {
+        setupImage(image: "building", color: .white, size: 25)
+    }()
+    
+    private lazy var viewSecondSwap: UIView = {
+        setupView(color: game.swap, radius: 12, addSubview: imageSecondSwap)
+    }()
+    
+    private lazy var labelSecondSwap: UILabel = {
+        setupLabel(
+            title: "Режим наименования",
+            size: 24,
+            alignment: .left)
+    }()
+    
+    private lazy var labelSecondDescriptionSwap: UILabel = {
+        setupLabel(
+            title: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ флага страны.",
+            size: 19,
+            alignment: .left)
+    }()
+    
+    private lazy var stackViewSecond: UIStackView = {
+        setupStackView(labelTop: labelSecondSwap, labelBottom: labelSecondDescriptionSwap)
+    }()
+    
+    private lazy var stackViewSecondSwap: UIStackView = {
+        setupStackView(view: viewSecondSwap, stackView: stackViewSecond)
+    }()
+    
     private lazy var viewDescription: UIView = {
-        let view = setupView(color: game.background, radius: 15)
-        view.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        view.frame.size = contentSize
-        setupSubviews(subviews: labelDescription, labelBulletsList, on: view)
+        let view = setupView(color: .clear)
+        setupSubviews(subviews: labelDescription, labelBulletsList, 
+                      stackViewFirstSwap, stackViewSecondSwap, on: view)
         settingLabel(label: labelBulletsList, size: 19)
         return view
+    }()
+    
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = game.background
+        scrollView.layer.cornerRadius = 15
+        scrollView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        setupSubviews(subviews: viewDescription, on: scrollView)
+        return scrollView
     }()
     
     private lazy var viewHelp: UIView = {
@@ -83,7 +123,7 @@ class GameTypeViewController: UIViewController {
         view.backgroundColor = game.swap
         view.translatesAutoresizingMaskIntoConstraints = false
         view.delegate = self
-        setupSubviews(subviews: viewDescription, on: view)
+        setupSubviews(subviews: scrollView, on: view)
         return view
     }()
     
@@ -96,165 +136,103 @@ class GameTypeViewController: UIViewController {
     }()
     
     private lazy var buttonStart: UIButton = {
-        let button = setupButton(
-            image: "play",
-            color: game.play,
-            action: #selector(startGame))
-        return button
+        setupButton(image: "play", color: game.play, action: #selector(startGame))
     }()
     
     private lazy var buttonFavoutites: UIButton = {
-        let button = setupButton(
-            image: "star",
-            color: game.favourite,
-            action: #selector(favourites))
-        return button
+        setupButton(image: "star", color: game.favourite, action: #selector(favourites))
     }()
     
-    private lazy var buttonFlagOrCountry: UIButton = {
-        let button = setupButton(
+    private lazy var buttonSwap: UIButton = {
+        setupButton(
             image: mode.flag ? "flag" : "building",
             color: game.swap,
-            action: #selector(flagOrCountry))
-        return button
+            action: #selector(swap))
     }()
     
     private lazy var stackViewButtons: UIStackView = {
-        let stackView = setupStackView(
+        setupStackView(
             buttonFirst: buttonStart,
             buttonSecond: buttonFavoutites,
-            buttonThird: buttonFlagOrCountry)
-        return stackView
+            buttonThird: buttonSwap)
     }()
     
     private lazy var buttonCountQuestions: UIButton = {
-        let button = setupButton(
+        setupButton(
             color: game.swap,
             labelFirst: labelCountQuestion,
             labelSecond: labelCount,
             tag: 1,
             action: #selector(changeSetting))
-        return button
     }()
     
     private lazy var labelCountQuestion: UILabel = {
-        let label = setupLabel(
-            title: "\(mode.countQuestions)",
-            color: .white,
-            style: "Gill Sans",
-            size: 60)
-        return label
+        setupLabel(title: "\(mode.countQuestions)", size: 60)
     }()
     
     private lazy var labelCount: UILabel = {
-        let label = setupLabel(
-            title: "Количество вопросов",
-            color: .white,
-            style: "Gill Sans",
-            size: 17)
-        return label
+        setupLabel(title: "Количество вопросов", size: 17)
     }()
     
     private lazy var buttonContinents: UIButton = {
-        let button = setupButton(
+        setupButton(
             color: game.swap,
             labelFirst: labelContinents,
             labelSecond: labelContinentsDescription,
             tag: 2,
             action: #selector(changeSetting))
-        return button
     }()
     
     private lazy var labelContinents: UILabel = {
-        let label = setupLabel(
-            title: "\(comma())",
-            color: .white,
-            style: "Gill Sans",
-            size: 30)
-        return label
+        setupLabel(title: "\(comma())", size: 30)
     }()
     
     private lazy var labelContinentsDescription: UILabel = {
-        let label = setupLabel(
-            title: "Континенты",
-            color: .white,
-            style: "Gill Sans",
-            size: 17)
-        return label
+        setupLabel(title: "Континенты", size: 17)
     }()
     
-    private lazy var buttonTimeElapsed: UIButton = {
-        let button = setupButton(
+    private lazy var buttonCountdown: UIButton = {
+        setupButton(
             color: game.swap,
-            labelFirst: labelTimeElapsed,
-            labelSecond: labelTimeElapsedDesription,
+            labelFirst: labelCountdown,
+            labelSecond: labelCountdownDesription,
             tag: 3,
             action: #selector(changeSetting))
-        return button
     }()
     
-    private lazy var labelTimeElapsed: UILabel = {
-        let label = setupLabel(
-            title: mode.timeElapsed.timeElapsed ? "Да" : "Нет",
-            color: .white,
-            style: "Gill Sans",
-            size: 60)
-        return label
+    private lazy var labelCountdown: UILabel = {
+        setupLabel(title: mode.timeElapsed.timeElapsed ? "Да" : "Нет", size: 60)
     }()
     
-    private lazy var labelTimeElapsedDesription: UILabel = {
-        let label = setupLabel(
-            title: "Обратный отсчёт",
-            color: .white,
-            style: "Gill Sans",
-            size: 17)
-        return label
+    private lazy var labelCountdownDesription: UILabel = {
+        setupLabel(title: "Обратный отсчёт", size: 17)
     }()
     
     private lazy var buttonTime: UIButton = {
-        let button = setupButton(
+        setupButton(
             color: game.swap,
             labelFirst: labelTime,
             labelSecond: labelTimeDesription,
             image: imageInfinity,
             tag: 4,
             action: #selector(changeSetting))
-        return button
     }()
     
     private lazy var labelTime: UILabel = {
-        let label = setupLabel(
-            title: "\(timeElapsedOnOff())",
-            color: .white,
-            style: "Gill Sans",
-            size: 60)
-        return label
+        setupLabel(title: "\(timeElapsedOnOff())", size: 60)
     }()
     
     private lazy var labelTimeDesription: UILabel = {
-        let label = setupLabel(
-            title: "\(checkTimeElapsedDescription())",
-            color: .white,
-            style: "Gill Sans",
-            size: 17)
-        return label
+        setupLabel(title: "\(checkTimeElapsedDescription())", size: 17)
     }()
     
     private lazy var imageInfinity: UIImageView = {
-        let imageView = setupImage(
-            image: "infinity",
-            color: .white,
-            size: 60)
-        return imageView
+        setupImage(image: "infinity", color: .white, size: 60)
     }()
     
     var mode: Setting!
     var game: Games!
     var tag: Int!
-    
-    private var contentSize: CGSize {
-        CGSize(width: view.frame.width * 0.9, height: view.frame.height * 0.7 + 150)
-    }
     
     typealias ParagraphData = (bullet: String, paragraph: String)
     
@@ -274,7 +252,7 @@ class GameTypeViewController: UIViewController {
     private func setupSubviews() {
         setupSubviews(subviews: viewGameType, imageGameType, labelGameName,
                       stackViewButtons, buttonCountQuestions, buttonContinents,
-                      buttonTimeElapsed, buttonTime, visualEffectView,
+                      buttonCountdown, buttonTime, visualEffectView,
                       on: view)
     }
     
@@ -362,13 +340,15 @@ class GameTypeViewController: UIViewController {
         
     }
     
-    @objc private func flagOrCountry() {
+    @objc private func swap() {
         if mode.flag {
-            let image = UIImage(systemName: "building")
-            buttonFlagOrCountry.setImage(image, for: .normal)
+            let size = UIImage.SymbolConfiguration(pointSize: 20)
+            let image = UIImage(systemName: "building", withConfiguration: size)
+            buttonSwap.setImage(image, for: .normal)
         } else {
-            let image = UIImage(systemName: "flag")
-            buttonFlagOrCountry.setImage(image, for: .normal)
+            let size = UIImage.SymbolConfiguration(pointSize: 20)
+            let image = UIImage(systemName: "flag", withConfiguration: size)
+            buttonSwap.setImage(image, for: .normal)
         }
         mode.flag.toggle()
         StorageManager.shared.saveSetting(setting: mode)
@@ -437,11 +417,15 @@ class GameTypeViewController: UIViewController {
 }
 // MARK: - Setup views
 extension GameTypeViewController {
-    private func setupView(color: UIColor, radius: CGFloat? = nil) -> UIView {
+    private func setupView(color: UIColor, radius: CGFloat? = nil,
+                           addSubview: UIView? = nil) -> UIView {
         let view = UIView()
         view.backgroundColor = color
         view.layer.cornerRadius = radius ?? 0
         view.translatesAutoresizingMaskIntoConstraints = false
+        if let image = addSubview {
+            setupSubviews(subviews: image, on: view)
+        }
         return view
     }
 }
@@ -458,12 +442,12 @@ extension GameTypeViewController {
 }
 // MARK: - Setup labels
 extension GameTypeViewController {
-    private func setupLabel(title: String, color: UIColor, style: String,
-                            size: CGFloat, alignment: NSTextAlignment? = nil) -> UILabel {
+    private func setupLabel(title: String, size: CGFloat,
+                            alignment: NSTextAlignment? = nil) -> UILabel {
         let label = UILabel()
         label.text = title
-        label.textColor = color
-        label.font = UIFont(name: style, size: size)
+        label.textColor = .white
+        label.font = UIFont(name: "Gill Sans", size: size)
         label.textAlignment = alignment ?? .center
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -557,7 +541,8 @@ extension GameTypeViewController {
         return button
     }
     
-    private func setupButton(image: String, color: UIColor, action: Selector) -> UIButton {
+    private func setupButton(image: String, color: UIColor, action: Selector,
+                             isEnabled: Bool? = nil) -> UIButton {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: image, withConfiguration: size)
         let button = Button(type: .system)
@@ -569,6 +554,7 @@ extension GameTypeViewController {
         button.layer.shadowOpacity = 0.4
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isEnabled = isEnabled ?? true
         button.addTarget(self, action: action, for: .touchUpInside)
         return button
     }
@@ -601,6 +587,21 @@ extension GameTypeViewController {
             arrangedSubviews: [buttonFirst, buttonSecond, buttonThird])
         stackView.spacing = 20
         stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    private func setupStackView(labelTop: UIView, labelBottom: UILabel) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [labelTop, labelBottom])
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    private func setupStackView(view: UIView, stackView: UIStackView) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [view, stackView])
+        stackView.spacing = 10
+        stackView.alignment = .top
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
@@ -640,11 +641,11 @@ extension GameTypeViewController {
         setupConstraintsLabel(label: labelContinents, button: buttonContinents, constant: -15)
         setupConstraintsLabel(label: labelContinentsDescription, button: buttonContinents, constant: 75)
         
-        setupConstraintsButton(button: buttonTimeElapsed,
+        setupConstraintsButton(button: buttonCountdown,
                                layout: buttonCountQuestions.bottomAnchor,
                                leading: 20, trailing: -halfWidth(), height: 150)
-        setupConstraintsLabel(label: labelTimeElapsed, button: buttonTimeElapsed, constant: -25)
-        setupConstraintsLabel(label: labelTimeElapsedDesription, button: buttonTimeElapsed, constant: 35)
+        setupConstraintsLabel(label: labelCountdown, button: buttonCountdown, constant: -25)
+        setupConstraintsLabel(label: labelCountdownDesription, button: buttonCountdown, constant: 35)
         
         setupConstraintsButton(button: buttonTime,
                                layout: buttonContinents.bottomAnchor,
@@ -693,10 +694,19 @@ extension GameTypeViewController {
         ])
         
         NSLayoutConstraint.activate([
-            viewDescription.topAnchor.constraint(equalTo: viewHelp.topAnchor, constant: 63.75),
-            viewDescription.leadingAnchor.constraint(equalTo: viewHelp.leadingAnchor),
-            viewDescription.trailingAnchor.constraint(equalTo: viewHelp.trailingAnchor),
-            viewDescription.bottomAnchor.constraint(equalTo: viewHelp.bottomAnchor)
+            scrollView.topAnchor.constraint(equalTo: viewHelp.topAnchor, constant: 63.75),
+            scrollView.leadingAnchor.constraint(equalTo: viewHelp.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: viewHelp.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: viewHelp.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            viewDescription.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            viewDescription.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            viewDescription.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            viewDescription.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            viewDescription.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            viewDescription.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1.35)
         ])
         
         NSLayoutConstraint.activate([
@@ -709,6 +719,24 @@ extension GameTypeViewController {
             labelBulletsList.topAnchor.constraint(equalTo: labelDescription.bottomAnchor, constant: 19),
             labelBulletsList.leadingAnchor.constraint(equalTo: viewDescription.leadingAnchor, constant: 15),
             labelBulletsList.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
+        ])
+        
+        setupCenterSubview(subview: imageFirstSwap, on: viewFirstSwap)
+        setupSquare(subviews: viewFirstSwap, sizes: 40)
+        
+        NSLayoutConstraint.activate([
+            stackViewFirstSwap.topAnchor.constraint(equalTo: labelBulletsList.bottomAnchor),
+            stackViewFirstSwap.leadingAnchor.constraint(equalTo: viewDescription.leadingAnchor, constant: 15),
+            stackViewFirstSwap.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
+        ])
+        
+        setupCenterSubview(subview: imageSecondSwap, on: viewSecondSwap)
+        setupSquare(subviews: viewSecondSwap, sizes: 40)
+        
+        NSLayoutConstraint.activate([
+            stackViewSecondSwap.topAnchor.constraint(equalTo: stackViewFirstSwap.bottomAnchor),
+            stackViewSecondSwap.leadingAnchor.constraint(equalTo: viewDescription.leadingAnchor, constant: 15),
+            stackViewSecondSwap.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
         ])
     }
     

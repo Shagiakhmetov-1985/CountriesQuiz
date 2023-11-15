@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PopUpDescription: UIView {
+class PopUpView: UIView {
     private lazy var buttonClose: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: "multiply", withConfiguration: size)
@@ -56,7 +56,7 @@ class PopUpDescription: UIView {
     }
 }
 // MARK: - Set contraints
-extension PopUpDescription {
+extension PopUpView {
     private func setConstraints() {
         NSLayoutConstraint.activate([
             buttonClose.topAnchor.constraint(equalTo: topAnchor, constant: 12.5),

@@ -16,6 +16,7 @@ struct Games {
     let play: UIColor
     let favourite: UIColor
     let swap: UIColor
+    let done: UIColor
 }
 
 extension Games {
@@ -30,6 +31,7 @@ extension Games {
         let plays = GameType.shared.buttonsPlay
         let favourites = GameType.shared.buttonsFavourite
         let swaps = GameType.shared.buttonsSwap
+        let dones = GameType.shared.buttonsDone
         let iterrationCount = min(names.count, images.count, descriptions.count,
                                   backgrounds.count, plays.count,
                                   favourites.count, swaps.count)
@@ -43,7 +45,8 @@ extension Games {
                 background: backgrounds[index],
                 play: plays[index],
                 favourite: favourites[index],
-                swap: swaps[index])
+                swap: swaps[index],
+                done: dones[index])
             games.append(information)
         }
         

@@ -100,6 +100,26 @@ extension UIColor {
     static var grayStone: UIColor {
         #colorLiteral(red: 0.5411764706, green: 0.5411764706, blue: 0.5411764706, alpha: 1)
     }
+    // MARK: - For buttons done
+    static var skyCyanLight: UIColor {
+        #colorLiteral(red: 0.7522551417, green: 0.8996843696, blue: 0.9869558215, alpha: 1)
+    }
+    
+    static var greenWhite: UIColor {
+        #colorLiteral(red: 0.7831113935, green: 0.9327338934, blue: 0.7638863325, alpha: 1)
+    }
+    
+    static var somon: UIColor {
+        #colorLiteral(red: 0.9543746114, green: 0.741737783, blue: 0.6168894172, alpha: 1)
+    }
+    
+    static var veryLightPurple: UIColor {
+        #colorLiteral(red: 0.9333333333, green: 0.7450980392, blue: 0.9450980392, alpha: 1)
+    }
+    
+    static var salmon: UIColor {
+        #colorLiteral(red: 1, green: 0.5490196078, blue: 0.4117647059, alpha: 1)
+    }
     // MARK: - For panel and backgroung setting view controller
     static var panelViewLightBlueLight: UIColor {
         #colorLiteral(red: 0.405766964, green: 0.6143494248, blue: 1, alpha: 1)
@@ -139,10 +159,6 @@ extension UIColor {
     
     static var skyGrayLight: UIColor {
         #colorLiteral(red: 0.8, green: 0.8, blue: 0.8, alpha: 1)
-    }
-    // MARK: - For views, picker views
-    static var skyCyanLight: UIColor {
-        #colorLiteral(red: 0.7522551417, green: 0.8996843696, blue: 0.9869558215, alpha: 1)
     }
     // MARK: - QuizOfFlagsViewController, Progress view
     static var progressColor: UIColor {

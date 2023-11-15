@@ -17,6 +17,7 @@ struct Setting: Codable {
     var asiaContinent: Bool
     var oceaniaContinent: Bool
     var flag: Bool
+    var scrabbleType: Int
     var timeElapsed: TimeElapsed
 }
 
@@ -47,6 +48,7 @@ extension Setting {
             asiaContinent: false,
             oceaniaContinent: false,
             flag: true,
+            scrabbleType: DefaultSetting.scrabbleType.rawValue,
             timeElapsed: TimeElapsed(
                 timeElapsed: true,
                 questionSelect: QuestionSelect(
@@ -65,6 +67,7 @@ extension Setting {
 enum DefaultSetting: Int {
     case countQuestions = 20
     case countRows = 91
+    case scrabbleType = 0
     case oneQuestionTime = 10
     case allQuestionsTime = 100
 }

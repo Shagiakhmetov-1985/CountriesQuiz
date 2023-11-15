@@ -22,33 +22,17 @@ class PopUpView: UIView {
         return button
     }()
     
-    private lazy var labelName: UILabel = {
-        let label = UILabel()
-        label.text = "Тип игры"
-        label.textColor = .white
-        label.font = UIFont(name: "Gill Sans", size: 25)
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    var delegate: PopUpDescriptionDelegate!
+    var delegate: PopUpViewDelegate!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupSubviews(subviews: buttonClose, labelName)
+        addSubview(buttonClose)
         layer.cornerRadius = 15
         setConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setupSubviews(subviews: UIView...) {
-        subviews.forEach { subview in
-            addSubview(subview)
-        }
     }
     
     @objc private func close() {
@@ -63,11 +47,6 @@ extension PopUpView {
             buttonClose.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.5),
             buttonClose.heightAnchor.constraint(equalToConstant: 40),
             buttonClose.widthAnchor.constraint(equalToConstant: 40)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelName.centerXAnchor.constraint(equalTo: centerXAnchor),
-            labelName.centerYAnchor.constraint(equalTo: buttonClose.centerYAnchor)
         ])
     }
 }

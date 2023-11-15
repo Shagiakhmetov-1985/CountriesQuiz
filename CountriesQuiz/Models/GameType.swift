@@ -78,6 +78,9 @@ class GameType {
     let buttonsSwap: [UIColor] = [.blueBlackSea, .greenDartmouth, .brownDeep,
                                   .blueSlate, .brownRed]
     
+    let buttonsDone: [UIColor] = [.skyCyanLight, .greenWhite, .somon,
+                                  .veryLightPurple, .salmon]
+    
     private init() {}
 }
 

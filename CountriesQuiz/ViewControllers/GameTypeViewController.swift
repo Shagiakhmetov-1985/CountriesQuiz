@@ -268,6 +268,13 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         setupLabel(color: .white, title: "", size: 22, style: "Gill Sans")
     }()
     
+    private lazy var viewSettingDescription: UIView = {
+        let view = setupView(color: game.background)
+        view.layer.cornerRadius = 15
+        view.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        return view
+    }()
+    
     private lazy var pickerView: UIPickerView = {
         let pickerView = UIPickerView()
         pickerView.backgroundColor = .white
@@ -280,7 +287,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelAllCountries: UILabel = {
         setupLabel(
-            color: .white, 
+            color: select(isOn: mode.allCountries), 
             title: "Все страны мира",
             size: 26,
             style: "mr_fontick")
@@ -288,7 +295,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelCountAllCountries: UILabel = {
         setupLabel(
-            color: .white,
+            color: select(isOn: mode.allCountries),
             title: "Количество стран: \(FlagsOfCountries.shared.countries.count)",
             size: 20,
             style: "mr_fontick")
@@ -296,16 +303,141 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var buttonAllCountries: UIButton = {
         setupButton(
-            color: game.background,
+            color: select(isOn: !mode.allCountries),
             addLabelFirst: labelAllCountries,
             addLabelSecond: labelCountAllCountries)
     }()
     
-    private lazy var viewSettingDescription: UIView = {
-        let view = setupView(color: game.background)
-        view.layer.cornerRadius = 15
-        view.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        return view
+    private lazy var labelAmericaContinent: UILabel = {
+        setupLabel(
+            color: select(isOn: mode.americaContinent),
+            title: "Континент Америки",
+            size: 26,
+            style: "mr_fontick")
+    }()
+    
+    private lazy var labelCountAmericaContinent: UILabel = {
+        setupLabel(
+            color: select(isOn: mode.americaContinent),
+            title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAmericanContinent.count)",
+            size: 20,
+            style: "mr_fontick")
+    }()
+    
+    private lazy var buttonAmericaContinent: UIButton = {
+        setupButton(
+            color: select(isOn: !mode.americaContinent),
+            addLabelFirst: labelAmericaContinent,
+            addLabelSecond: labelCountAmericaContinent,
+            tag: 1)
+    }()
+    
+    private lazy var labelEuropeContinent: UILabel = {
+        setupLabel(
+            color: select(isOn: mode.europeContinent),
+            title: "Континент Европы",
+            size: 26,
+            style: "mr_fontick")
+    }()
+    
+    private lazy var labelCountEuropeContinent: UILabel = {
+        setupLabel(
+            color: select(isOn: mode.europeContinent),
+            title: "Количество стран: \(FlagsOfCountries.shared.countriesOfEuropeanContinent.count)",
+            size: 20,
+            style: "mr_fontick")
+    }()
+    
+    private lazy var buttonEuropeContinent: UIButton = {
+        setupButton(
+            color: select(isOn: !mode.europeContinent),
+            addLabelFirst: labelEuropeContinent,
+            addLabelSecond: labelCountEuropeContinent,
+            tag: 2)
+    }()
+    
+    private lazy var labelAfricaContinent: UILabel = {
+        setupLabel(
+            color: select(isOn: mode.africaContinent),
+            title: "Континент Африки",
+            size: 26,
+            style: "mr_fontick")
+    }()
+    
+    private lazy var labelCountAfricaContinent: UILabel = {
+        setupLabel(
+            color: select(isOn: mode.africaContinent),
+            title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAfricanContinent.count)",
+            size: 20,
+            style: "mr_fontick")
+    }()
+    
+    private lazy var buttonAfricaContinent: UIButton = {
+        setupButton(
+            color: select(isOn: !mode.africaContinent),
+            addLabelFirst: labelAfricaContinent,
+            addLabelSecond: labelCountAfricaContinent,
+            tag: 3)
+    }()
+    
+    private lazy var labelAsiaContinent: UILabel = {
+        setupLabel(
+            color: select(isOn: mode.asiaContinent),
+            title: "Континент Азии",
+            size: 26,
+            style: "mr_fontick")
+    }()
+    
+    private lazy var labelCountAsiaContinent: UILabel = {
+        setupLabel(
+            color: select(isOn: mode.asiaContinent),
+            title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAsianContinent.count)",
+            size: 20,
+            style: "mr_fontick")
+    }()
+    
+    private lazy var buttonAsiaContinent: UIButton = {
+        setupButton(
+            color: select(isOn: !mode.asiaContinent),
+            addLabelFirst: labelAsiaContinent,
+            addLabelSecond: labelCountAsiaContinent,
+            tag: 4)
+    }()
+    
+    private lazy var labelOceanContinent: UILabel = {
+        setupLabel(
+            color: select(isOn: mode.oceaniaContinent),
+            title: "Континент Океании",
+            size: 26,
+            style: "mr_fontick")
+    }()
+    
+    private lazy var labelCountOceanContinent: UILabel = {
+        setupLabel(
+            color: select(isOn: mode.oceaniaContinent),
+            title: "Количество стран: \(FlagsOfCountries.shared.countriesOfOceanContinent.count)",
+            size: 20,
+            style: "mr_fontick")
+    }()
+    
+    private lazy var buttonOceanContinent: UIButton = {
+        setupButton(
+            color: select(isOn: !mode.oceaniaContinent),
+            addLabelFirst: labelOceanContinent,
+            addLabelSecond: labelCountOceanContinent,
+            tag: 5)
+    }()
+    
+    private lazy var stackViewContinents: UIStackView = {
+        let stackView = UIStackView(
+            arrangedSubviews: [buttonAllCountries, buttonAmericaContinent,
+                               buttonEuropeContinent, buttonAfricaContinent,
+                               buttonAsiaContinent, buttonOceanContinent])
+        stackView.axis = .vertical
+        stackView.spacing = 15
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     private lazy var buttonDone: UIButton = {
@@ -313,11 +445,11 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var buttonCancel: UIButton = {
-        setupButton(title: "Отмена", color: .white, action: #selector(cancel))
+        setupButton(title: "Отмена", color: .white, action: #selector(closeViewSetting))
     }()
     
     private lazy var stackView: UIStackView = {
-        setupStackView(buttonFirst: buttonDone, buttonSecond: buttonCancel)
+        setupStackView(buttonFirst: buttonDone, buttonSecond: buttonCancel, spacing: 15)
     }()
     
     private lazy var viewSetting: UIView = {
@@ -329,11 +461,13 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         return view
     }()
     
+    typealias ParagraphData = (bullet: String, paragraph: String)
+    
     var mode: Setting!
     var game: Games!
     var tag: Int!
-    
-    typealias ParagraphData = (bullet: String, paragraph: String)
+    var delegate: GameTypeViewControllerDelegate!
+    var continent = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -392,6 +526,12 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         }
     }
     
+    private func removeSubviews(subviews: UIView...) {
+        subviews.forEach { subview in
+            subview.removeFromSuperview()
+        }
+    }
+    
     private func buttonsOnOff(bool: Bool) {
         let opacity: Float = bool ? 1 : 0
         isEnabled(buttons: buttonBack, buttonHelp, bool: bool)
@@ -417,6 +557,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     @objc private func backToMenu() {
+        delegate.acceptDataOfSetting(setting: mode)
         navigationController?.popViewController(animated: true)
     }
     
@@ -454,6 +595,10 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         tag == 2 ? false : true
     }
     
+    private func select(isOn: Bool) -> UIColor {
+        isOn ? game.background : .white
+    }
+    
     private func titleSetting(tag: Int) -> String {
         switch tag {
         case 1: return "Количество вопросов"
@@ -465,19 +610,97 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private func addSubviews(tag: Int) {
         switch tag {
-        case 1: setupSubviews(subviews: pickerView, on: viewSettingDescription)
-        case 2: setupSubviews(subviews: pickerView, on: viewSettingDescription)
+        case 1: setPickerViewCountQuestions()
+        case 2: setupSubviews(subviews: stackViewContinents, on: viewSettingDescription)
         case 3: setupSubviews(subviews: pickerView, on: viewSettingDescription)
         default: setupSubviews(subviews: pickerView, on: viewSettingDescription)
         }
     }
     
+    private func setPickerViewCountQuestions() {
+        let row = mode.countQuestions - 10
+        setupSubviews(subviews: pickerView, on: viewSettingDescription)
+        pickerView.selectRow(row, inComponent: 0, animated: false)
+    }
+    
     private func setConstraintsSetting(tag: Int) {
         switch tag {
         case 1: setupConstraintsViewSettingCountQuestions()
-        case 2: setupConstraintsViewSettingCountQuestions()
+        case 2: setupConstraintsSettingContinents()
         case 3: setupConstraintsViewSettingCountQuestions()
         default: setupConstraintsViewSettingCountQuestions()
+        }
+    }
+    // MARK: - Setup change setting
+    private func countQuestions() {
+        let row = pickerView.selectedRow(inComponent: 0)
+        mode.countQuestions = row + 10
+        labelCountQuestion.text = "\(row + 10)"
+        closeViewSetting()
+    }
+    
+    private func buttonOnOff(sender: UIButton) {
+        let color = sender.backgroundColor == game.background ? .white : game.background
+        UIView.animate(withDuration: 0.3) {
+            sender.backgroundColor = color
+        }
+        checkContinents(sender: sender)
+    }
+    
+    private func checkContinents(sender: UIButton) {
+        guard sender.tag > 0 else { return setupAllCountries() }
+        continent += sender.backgroundColor == .white ? 1 : -1
+        guard continent > 4 else { return }
+        continent = 0
+        setupAllCountries()
+    }
+    
+    private func setupAllCountries() {
+        buttonOnOff(buttons: buttonAllCountries, color: .white)
+        buttonOnOff(buttons: buttonAmericaContinent, buttonEuropeContinent,
+                    buttonAfricaContinent, buttonAsiaContinent,
+                    buttonOceanContinent, color: game.background)
+        
+        labelOnOff(labels: labelAllCountries, labelCountAllCountries, color: game.background)
+        labelOnOff(labels: labelAmericaContinent, labelCountAmericaContinent, 
+                   labelEuropeContinent, labelCountEuropeContinent,
+                   labelAfricaContinent, labelCountAfricaContinent, 
+                   labelAsiaContinent, labelCountAsiaContinent, labelOceanContinent,
+                   labelCountOceanContinent, color: .white)
+    }
+    
+    private func labelOnOff(tag: Int) {
+        switch tag {
+        case 0: labelOnOff(labels: labelAllCountries, labelCountAllCountries)
+        case 1: labelOnOff(labels: labelAmericaContinent, labelCountAmericaContinent)
+        case 2: labelOnOff(labels: labelEuropeContinent, labelCountEuropeContinent)
+        case 3: labelOnOff(labels: labelAfricaContinent, labelCountAfricaContinent)
+        case 4: labelOnOff(labels: labelAsiaContinent, labelCountAsiaContinent)
+        default: labelOnOff(labels: labelOceanContinent, labelCountOceanContinent)
+        }
+    }
+    
+    private func labelOnOff(labels: UILabel...) {
+        labels.forEach { label in
+            UIView.animate(withDuration: 0.3) { [self] in
+                label.textColor = label.textColor == game.background ? .white : game.background
+            }
+        }
+    }
+    
+    private func buttonOnOff(buttons: UIButton..., color: UIColor) {
+        buttons.forEach { button in
+            UIView.animate(withDuration: 0.3) {
+                button.backgroundColor = color
+            }
+        }
+    }
+    
+    private func labelOnOff(labels: UILabel..., color: UIColor) {
+        labels.forEach { label in
+            UIView.animate(withDuration: 0.3) {
+                label.textColor = color
+            }
         }
     }
     // MARK: - Start game, favourites and swap
@@ -621,19 +844,26 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func setting(tag: Int) {
         addSubviews(tag: tag)
         labelSetting.text = titleSetting(tag: tag)
+        buttonDone.tag = tag
         setConstraintsSetting(tag: tag)
     }
     // MARK: - Views of setting
-    @objc private func done() {
-        
+    @objc private func done(sender: UIButton) {
+        doneChangeSetting(tag: sender.tag)
     }
     
-    @objc private func cancel() {
-        
+    private func doneChangeSetting(tag: Int) {
+        switch tag {
+        case 1: countQuestions()
+        case 2: countQuestions()
+        case 3: countQuestions()
+        default: countQuestions()
+        }
     }
     
-    @objc private func continents() {
-        
+    @objc private func continents(sender: UIButton) {
+        buttonOnOff(sender: sender)
+        labelOnOff(tag: sender.tag)
     }
 }
 // MARK: - Setup views
@@ -815,8 +1045,8 @@ extension GameTypeViewController {
         return button
     }
     
-    private func setupButton(color: UIColor, addLabelFirst: UILabel, 
-                             addLabelSecond: UILabel) -> UIButton {
+    private func setupButton(color: UIColor, addLabelFirst: UILabel,
+                             addLabelSecond: UILabel, tag: Int? = nil) -> UIButton {
         let button = UIButton(type: .custom)
         button.backgroundColor = color
         button.layer.borderColor = UIColor.white.cgColor
@@ -825,6 +1055,7 @@ extension GameTypeViewController {
         button.layer.shadowColor = UIColor.white.cgColor
         button.layer.shadowOpacity = 0.4
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.tag = tag ?? 0
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(continents), for: .touchUpInside)
         setupSubviews(subviews: addLabelFirst, addLabelSecond, on: button)
@@ -834,16 +1065,22 @@ extension GameTypeViewController {
 // MARK: - Setup stack views
 extension GameTypeViewController {
     private func setupStackView(buttonFirst: UIButton, buttonSecond: UIButton,
-                                buttonThird: UIButton) -> UIStackView {
-        let stackView = UIStackView(
-            arrangedSubviews: [buttonFirst, buttonSecond, buttonThird])
-        stackView.spacing = 20
+                                buttonThird: UIButton? = nil,
+                                spacing: CGFloat? = nil) -> UIStackView {
+        var arrangedSubviews: [UIView] = []
+        if let buttonThird = buttonThird {
+            arrangedSubviews = [buttonFirst, buttonSecond, buttonThird]
+        } else {
+            arrangedSubviews = [buttonFirst, buttonSecond]
+        }
+        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
+        stackView.spacing = spacing ?? 20
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
     
-    private func setupStackView(labelTop: UIView, labelBottom: UILabel) -> UIStackView {
+    private func setupStackView(labelTop: UILabel, labelBottom: UILabel) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [labelTop, labelBottom])
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -854,14 +1091,6 @@ extension GameTypeViewController {
         let stackView = UIStackView(arrangedSubviews: [view, stackView])
         stackView.spacing = 10
         stackView.alignment = .top
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-    
-    private func setupStackView(buttonFirst: UIButton, buttonSecond: UIButton) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [buttonFirst, buttonSecond])
-        stackView.spacing = 15
-        stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
@@ -1006,8 +1235,21 @@ extension GameTypeViewController {
     }
     
     private func setupConstraintsViewSettingCountQuestions() {
+        setupConstraintsViewsAndLabel(constant: 100)
+        setupConstraintsSubviews(subview: pickerView, to: viewSettingDescription, height: 110)
+        setupConstraintsDoneCancel()
+    }
+    
+    private func setupConstraintsSettingContinents() {
+        setupConstraintsViewsAndLabel(constant: -220)
+        setupConstraintsSubviews(subview: stackViewContinents, to: viewSettingDescription, height: 435)
+        setupConstraintsOnButton()
+        setupConstraintsDoneCancel()
+    }
+    
+    private func setupConstraintsViewsAndLabel(constant: CGFloat) {
         NSLayoutConstraint.activate([
-            viewSetting.topAnchor.constraint(equalTo: view.centerYAnchor, constant: 100),
+            viewSetting.topAnchor.constraint(equalTo: view.centerYAnchor, constant: constant),
             viewSetting.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
             viewSetting.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
             viewSetting.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25)
@@ -1024,16 +1266,39 @@ extension GameTypeViewController {
             viewSettingDescription.trailingAnchor.constraint(equalTo: viewSetting.trailingAnchor),
             viewSettingDescription.bottomAnchor.constraint(equalTo: viewSetting.bottomAnchor)
         ])
-        
+    }
+    
+    private func setupConstraintsSubviews(subview: UIView, to otherSubview: UIView, height: CGFloat) {
         NSLayoutConstraint.activate([
-            pickerView.topAnchor.constraint(equalTo: viewSettingDescription.topAnchor, constant: 20),
-            pickerView.leadingAnchor.constraint(equalTo: viewSettingDescription.leadingAnchor, constant: 20),
-            pickerView.trailingAnchor.constraint(equalTo: viewSettingDescription.trailingAnchor, constant: -20),
-            pickerView.heightAnchor.constraint(equalToConstant: 110)
+            subview.topAnchor.constraint(equalTo: otherSubview.topAnchor, constant: 20),
+            subview.leadingAnchor.constraint(equalTo: otherSubview.leadingAnchor, constant: 20),
+            subview.trailingAnchor.constraint(equalTo: otherSubview.trailingAnchor, constant: -20),
+            subview.heightAnchor.constraint(equalToConstant: height)
         ])
-        
+    }
+    
+    private func setupConstraintsOnButton() {
+        setupOnButton(labelFirst: labelAllCountries, and: labelCountAllCountries, on: buttonAllCountries)
+        setupOnButton(labelFirst: labelAmericaContinent, and: labelCountAmericaContinent, on: buttonAmericaContinent)
+        setupOnButton(labelFirst: labelEuropeContinent, and: labelCountEuropeContinent, on: buttonEuropeContinent)
+        setupOnButton(labelFirst: labelAfricaContinent, and: labelCountAfricaContinent, on: buttonAfricaContinent)
+        setupOnButton(labelFirst: labelAsiaContinent, and: labelCountAsiaContinent, on: buttonAsiaContinent)
+        setupOnButton(labelFirst: labelOceanContinent, and: labelCountOceanContinent, on: buttonOceanContinent)
+    }
+    
+    private func setupOnButton(
+        labelFirst: UILabel, and labelSecond: UILabel, on button: UIButton) {
+            NSLayoutConstraint.activate([
+                labelFirst.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+                labelFirst.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: -12.5),
+                labelSecond.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+                labelSecond.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: 12.5)
+            ])
+    }
+    
+    private func setupConstraintsDoneCancel() {
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: pickerView.bottomAnchor, constant: 40),
+            stackView.bottomAnchor.constraint(equalTo: viewSettingDescription.bottomAnchor, constant: -20),
             stackView.leadingAnchor.constraint(equalTo: viewSettingDescription.leadingAnchor, constant: 20),
             stackView.trailingAnchor.constraint(equalTo: viewSettingDescription.trailingAnchor, constant: -20),
             stackView.heightAnchor.constraint(equalToConstant: 50)
@@ -1086,14 +1351,14 @@ extension GameTypeViewController: PopUpViewDelegate {
 }
 // MARK: - PopUpViewSettingDelegate
 extension GameTypeViewController: PopUpViewSettingDelegate {
-    func closeViewSetting() {
+    @objc func closeViewSetting() {
         buttonsOnOff(bool: true)
         UIView.animate(withDuration: 0.5) { [self] in
             visualEffectView.alpha = 0
             viewSetting.alpha = 0
             viewSetting.transform = CGAffineTransform.init(translationX: 0, y: view.frame.height)
         } completion: { [self] _ in
-            viewSetting.removeFromSuperview()
+            removeSubviews(subviews: pickerView, stackViewContinents, viewSetting)
         }
     }
 }

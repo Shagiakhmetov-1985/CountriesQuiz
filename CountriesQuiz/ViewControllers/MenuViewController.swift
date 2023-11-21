@@ -11,6 +11,10 @@ protocol SettingViewControllerDelegate {
     func sendDataOfSetting(setting: Setting)
 }
 
+protocol GameTypeViewControllerDelegate {
+    func acceptDataOfSetting(setting: Setting)
+}
+
 class MenuViewController: UIViewController {
     // MARK: - Private properties
     private lazy var labelMenu: UILabel = {
@@ -303,7 +307,7 @@ class MenuViewController: UIViewController {
         setupConstraints()
     }
     
-    // MARK: - Private methods
+    // MARK: - General methods
     private func setupDesign() {
         view.backgroundColor = .white
         mode = StorageManager.shared.fetchSetting()
@@ -328,13 +332,14 @@ class MenuViewController: UIViewController {
             subviewOther.addSubview(subview)
         }
     }
-    
+    // MARK: - Button activate. Press game type, setting
     @objc private func gameType(sender: UIButton) {
         let tag = sender.tag
         let gameTypeVC = GameTypeViewController()
         gameTypeVC.mode = mode
         gameTypeVC.game = games[tag]
         gameTypeVC.tag = tag
+        gameTypeVC.delegate = self
         navigationController?.pushViewController(gameTypeVC, animated: true)
     }
     
@@ -429,7 +434,11 @@ extension MenuViewController {
     }
 }
 // MARK: - Delegate rewrite user defaults
-extension MenuViewController: SettingViewControllerDelegate {
+extension MenuViewController: SettingViewControllerDelegate, GameTypeViewControllerDelegate {
+    func acceptDataOfSetting(setting: Setting) {
+        mode = setting
+    }
+    
     func sendDataOfSetting(setting: Setting) {
         mode = setting
     }

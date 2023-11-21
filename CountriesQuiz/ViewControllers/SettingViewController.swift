@@ -306,21 +306,20 @@ class SettingViewController: UIViewController {
     }
     
     private func setupPickerViewNumberQuestions() {
-        let countQuestions = mode.countQuestions
-        let rowCountQuestions = countQuestions - 10
-        pickerViewNumberQuestion.selectRow(rowCountQuestions, inComponent: 0, animated: false)
-        setupPickerViewAllQuestions(countQuestions: countQuestions)
+        let row = mode.countQuestions - 10
+        pickerViewNumberQuestion.selectRow(row, inComponent: 0, animated: false)
+        setupPickerViewAllQuestions(countQuestions: mode.countQuestions)
     }
     
     private func setupPickerViewOneQuestion() {
-        let rowOneQuestion = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
-        pickerViewOneQuestion.selectRow(rowOneQuestion, inComponent: 0, animated: false)
+        let row = oneQuestionTime() - 6
+        pickerViewOneQuestion.selectRow(row, inComponent: 0, animated: false)
     }
     
     private func setupPickerViewAllQuestions(countQuestions: Int) {
-        let timeAllQuestions = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
-        let rowAllQuestions = timeAllQuestions - (4 * countQuestions)
-        pickerViewAllQuestions.selectRow(rowAllQuestions, inComponent: 0, animated: false)
+        let row = ((6 * countQuestions) - (4 * countQuestions)) / 2
+        allQuestionsTime(time: 5 * countQuestions)
+        pickerViewAllQuestions.selectRow(row, inComponent: 0, animated: false)
     }
     
     private func setupSubviewsOnView() {
@@ -365,11 +364,27 @@ class SettingViewController: UIViewController {
     private func conditions() -> Bool {
         !mode.allCountries && mode.countQuestions > 50
     }
+    // MARK: - Constants
+    private func oneQuestionTime(time: Int) {
+        mode.timeElapsed.questionSelect.questionTime.oneQuestionTime = time
+    }
+    
+    private func allQuestionsTime(time: Int) {
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = time
+    }
+    
+    private func oneQuestionTime() -> Int {
+        mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
+    }
+    
+    private func allQuestionsTime() -> Int {
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
+    }
     // MARK: - Setting label of number questions
     private func setLabelNumberQuestions() -> String {
         let isEnabled = pickerViewOneQuestion.isUserInteractionEnabled
-        let oneQuestion = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
-        let allQuestion = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
+        let oneQuestion = oneQuestionTime()
+        let allQuestion = allQuestionsTime()
         return isEnabled ? "\(oneQuestion)" : "\(allQuestion)"
     }
     // MARK: - Setting of checkmarks
@@ -635,7 +650,7 @@ class SettingViewController: UIViewController {
     @objc private func segmentedControlAction() {
         if segmentedControl.selectedSegmentIndex == 0 {
             let countQuestion = mode.countQuestions
-            let currentTime = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
+            let currentTime = allQuestionsTime()
             let currentRow = currentTime - (4 * countQuestion)
             
             segmentAction(pickerView: pickerViewOneQuestion, isEnabled: true, backgroundColor: .white)
@@ -646,9 +661,9 @@ class SettingViewController: UIViewController {
                 pickerView: pickerViewAllQuestions,
                 oneQuestion: true,
                 timeElapsedQuestion: "Время одного вопроса:",
-                timeElapsedNumber: "\(mode.timeElapsed.questionSelect.questionTime.oneQuestionTime)")
+                timeElapsedNumber: "\(oneQuestionTime())")
         } else {
-            let currentTime = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
+            let currentTime = oneQuestionTime()
             let currentRow = currentTime - 6
             
             segmentAction(pickerView: pickerViewOneQuestion, isEnabled: false, backgroundColor: .skyGrayLight)
@@ -659,7 +674,7 @@ class SettingViewController: UIViewController {
                 pickerView: pickerViewOneQuestion,
                 oneQuestion: false,
                 timeElapsedQuestion: "Время всех вопросов:",
-                timeElapsedNumber: "\(mode.timeElapsed.questionSelect.questionTime.allQuestionsTime)")
+                timeElapsedNumber: "\(allQuestionsTime())")
         }
     }
     
@@ -738,13 +753,13 @@ class SettingViewController: UIViewController {
     
     private func setupLabels() {
         labelNumber.text = "\(mode.countQuestions)"
-        labelTimeElapsedNumber.text = "\(mode.timeElapsed.questionSelect.questionTime.oneQuestionTime)"
+        labelTimeElapsedNumber.text = "\(oneQuestionTime())"
     }
     
     private func setupPickerViews() {
         let countQuestions = mode.countQuestions - 10
         let averageTime = 5 * mode.countQuestions
-        let timeOneQuestion = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime - 6
+        let timeOneQuestion = oneQuestionTime() - 6
         let timeAllQuestions = averageTime - (4 * mode.countQuestions)
         
         setupPickerViews(pickerView: pickerViewNumberQuestion, row: countQuestions)
@@ -894,24 +909,25 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             
             let countQuestion = row + 10
             let averageTime = 5 * countQuestion
-            let currentRow = averageTime - (4 * countQuestion)
+            let rowAverageTime = averageTime - (4 * countQuestion)
             
+            mode.countQuestions = countQuestion
             setupDataFromPickerView(countQuestion: countQuestion,
                                     averageTime: averageTime,
-                                    currentRow: currentRow)
+                                    currentRow: rowAverageTime)
             buttonIsEnabled()
             
         case 2:
             
-            let oneQuestionTime = row + 6
-            labelTimeElapsedNumber.text = "\(oneQuestionTime)"
-            mode.timeElapsed.questionSelect.questionTime.oneQuestionTime = oneQuestionTime
+            let time = row + 6
+            labelTimeElapsedNumber.text = "\(time)"
+            oneQuestionTime(time: time)
             
         default:
             
-            let allQuestionTime = row + (4 * mode.countQuestions)
-            labelTimeElapsedNumber.text = "\(allQuestionTime)"
-            mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = allQuestionTime
+            let time = row + (4 * mode.countQuestions)
+            labelTimeElapsedNumber.text = "\(time)"
+            allQuestionsTime(time: time)
             
         }
     }
@@ -955,7 +971,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         labelTimeElapsedNumber.text = checkPickerViewEnabled(time: averageTime)
         
         mode.countQuestions = countQuestion
-        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = averageTime
+        allQuestionsTime(time: averageTime)
         
         setupPickerViews(pickerView: pickerViewAllQuestions, row: currentRow)
     }

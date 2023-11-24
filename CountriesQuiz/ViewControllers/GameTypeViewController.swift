@@ -467,7 +467,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     var game: Games!
     var tag: Int!
     var delegate: GameTypeViewControllerDelegate!
-    var continent = 0
+    var numberContinent = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -504,6 +504,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func setupDesign() {
         view.backgroundColor = game.background
         imageInfinity.isHidden = mode.timeElapsed.timeElapsed ? true : false
+        counterContinents(continents: mode.americaContinent, mode.europeContinent,
+                          mode.africaContinent, mode.asiaContinent, mode.oceaniaContinent)
     }
     
     private func setupSubviews() {
@@ -532,7 +534,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         }
     }
     
-    private func buttonsOnOff(bool: Bool) {
+    private func barButtonsOnOff(bool: Bool) {
         let opacity: Float = bool ? 1 : 0
         isEnabled(buttons: buttonBack, buttonHelp, bool: bool)
         setupOpacityButtons(buttons: buttonBack, buttonHelp, opacity: opacity)
@@ -564,7 +566,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     @objc private func showDescription() {
         setupSubviews(subviews: viewHelp, on: view)
         setupConstraintsViewHelp()
-        buttonsOnOff(bool: false)
+        barButtonsOnOff(bool: false)
         
         viewHelp.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
         viewHelp.alpha = 0
@@ -611,7 +613,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func addSubviews(tag: Int) {
         switch tag {
         case 1: setPickerViewCountQuestions()
-        case 2: setupSubviews(subviews: stackViewContinents, on: viewSettingDescription)
+        case 2: setButtonsContinents()
         case 3: setupSubviews(subviews: pickerView, on: viewSettingDescription)
         default: setupSubviews(subviews: pickerView, on: viewSettingDescription)
         }
@@ -623,6 +625,40 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         pickerView.selectRow(row, inComponent: 0, animated: false)
     }
     
+    private func setButtonsContinents() {
+        setupSubviews(subviews: stackViewContinents, on: viewSettingDescription)
+        setPressButtons(buttons: buttonAllCountries, buttonAmericaContinent,
+                        buttonEuropeContinent, buttonAfricaContinent,
+                        buttonAsiaContinent, buttonOceanContinent)
+    }
+    
+    private func setPressButtons(buttons: UIButton...) {
+        buttons.forEach { button in
+            checkBool(tag: button.tag, button: button)
+        }
+    }
+    
+    private func checkBool(tag: Int, button: UIButton) {
+        switch tag {
+        case 0: checkBool(bool: mode.allCountries, button: button)
+        case 1: checkBool(bool: mode.americaContinent, button: button)
+        case 2: checkBool(bool: mode.europeContinent, button: button)
+        case 3: checkBool(bool: mode.africaContinent, button: button)
+        case 4: checkBool(bool: mode.asiaContinent, button: button)
+        default: checkBool(bool: mode.oceaniaContinent, button: button)
+        }
+    }
+    
+    private func checkBool(bool: Bool, button: UIButton) {
+        setColor(button: button, color: bool ? .white : game.background)
+    }
+    
+    private func setColor(button: UIButton, color: UIColor) {
+        let colorLabel = color == .white ? game.background : .white
+        buttonOnOff(buttons: button, color: color)
+        labelOnOff(tag: button.tag, color: colorLabel)
+    }
+    
     private func setConstraintsSetting(tag: Int) {
         switch tag {
         case 1: setupConstraintsViewSettingCountQuestions()
@@ -631,60 +667,88 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         default: setupConstraintsViewSettingCountQuestions()
         }
     }
-    // MARK: - Setup change setting
-    private func countQuestions() {
+    // MARK: - Press done for change setting, count questions
+    private func setupCountQuestions() {
         let row = pickerView.selectedRow(inComponent: 0)
         mode.countQuestions = row + 10
         labelCountQuestion.text = "\(row + 10)"
         closeViewSetting()
     }
+    // MARK: - Press done for change setting, continents
+    private func setupContinents() {
+        setupContinents(buttons: buttonAllCountries, buttonAmericaContinent,
+                        buttonEuropeContinent, buttonAfricaContinent,
+                        buttonAsiaContinent, buttonOceanContinent)
+        closeViewSetting()
+    }
     
-    private func buttonOnOff(sender: UIButton) {
-        let color = sender.backgroundColor == game.background ? .white : game.background
-        UIView.animate(withDuration: 0.3) {
-            sender.backgroundColor = color
+    private func setupContinents(buttons: UIButton...) {
+        var counter = 0
+        buttons.forEach { button in
+            let bool = button.backgroundColor == .white ? true : false
+            checkContinents(counter: counter, bool: bool)
+            counter += 1
         }
-        checkContinents(sender: sender)
     }
     
-    private func checkContinents(sender: UIButton) {
-        guard sender.tag > 0 else { return setupAllCountries() }
-        continent += sender.backgroundColor == .white ? 1 : -1
-        guard continent > 4 else { return }
-        continent = 0
-        setupAllCountries()
+    private func checkContinents(counter: Int, bool: Bool) {
+        switch counter {
+        case 0: mode.allCountries = bool
+        case 1: mode.americaContinent = bool
+        case 2: mode.europeContinent = bool
+        case 3: mode.africaContinent = bool
+        case 4: mode.asiaContinent = bool
+        default: mode.oceaniaContinent = bool
+        }
+    }
+    // MARK: - Setup change setting, continents
+    private func buttonPress(sender: UIButton) {
+        guard sender.tag > 0 else { return colorAllCountries(sender: sender) }
+        numberContinent += sender.backgroundColor == .white ? -1 : 1
+        guard numberContinent > 4 else { return colorContinents(sender: sender) }
+        colorAllCountries(sender: buttonAllCountries)
     }
     
-    private func setupAllCountries() {
-        buttonOnOff(buttons: buttonAllCountries, color: .white)
+    private func colorAllCountries(sender: UIButton) {
+        guard sender.backgroundColor == game.background else { return }
+        numberContinent = 0
+        buttonAllCountries(colorButton: .white, colorLabel: game.background)
+        buttonsContinents(colorButton: game.background, colorLabel: .white)
+    }
+    
+    private func buttonAllCountries(colorButton: UIColor, colorLabel: UIColor) {
+        buttonOnOff(buttons: buttonAllCountries, color: colorButton)
+        labelOnOff(labels: labelAllCountries, labelCountAllCountries, color: colorLabel)
+    }
+    
+    private func buttonsContinents(colorButton: UIColor, colorLabel: UIColor) {
         buttonOnOff(buttons: buttonAmericaContinent, buttonEuropeContinent,
                     buttonAfricaContinent, buttonAsiaContinent,
-                    buttonOceanContinent, color: game.background)
-        
-        labelOnOff(labels: labelAllCountries, labelCountAllCountries, color: game.background)
-        labelOnOff(labels: labelAmericaContinent, labelCountAmericaContinent, 
+                    buttonOceanContinent, color: colorButton)
+        labelOnOff(labels: labelAmericaContinent, labelCountAmericaContinent,
                    labelEuropeContinent, labelCountEuropeContinent,
                    labelAfricaContinent, labelCountAfricaContinent, 
                    labelAsiaContinent, labelCountAsiaContinent, labelOceanContinent,
-                   labelCountOceanContinent, color: .white)
+                   labelCountOceanContinent, color: colorLabel)
     }
     
-    private func labelOnOff(tag: Int) {
+    private func colorContinents(sender: UIButton) {
+        let colorButton = sender.backgroundColor == game.background ? .white : game.background
+        let colorLabel = sender.backgroundColor == game.background ? game.background : .white
+        buttonOnOff(buttons: sender, color: colorButton)
+        labelOnOff(tag: sender.tag, color: colorLabel)
+        guard buttonAllCountries.backgroundColor == .white else { return }
+        buttonAllCountries(colorButton: game.background, colorLabel: .white)
+    }
+    
+    private func labelOnOff(tag: Int, color: UIColor) {
         switch tag {
-        case 0: labelOnOff(labels: labelAllCountries, labelCountAllCountries)
-        case 1: labelOnOff(labels: labelAmericaContinent, labelCountAmericaContinent)
-        case 2: labelOnOff(labels: labelEuropeContinent, labelCountEuropeContinent)
-        case 3: labelOnOff(labels: labelAfricaContinent, labelCountAfricaContinent)
-        case 4: labelOnOff(labels: labelAsiaContinent, labelCountAsiaContinent)
-        default: labelOnOff(labels: labelOceanContinent, labelCountOceanContinent)
-        }
-    }
-    
-    private func labelOnOff(labels: UILabel...) {
-        labels.forEach { label in
-            UIView.animate(withDuration: 0.3) { [self] in
-                label.textColor = label.textColor == game.background ? .white : game.background
-            }
+        case 0: labelOnOff(labels: labelAllCountries, labelCountAllCountries, color: color)
+        case 1: labelOnOff(labels: labelAmericaContinent, labelCountAmericaContinent, color: color)
+        case 2: labelOnOff(labels: labelEuropeContinent, labelCountEuropeContinent, color: color)
+        case 3: labelOnOff(labels: labelAfricaContinent, labelCountAfricaContinent, color: color)
+        case 4: labelOnOff(labels: labelAsiaContinent, labelCountAsiaContinent, color: color)
+        default: labelOnOff(labels: labelOceanContinent, labelCountOceanContinent, color: color)
         }
     }
     
@@ -700,6 +764,14 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         labels.forEach { label in
             UIView.animate(withDuration: 0.3) {
                 label.textColor = color
+            }
+        }
+    }
+    
+    private func counterContinents(continents: Bool...) {
+        continents.forEach { continent in
+            if continent {
+                numberContinent += 1
             }
         }
     }
@@ -830,7 +902,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     @objc private func changeSetting(sender: UIButton) {
         setupSubviews(subviews: viewSetting, on: view)
         setting(tag: sender.tag)
-        buttonsOnOff(bool: false)
+        barButtonsOnOff(bool: false)
         
         viewSetting.transform = CGAffineTransform(translationX: 0, y: view.frame.height)
         viewSetting.alpha = 0
@@ -854,16 +926,15 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private func doneChangeSetting(tag: Int) {
         switch tag {
-        case 1: countQuestions()
-        case 2: countQuestions()
-        case 3: countQuestions()
-        default: countQuestions()
+        case 1: setupCountQuestions()
+        case 2: setupContinents()
+        case 3: setupCountQuestions()
+        default: setupCountQuestions()
         }
     }
     
     @objc private func continents(sender: UIButton) {
-        buttonOnOff(sender: sender)
-        labelOnOff(tag: sender.tag)
+        buttonPress(sender: sender)
     }
 }
 // MARK: - Setup views
@@ -1339,7 +1410,7 @@ extension GameTypeViewController {
 // MARK: - PopUpViewDelegate
 extension GameTypeViewController: PopUpViewDelegate {
     func closeView() {
-        buttonsOnOff(bool: true)
+        barButtonsOnOff(bool: true)
         UIView.animate(withDuration: 0.5) { [self] in
             visualEffectView.alpha = 0
             viewHelp.alpha = 0
@@ -1352,7 +1423,7 @@ extension GameTypeViewController: PopUpViewDelegate {
 // MARK: - PopUpViewSettingDelegate
 extension GameTypeViewController: PopUpViewSettingDelegate {
     @objc func closeViewSetting() {
-        buttonsOnOff(bool: true)
+        barButtonsOnOff(bool: true)
         UIView.animate(withDuration: 0.5) { [self] in
             visualEffectView.alpha = 0
             viewSetting.alpha = 0

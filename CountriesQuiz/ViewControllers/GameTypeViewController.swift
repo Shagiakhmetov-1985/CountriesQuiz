@@ -504,8 +504,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func setupDesign() {
         view.backgroundColor = game.background
         imageInfinity.isHidden = mode.timeElapsed.timeElapsed ? true : false
-        counterContinents(continents: mode.americaContinent, mode.europeContinent,
-                          mode.africaContinent, mode.asiaContinent, mode.oceaniaContinent)
     }
     
     private func setupSubviews() {
@@ -558,6 +556,11 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         mode.timeElapsed.timeElapsed ? true : false
     }
     
+    private func counterContinents() {
+        counterContinents(continents: mode.americaContinent, mode.europeContinent,
+                          mode.africaContinent, mode.asiaContinent, mode.oceaniaContinent)
+    }
+    // MARK: - Bar buttons activate
     @objc private func backToMenu() {
         delegate.acceptDataOfSetting(setting: mode)
         navigationController?.popViewController(animated: true)
@@ -576,7 +579,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             viewHelp.transform = .identity
         }
     }
-    
+    // MARK: - Title, color and image for button of setting,
     private func imageButton() -> String {
         switch tag {
         case 0, 1, 4: return mode.flag ? "flag" : "building"
@@ -609,7 +612,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         default: return "Время"
         }
     }
-    
+    // MARK: - Methods for popup view controllers
     private func addSubviews(tag: Int) {
         switch tag {
         case 1: setPickerViewCountQuestions()
@@ -626,13 +629,14 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func setButtonsContinents() {
+        counterContinents()
         setupSubviews(subviews: stackViewContinents, on: viewSettingDescription)
-        setPressButtons(buttons: buttonAllCountries, buttonAmericaContinent,
-                        buttonEuropeContinent, buttonAfricaContinent,
-                        buttonAsiaContinent, buttonOceanContinent)
+        setColorPressButtons(buttons: buttonAllCountries, buttonAmericaContinent,
+                             buttonEuropeContinent, buttonAfricaContinent,
+                             buttonAsiaContinent, buttonOceanContinent)
     }
     
-    private func setPressButtons(buttons: UIButton...) {
+    private func setColorPressButtons(buttons: UIButton...) {
         buttons.forEach { button in
             checkBool(tag: button.tag, button: button)
         }
@@ -679,6 +683,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         setupContinents(buttons: buttonAllCountries, buttonAmericaContinent,
                         buttonEuropeContinent, buttonAfricaContinent,
                         buttonAsiaContinent, buttonOceanContinent)
+        labelContinents.text = comma()
         closeViewSetting()
     }
     
@@ -705,8 +710,12 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func buttonPress(sender: UIButton) {
         guard sender.tag > 0 else { return colorAllCountries(sender: sender) }
         numberContinent += sender.backgroundColor == .white ? -1 : 1
-        guard numberContinent > 4 else { return colorContinents(sender: sender) }
+        guard numberContinent > 4 else { return condition(sender: sender) }
         colorAllCountries(sender: buttonAllCountries)
+    }
+    
+    private func condition(sender: UIButton) {
+        numberContinent == 0 ? colorAllCountries(sender: buttonAllCountries) : colorContinents(sender: sender)
     }
     
     private func colorAllCountries(sender: UIButton) {
@@ -769,6 +778,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func counterContinents(continents: Bool...) {
+        numberContinent = 0
         continents.forEach { continent in
             if continent {
                 numberContinent += 1

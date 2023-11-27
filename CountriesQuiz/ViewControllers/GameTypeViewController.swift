@@ -440,6 +440,27 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         return stackView
     }()
     
+    private lazy var buttonCheckmark: UIButton = {
+        setCheckmarkButton(image: checkmark(isOn: countdown()))
+    }()
+    
+    private lazy var viewCheckmark: UIView = {
+        setupView(color: .white, radius: 13, addButton: buttonCheckmark)
+    }()
+    
+    private lazy var labelCheckmark: UILabel = {
+        setupLabel(
+            color: .white,
+            title: "Обратный отсчет",
+            size: 26,
+            style: "mr_fontick",
+            alignment: .center)
+    }()
+    
+    private lazy var stackViewCheckmark: UIStackView = {
+        setupStackView(view: viewCheckmark, label: labelCheckmark)
+    }()
+    
     private lazy var buttonDone: UIButton = {
         setupButton(title: "ОК", color: game.done, action: #selector(done))
     }()
@@ -560,6 +581,10 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         counterContinents(continents: mode.americaContinent, mode.europeContinent,
                           mode.africaContinent, mode.asiaContinent, mode.oceaniaContinent)
     }
+    
+    private func checkmark(isOn: Bool) -> String {
+        isOn ? "checkmark.circle.fill" : "circle"
+    }
     // MARK: - Bar buttons activate
     @objc private func backToMenu() {
         delegate.acceptDataOfSetting(setting: mode)
@@ -617,7 +642,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         switch tag {
         case 1: setPickerViewCountQuestions()
         case 2: setButtonsContinents()
-        case 3: setupSubviews(subviews: pickerView, on: viewSettingDescription)
+        case 3: setButtonCheckmarkCountdown()
         default: setupSubviews(subviews: pickerView, on: viewSettingDescription)
         }
     }
@@ -663,11 +688,15 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         labelOnOff(tag: button.tag, color: colorLabel)
     }
     
+    private func setButtonCheckmarkCountdown() {
+        setupSubviews(subviews: stackViewCheckmark, on: viewSettingDescription)
+    }
+    
     private func setConstraintsSetting(tag: Int) {
         switch tag {
         case 1: setupConstraintsViewSettingCountQuestions()
         case 2: setupConstraintsSettingContinents()
-        case 3: setupConstraintsViewSettingCountQuestions()
+        case 3: setupConstraintsSettingCountdown()
         default: setupConstraintsViewSettingCountQuestions()
         }
     }
@@ -680,11 +709,23 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     // MARK: - Press done for change setting, continents
     private func setupContinents() {
+        setupCurrentContinents()
+        setupCountRows()
+        setupCountQuestions(countRows: mode.countRows)
+        setupTitles()
+        closeViewSetting()
+    }
+    
+    private func setupCurrentContinents() {
         setupContinents(buttons: buttonAllCountries, buttonAmericaContinent,
                         buttonEuropeContinent, buttonAfricaContinent,
                         buttonAsiaContinent, buttonOceanContinent)
-        labelContinents.text = comma()
-        closeViewSetting()
+    }
+    
+    private func setupCountRows() {
+        setupCountRows(continents: mode.allCountries, mode.americaContinent,
+                       mode.europeContinent, mode.africaContinent,
+                       mode.asiaContinent, mode.oceaniaContinent)
     }
     
     private func setupContinents(buttons: UIButton...) {
@@ -705,6 +746,45 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         case 4: mode.asiaContinent = bool
         default: mode.oceaniaContinent = bool
         }
+    }
+    
+    private func setupCountRows(continents: Bool...) {
+        var countRows = 0
+        var counter = 0
+        continents.forEach { continent in
+            if continent {
+                countRows += checkContinents(continent: counter)
+            }
+            counter += 1
+        }
+        mode.countRows = checkCountRows(count: countRows - 9)
+    }
+    
+    private func checkContinents(continent: Int) -> Int {
+        switch continent {
+        case 0: FlagsOfCountries.shared.countries.count
+        case 1: FlagsOfCountries.shared.countriesOfAmericanContinent.count
+        case 2: FlagsOfCountries.shared.countriesOfEuropeanContinent.count
+        case 3: FlagsOfCountries.shared.countriesOfAfricanContinent.count
+        case 4: FlagsOfCountries.shared.countriesOfAsianContinent.count
+        default: FlagsOfCountries.shared.countriesOfOceanContinent.count
+        }
+    }
+    
+    private func checkCountRows(count: Int) -> Int {
+        let countRows = DefaultSetting.countRows.rawValue
+        return count > countRows ? countRows : count
+    }
+    
+    private func setupCountQuestions(countRows: Int) {
+        let count = mode.countQuestions
+        mode.countQuestions = countRows + 9 < count ? countRows + 9 : count
+    }
+    
+    private func setupTitles() {
+        labelContinents.text = comma()
+        labelCountQuestion.text = "\(mode.countQuestions)"
+        pickerView.reloadAllComponents()
     }
     // MARK: - Setup change setting, continents
     private func buttonPress(sender: UIButton) {
@@ -946,17 +1026,26 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     @objc private func continents(sender: UIButton) {
         buttonPress(sender: sender)
     }
+    
+    @objc private func countdownOnOff() {
+        
+    }
 }
 // MARK: - Setup views
 extension GameTypeViewController {
     private func setupView(color: UIColor, radius: CGFloat? = nil,
-                           addSubview: UIView? = nil) -> UIView {
+                           addSubview: UIView? = nil, addButton: UIButton? = nil) -> UIView {
         let view = UIView()
         view.backgroundColor = color
         view.layer.cornerRadius = radius ?? 0
         view.translatesAutoresizingMaskIntoConstraints = false
         if let image = addSubview {
-            setupSubviews(subviews: image, on: view)
+            view.addSubview(image)
+        } else if let button = addButton {
+            view.addSubview(button)
+            view.layer.shadowColor = color.cgColor
+            view.layer.shadowOpacity = 0.4
+            view.layer.shadowOffset = CGSize(width: 0, height: 6)
         }
         return view
     }
@@ -1142,6 +1231,17 @@ extension GameTypeViewController {
         setupSubviews(subviews: addLabelFirst, addLabelSecond, on: button)
         return button
     }
+    
+    private func setCheckmarkButton(image: String) -> UIButton {
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
+        let image = UIImage(systemName: image, withConfiguration: size)
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.tintColor = game.background
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(countdownOnOff), for: .touchUpInside)
+        return button
+    }
 }
 // MARK: - Setup stack views
 extension GameTypeViewController {
@@ -1172,6 +1272,13 @@ extension GameTypeViewController {
         let stackView = UIStackView(arrangedSubviews: [view, stackView])
         stackView.spacing = 10
         stackView.alignment = .top
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    private func setupStackView(view: UIView, label: UILabel) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [view, label])
+        stackView.spacing = 10
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
@@ -1325,6 +1432,15 @@ extension GameTypeViewController {
         setupConstraintsViewsAndLabel(constant: -220)
         setupConstraintsSubviews(subview: stackViewContinents, to: viewSettingDescription, height: 435)
         setupConstraintsOnButton()
+        setupConstraintsDoneCancel()
+    }
+    
+    private func setupConstraintsSettingCountdown() {
+        setupConstraintsViewsAndLabel(constant: 165)
+        setupConstraintsSubviews(subview: stackViewCheckmark, to: viewSettingDescription, height: 60)
+        setupSquare(subviews: viewCheckmark, sizes: 60)
+        setupCenterSubview(subview: buttonCheckmark, on: viewCheckmark)
+        setupSquare(subviews: buttonCheckmark, sizes: 50)
         setupConstraintsDoneCancel()
     }
     

@@ -221,7 +221,7 @@ class SettingViewController: UIViewController {
         setLabel(
             title: isEnabledText(),
             size: 26,
-            color: isTime() ? .white : .grayLight,
+            color: isTime() ? .white : .skyGrayLight,
             numberOfLines: 1)
     }()
     
@@ -229,7 +229,7 @@ class SettingViewController: UIViewController {
         setLabel(
             title: setLabelNumberQuestions(),
             size: 26,
-            color: isTime() ? .white : .grayLight)
+            color: isTime() ? .white : .skyGrayLight)
     }()
     
     private lazy var stackViewLabelTimeElapsed: UIStackView = {

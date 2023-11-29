@@ -252,7 +252,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelTimeDesription: UILabel = {
         setupLabel(
             color: .white,
-            title: "\(checkTimeElapsedDescription())",
+            title: "\(checkTimeDescription())",
             size: 17,
             style: "Gill Sans")
     }()
@@ -453,17 +453,11 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var pickerViewOneTime: UIPickerView = {
-        setupPickerView(
-            color: isOneQuestion() ? .white : .skyGrayLight,
-            tag: 2,
-            isEnabled: isOneQuestion())
+        setupPickerView(tag: 2)
     }()
     
     private lazy var pickerViewAllTime: UIPickerView = {
-        setupPickerView(
-            color: isOneQuestion() ? .skyGrayLight : .white,
-            tag: 3,
-            isEnabled: !isOneQuestion())
+        setupPickerView(tag: 3)
     }()
     
     private lazy var stackViewPickerViews: UIStackView = {
@@ -487,9 +481,9 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             .font: font ?? "",
             .foregroundColor: game.background
         ], for: .normal)
-        segment.selectedSegmentIndex = isOneQuestion() ? 0 : 1
         segment.layer.borderWidth = 5
         segment.layer.borderColor = UIColor.white.cgColor
+        segment.addTarget(self, action: #selector(segmentSelect), for: .valueChanged)
         segment.translatesAutoresizingMaskIntoConstraints = false
         return segment
     }()
@@ -544,22 +538,40 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        mode.countRows
+        switch pickerView.tag {
+        case 1: mode.countRows
+        case 2: 10
+        default: 6 * mode.countQuestions - 4 * mode.countQuestions + 1
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         let label = UILabel()
-        let title = "\(row + 10)"
-        let attributed = attributtedString(title: title)
+        var title = String()
+        var attributed = NSAttributedString()
+        
+        switch pickerView.tag {
+        case 1: 
+            title = "\(row + 10)"
+            attributed = attributtedString(title: title, tag: pickerView.tag)
+        case 2:
+            title = "\(row + 6)"
+            attributed = attributtedString(title: title, tag: pickerView.tag)
+        default:
+            title = "\(row + 4 * mode.countQuestions)"
+            attributed = attributtedString(title: title, tag: pickerView.tag)
+        }
+        
         label.textAlignment = .center
         label.attributedText = attributed
         return label
     }
     
-    private func attributtedString(title: String) -> NSAttributedString {
-        NSAttributedString(string: title, attributes: [
+    private func attributtedString(title: String, tag: Int) -> NSAttributedString {
+        let color = tag == 1 ? UIColor.blueMiddlePersian : color(tag: tag)
+        return NSAttributedString(string: title, attributes: [
             .font: UIFont(name: "mr_fontick", size: 26) ?? "",
-            .foregroundColor: UIColor.blueMiddlePersian
+            .foregroundColor: color
         ])
     }
     // MARK: - General methods
@@ -634,6 +646,18 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         mode.timeElapsed.timeElapsed = bool
     }
     
+    private func oneQuestionOnOff(bool: Bool) {
+        mode.timeElapsed.questionSelect.oneQuestion = bool
+    }
+    
+    private func setTimeOneQuestion(time: Int) {
+        mode.timeElapsed.questionSelect.questionTime.oneQuestionTime = time
+    }
+    
+    private func setTimeAllQuestions(time: Int) {
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = time
+    }
+    
     private func counterContinents() {
         counterContinents(continents: mode.americaContinent, mode.europeContinent,
                           mode.africaContinent, mode.asiaContinent, mode.oceaniaContinent)
@@ -646,6 +670,21 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func setSubviewsTag(subviews: UIView..., tag: Int) {
         subviews.forEach { subview in
             subview.tag = tag
+        }
+    }
+    
+    private func reloadPickerViews(pickerViews: UIPickerView...) {
+        pickerViews.forEach { pickerView in
+            pickerView.reloadAllComponents()
+        }
+    }
+    
+    private func color(tag: Int) -> UIColor {
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            return tag == 2 ? .blueMiddlePersian : .grayLight
+        default:
+            return tag == 2 ? .grayLight : .blueMiddlePersian
         }
     }
     // MARK: - Bar buttons activate
@@ -697,7 +736,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         case 1: return "Количество вопросов"
         case 2: return "Континенты"
         case 3: return "Обратный отсчет"
-        default: return "Время"
+        default: return checkTimeDescription()
         }
     }
     // MARK: - Methods for popup view controllers
@@ -763,6 +802,20 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         buttonCheckmark.setImage(image, for: .normal)
     }
     
+    private func setPickerViewsTime() {
+        setupSubviews(subviews: stackViewTime, on: viewSettingDescription)
+        segmentedControl.selectedSegmentIndex = isOneQuestion() ? 0 : 1
+        isOneQuestion() ? pickerViewSecondOn() : pickerViewThirdOn()
+        setPickerViewsRows()
+    }
+    
+    private func setPickerViewsRows() {
+        let rowOneQuestion = oneQuestionTime() - 6
+        let rowAllQuestions = allQuestionTime() - 4 * mode.countQuestions
+        pickerViewOneTime.selectRow(rowOneQuestion, inComponent: 0, animated: false)
+        pickerViewAllTime.selectRow(rowAllQuestions, inComponent: 0, animated: false)
+    }
+    // MARK: - Constraints for popup views
     private func setConstraintsSetting(tag: Int) {
         switch tag {
         case 1: setupConstraintsSettingCountQuestions()
@@ -770,11 +823,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         case 3: setupConstraintsSettingCountdown()
         default: setupConstraintsSettingTime()
         }
-    }
-    
-    private func setPickerViewsTime() {
-        setupSubviews(subviews: stackViewTime, on: viewSettingDescription)
-        segmentedControl.selectedSegmentIndex = isOneQuestion() ? 0 : 1
     }
     // MARK: - Press done for change setting, count questions
     private func setupCountQuestions() {
@@ -860,7 +908,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func setupTitlesContinents() {
         labelContinents.text = comma()
         labelCountQuestion.text = "\(mode.countQuestions)"
-        pickerViewQuestions.reloadAllComponents()
+        reloadPickerViews(pickerViews: pickerViewQuestions)
     }
     // MARK: - Press done for change setting, countdown
     private func setupCountdown() {
@@ -886,6 +934,33 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func setupButtonTime() {
         buttonTime.isEnabled = isCountdown()
         buttonTime.backgroundColor = isCountdown() ? game.swap : .grayLight
+    }
+    // MARK: - Press done for change setting, time
+    private func setupTime() {
+        setupSegmentedControl()
+        setupDataFromPickerViews()
+        setupTitleTime()
+        closeViewSetting()
+    }
+    
+    private func setupSegmentedControl() {
+        let isOn = segmentedControl.selectedSegmentIndex == 0 ? true : false
+        oneQuestionOnOff(bool: isOn)
+    }
+    
+    private func setupTitleTime() {
+        labelTime.text = countdownOnOff()
+        labelTimeDesription.text = checkTimeDescription()
+    }
+    
+    private func setupDataFromPickerViews() {
+        if isOneQuestion() {
+            let row = pickerViewOneTime.selectedRow(inComponent: 0)
+            setTimeOneQuestion(time: row + 6)
+        } else {
+            let row = pickerViewAllTime.selectedRow(inComponent: 0)
+            setTimeAllQuestions(time: row + 4 * mode.countQuestions)
+        }
     }
     // MARK: - Setup change setting, continents
     private func buttonPress(sender: UIButton) {
@@ -975,6 +1050,23 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let imageCheckmark = UIImage(systemName: "checkmark.circle.fill", withConfiguration: size)
         let image = currentImage == imageCircle ? imageCheckmark : imageCircle
         buttonCheckmark.setImage(image, for: .normal)
+    }
+    // MARK: - Setup change setting, time
+    private func pickerViewSecondOn() {
+        setPickerView(pickerView: pickerViewOneTime, color: .white, isOn: true)
+        setPickerView(pickerView: pickerViewAllTime, color: .skyGrayLight, isOn: false)
+    }
+    
+    private func pickerViewThirdOn() {
+        setPickerView(pickerView: pickerViewOneTime, color: .skyGrayLight, isOn: false)
+        setPickerView(pickerView: pickerViewAllTime, color: .white, isOn: true)
+    }
+    
+    private func setPickerView(pickerView: UIPickerView, color: UIColor, isOn: Bool) {
+        pickerView.isUserInteractionEnabled = isOn
+        UIView.animate(withDuration: 0.3) {
+            pickerView.backgroundColor = color
+        }
     }
     // MARK: - Start game, favourites and swap
     @objc private func startGame() {
@@ -1087,14 +1179,14 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         game.gameType == .questionnaire ? "\(allQuestionTime())" : "\(oneQuestionTime())"
     }
     
-    private func checkTimeElapsedDescription() -> String {
+    private func checkTimeDescription() -> String {
         isOneQuestion() ? "\(checkTitleGameType())" : "Время всех вопросов"
     }
     
     private func checkTitleGameType() -> String {
         game.gameType == .questionnaire ? "Время всех вопросов" : "Время одного вопроса"
     }
-    // MARK: - Press button setting, count questions / continents / countdown / time
+    // MARK: - Press button count questions / continents / countdown / time
     @objc private func changeSetting(sender: UIButton) {
         setupSubviews(subviews: viewSetting, on: view)
         setting(tag: sender.tag)
@@ -1115,7 +1207,22 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         setSubviewsTag(subviews: buttonDone, viewSetting, tag: tag)
         setConstraintsSetting(tag: tag)
     }
-    // MARK: - Views of setting
+    
+    @objc private func continents(sender: UIButton) {
+        buttonPress(sender: sender)
+    }
+    
+    @objc private func countdown() {
+        checkmarkOnOff()
+    }
+    
+    @objc private func segmentSelect() {
+        let index = segmentedControl.selectedSegmentIndex
+        index == 0 ? pickerViewSecondOn() : pickerViewThirdOn()
+        labelSetting.text = index == 1 ? "Время всех вопросов" : "Время одного вопроса"
+        reloadPickerViews(pickerViews: pickerViewOneTime, pickerViewAllTime)
+    }
+    // MARK: - Press done button
     @objc private func done(sender: UIButton) {
         doneChangeSetting(tag: sender.tag)
     }
@@ -1125,16 +1232,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         case 1: setupCountQuestions()
         case 2: setupContinents()
         case 3: setupCountdown()
-        default: setupCountQuestions()
+        default: setupTime()
         }
-    }
-    
-    @objc private func continents(sender: UIButton) {
-        buttonPress(sender: sender)
-    }
-    
-    @objc private func countdown() {
-        checkmarkOnOff()
     }
 }
 // MARK: - Setup views
@@ -1392,13 +1491,11 @@ extension GameTypeViewController {
 }
 // MARK: - Setup picker views
 extension GameTypeViewController {
-    private func setupPickerView(color: UIColor, tag: Int, 
-                                 isEnabled: Bool? = nil) -> UIPickerView {
+    private func setupPickerView(color: UIColor? = nil, tag: Int) -> UIPickerView {
         let pickerView = UIPickerView()
         pickerView.backgroundColor = color
         pickerView.layer.cornerRadius = 13
         pickerView.tag = tag
-        pickerView.isUserInteractionEnabled = isEnabled ?? true
         pickerView.translatesAutoresizingMaskIntoConstraints = false
         pickerView.delegate = self
         pickerView.dataSource = self

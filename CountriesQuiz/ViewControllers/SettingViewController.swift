@@ -317,8 +317,7 @@ class SettingViewController: UIViewController {
     }
     
     private func setupPickerViewAllQuestions(countQuestions: Int) {
-        let row = ((6 * countQuestions) - (4 * countQuestions)) / 2
-        allQuestionsTime(time: 5 * countQuestions)
+        let row = allQuestionsTime() - 4 * countQuestions
         pickerViewAllQuestions.selectRow(row, inComponent: 0, animated: false)
     }
     

@@ -568,7 +568,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func attributtedString(title: String, tag: Int) -> NSAttributedString {
-        let color = tag == 1 ? UIColor.blueMiddlePersian : color(tag: tag)
+        let color = tag == 1 ? game.favourite : color(tag: tag)
         return NSAttributedString(string: title, attributes: [
             .font: UIFont(name: "mr_fontick", size: 26) ?? "",
             .foregroundColor: color
@@ -682,9 +682,9 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func color(tag: Int) -> UIColor {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
-            return tag == 2 ? .blueMiddlePersian : .grayLight
+            return tag == 2 ? game.favourite : .grayLight
         default:
-            return tag == 2 ? .grayLight : .blueMiddlePersian
+            return tag == 2 ? .grayLight : game.favourite
         }
     }
     // MARK: - Bar buttons activate
@@ -725,6 +725,10 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private func isEnabled() -> Bool {
         tag == 2 ? false : true
+    }
+    
+    private func checkQuestionnaire() -> Bool {
+        game.gameType == .questionnaire ? false : true
     }
     
     private func isSelect(isOn: Bool) -> UIColor {
@@ -804,9 +808,20 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private func setPickerViewsTime() {
         setupSubviews(subviews: stackViewTime, on: viewSettingDescription)
-        segmentedControl.selectedSegmentIndex = isOneQuestion() ? 0 : 1
-        isOneQuestion() ? pickerViewSecondOn() : pickerViewThirdOn()
+        setSegmentIndex()
+        isOneQuestion() ? checkQuestionnairePickerViews() : pickerViewThirdOn()
         setPickerViewsRows()
+        reloadPickerViews(pickerViews: pickerViewOneTime, pickerViewAllTime)
+    }
+    
+    private func setSegmentIndex() {
+        let index = game.gameType == .questionnaire ? 1 : 0
+        segmentedControl.selectedSegmentIndex = isOneQuestion() ? index : 1
+        segmentedControl.isUserInteractionEnabled = checkQuestionnaire()
+    }
+    
+    private func checkQuestionnairePickerViews() {
+        tag == 1 ? pickerViewThirdOn() : pickerViewSecondOn()
     }
     
     private func setPickerViewsRows() {

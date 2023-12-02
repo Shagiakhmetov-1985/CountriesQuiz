@@ -50,7 +50,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var imageFirstSwap: UIImageView = {
-        setupImage(image: "flag", color: .white, size: 25)
+        setupImage(image: imageTitle(), color: colorTitle(), size: 25)
     }()
     
     private lazy var viewFirstSwap: UIView = {
@@ -60,7 +60,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelFirstSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: "Режим флага",
+            title: labelFirstTitle(),
             size: 24,
             style: "Gill Sans",
             alignment: .left)
@@ -69,7 +69,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelFirstDescriptionSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования страны.",
+            title: labelTitleDescription(),
             size: 19,
             style: "Gill Sans",
             alignment: .left)
@@ -117,10 +117,43 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         setupStackView(view: viewSecondSwap, stackView: stackViewSecond)
     }()
     
+    private lazy var imageThirdSwap: UIImageView = {
+        setupImage(image: "building.2", color: .white, size: 25)
+    }()
+    
+    private lazy var viewThirdSwap: UIView = {
+        setupView(color: game.swap, radius: 12, addSubview: imageThirdSwap)
+    }()
+    
+    private lazy var labelThirdSwap: UILabel = {
+        setupLabel(
+            color: .white,
+            title: "Режим столицы",
+            size: 24,
+            style: "Gill Sans",
+            alignment: .left)
+    }()
+    
+    private lazy var labelThirdDescriptionSwap: UILabel = {
+        setupLabel(
+            color: .white,
+            title: "В качестве вопроса задается наименование столицы и пользователь должен выбрать ответ наименования страны.",
+            size: 19,
+            style: "Gill Sans",
+            alignment: .left)
+    }()
+    
+    private lazy var stackViewThird: UIStackView = {
+        setupStackView(labelTop: labelThirdSwap, labelBottom: labelThirdDescriptionSwap)
+    }()
+    
+    private lazy var stackViewThirdSwap: UIStackView = {
+        setupStackView(view: viewThirdSwap, stackView: stackViewThird)
+    }()
+    
     private lazy var viewDescription: UIView = {
         let view = setupView(color: .clear)
-        setupSubviews(subviews: labelDescription, labelBulletsList, 
-                      stackViewFirstSwap, stackViewSecondSwap, on: view)
+        addSubviewsDescription(view: view)
         settingLabel(label: labelBulletsList, size: 19)
         return view
     }()
@@ -742,6 +775,55 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         case 3: return "Обратный отсчет"
         default: return checkTimeDescription()
         }
+    }
+    
+    private func imageTitle() -> String {
+        tag == 2 ? "globe.europe.africa" : "flag"
+    }
+    
+    private func colorTitle() -> UIColor {
+        tag == 2 ? .white.withAlphaComponent(0.4) : .white
+    }
+    
+    private func labelFirstTitle() -> String {
+        tag == 2 ? "Режим карты" : "Режим флага"
+    }
+    /*
+    private func labelSecondTitle() -> String {
+        switch tag {
+        case 0, 1, 4: ""
+        default: ""
+        }
+        tag == 4 ? "Режим столицы" : "Режим наименования"
+    }
+    */
+    private func labelTitleDescription() -> String {
+        tag == 2 ? "В качестве вопроса задается географическая карта страны и пользователь должен выбрать ответ наименования страны. (Кнопка неактивна)" :
+        "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования страны."
+    }
+    
+    private func addSubviewsDescription(view: UIView) {
+        switch tag {
+        case 0, 1, 4: addSubviewsTwo(view: view)
+        case 2: addSubviewsOne(view: view)
+        default: addSubviewsThree(view: view)
+        }
+    }
+    
+    private func addSubviewsOne(view: UIView) {
+        setupSubviews(subviews: labelDescription, labelBulletsList, 
+                      stackViewFirstSwap, on: view)
+    }
+    
+    private func addSubviewsTwo(view: UIView) {
+        setupSubviews(subviews: labelDescription, labelBulletsList, 
+                      stackViewFirstSwap, stackViewSecondSwap, on: view)
+    }
+    
+    private func addSubviewsThree(view: UIView) {
+        setupSubviews(subviews: labelDescription, labelBulletsList, 
+                      stackViewFirstSwap, stackViewSecondSwap,
+                      stackViewThirdSwap, on: view)
     }
     // MARK: - Methods for popup view controllers
     private func addSubviews(tag: Int) {
@@ -1622,7 +1704,7 @@ extension GameTypeViewController {
             viewDescription.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             viewDescription.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             viewDescription.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            viewDescription.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1.35)
+            viewDescription.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: size())
         ])
         
         NSLayoutConstraint.activate([
@@ -1637,23 +1719,57 @@ extension GameTypeViewController {
             labelBulletsList.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
         ])
         
-        setupCenterSubview(subview: imageFirstSwap, on: viewFirstSwap)
-        setupSquare(subviews: viewFirstSwap, sizes: 40)
+        setupGameTypeDescription()
+    }
+    
+    private func setupGameTypeDescription() {
+        switch tag {
+        case 0, 1, 4: gameTypeSecond()
+        case 3: gameTypeThird()
+        default: gameTypeFirst()
+        }
+    }
+    
+    private func gameTypeFirst() {
+        setViewsImagesSwap(image: imageFirstSwap, view: viewFirstSwap,
+                           subview: stackViewFirstSwap, to: labelBulletsList)
+    }
+    
+    private func gameTypeSecond() {
+        setViewsImagesSwap(image: imageFirstSwap, view: viewFirstSwap,
+                           subview: stackViewFirstSwap, to: labelBulletsList)
+        setViewsImagesSwap(image: imageSecondSwap, view: viewSecondSwap,
+                           subview: stackViewSecondSwap, to: stackViewFirstSwap)
+    }
+    
+    private func gameTypeThird() {
+        setViewsImagesSwap(image: imageFirstSwap, view: viewFirstSwap,
+                           subview: stackViewFirstSwap, to: labelBulletsList)
+        setViewsImagesSwap(image: imageSecondSwap, view: viewSecondSwap,
+                           subview: stackViewSecondSwap, to: stackViewFirstSwap)
+        setViewsImagesSwap(image: imageThirdSwap, view: viewThirdSwap,
+                           subview: stackViewThirdSwap, to: stackViewSecondSwap)
+    }
+    
+    private func setViewsImagesSwap(image: UIImageView, view: UIView, 
+                                    subview: UIView, to otherSubview: UIView) {
+        setupCenterSubview(subview: image, on: view)
+        setupSquare(subviews: view, sizes: 40)
         
         NSLayoutConstraint.activate([
-            stackViewFirstSwap.topAnchor.constraint(equalTo: labelBulletsList.bottomAnchor),
-            stackViewFirstSwap.leadingAnchor.constraint(equalTo: viewDescription.leadingAnchor, constant: 15),
-            stackViewFirstSwap.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
+            subview.topAnchor.constraint(equalTo: otherSubview.bottomAnchor),
+            subview.leadingAnchor.constraint(equalTo: viewDescription.leadingAnchor, constant: 15),
+            subview.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
         ])
-        
-        setupCenterSubview(subview: imageSecondSwap, on: viewSecondSwap)
-        setupSquare(subviews: viewSecondSwap, sizes: 40)
-        
-        NSLayoutConstraint.activate([
-            stackViewSecondSwap.topAnchor.constraint(equalTo: stackViewFirstSwap.bottomAnchor),
-            stackViewSecondSwap.leadingAnchor.constraint(equalTo: viewDescription.leadingAnchor, constant: 15),
-            stackViewSecondSwap.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
-        ])
+    }
+    
+    private func size() -> CGFloat {
+        switch tag {
+        case 0, 4: 1.4
+        case 1: 1.55
+        case 2: 1.15
+        default: 1.65
+        }
     }
     
     private func setupConstraintsSettingCountQuestions() {

@@ -141,16 +141,15 @@ extension Countries {
         return countries
     }
     
-    static func getRandomCountries() -> [Countries] {
+    static func getRandomCountries(mode: Setting) -> [Countries] {
         var countries: [Countries] = []
-        let setting = StorageManager.shared.fetchSetting()
         
-        countries = allCountries(toggle: setting.allCountries) +
-        americanContinent(toggle: setting.americaContinent) +
-        europeContinent(toggle: setting.europeContinent) +
-        africaContinent(toggle: setting.africaContinent) +
-        asiaContinent(toggle: setting.asiaContinent) +
-        oceanContinent(toggle: setting.oceaniaContinent)
+        countries = allCountries(toggle: mode.allCountries) +
+        americanContinent(toggle: mode.americaContinent) +
+        europeContinent(toggle: mode.europeContinent) +
+        africaContinent(toggle: mode.africaContinent) +
+        asiaContinent(toggle: mode.asiaContinent) +
+        oceanContinent(toggle: mode.oceaniaContinent)
         
         countries.shuffle()
         
@@ -181,11 +180,10 @@ extension Countries {
         toggle ? Countries.getOceanContinent() : []
     }
     
-    static func getRandomQuestions(countries: [Countries]) -> [Countries] {
+    static func getRandomQuestions(countries: [Countries], mode: Setting) -> [Countries] {
         var getCountries: [Countries] = []
-        let setting = StorageManager.shared.fetchSetting()
         
-        for index in 0..<setting.countQuestions {
+        for index in 0..<mode.countQuestions {
             getCountries.append(countries[index])
         }
         
@@ -226,18 +224,18 @@ extension Countries {
         return threeAnswers
     }
     
-    static func getAnswers(answers: [Countries]) -> (buttonFirst: [Countries],
-                                                     buttonSecond: [Countries],
-                                                     buttonThird: [Countries],
-                                                     buttonFourth: [Countries]) {
-        let setting = StorageManager.shared.fetchSetting()
+    static func getAnswers(answers: [Countries], 
+                           mode: Setting) -> (buttonFirst: [Countries],
+                                              buttonSecond: [Countries],
+                                              buttonThird: [Countries],
+                                              buttonFourth: [Countries]) {
         var first: [Countries] = []
         var second: [Countries] = []
         var third: [Countries] = []
         var fourth: [Countries] = []
         var counter = 0
         
-        while(counter < setting.countQuestions * 4) {
+        while(counter < mode.countQuestions * 4) {
             first.append(answers[counter])
             second.append(answers[counter + 1])
             third.append(answers[counter + 2])
@@ -248,18 +246,18 @@ extension Countries {
         return (first, second, third, fourth)
     }
     
-    static func getQuestions() -> (questions: [Countries],
-                                   buttonFirst: [Countries],
-                                   buttonSecond: [Countries],
-                                   buttonThird: [Countries],
-                                   buttonFourth: [Countries]) {
-        let randomCountries = getRandomCountries()
+    static func getQuestions(mode: Setting) -> (questions: [Countries],
+                                                buttonFirst: [Countries],
+                                                buttonSecond: [Countries],
+                                                buttonThird: [Countries],
+                                                buttonFourth: [Countries]) {
+        let randomCountries = getRandomCountries(mode: mode)
         
-        let questions = getRandomQuestions(countries: randomCountries)
+        let questions = getRandomQuestions(countries: randomCountries, mode: mode)
         
         let choosingAnswers = getChoosingAnswers(questions: questions, randomCountries: randomCountries)
         
-        let answers = getAnswers(answers: choosingAnswers)
+        let answers = getAnswers(answers: choosingAnswers, mode: mode)
         
         return (questions, answers.buttonFirst, answers.buttonSecond, answers.buttonThird, answers.buttonFourth)
     }

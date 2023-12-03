@@ -223,7 +223,9 @@ class QuizOfFlagsViewController: UIViewController {
     private var currentQuestion = 0
     private var seconds = 0
     private var spendTime: [CGFloat] = []
-    private var questions = Countries.getQuestions()
+    private var questions: (questions: [Countries], buttonFirst: [Countries],
+                            buttonSecond: [Countries], buttonThird: [Countries],
+                            buttonFourth: [Countries])!
     private var answerSelect = false
     
     private var correctAnswers: [Countries] = []
@@ -231,9 +233,10 @@ class QuizOfFlagsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupData()
         setupDesign()
         setupSubviews()
-        setConstraints()
+        setupConstraints()
         setupBarButton()
         setupMoveSubviews()
         startHideSubviews()
@@ -248,6 +251,10 @@ class QuizOfFlagsViewController: UIViewController {
         }
     }
     // MARK: - General methods
+    private func setupData() {
+        questions = Countries.getQuestions(mode: mode)
+    }
+    
     private func setupDesign() {
         view.backgroundColor = game.background
         navigationItem.hidesBackButton = true
@@ -960,7 +967,7 @@ extension QuizOfFlagsViewController {
 }
 // MARK: - Setup constraints
 extension QuizOfFlagsViewController {
-    private func setConstraints() {
+    private func setupConstraints() {
         if mode.timeElapsed.timeElapsed {
             constraintsTimer()
         }

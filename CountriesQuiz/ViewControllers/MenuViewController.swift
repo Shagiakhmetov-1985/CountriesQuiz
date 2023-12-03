@@ -15,6 +15,10 @@ protocol GameTypeViewControllerDelegate {
     func acceptDataOfSetting(setting: Setting)
 }
 
+protocol ResultsViewControllerDelegate {
+    func acceptDataOfSettingFromResults(setting: Setting)
+}
+
 class MenuViewController: UIViewController {
     // MARK: - Private properties
     private lazy var labelMenu: UILabel = {
@@ -434,7 +438,14 @@ extension MenuViewController {
     }
 }
 // MARK: - Delegate rewrite user defaults
-extension MenuViewController: SettingViewControllerDelegate, GameTypeViewControllerDelegate {
+extension MenuViewController: SettingViewControllerDelegate,
+                              GameTypeViewControllerDelegate,
+                              ResultsViewControllerDelegate {
+    func acceptDataOfSettingFromResults(setting: Setting) {
+        mode = setting
+        print(mode ?? "")
+    }
+    
     func acceptDataOfSetting(setting: Setting) {
         mode = setting
     }

@@ -50,7 +50,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var imageFirstSwap: UIImageView = {
-        setupImage(image: imageTitle(), color: colorTitle(), size: 25)
+        setupImage(image: imageFirstTitle(), color: colorTitle(), size: 25)
     }()
     
     private lazy var viewFirstSwap: UIView = {
@@ -69,7 +69,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelFirstDescriptionSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: labelTitleDescription(),
+            title: labelTitleFirstDescription(),
             size: 19,
             style: "Gill Sans",
             alignment: .left)
@@ -84,7 +84,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var imageSecondSwap: UIImageView = {
-        setupImage(image: "building", color: .white, size: 25)
+        setupImage(image: imageSecondTitle(), color: .white, size: 25)
     }()
     
     private lazy var viewSecondSwap: UIView = {
@@ -94,7 +94,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelSecondSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: "Режим наименования",
+            title: labelSecondTitle(),
             size: 24,
             style: "Gill Sans",
             alignment: .left)
@@ -103,7 +103,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelSecondDescriptionSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ флага страны.",
+            title: labelTitleSecondDescription(),
             size: 19,
             style: "Gill Sans",
             alignment: .left)
@@ -137,7 +137,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelThirdDescriptionSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: "В качестве вопроса задается наименование столицы и пользователь должен выбрать ответ наименования страны.",
+            title: "В качестве вопроса задается наименование столицы и пользователь должен составить слово из букв наименования страны.",
             size: 19,
             style: "Gill Sans",
             alignment: .left)
@@ -777,7 +777,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         }
     }
     
-    private func imageTitle() -> String {
+    private func imageFirstTitle() -> String {
         tag == 2 ? "globe.europe.africa" : "flag"
     }
     
@@ -788,18 +788,34 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func labelFirstTitle() -> String {
         tag == 2 ? "Режим карты" : "Режим флага"
     }
-    /*
+    
+    private func labelTitleFirstDescription() -> String {
+        switch tag {
+        case 0, 1: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования страны."
+        case 2: "В качестве вопроса задается географическая карта страны и пользователь должен выбрать ответ наименования страны. (Кнопка неактивна)"
+        case 3: "В качестве вопроса задается флаг страны и пользователь должен составить слово из букв наименования страны."
+        default: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования столицы."
+        }
+    }
+    
+    private func imageSecondTitle() -> String {
+        tag == 3 ? "globe.europe.africa" : "building"
+    }
+    
     private func labelSecondTitle() -> String {
         switch tag {
-        case 0, 1, 4: ""
-        default: ""
+        case 0, 1: "Режим наименования"
+        case 4: "Режим столицы"
+        default: "Режим карты"
         }
-        tag == 4 ? "Режим столицы" : "Режим наименования"
     }
-    */
-    private func labelTitleDescription() -> String {
-        tag == 2 ? "В качестве вопроса задается географическая карта страны и пользователь должен выбрать ответ наименования страны. (Кнопка неактивна)" :
-        "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования страны."
+    
+    private func labelTitleSecondDescription() -> String {
+        switch tag {
+        case 0, 1: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ флага страны."
+        case 4: "В качестве вопроса задается наименование столицы и пользователь должен выбрать ответ флага страны."
+        default: "В качестве вопроса задается географическая карта страны и пользователь должен составить слово из букв наименования страны."
+        }
     }
     
     private func addSubviewsDescription(view: UIView) {

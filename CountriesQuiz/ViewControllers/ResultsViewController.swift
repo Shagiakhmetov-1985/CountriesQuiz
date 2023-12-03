@@ -275,6 +275,7 @@ class ResultsViewController: UIViewController {
     var mode: Setting!
     var game: Games!
     var spendTime: [CGFloat]!
+    var delegate: ResultsViewControllerDelegate!
     
     private var timer = Timer()
     // MARK: - Methods
@@ -506,6 +507,7 @@ class ResultsViewController: UIViewController {
     }
     
     @objc private func exitToMenu() {
+        delegate.acceptDataOfSettingFromResults(setting: mode)
         navigationController?.popToRootViewController(animated: true)
     }
     

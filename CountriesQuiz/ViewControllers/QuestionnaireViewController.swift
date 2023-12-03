@@ -263,7 +263,9 @@ class QuestionnaireViewController: UIViewController {
     
     private var timer = Timer()
     private var countdown = Timer()
-    private var questions = Countries.getQuestions()
+    private var questions: (questions: [Countries], buttonFirst: [Countries],
+                            buttonSecond: [Countries], buttonThird: [Countries],
+                            buttonFourth: [Countries])!
     private var shapeLayer = CAShapeLayer()
     private var lastQuestion = false
     
@@ -277,6 +279,7 @@ class QuestionnaireViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupData()
         setupDesign()
         setupBarButton()
         setupSubviews()
@@ -291,6 +294,10 @@ class QuestionnaireViewController: UIViewController {
         setupCircles()
     }
     // MARK: - General methods
+    private func setupData() {
+        questions = Countries.getQuestions(mode: mode)
+    }
+    
     private func setupDesign() {
         view.backgroundColor = game.background
         navigationItem.hidesBackButton = true

@@ -88,7 +88,9 @@ class QuizOfCapitalsViewController: UIViewController {
     private var currentQuestion = 0
     private var seconds = 0
     private var spendTime: [CGFloat] = []
-    private var questions = Countries.getQuestions()
+    private var questions: (questions: [Countries], buttonFirst: [Countries],
+                            buttonSecond: [Countries], buttonThird: [Countries],
+                            buttonFourth: [Countries])!
     private var answerSelect = false
     
     private var correctAnswers: [Countries] = []
@@ -96,6 +98,7 @@ class QuizOfCapitalsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupData()
         setupDesign()
         setupBarButton()
         setupSubviews()
@@ -112,6 +115,10 @@ class QuizOfCapitalsViewController: UIViewController {
         animationTimeReset()
     }
     // MARK: - General methods
+    private func setupData() {
+        questions = Countries.getQuestions(mode: mode)
+    }
+    
     private func setupDesign() {
         view.backgroundColor = game.background
         navigationItem.hidesBackButton = true

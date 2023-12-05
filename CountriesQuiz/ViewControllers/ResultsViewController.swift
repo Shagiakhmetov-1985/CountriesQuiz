@@ -275,7 +275,10 @@ class ResultsViewController: UIViewController {
     var mode: Setting!
     var game: Games!
     var spendTime: [CGFloat]!
-    var delegate: ResultsViewControllerDelegate!
+    
+    weak var delegateQuizOfFlag: QuizOfFlagsViewControllerInput!
+    weak var delegateQuestionnaire: QuestionnaireViewControllerInput!
+    weak var delegateQuizOfCapitals: QuizOfCapitalsViewControllerInput!
     
     private var timer = Timer()
     // MARK: - Methods
@@ -507,8 +510,11 @@ class ResultsViewController: UIViewController {
     }
     
     @objc private func exitToMenu() {
-        delegate.acceptDataOfSettingFromResults(setting: mode)
-        navigationController?.popToRootViewController(animated: true)
+        switch game.gameType {
+        case .quizOfFlag: delegateQuizOfFlag.dataOfSettingToQuizOfFlag(setting: mode)
+        case .questionnaire: delegateQuestionnaire.dataOfSettingToQuestionnaire(setting: mode)
+        default: delegateQuizOfCapitals.dataOfSettingToQuizOfCapitals(setting: mode)
+        }
     }
     
     @objc private func showIncorrectAnswers() {

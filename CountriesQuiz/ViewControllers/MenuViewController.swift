@@ -8,15 +8,15 @@
 import UIKit
 // MARK: - Protocol of delegate rewrite user defaults
 protocol SettingViewControllerDelegate {
-    func sendDataOfSetting(setting: Setting)
+    func dataOfSettingToMenuFromSetting(setting: Setting)
 }
 
 protocol GameTypeViewControllerDelegate {
-    func acceptDataOfSetting(setting: Setting)
+    func dataOfSettingToMenuFromGameType(setting: Setting)
 }
 
-protocol ResultsViewControllerDelegate {
-    func acceptDataOfSettingFromResults(setting: Setting)
+protocol MenuViewControllerInput: AnyObject {
+    func dataOfSettingToMenu(setting: Setting)
 }
 
 class MenuViewController: UIViewController {
@@ -344,6 +344,7 @@ class MenuViewController: UIViewController {
         gameTypeVC.game = games[tag]
         gameTypeVC.tag = tag
         gameTypeVC.delegate = self
+        gameTypeVC.delegateInput = self
         navigationController?.pushViewController(gameTypeVC, animated: true)
     }
     
@@ -437,20 +438,20 @@ extension MenuViewController {
         return view
     }
 }
-// MARK: - Delegate rewrite user defaults
+// MARK: - Delegates for send data
 extension MenuViewController: SettingViewControllerDelegate,
                               GameTypeViewControllerDelegate,
-                              ResultsViewControllerDelegate {
-    func acceptDataOfSettingFromResults(setting: Setting) {
-        mode = setting
-        print(mode ?? "")
-    }
-    
-    func acceptDataOfSetting(setting: Setting) {
+                              MenuViewControllerInput {
+    func dataOfSettingToMenu(setting: Setting) {
+        navigationController?.popToRootViewController(animated: true)
         mode = setting
     }
     
-    func sendDataOfSetting(setting: Setting) {
+    func dataOfSettingToMenuFromGameType(setting: Setting) {
+        mode = setting
+    }
+    
+    func dataOfSettingToMenuFromSetting(setting: Setting) {
         mode = setting
     }
 }

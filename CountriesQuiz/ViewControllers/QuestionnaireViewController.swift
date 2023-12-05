@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol QuestionnaireViewControllerInput: AnyObject {
+    func dataOfSettingToQuestionnaire(setting: Setting)
+}
+
 class QuestionnaireViewController: UIViewController {
     private lazy var buttonExit: UIButton = {
         let button = setButton(
@@ -251,6 +255,7 @@ class QuestionnaireViewController: UIViewController {
     
     var mode: Setting!
     var game: Games!
+    weak var delegateInput: GameTypeViewControllerInput!
     
     private var imageFlagSpring: NSLayoutConstraint!
     private var labelNameSpring: NSLayoutConstraint!
@@ -971,6 +976,7 @@ extension QuestionnaireViewController {
         resultsVC.correctAnswers = correctAnswers
         resultsVC.incorrectAnswers = incorrectAnswers
         resultsVC.spendTime = spendTime
+        resultsVC.delegateQuestionnaire = self
         navigationController?.pushViewController(resultsVC, animated: true)
     }
 }
@@ -1397,5 +1403,11 @@ extension QuestionnaireViewController {
     
     private func setConstant() -> CGFloat {
         view.frame.width / 2 - 27.5
+    }
+}
+// MARK: - QuestionnaireViewControllerInput
+extension QuestionnaireViewController: QuestionnaireViewControllerInput {
+    func dataOfSettingToQuestionnaire(setting: Setting) {
+        delegateInput.dataOfSettingToGameType(setting: setting)
     }
 }

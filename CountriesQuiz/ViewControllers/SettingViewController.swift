@@ -345,7 +345,7 @@ class SettingViewController: UIViewController {
     }
     // MARK: - Activating buttons
     @objc private func backToMenu() {
-        delegate.sendDataOfSetting(setting: mode)
+        delegate.dataOfSettingToMenuFromSetting(setting: mode)
         StorageManager.shared.saveSetting(setting: mode)
         dismiss(animated: true)
     }

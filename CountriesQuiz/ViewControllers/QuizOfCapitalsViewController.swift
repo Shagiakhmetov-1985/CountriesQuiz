@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol QuizOfCapitalsViewControllerInput: AnyObject {
+    func dataOfSettingToQuizOfCapitals(setting: Setting)
+}
+
 class QuizOfCapitalsViewController: UIViewController {
     private lazy var buttonBack: UIButton = {
         setButton(action: #selector(exitToTypeGame))
@@ -33,7 +37,7 @@ class QuizOfCapitalsViewController: UIViewController {
     }()
     
     private lazy var labelQuiz: UILabel = {
-        setLabel(title: "Выберите правильный ответ", size: 23)
+        setLabel(title: "Выберите правильный ответ", size: 23, opacity: 0)
     }()
     
     private lazy var labelDescription: UILabel = {
@@ -75,6 +79,7 @@ class QuizOfCapitalsViewController: UIViewController {
     
     var mode: Setting!
     var game: Games!
+    weak var delegateInput: GameTypeViewControllerInput!
     
     private var imageFlagSpring: NSLayoutConstraint!
     private var labelNameSpring: NSLayoutConstraint!
@@ -109,10 +114,10 @@ class QuizOfCapitalsViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        guard timeCheck() else { return }
+        guard isCountdown() else { return }
         circularShadow()
         circular(strokeEnd: 0)
-        animationTimeReset()
+        animationCircleTimeReset()
     }
     // MARK: - General methods
     private func setupData() {
@@ -130,10 +135,10 @@ class QuizOfCapitalsViewController: UIViewController {
     }
     
     private func setupSubviews() {
-        if timeCheck() {
-            checkFlag() ? subviewsWithTimerFlag() : subviewsWithTimerLabel()
+        if isCountdown() {
+            isFlag() ? subviewsWithTimerFlag() : subviewsWithTimerLabel()
         } else {
-            checkFlag() ? subviewsWithoutTimerFlag() : subviewsWithoutTimerLabel()
+            isFlag() ? subviewsWithoutTimerFlag() : subviewsWithoutTimerLabel()
         }
     }
     
@@ -163,43 +168,39 @@ class QuizOfCapitalsViewController: UIViewController {
         }
     }
     
-    private func checkFlag() -> Bool {
+    private func isFlag() -> Bool {
         mode.flag ? true : false
     }
+    
+    private func oneQuestionTime() -> Int {
+        mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
+    }
+    
+    private func allQuestionsTime() -> Int {
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
+    }
     // MARK: - Time for label, seconds and circle timer
-    private func checkSeconds() {
-        if !oneQuestionCheck(), currentQuestion < 1 {
+    private func checkTime() {
+        if !isOneQuestion(), currentQuestion < 1 {
             seconds = checkSecondsQuestion() * 10
-        } else if oneQuestionCheck() {
+        } else if isOneQuestion() {
             seconds = checkSecondsQuestion() * 10
         }
     }
     
     private func checkSecondsQuestion() -> Int {
-        let seconds: Int
-        if oneQuestionCheck() {
-            seconds = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
-        } else {
-            seconds = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
-        }
-        return seconds
+        isOneQuestion() ? oneQuestionTime() : allQuestionsTime()
     }
     
     private func checkCircleTimeElapsed() -> Int {
-        let timer: Int
-        if oneQuestionCheck() {
-            timer = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
-        } else {
-            timer = seconds / 10
-        }
-        return timer
+        isOneQuestion() ? oneQuestionTime() : seconds / 10
     }
     
-    private func oneQuestionCheck() -> Bool {
+    private func isOneQuestion() -> Bool {
         mode.timeElapsed.questionSelect.oneQuestion ? true : false
     }
     
-    private func timeCheck() -> Bool {
+    private func isCountdown() -> Bool {
         mode.timeElapsed.timeElapsed ? true : false
     }
     // MARK: - Opacity, enable subviews and run timer
@@ -222,7 +223,7 @@ class QuizOfCapitalsViewController: UIViewController {
     // MARK: - Move flag and buttons
     private func runMoveSubviews() {
         let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
-        if checkFlag() {
+        if isFlag() {
             imageFlagSpring.constant += view.bounds.width * pointX
         } else {
             labelNameSpring.constant += view.bounds.width * pointX
@@ -232,7 +233,7 @@ class QuizOfCapitalsViewController: UIViewController {
     // MARK: - Animation move subviews
     private func animationSubviews(duration: CGFloat) {
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut) { [self] in
-            if checkFlag() {
+            if isFlag() {
                 imageFlagSpring.constant -= view.bounds.width
             } else {
                 labelNameSpring.constant -= view.bounds.width
@@ -290,11 +291,10 @@ class QuizOfCapitalsViewController: UIViewController {
         updateProgressView()
         labelNumber.text = "\(currentQuestion + 1) / \(mode.countQuestions)"
         
-        if timeCheck() {
-            checkSeconds()
-            animationTimeElapsed()
-            runTimer()
-        }
+        guard isCountdown() else { return }
+        checkTime()
+        animationCircleCountdown()
+        runTimer()
     }
     
     private func updateProgressView() {
@@ -326,7 +326,7 @@ class QuizOfCapitalsViewController: UIViewController {
         answerSelect.toggle()
         incorrectAnswerTimeUp()
         
-        if !oneQuestionCheck() {
+        if !isOneQuestion() {
             currentQuestion = mode.countQuestions - 1
         }
         showDescription()
@@ -347,7 +347,7 @@ class QuizOfCapitalsViewController: UIViewController {
         animationColorButton(button: button)
         showDescription()
         
-        guard timeCheck() else { return }
+        guard isCountdown() else { return }
         stopAnimationCircleTimer()
         checkTimeSpent()
     }
@@ -404,9 +404,9 @@ class QuizOfCapitalsViewController: UIViewController {
     }
     // MARK: - Time spent for every answer
     private func checkTimeSpent() {
-        if oneQuestionCheck() {
+        if isOneQuestion() {
             setTimeSpent()
-        } else if !oneQuestionCheck(), currentQuestion + 1 == mode.countQuestions {
+        } else if !isOneQuestion(), currentQuestion + 1 == mode.countQuestions {
             setTimeSpent()
         }
     }
@@ -471,9 +471,9 @@ class QuizOfCapitalsViewController: UIViewController {
     }
     // MARK: - Update data for next question
     private func updateData() {
-        checkFlag() ? updateImageFlag() : updateLabelCountry()
+        isFlag() ? updateImageFlag() : updateLabelCountry()
         updateTitleButtons()
-        guard timeCheck() else { return }
+        guard isCountdown() else { return }
         resetTimer()
     }
     
@@ -495,9 +495,9 @@ class QuizOfCapitalsViewController: UIViewController {
     }
     
     private func resetTimer() {
-        if oneQuestionCheck(), seconds > 0 {
+        if isOneQuestion(), seconds > 0 {
             resetTitleAndCircleTimer()
-        } else if oneQuestionCheck(), seconds == 0 {
+        } else if isOneQuestion(), seconds == 0 {
             circular(strokeEnd: 0)
             resetTitleAndCircleTimer()
         }
@@ -505,7 +505,7 @@ class QuizOfCapitalsViewController: UIViewController {
     
     private func resetTitleAndCircleTimer() {
         resetTitleTimer()
-        animationTimeReset()
+        animationCircleTimeReset()
     }
     
     private func resetTitleTimer() {
@@ -553,6 +553,7 @@ extension QuizOfCapitalsViewController {
                 resultsVC.mode = mode
                 resultsVC.game = game
                 resultsVC.spendTime = spendTime
+                resultsVC.delegateQuizOfCapitals = self
                 navigationController?.pushViewController(resultsVC, animated: true)
             }
         }
@@ -685,14 +686,14 @@ extension QuizOfCapitalsViewController {
     }
     
     private func checkSetCircularStrokeEnd() {
-        if oneQuestionCheck(), timeCheck() {
+        if isOneQuestion(), isCountdown() {
             shapeLayer.strokeEnd = 1
-        } else if !oneQuestionCheck(), timeCheck(), currentQuestion < 1 {
+        } else if !isOneQuestion(), isCountdown(), currentQuestion < 1 {
             shapeLayer.strokeEnd = 1
         }
     }
     
-    private func animationTimeElapsed() {
+    private func animationCircleCountdown() {
         let timer = checkCircleTimeElapsed()
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.toValue = 0
@@ -702,7 +703,7 @@ extension QuizOfCapitalsViewController {
         shapeLayer.add(animation, forKey: "animation")
     }
     
-    private func animationTimeReset() {
+    private func animationCircleTimeReset() {
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.toValue = 1
         animation.duration = CFTimeInterval(0.4)
@@ -722,13 +723,13 @@ extension QuizOfCapitalsViewController {
 // MARK: - Setup constraints
 extension QuizOfCapitalsViewController {
     private func setupConstraints() {
-        if timeCheck() {
+        if isCountdown() {
             constraintsTimer()
         }
         
         setupSquare(button: buttonBack, sizes: 40)
         
-        if checkFlag() {
+        if isFlag() {
             constraintsFlag()
             constraintsProgressView(layout: imageFlag.bottomAnchor, constant: 30)
         } else {
@@ -834,5 +835,11 @@ extension QuizOfCapitalsViewController {
     
     private func setWidthSubview() -> CGFloat {
         view.bounds.width - 20
+    }
+}
+// MARK: - QuizOfCapitalsViewControllerInput
+extension QuizOfCapitalsViewController: QuizOfCapitalsViewControllerInput {
+    func dataOfSettingToQuizOfCapitals(setting: Setting) {
+        delegateInput.dataOfSettingToGameType(setting: setting)
     }
 }

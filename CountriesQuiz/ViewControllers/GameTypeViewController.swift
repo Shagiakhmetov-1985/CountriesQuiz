@@ -15,6 +15,10 @@ protocol PopUpViewSettingDelegate {
     func closeViewSetting()
 }
 
+protocol GameTypeViewControllerInput: AnyObject {
+    func dataOfSettingToGameType(setting: Setting)
+}
+
 class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     private lazy var viewGameType: UIView = {
         setupView(color: .white.withAlphaComponent(0.8), radius: diameter() / 2)
@@ -558,6 +562,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     var delegate: GameTypeViewControllerDelegate!
     var numberContinent = 0
     
+    weak var delegateInput: MenuViewControllerInput!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDesign()
@@ -722,7 +728,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     // MARK: - Bar buttons activate
     @objc private func backToMenu() {
-        delegate.acceptDataOfSetting(setting: mode)
+        delegate.dataOfSettingToMenuFromGameType(setting: mode)
         navigationController?.popViewController(animated: true)
     }
     
@@ -813,7 +819,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func labelTitleSecondDescription() -> String {
         switch tag {
         case 0, 1: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ флага страны."
-        case 4: "В качестве вопроса задается наименование столицы и пользователь должен выбрать ответ флага страны."
+        case 4: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ наименования столицы."
         default: "В качестве вопроса задается географическая карта страны и пользователь должен составить слово из букв наименования страны."
         }
     }
@@ -941,8 +947,14 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func setupCountQuestions() {
         let row = pickerViewQuestions.selectedRow(inComponent: 0)
         mode.countQuestions = row + 10
-        labelCountQuestion.text = "\(row + 10)"
+        setTimeAllQuestions(time: 5 * mode.countQuestions)
+        setupTitles(title: "\(row + 10)")
         closeViewSetting()
+    }
+    
+    private func setupTitles(title: String) {
+        labelCountQuestion.text = title
+        labelTime.text = countdownOnOff()
     }
     // MARK: - Press done for change setting, continents
     private func setupContinents() {
@@ -1051,8 +1063,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     // MARK: - Press done for change setting, time
     private func setupTime() {
         setupSegmentedControl()
-        setupDataFromPickerViews()
         setupTitleTime()
+        setupDataFromPickerViews()
         closeViewSetting()
     }
     
@@ -1194,6 +1206,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let startGameVC = QuizOfFlagsViewController()
         startGameVC.mode = mode
         startGameVC.game = game
+        startGameVC.delegateInput = self
         navigationController?.pushViewController(startGameVC, animated: true)
     }
     
@@ -1201,6 +1214,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let startGameVC = QuestionnaireViewController()
         startGameVC.mode = mode
         startGameVC.game = game
+        startGameVC.delegateInput = self
         navigationController?.pushViewController(startGameVC, animated: true)
     }
     
@@ -1208,6 +1222,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let startGameVC = QuizOfCapitalsViewController()
         startGameVC.mode = mode
         startGameVC.game = game
+        startGameVC.delegateInput = self
         navigationController?.pushViewController(startGameVC, animated: true)
     }
     
@@ -1938,5 +1953,11 @@ extension GameTypeViewController: PopUpViewSettingDelegate {
             default: removeSubviews(subviews: viewSetting, stackViewTime)
             }
         }
+    }
+}
+// MARK: - GameTypeViewControllerInput
+extension GameTypeViewController: GameTypeViewControllerInput {
+    func dataOfSettingToGameType(setting: Setting) {
+        delegateInput.dataOfSettingToMenu(setting: setting)
     }
 }

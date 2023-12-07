@@ -36,7 +36,7 @@ class DetailsViewController: UIViewController {
                 answer: result.buttonFirst,
                 tag: 1,
                 select: result.tag),
-            subview: checkFlag() ? labelFirst : subview(imageFirst, labelFirst))
+            subview: isFlag() ? labelFirst : subview(imageFirst, labelFirst))
         default: setupView(
             checkmark: checkmarkFirst,
             color: setButtonColor(
@@ -44,7 +44,7 @@ class DetailsViewController: UIViewController {
                 answer: result.buttonFirst,
                 tag: 1,
                 select: result.tag),
-            subview: checkFlag() ? labelFirst : imageFirst)
+            subview: isFlag() ? labelFirst : imageFirst)
         }
     }()
     
@@ -85,7 +85,7 @@ class DetailsViewController: UIViewController {
                 answer: result.buttonSecond,
                 tag: 2,
                 select: result.tag),
-            subview: checkFlag() ? labelSecond : subview(imageSecond, labelSecond))
+            subview: isFlag() ? labelSecond : subview(imageSecond, labelSecond))
         default: setupView(
             checkmark: checkmarkSecond,
             color: setButtonColor(
@@ -93,7 +93,7 @@ class DetailsViewController: UIViewController {
                 answer: result.buttonSecond,
                 tag: 2,
                 select: result.tag),
-            subview: checkFlag() ? labelSecond : imageSecond)
+            subview: isFlag() ? labelSecond : imageSecond)
         }
     }()
     
@@ -134,7 +134,7 @@ class DetailsViewController: UIViewController {
                 answer: result.buttonThird,
                 tag: 3,
                 select: result.tag),
-            subview: checkFlag() ? labelThird : subview(imageThird, labelThird))
+            subview: isFlag() ? labelThird : subview(imageThird, labelThird))
         default: setupView(
             checkmark: checkmarkThird,
             color: setButtonColor(
@@ -142,7 +142,7 @@ class DetailsViewController: UIViewController {
                 answer: result.buttonThird,
                 tag: 3,
                 select: result.tag),
-            subview: checkFlag() ? labelThird : imageThird)
+            subview: isFlag() ? labelThird : imageThird)
         }
     }()
     
@@ -183,7 +183,7 @@ class DetailsViewController: UIViewController {
                 answer: result.buttonFourth,
                 tag: 4,
                 select: result.tag),
-            subview: checkFlag() ? labelFourth : subview(imageFourth, labelFourth))
+            subview: isFlag() ? labelFourth : subview(imageFourth, labelFourth))
         default: setupView(
             checkmark: checkmarkFourth,
             color: setButtonColor(
@@ -191,7 +191,7 @@ class DetailsViewController: UIViewController {
                 answer: result.buttonFourth,
                 tag: 4,
                 select: result.tag),
-            subview: checkFlag() ? labelFourth : imageFourth)
+            subview: isFlag() ? labelFourth : imageFourth)
         }
     }()
     
@@ -267,7 +267,7 @@ class DetailsViewController: UIViewController {
     }
     
     private func setupSubviews() {
-        checkFlag() ? setupSubviewsFlag() : setupSubviewsLabel()
+        isFlag() ? setupSubviewsFlag() : setupSubviewsLabel()
     }
     
     private func setupSubviewsFlag() {
@@ -286,7 +286,7 @@ class DetailsViewController: UIViewController {
         }
     }
     
-    private func checkFlag() -> Bool {
+    private func isFlag() -> Bool {
         mode.flag ? true : false
     }
     
@@ -302,10 +302,8 @@ class DetailsViewController: UIViewController {
     
     private func checkTitleGameType(title: Countries) -> String {
         switch game.gameType {
-        case .quizOfFlag:
-            return title.name
-        default:
-            return title.capitals
+        case .quizOfFlag, .questionnaire: title.name
+        default: title.capitals
         }
     }
     
@@ -320,9 +318,12 @@ class DetailsViewController: UIViewController {
     private func setNumberQuestion() -> String {
         "\(result.currentQuestion) / \(mode.countQuestions)"
     }
-
+    
     private func checkStackView() -> UIStackView {
-        game.gameType == .quizOfFlag ? stackViewLabel : stackViewFlag
+        switch game.gameType {
+        case .quizOfFlag, .questionnaire: stackViewLabel
+        default: stackViewFlag
+        }
     }
     // MARK: - Set colors for buttons and titles, game type quiz of flags / capitals
     private func setBackgroundColor(question: Countries, answer: Countries,
@@ -513,7 +514,7 @@ extension DetailsViewController {
     private func setupConstraints() {
         setupSquare(subview: buttonBack, sizes: 40)
         
-        checkFlag() ? constraintsFlag() : constraintsLabel()
+        isFlag() ? constraintsFlag() : constraintsLabel()
         
         NSLayoutConstraint.activate([
             progressView.topAnchor.constraint(equalTo: layoutYAxisAnchor(), constant: 30),
@@ -528,7 +529,7 @@ extension DetailsViewController {
             labelNumberQuiz.widthAnchor.constraint(equalToConstant: 85)
         ])
         
-        checkFlag() ? constraintsStackViewFlag() : constraintsStackViewLabel()
+        isFlag() ? constraintsStackViewFlag() : constraintsStackViewLabel()
     }
     
     private func constraintsFlag() {
@@ -549,7 +550,7 @@ extension DetailsViewController {
     }
     
     private func layoutYAxisAnchor() -> NSLayoutYAxisAnchor {
-        checkFlag() ? imageFlag.bottomAnchor : labelCountry.bottomAnchor
+        isFlag() ? imageFlag.bottomAnchor : labelCountry.bottomAnchor
     }
     
     private func constraintsStackViewFlag() {

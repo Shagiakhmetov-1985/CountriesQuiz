@@ -511,9 +511,9 @@ class ResultsViewController: UIViewController {
     
     @objc private func exitToMenu() {
         switch game.gameType {
-        case .quizOfFlag: delegateQuizOfFlag.dataOfSettingToQuizOfFlag(setting: mode)
-        case .questionnaire: delegateQuestionnaire.dataOfSettingToQuestionnaire(setting: mode)
-        default: delegateQuizOfCapitals.dataOfSettingToQuizOfCapitals(setting: mode)
+        case .quizOfFlag: delegateQuizOfFlag.dataToQuizOfFlag(setting: mode)
+        case .questionnaire: delegateQuestionnaire.dataToQuestionnaire(setting: mode)
+        default: delegateQuizOfCapitals.dataToQuizOfCapitals(setting: mode)
         }
     }
     

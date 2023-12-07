@@ -8,7 +8,7 @@
 import UIKit
 
 protocol QuizOfFlagsViewControllerInput: AnyObject {
-    func dataOfSettingToQuizOfFlag(setting: Setting)
+    func dataToQuizOfFlag(setting: Setting)
 }
 
 class QuizOfFlagsViewController: UIViewController {
@@ -1001,7 +1001,7 @@ extension QuizOfFlagsViewController {
 }
 // MARK: - QuizOfFlagsViewControllerInput
 extension QuizOfFlagsViewController: QuizOfFlagsViewControllerInput {
-    func dataOfSettingToQuizOfFlag(setting: Setting) {
-        delegateInput.dataOfSettingToGameType(setting: setting)
+    func dataToQuizOfFlag(setting: Setting) {
+        delegateInput.dataToGameType(setting: setting)
     }
 }

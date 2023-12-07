@@ -8,53 +8,41 @@
 import UIKit
 // MARK: - Protocol of delegate rewrite user defaults
 protocol SettingViewControllerDelegate {
-    func dataOfSettingToMenuFromSetting(setting: Setting)
+    func dataToMenuFromSetting(setting: Setting)
 }
 
 protocol GameTypeViewControllerDelegate {
-    func dataOfSettingToMenuFromGameType(setting: Setting)
+    func dataToMenuFromGameType(setting: Setting)
 }
 
 protocol MenuViewControllerInput: AnyObject {
-    func dataOfSettingToMenu(setting: Setting)
+    func dataToMenu(setting: Setting)
 }
-
+// MARK: - Private properties
 class MenuViewController: UIViewController {
-    // MARK: - Private properties
     private lazy var labelMenu: UILabel = {
-        let label = setLabel(
-            title: "Countries Quiz",
-            size: 40,
-            style: "echorevival",
-            color: .blueBlackSea)
-        return label
+        setLabel(title: "Countries Quiz", size: 40, style: "echorevival", color: .blueBlackSea)
     }()
     
     private lazy var buttonSettings: UIButton = {
-        let button = setButton(
-            color: .blueMiddlePersian,
-            image: imageSettings,
-            action: #selector(setting))
-        return button
+        setButton(color: .blueMiddlePersian, image: imageSettings, action: #selector(setting))
     }()
     
     private lazy var imageSettings: UIImageView = {
-        let imageView = setImage(
-            image: "gear",
-            color: .white,
-            size: 26)
-        return imageView
+        setImage(image: "gear", color: .white, size: 26)
     }()
     
     private lazy var stackViewMenu: UIStackView = {
-        let stackView = setupStackView(
-            label: labelMenu,
-            button: buttonSettings)
+        let stackView = UIStackView(arrangedSubviews: [labelMenu, buttonSettings])
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
     private lazy var contentView: UIView = {
-        let view = setupView(color: .white)
+        let view = UIView()
+        view.backgroundColor = .white
+        view.frame.size = contentSize
+        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
@@ -66,52 +54,38 @@ class MenuViewController: UIViewController {
     }()
     
     private lazy var buttonQuizOfFlags: UIButton = {
-        let button = setButton(
+        setButton(
             color: .cyanDark,
             image: imageFlag,
             label: labelQuizOfFlags,
             circle: circleQuizOfFlag,
             imageGame: imageQuizOfFlags,
             action: #selector(gameType))
-        return button
     }()
     
     private lazy var imageFlag: UIImageView = {
-        let imageView = setImage(
-            image: "flag",
-            color: .white,
-            size: 20)
-        return imageView
+        setImage(image: "flag", color: .white, size: 20)
     }()
     
     private lazy var labelQuizOfFlags: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "Викторина флагов",
             size: 26,
             style: "Gill Sans",
             color: .white,
             alignment: .left)
-        return label
     }()
     
     private lazy var circleQuizOfFlag: UIImageView = {
-        let view = setImage(
-            image: "circle.fill",
-            color: .white.withAlphaComponent(0.8),
-            size: 100)
-        return view
+        setImage(image: "circle.fill", color: .white.withAlphaComponent(0.8), size: 100)
     }()
     
     private lazy var imageQuizOfFlags: UIImageView = {
-        let imageView = setImage(
-            image: "filemenu.and.selection",
-            color: .cyanDark,
-            size: 60)
-        return imageView
+        setImage(image: "filemenu.and.selection", color: .cyanDark, size: 60)
     }()
     
     private lazy var buttonQuestionnaire: UIButton = {
-        let button = setButton(
+        setButton(
             color: .greenHarlequin,
             image: imageCheckmark,
             label: labelQuestionnaire,
@@ -119,45 +93,31 @@ class MenuViewController: UIViewController {
             imageGame: imageQuestionnaire,
             tag: 1,
             action: #selector(gameType))
-        return button
     }()
     
     private lazy var imageCheckmark: UIImageView = {
-        let imageView = setImage(
-            image: "checkmark.circle.badge.questionmark",
-            color: .white,
-            size: 20)
-        return imageView
+        setImage(image: "checkmark.circle.badge.questionmark", color: .white, size: 20)
     }()
     
     private lazy var labelQuestionnaire: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "Опрос",
             size: 26,
             style: "Gill Sans",
             color: .white,
             alignment: .left)
-        return label
     }()
     
     private lazy var circleQuestionnare: UIImageView = {
-        let view = setImage(
-            image: "circle.fill",
-            color: .white.withAlphaComponent(0.8),
-            size: 100)
-        return view
+        setImage(image: "circle.fill", color: .white.withAlphaComponent(0.8), size: 100)
     }()
     
     private lazy var imageQuestionnaire: UIImageView = {
-        let imageView = setImage(
-            image: "checklist",
-            color: .greenHarlequin,
-            size: 60)
-        return imageView
+        setImage(image: "checklist", color: .greenHarlequin, size: 60)
     }()
     
     private lazy var buttonQuizOfMaps: UIButton = {
-        let button = setButton(
+        setButton(
             color: .redYellowBrown,
             image: imageMap,
             label: labelQuizOfMaps,
@@ -165,45 +125,31 @@ class MenuViewController: UIViewController {
             imageGame: imageQuizOfMaps,
             tag: 2,
             action: #selector(gameType))
-        return button
     }()
     
     private lazy var imageMap: UIImageView = {
-        let imageView = setImage(
-            image: "map",
-            color: .white,
-            size: 20)
-        return imageView
+        setImage(image: "map", color: .white, size: 20)
     }()
     
     private lazy var labelQuizOfMaps: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "Викторина карт",
             size: 26,
             style: "Gill Sans",
             color: .white,
             alignment: .left)
-        return label
     }()
     
     private lazy var circleQuizOfMaps: UIImageView = {
-        let view = setImage(
-            image: "circle.fill",
-            color: .white.withAlphaComponent(0.8),
-            size: 100)
-        return view
+        setImage(image: "circle.fill", color: .white.withAlphaComponent(0.8), size: 100)
     }()
     
     private lazy var imageQuizOfMaps: UIImageView = {
-        let imageView = setImage(
-            image: "globe.desk",
-            color: .redYellowBrown,
-            size: 60)
-        return imageView
+        setImage(image: "globe.desk", color: .redYellowBrown, size: 60)
     }()
     
     private lazy var buttonScrabble: UIButton = {
-        let button = setButton(
+        setButton(
             color: .indigo,
             image: imageText,
             label: labelScrabble,
@@ -211,45 +157,31 @@ class MenuViewController: UIViewController {
             imageGame: imageScrabble,
             tag: 3,
             action: #selector(gameType))
-        return button
     }()
     
     private lazy var imageText: UIImageView = {
-        let imageView = setImage(
-            image: "textformat.abc",
-            color: .white,
-            size: 20)
-        return imageView
+        setImage(image: "textformat.abc", color: .white, size: 20)
     }()
     
     private lazy var labelScrabble: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "Эрудит",
             size: 26,
             style: "Gill Sans",
             color: .white,
             alignment: .left)
-        return label
     }()
     
     private lazy var circleScrabble: UIImageView = {
-        let view = setImage(
-            image: "circle.fill",
-            color: .white.withAlphaComponent(0.8),
-            size: 100)
-        return view
+        setImage(image: "circle.fill", color: .white.withAlphaComponent(0.8), size: 100)
     }()
     
     private lazy var imageScrabble: UIImageView = {
-        let imageView = setImage(
-            image: "a.square",
-            color: .indigo,
-            size: 60)
-        return imageView
+        setImage(image: "a.square", color: .indigo, size: 60)
     }()
     
     private lazy var buttonQuizOfCapitals: UIButton = {
-        let button = setButton(
+        setButton(
             color: .redTangerineTango,
             image: imageHouse,
             label: labelQuizOfCapitals,
@@ -257,41 +189,27 @@ class MenuViewController: UIViewController {
             imageGame: imageQuizOfCapitals,
             tag: 4,
             action: #selector(gameType))
-        return button
     }()
     
     private lazy var imageHouse: UIImageView = {
-        let imageView = setImage(
-            image: "house.and.flag",
-            color: .white,
-            size: 20)
-        return imageView
+        setImage(image: "house.and.flag", color: .white, size: 20)
     }()
     
     private lazy var labelQuizOfCapitals: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "Викторина столиц",
             size: 26,
             style: "Gill Sans",
             color: .white,
             alignment: .left)
-        return label
     }()
     
     private lazy var circleQuizOfCapitals: UIImageView = {
-        let view = setImage(
-            image: "circle.fill",
-            color: .white.withAlphaComponent(0.8),
-            size: 100)
-        return view
+        setImage(image: "circle.fill", color: .white.withAlphaComponent(0.8), size: 100)
     }()
     
     private lazy var imageQuizOfCapitals: UIImageView = {
-        let imageView = setImage(
-            image: "building.2",
-            color: .redTangerineTango,
-            size: 60)
-        return imageView
+        setImage(image: "building.2", color: .redTangerineTango, size: 60)
     }()
     
     private let games = Games.getGames()
@@ -412,46 +330,20 @@ extension MenuViewController {
         return imageView
     }
 }
-// MARK: - Setup stack view
-extension MenuViewController {
-    private func setupStackView(buttonFirst: UIButton, buttonSecond: UIButton) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [buttonFirst, buttonSecond])
-        stackView.spacing = 15
-        stackView.distribution = .fillEqually
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-    
-    private func setupStackView(label: UILabel, button: UIButton) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [label, button])
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-}
-// MARK: - Setup view
-extension MenuViewController {
-    private func setupView(color: UIColor) -> UIView {
-        let view = UIView()
-        view.backgroundColor = color
-        view.frame.size = contentSize
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }
-}
 // MARK: - Delegates for send data
 extension MenuViewController: SettingViewControllerDelegate,
                               GameTypeViewControllerDelegate,
                               MenuViewControllerInput {
-    func dataOfSettingToMenu(setting: Setting) {
+    func dataToMenu(setting: Setting) {
         navigationController?.popToRootViewController(animated: true)
         mode = setting
     }
     
-    func dataOfSettingToMenuFromGameType(setting: Setting) {
+    func dataToMenuFromGameType(setting: Setting) {
         mode = setting
     }
     
-    func dataOfSettingToMenuFromSetting(setting: Setting) {
+    func dataToMenuFromSetting(setting: Setting) {
         mode = setting
     }
 }

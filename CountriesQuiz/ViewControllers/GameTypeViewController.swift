@@ -16,7 +16,7 @@ protocol PopUpViewSettingDelegate {
 }
 
 protocol GameTypeViewControllerInput: AnyObject {
-    func dataOfSettingToGameType(setting: Setting)
+    func dataToGameType(setting: Setting)
 }
 
 class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
@@ -728,7 +728,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     // MARK: - Bar buttons activate
     @objc private func backToMenu() {
-        delegate.dataOfSettingToMenuFromGameType(setting: mode)
+        delegate.dataToMenuFromGameType(setting: mode)
         navigationController?.popViewController(animated: true)
     }
     
@@ -1957,7 +1957,7 @@ extension GameTypeViewController: PopUpViewSettingDelegate {
 }
 // MARK: - GameTypeViewControllerInput
 extension GameTypeViewController: GameTypeViewControllerInput {
-    func dataOfSettingToGameType(setting: Setting) {
-        delegateInput.dataOfSettingToMenu(setting: setting)
+    func dataToGameType(setting: Setting) {
+        delegateInput.dataToMenu(setting: setting)
     }
 }

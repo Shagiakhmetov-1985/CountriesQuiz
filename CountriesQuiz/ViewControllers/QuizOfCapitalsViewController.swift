@@ -8,7 +8,7 @@
 import UIKit
 
 protocol QuizOfCapitalsViewControllerInput: AnyObject {
-    func dataOfSettingToQuizOfCapitals(setting: Setting)
+    func dataToQuizOfCapitals(setting: Setting)
 }
 
 class QuizOfCapitalsViewController: UIViewController {
@@ -839,7 +839,7 @@ extension QuizOfCapitalsViewController {
 }
 // MARK: - QuizOfCapitalsViewControllerInput
 extension QuizOfCapitalsViewController: QuizOfCapitalsViewControllerInput {
-    func dataOfSettingToQuizOfCapitals(setting: Setting) {
-        delegateInput.dataOfSettingToGameType(setting: setting)
+    func dataToQuizOfCapitals(setting: Setting) {
+        delegateInput.dataToGameType(setting: setting)
     }
 }

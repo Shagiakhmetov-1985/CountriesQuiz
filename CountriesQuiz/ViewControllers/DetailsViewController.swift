@@ -665,7 +665,7 @@ extension DetailsViewController {
             checkmark.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 5),
             layout,
             image.heightAnchor.constraint(equalToConstant: setHeight()),
-            image.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: setWidthAndCenterFlag().1),
+            image.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: setWidthOrCenter().2),
             image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
         setupSquare(subview: checkmark, sizes: 30)
@@ -701,16 +701,17 @@ extension DetailsViewController {
     
     private func widthFlag(flag: String) -> CGFloat {
         switch flag {
-        case "nepal", "vatican city", "switzerland": return setHeight()
-        default: return setWidthAndCenterFlag().0
+        case "nepal", "vatican city", "switzerland": setHeight()
+        default: game.gameType == .questionnaire ? setWidthOrCenter().1 : setWidthOrCenter().0
         }
     }
     
-    private func setWidthAndCenterFlag() -> (CGFloat, CGFloat) {
+    private func setWidthOrCenter() -> (CGFloat, CGFloat, CGFloat) {
         let buttonWidth = ((view.frame.width - 20) / 2) - 4
-        let flagWidth = buttonWidth - 45
-        let centerFlag = flagWidth / 2 + 5
+        let flagWidth = buttonWidth - 10
+        let flagWidthQuestionnaire = buttonWidth - 45
+        let centerFlag = flagWidthQuestionnaire / 2 + 5
         let constant = buttonWidth / 2 - centerFlag
-        return (flagWidth, constant)
+        return (flagWidth, flagWidthQuestionnaire, constant)
     }
 }

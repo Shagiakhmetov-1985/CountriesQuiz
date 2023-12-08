@@ -9,264 +9,244 @@ import UIKit
 // MARK: - Properties
 class ResultsViewController: UIViewController {
     private lazy var labelResults: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "Результаты",
             style: "echorevival",
             size: 38,
             color: .blueBlackSea)
-        return label
     }()
     
     private lazy var buttonDetails: UIButton = {
-        let button = setButton(
-            image: "lightbulb",
-            color: incorrectAnswers.count > 0 ? .blueBlackSea : .grayStone,
-            isEnabled: incorrectAnswers.count > 0 ? true : false,
-            action: #selector(showIncorrectAnswers))
+        let color: UIColor = incorrectAnswers.count > 0 ? .blueBlackSea : .grayStone
+        let size = UIImage.SymbolConfiguration(pointSize: 26)
+        let image = UIImage(systemName: "lightbulb", withConfiguration: size)
+        let button = Button(type: .custom)
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = color
+        button.layer.cornerRadius = 12
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowColor = color.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isEnabled = incorrectAnswers.count > 0 ? true : false
+        button.addTarget(self, action: #selector(showIncorrectAnswers), for: .touchUpInside)
         return button
     }()
     
     private lazy var stackViewDetails: UIStackView = {
-        let stackView = setupStackView(
-            label: labelResults,
-            button: buttonDetails)
-        return stackView
+        setupStackView(subviewFirst: labelResults, subviewSecond: buttonDetails)
     }()
     
     private lazy var viewCorrectAnswers: UIView = {
-        let view = setView(
+        setView(
             color: .greenHarlequin,
             labelFirst: labelCorrectCount,
             image: imageCorrectAnswers,
             labelSecond: labelCorrectTitle,
             radius: 20)
-        return view
     }()
     
     private lazy var labelCorrectCount: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "\(correctAnswers.count)",
             style: "mr_fontick",
             size: 35,
             color: .white,
             alignment: .center)
-        return label
     }()
     
     private lazy var imageCorrectAnswers: UIImageView = {
-        let image = setImage(
-            image: "checkmark",
-            size: 26)
-        return image
+        setImage(image: "checkmark", size: 26)
     }()
     
     private lazy var labelCorrectTitle: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "Правильные ответы",
             style: "mr_fontick",
             size: 20,
             color: .white,
             alignment: .center)
-        return label
     }()
     
     private lazy var viewIncorrectAnswers: UIView = {
-        let view = setView(
+        setView(
             color: .redTangerineTango,
             labelFirst: labelIncorrectCount,
             image: imageIncorrectAnswers,
             labelSecond: labelIncorrectTitle,
             radius: 20)
-        return view
     }()
     
     private lazy var labelIncorrectCount: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "\(incorrectAnswers.count)",
             style: "mr_fontick",
             size: 35,
             color: .white,
             alignment: .center)
-        return label
     }()
     
     private lazy var imageIncorrectAnswers: UIImageView = {
-        let image = setImage(
-            image: "multiply",
-            size: 26)
-        return image
+        setImage(image: "multiply", size: 26)
     }()
     
     private lazy var labelIncorrectTitle: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "Неправильные ответы",
             style: "mr_fontick",
             size: 20,
             color: .white,
             alignment: .center)
-        return label
     }()
     
     private lazy var viewTimeSpend: UIView = {
-        let view = setView(
+        setView(
             color: .blueMiddlePersian,
             labelFirst: labelNumberTimeSpend,
             image: imageTimeSpend,
             labelSecond: labelTimeSpend,
             radius: 20)
-        return view
     }()
     
     private lazy var labelNumberTimeSpend: UILabel = {
-        let label = setLabel(
-            title: "\(numberTimeElapsedOnOff())",
+        setLabel(
+            title: "\(numberCountdownOnOff())",
             style: "mr_fontick",
             size: 35,
             color: .white,
             alignment: .center)
-        return label
     }()
     
     private lazy var imageTimeSpend: UIImageView = {
-        let image = setImage(
-            image: "\(imageTimeElapsedOnOff())",
-            size: 26)
-        return image
+        setImage(image: "\(imageCountdownOnOff())", size: 26)
     }()
     
     private lazy var labelTimeSpend: UILabel = {
-        let label = setLabel(
-            title: "\(labelTimeElapsedOnOff())",
+        setLabel(
+            title: "\(labelCountdownOnOff())",
             style: "mr_fontick",
             size: 20,
             color: .white,
             alignment: .center)
-        return label
     }()
     
     private lazy var imageInfinity: UIImageView = {
-        let imageView = setImage(
-            image: "infinity",
-            size: 35)
-        return imageView
+        setImage(image: "infinity", size: 35)
     }()
     
     private lazy var viewCountQuestions: UIView = {
-        let view = setView(
+        setView(
             color: .gummigut,
             labelFirst: labelCountQuestions,
             image: imageCountQuestions,
             labelSecond: labelCountTitle,
             radius: 20)
-        return view
     }()
     
     private lazy var labelCountQuestions: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "\(mode.countQuestions)",
             style: "mr_fontick",
             size: 35,
             color: .white,
             alignment: .center)
-        return label
     }()
     
     private lazy var imageCountQuestions: UIImageView = {
-        let image = setImage(
-            image: "questionmark.bubble",
-            size: 26)
-        return image
+        setImage(image: "questionmark.bubble", size: 26)
     }()
     
     private lazy var labelCountTitle: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "Количество вопросов",
             style: "mr_fontick",
             size: 20,
             color: .white,
             alignment: .center)
-        return label
     }()
     
     private lazy var viewPercentCorrect: UIView = {
-        let view = setView(
-            color: .greenHarlequin,
-            radius: radiusView())
-        return view
+        setView(color: .greenHarlequin, radius: radiusView())
     }()
     
     private lazy var labelPercentCorrect: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "\(percentCorrectAnswers())",
             style: "mr_fontick",
             size: 26,
             color: .blueBlackSea)
-        return label
     }()
     
     private lazy var stackViewCorrect: UIStackView = {
-        let stackView = setupStackView(
-            view: viewPercentCorrect,
-            label: labelPercentCorrect)
-        return stackView
+        setupStackView(
+            subviewFirst: viewPercentCorrect,
+            subviewSecond: labelPercentCorrect,
+            spacing: 12,
+            opacity: 0)
     }()
     
     private lazy var viewPercentIncorrect: UIView = {
-        let view = setView(
-            color: .redTangerineTango,
-            radius: radiusView())
-        return view
+        setView(color: .redTangerineTango, radius: radiusView())
     }()
     
     private lazy var labelPercentIncorrect: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "\(percentIncorrectAnswers())",
             style: "mr_fontick",
             size: 26,
             color: .blueBlackSea)
-        return label
     }()
     
     private lazy var stackViewIncorrect: UIStackView = {
-        let stackView = setupStackView(
-            view: viewPercentIncorrect,
-            label: labelPercentIncorrect)
-        return stackView
+        setupStackView(
+            subviewFirst: viewPercentIncorrect,
+            subviewSecond: labelPercentIncorrect,
+            spacing: 12,
+            opacity: 0)
     }()
     
     private lazy var viewPercentTimeSpend: UIView = {
-        let view = setView(
-            color: .blueMiddlePersian,
-            radius: radiusView())
-        return view
+        setView(color: .blueMiddlePersian, radius: radiusView())
     }()
     
     private lazy var labelPercentTimeSpend: UILabel = {
-        let label = setLabel(
+        setLabel(
             title: "\(percentTimeSpend())",
             style: "mr_fontick",
             size: 26,
             color: .blueBlackSea)
-        return label
     }()
     
     private lazy var stackViewTimeSpend: UIStackView = {
-        let stackView = setupStackView(
-            view: viewPercentTimeSpend,
-            label: labelPercentTimeSpend)
-        return stackView
+        setupStackView(
+            subviewFirst: viewPercentTimeSpend,
+            subviewSecond: labelPercentTimeSpend,
+            spacing: 12,
+            opacity: 0)
     }()
     
     private lazy var stackViews: UIStackView = {
-        let stackView = setupStackView(
-            stackViewFirst: stackViewCorrect,
-            stackViewSecond: stackViewIncorrect,
-            stackViewThird: stackViewTimeSpend)
+        let stackView = UIStackView(
+            arrangedSubviews: [stackViewCorrect, stackViewIncorrect, stackViewTimeSpend])
+        stackView.axis = .vertical
+        stackView.spacing = 15
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
     private lazy var buttonComplete: UIButton = {
-        let button = setButtonComplete()
+        let button = UIButton(type: .system)
+        button.setTitle("Завершить", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont(name: "mr_fontick", size: 25)
+        button.backgroundColor = .blueBlackSea
+        button.layer.cornerRadius = 12
+        button.layer.shadowColor = UIColor.blueBlackSea.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(exitToMenu), for: .touchUpInside)
         return button
     }()
     
@@ -302,8 +282,6 @@ class ResultsViewController: UIViewController {
                       viewCountQuestions, imageInfinity, stackViews,
                       buttonComplete,
                       on: view)
-        opacity(subviews: stackViewCorrect, stackViewIncorrect, stackViewTimeSpend,
-                opacity: 0)
     }
     
     private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -323,6 +301,38 @@ class ResultsViewController: UIViewController {
                              selector: action, userInfo: nil, repeats: false)
     }
     
+    private func oneQuestionTime() -> Int {
+        mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
+    }
+    
+    private func allQuestionsTime() -> Int {
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
+    }
+    
+    private func time() -> Int {
+        isOneQuestion() ? oneQuestionTime() : allQuestionsTime()
+    }
+    
+    private func isOneQuestion() -> Bool {
+        mode.timeElapsed.questionSelect.oneQuestion ? true : false
+    }
+    
+    private func isTime() -> Bool {
+        mode.timeElapsed.timeElapsed ? true : false
+    }
+    // MARK: - Number format
+    private func string(seconds: CGFloat) -> String {
+        String(format: "%.2f", seconds)
+    }
+    
+    private func round(count: CGFloat) -> String {
+        String(format: "%.1f", count)
+    }
+    
+    private func stringWithoutNull(count: CGFloat) -> String {
+        String(format: "%.0f", count)
+    }
+    // MARK: - Set circles animate
     private func setupTimer() {
         timer = runTimer(interval: 0.3, action: #selector(circleCorrectAnswers))
     }
@@ -371,31 +381,13 @@ class ResultsViewController: UIViewController {
     private func checkCircleTime() -> Float {
         roundf(Float(percentTimeCheck() * 100)) / 100
     }
-    
-    private func oneQuestionSeconds() -> Int {
-        let seconds: Int
-        if oneQuestionCheck() {
-            seconds = mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
-        } else {
-            seconds = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
-        }
-        return seconds
-    }
-    
-    private func oneQuestionCheck() -> Bool {
-        mode.timeElapsed.questionSelect.oneQuestion ? true : false
-    }
-    
-    private func isTime() -> Bool {
-        mode.timeElapsed.timeElapsed ? true : false
-    }
-    
-    private func labelTimeElapsedOnOff() -> String {
+    // MARK: - Titles and image results
+    private func labelCountdownOnOff() -> String {
         isTime() ? "\(labelCheckTimeSpend())" : "Обратный отсчет выключен"
     }
     
     private func labelCheckTimeSpend() -> String {
-        oneQuestionCheck() ? labelQuestionnaireTimeSpend() : labelCheckAllQuestions()
+        isOneQuestion() ? labelQuestionnaireTimeSpend() : labelCheckAllQuestions()
     }
     
     private func labelQuestionnaireTimeSpend() -> String {
@@ -407,25 +399,25 @@ class ResultsViewController: UIViewController {
         "Потраченное время на все вопросы"
     }
     
-    private func imageTimeElapsedOnOff() -> String {
+    private func imageCountdownOnOff() -> String {
         isTime() ? "\(imageCheckTimeSpend())" : "clock.badge.xmark"
     }
     
     private func imageCheckTimeSpend() -> String {
-        oneQuestionCheck() ? "timer" : imageCheckAllQuestions()
+        isOneQuestion() ? "timer" : imageCheckAllQuestions()
     }
     
     private func imageCheckAllQuestions() -> String {
         spendTime.isEmpty ? "clock" : "timer"
     }
     
-    private func numberTimeElapsedOnOff() -> String {
+    private func numberCountdownOnOff() -> String {
         isTime() ? "\(numberCheckTimeSpend())" : " "
     }
     
     private func numberCheckTimeSpend() -> String {
         var text: String
-        if oneQuestionCheck() {
+        if isOneQuestion() {
             let averageTime = spendTime.reduce(0.0, +) / CGFloat(spendTime.count)
             text = "\(string(seconds: averageTime))"
         } else {
@@ -444,7 +436,7 @@ class ResultsViewController: UIViewController {
         }
         return text
     }
-    
+    // MARK: - Percents titles
     private func percentCorrectAnswers() -> String {
         let correctAnswers = CGFloat(correctAnswers.count)
         let percent = correctAnswers / CGFloat(mode.countQuestions) * 100
@@ -462,7 +454,7 @@ class ResultsViewController: UIViewController {
     }
     
     private func percentTimeCheck() -> CGFloat {
-        oneQuestionCheck() ? checkGameType() : timeSpend()
+        isOneQuestion() ? checkGameType() : timeSpend()
     }
     
     private func checkGameType() -> CGFloat {
@@ -474,7 +466,7 @@ class ResultsViewController: UIViewController {
         if spendTime.isEmpty {
             seconds = 0
         } else {
-            let time = mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
+            let time = allQuestionsTime()
             let timeSpent = spendTime.first ?? 0
             seconds = timeSpent / CGFloat(time) * 100
         }
@@ -483,7 +475,7 @@ class ResultsViewController: UIViewController {
     
     private func averageTime() -> CGFloat {
         let averageTime = spendTime.reduce(0.0, +) / CGFloat(spendTime.count)
-        return averageTime / CGFloat(oneQuestionSeconds()) * 100
+        return averageTime / CGFloat(time()) * 100
     }
     
     private func timeSpend() -> CGFloat {
@@ -492,23 +484,11 @@ class ResultsViewController: UIViewController {
             seconds = 0
         } else {
             let timeSpent = spendTime.first ?? 0
-            seconds = timeSpent / CGFloat(oneQuestionSeconds()) * 100
+            seconds = timeSpent / CGFloat(time()) * 100
         }
         return seconds
     }
-    
-    private func string(seconds: CGFloat) -> String {
-        String(format: "%.2f", seconds)
-    }
-    
-    private func round(count: CGFloat) -> String {
-        String(format: "%.1f", count)
-    }
-    
-    private func stringWithoutNull(count: CGFloat) -> String {
-        String(format: "%.0f", count)
-    }
-    
+    // MARK: - Press exit button
     @objc private func exitToMenu() {
         switch game.gameType {
         case .quizOfFlag: delegateQuizOfFlag.dataToQuizOfFlag(setting: mode)
@@ -516,7 +496,7 @@ class ResultsViewController: UIViewController {
         default: delegateQuizOfCapitals.dataToQuizOfCapitals(setting: mode)
         }
     }
-    
+    // MARK: - Show incorrect answers
     @objc private func showIncorrectAnswers() {
         let incorrectAnswersVC = IncorrectAnswersViewController()
         let navigationVC = UINavigationController(rootViewController: incorrectAnswersVC)
@@ -541,41 +521,6 @@ extension ResultsViewController {
         return view
     }
 }
-// MARK: - Setup button
-extension ResultsViewController {
-    private func setButton(image: String, color: UIColor, isEnabled: Bool,
-                           action: Selector) -> UIButton {
-        let size = UIImage.SymbolConfiguration(pointSize: 26)
-        let image = UIImage(systemName: image, withConfiguration: size)
-        let button = Button(type: .custom)
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = color
-        button.layer.cornerRadius = 12
-        button.layer.shadowOpacity = 0.4
-        button.layer.shadowColor = color.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 6)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.isEnabled = isEnabled
-        button.addTarget(self, action: action, for: .touchUpInside)
-        return button
-    }
-    
-    private func setButtonComplete() -> UIButton {
-        let button = UIButton(type: .system)
-        button.setTitle("Завершить", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont(name: "mr_fontick", size: 25)
-        button.backgroundColor = .blueBlackSea
-        button.layer.cornerRadius = 12
-        button.layer.shadowColor = UIColor.blueBlackSea.cgColor
-        button.layer.shadowOpacity = 0.4
-        button.layer.shadowOffset = CGSize(width: 0, height: 6)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(exitToMenu), for: .touchUpInside)
-        return button
-    }
-}
 // MARK: - Setup label
 extension ResultsViewController {
     private func setLabel(title: String, style: String, size: CGFloat,
@@ -592,26 +537,11 @@ extension ResultsViewController {
 }
 // MARK: - Setup stack views
 extension ResultsViewController {
-    private func setupStackView(label: UILabel, button: UIButton) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [label, button])
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-    
-    private func setupStackView(view: UIView, label: UILabel) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [view, label])
-        stackView.spacing = 12
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-    
-    private func setupStackView(stackViewFirst: UIStackView,
-                                stackViewSecond: UIStackView,
-                                stackViewThird: UIStackView) -> UIStackView {
-        let stackView = UIStackView(
-            arrangedSubviews: [stackViewFirst, stackViewSecond, stackViewThird])
-        stackView.axis = .vertical
-        stackView.spacing = 15
+    private func setupStackView(subviewFirst: UIView, subviewSecond: UIView,
+                                spacing: CGFloat? = nil, opacity: Float? = nil) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [subviewFirst, subviewSecond])
+        stackView.spacing = spacing ?? 0
+        stackView.layer.opacity = opacity ?? 1
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }

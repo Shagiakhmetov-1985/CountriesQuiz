@@ -9,19 +9,37 @@ import UIKit
 
 class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     private lazy var buttonBack: UIButton = {
-        let button = setupButton(
-            image: "multiply",
-            action: #selector(exitToResults))
+        let size = UIImage.SymbolConfiguration(pointSize: 20)
+        let image = UIImage(systemName: "multiply", withConfiguration: size)
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.layer.cornerRadius = 12
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = 1.5
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(exitToResults), for: .touchUpInside)
         return button
     }()
     
     private lazy var labelTitle: UILabel = {
-        let label = setupLabel(title: "Неправильные ответы")
+        let label = UILabel()
+        label.text = "Неправильные ответы"
+        label.font = UIFont(name: "mr_fontick", size: 28)
+        label.textColor = .white
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var tableView: UITableView = {
-        let tableView = setupTableView()
+        let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.register(checkCell(), forCellReuseIdentifier: "cell")
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.backgroundColor = game.background
+        tableView.separatorColor = .white
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
@@ -118,51 +136,13 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         cell.contentView.backgroundColor = game.background
     }
 }
-// MARK: - Setup buttons
-extension IncorrectAnswersViewController {
-    private func setupButton(image: String, action: Selector) -> UIButton {
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
-        let image = UIImage(systemName: image, withConfiguration: size)
-        let button = UIButton(type: .system)
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.layer.cornerRadius = 12
-        button.layer.borderColor = UIColor.white.cgColor
-        button.layer.borderWidth = 1.5
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: action, for: .touchUpInside)
-        return button
-    }
-}
-// MARK: - Setup labels
-extension IncorrectAnswersViewController {
-    private func setupLabel(title: String) -> UILabel {
-        let label = UILabel()
-        label.text = title
-        label.font = UIFont(name: "mr_fontick", size: 28)
-        label.textColor = .white
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }
-}
-// MARK: - Setup table view
-extension IncorrectAnswersViewController {
-    private func setupTableView() -> UITableView {
-        let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(checkCell(), forCellReuseIdentifier: "cell")
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.backgroundColor = game.background
-        tableView.separatorColor = .white
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }
-}
 // MARK: - Setup constraints
 extension IncorrectAnswersViewController {
     private func setupConstraints() {
-        setupSquare(subview: buttonBack, sizes: 40)
+        NSLayoutConstraint.activate([
+            buttonBack.widthAnchor.constraint(equalToConstant: 40),
+            buttonBack.heightAnchor.constraint(equalToConstant: 40)
+        ])
         
         NSLayoutConstraint.activate([
             labelTitle.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
@@ -175,13 +155,6 @@ extension IncorrectAnswersViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-    }
-    
-    private func setupSquare(subview: UIView, sizes: CGFloat) {
-        NSLayoutConstraint.activate([
-            subview.widthAnchor.constraint(equalToConstant: sizes),
-            subview.heightAnchor.constraint(equalToConstant: sizes)
         ])
     }
 }

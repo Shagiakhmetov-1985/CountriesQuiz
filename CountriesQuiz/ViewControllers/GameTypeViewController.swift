@@ -1198,6 +1198,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         switch tag {
         case 0: quizOfFlagsViewController()
         case 1: questionnaireViewController()
+        case 3: scrabbleViewController()
         default: quizOfCapitalsViewController()
         }
     }
@@ -1215,6 +1216,13 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         startGameVC.mode = mode
         startGameVC.game = game
         startGameVC.delegateInput = self
+        navigationController?.pushViewController(startGameVC, animated: true)
+    }
+    
+    private func scrabbleViewController() {
+        let startGameVC = ScrabbleViewController()
+        startGameVC.mode = mode
+        startGameVC.game = game
         navigationController?.pushViewController(startGameVC, animated: true)
     }
     

@@ -15,6 +15,7 @@
 		C3613A712A7FB82C006C0F1E /* GameTypeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */; };
 		C36773F1296BF9E10096BCC5 /* QuizOfFlagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */; };
 		C36773F3296C3B880096BCC5 /* Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36773F2296C3B880096BCC5 /* Transition.swift */; };
+		C36EC9FA2B2729D500ECF1EE /* ScrabbleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36EC9F92B2729D500ECF1EE /* ScrabbleViewController.swift */; };
 		C36F58F82A7288FB0023E98F /* UIButton + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36F58F72A7288FB0023E98F /* UIButton + Extension.swift */; };
 		C376AC072947261D00DE5E86 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C376AC062947261D00DE5E86 /* Setting.swift */; };
 		C376AC0929474EB400DE5E86 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C376AC0829474EB400DE5E86 /* StorageManager.swift */; };
@@ -47,6 +48,7 @@
 		C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeManager.swift; sourceTree = "<group>"; };
 		C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfFlagsViewController.swift; sourceTree = "<group>"; };
 		C36773F2296C3B880096BCC5 /* Transition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transition.swift; sourceTree = "<group>"; };
+		C36EC9F92B2729D500ECF1EE /* ScrabbleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrabbleViewController.swift; sourceTree = "<group>"; };
 		C36F58F72A7288FB0023E98F /* UIButton + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton + Extension.swift"; sourceTree = "<group>"; };
 		C376AC062947261D00DE5E86 /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		C376AC0829474EB400DE5E86 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				C3E7C9932A7B68AA0046A883 /* GameTypeViewController.swift */,
 				C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */,
 				C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */,
+				C36EC9F92B2729D500ECF1EE /* ScrabbleViewController.swift */,
 				C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */,
 				C38C023E2981025C008C2202 /* ResultsViewController.swift */,
 				C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */,
@@ -326,6 +329,7 @@
 				C376AC072947261D00DE5E86 /* Setting.swift in Sources */,
 				C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */,
 				C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */,
+				C36EC9FA2B2729D500ECF1EE /* ScrabbleViewController.swift in Sources */,
 				C376AC0929474EB400DE5E86 /* StorageManager.swift in Sources */,
 				C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */,
 				C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */,

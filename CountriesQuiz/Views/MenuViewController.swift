@@ -212,12 +212,14 @@ class MenuViewController: UIViewController {
         setImage(image: "building.2", color: .redTangerineTango, size: 60)
     }()
     
-    private let games = Games.getGames()
+    private let viewModel = MenuViewModel()
+    
+    private var games = [Games]()
     private var mode: Setting!
     private var transition = Transition()
     
     private var contentSize: CGSize {
-        CGSize(width: view.frame.width, height: view.frame.height + 10)
+        viewModel.size(view: view)
     }
     // MARK: - Override methods
     override func viewDidLoad() {
@@ -232,7 +234,8 @@ class MenuViewController: UIViewController {
     // MARK: - General methods
     private func setupDesign() {
         view.backgroundColor = .white
-        mode = StorageManager.shared.fetchSetting()
+        games = viewModel.getGames()
+        mode = viewModel.fetchSetting()
     }
     
     private func setupSubviews() {
@@ -257,10 +260,8 @@ class MenuViewController: UIViewController {
     // MARK: - Button activate. Press game type, setting
     @objc private func gameType(sender: UIButton) {
         let tag = sender.tag
-        let gameTypeVC = GameTypeViewController()
-        gameTypeVC.mode = mode
-        gameTypeVC.game = games[tag]
-        gameTypeVC.tag = tag
+        let gameTypeViewModel = GameTypeViewModel(mode: mode, game: games[tag], tag: tag)
+        let gameTypeVC = GameTypeViewController(gameTypeViewModel)
         gameTypeVC.delegate = self
         gameTypeVC.delegateInput = self
         navigationController?.pushViewController(gameTypeVC, animated: true)
@@ -278,9 +279,6 @@ class MenuViewController: UIViewController {
 // MARK: - Setup label
 extension MenuViewController {
     private func setLabel(title: String, size: CGFloat, style: String, color: UIColor,
-                          colorOfShadow: CGColor? = nil, radiusOfShadow: CGFloat? = nil,
-                          shadowOffsetWidth: CGFloat? = nil,
-                          shadowOffsetHeight: CGFloat? = nil,
                           alignment: NSTextAlignment? = nil) -> UILabel {
         let label = UILabel()
         label.text = title
@@ -288,11 +286,6 @@ extension MenuViewController {
         label.textColor = color
         label.textAlignment = alignment ?? .left
         label.numberOfLines = 0
-        label.layer.shadowColor = colorOfShadow
-        label.layer.shadowRadius = radiusOfShadow ?? 0
-        label.layer.shadowOpacity = 1
-        label.layer.shadowOffset = CGSize(width: shadowOffsetWidth ?? 0,
-                                          height: shadowOffsetHeight ?? 0)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }

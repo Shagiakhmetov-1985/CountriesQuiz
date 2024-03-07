@@ -202,7 +202,11 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var buttonSwap: UIButton = {
-        setupButton(image: imageButton(), color: game.swap, action: #selector(swap), isEnabled: isEnabled())
+        setupButton(
+            image: viewModel.image(viewModel.tag),
+            color: game.swap, 
+            action: #selector(swap),
+            isEnabled: viewModel.isEnabled(viewModel.tag))
     }()
     
     private lazy var stackViewButtons: UIStackView = {
@@ -221,7 +225,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var labelCountQuestion: UILabel = {
-        setupLabel(color: .white, title: "\(mode.countQuestions)", size: 60, style: "Gill Sans")
+        setupLabel(color: .white, title: "\(viewModel.mode.countQuestions)", size: 60, style: "Gill Sans")
     }()
     
     private lazy var labelCount: UILabel = {
@@ -315,7 +319,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelAllCountries: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.allCountries), 
+            color: isSelect(isOn: viewModel.mode.allCountries),
             title: "Все страны мира",
             size: 26,
             style: "mr_fontick")
@@ -323,7 +327,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelCountAllCountries: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.allCountries),
+            color: isSelect(isOn: viewModel.mode.allCountries),
             title: "Количество стран: \(FlagsOfCountries.shared.countries.count)",
             size: 20,
             style: "mr_fontick")
@@ -331,14 +335,14 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var buttonAllCountries: UIButton = {
         setupButton(
-            color: isSelect(isOn: !mode.allCountries),
+            color: isSelect(isOn: !viewModel.mode.allCountries),
             addLabelFirst: labelAllCountries,
             addLabelSecond: labelCountAllCountries)
     }()
     
     private lazy var labelAmericaContinent: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.americaContinent),
+            color: isSelect(isOn: viewModel.mode.americaContinent),
             title: "Континент Америки",
             size: 26,
             style: "mr_fontick")
@@ -346,7 +350,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelCountAmericaContinent: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.americaContinent),
+            color: isSelect(isOn: viewModel.mode.americaContinent),
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAmericanContinent.count)",
             size: 20,
             style: "mr_fontick")
@@ -354,7 +358,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var buttonAmericaContinent: UIButton = {
         setupButton(
-            color: isSelect(isOn: !mode.americaContinent),
+            color: isSelect(isOn: !viewModel.mode.americaContinent),
             addLabelFirst: labelAmericaContinent,
             addLabelSecond: labelCountAmericaContinent,
             tag: 1)
@@ -362,7 +366,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelEuropeContinent: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.europeContinent),
+            color: isSelect(isOn: viewModel.mode.europeContinent),
             title: "Континент Европы",
             size: 26,
             style: "mr_fontick")
@@ -370,7 +374,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelCountEuropeContinent: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.europeContinent),
+            color: isSelect(isOn: viewModel.mode.europeContinent),
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfEuropeanContinent.count)",
             size: 20,
             style: "mr_fontick")
@@ -378,7 +382,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var buttonEuropeContinent: UIButton = {
         setupButton(
-            color: isSelect(isOn: !mode.europeContinent),
+            color: isSelect(isOn: !viewModel.mode.europeContinent),
             addLabelFirst: labelEuropeContinent,
             addLabelSecond: labelCountEuropeContinent,
             tag: 2)
@@ -386,7 +390,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelAfricaContinent: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.africaContinent),
+            color: isSelect(isOn: viewModel.mode.africaContinent),
             title: "Континент Африки",
             size: 26,
             style: "mr_fontick")
@@ -394,7 +398,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelCountAfricaContinent: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.africaContinent),
+            color: isSelect(isOn: viewModel.mode.africaContinent),
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAfricanContinent.count)",
             size: 20,
             style: "mr_fontick")
@@ -402,7 +406,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var buttonAfricaContinent: UIButton = {
         setupButton(
-            color: isSelect(isOn: !mode.africaContinent),
+            color: isSelect(isOn: !viewModel.mode.africaContinent),
             addLabelFirst: labelAfricaContinent,
             addLabelSecond: labelCountAfricaContinent,
             tag: 3)
@@ -410,7 +414,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelAsiaContinent: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.asiaContinent),
+            color: isSelect(isOn: viewModel.mode.asiaContinent),
             title: "Континент Азии",
             size: 26,
             style: "mr_fontick")
@@ -418,7 +422,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelCountAsiaContinent: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.asiaContinent),
+            color: isSelect(isOn: viewModel.mode.asiaContinent),
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfAsianContinent.count)",
             size: 20,
             style: "mr_fontick")
@@ -426,7 +430,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var buttonAsiaContinent: UIButton = {
         setupButton(
-            color: isSelect(isOn: !mode.asiaContinent),
+            color: isSelect(isOn: !viewModel.mode.asiaContinent),
             addLabelFirst: labelAsiaContinent,
             addLabelSecond: labelCountAsiaContinent,
             tag: 4)
@@ -434,7 +438,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelOceanContinent: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.oceaniaContinent),
+            color: isSelect(isOn: viewModel.mode.oceaniaContinent),
             title: "Континент Океании",
             size: 26,
             style: "mr_fontick")
@@ -442,7 +446,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var labelCountOceanContinent: UILabel = {
         setupLabel(
-            color: isSelect(isOn: mode.oceaniaContinent),
+            color: isSelect(isOn: viewModel.mode.oceaniaContinent),
             title: "Количество стран: \(FlagsOfCountries.shared.countriesOfOceanContinent.count)",
             size: 20,
             style: "mr_fontick")
@@ -450,7 +454,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var buttonOceanContinent: UIButton = {
         setupButton(
-            color: isSelect(isOn: !mode.oceaniaContinent),
+            color: isSelect(isOn: !viewModel.mode.oceaniaContinent),
             addLabelFirst: labelOceanContinent,
             addLabelSecond: labelCountOceanContinent,
             tag: 5)
@@ -554,6 +558,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         return view
     }()
     
+    let viewModel: GameTypeViewModel
+    
     typealias ParagraphData = (bullet: String, paragraph: String)
     
     var mode: Setting!
@@ -564,6 +570,18 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     weak var delegateInput: MenuViewControllerInput!
     
+    init(_ gameTypeViewModel: GameTypeViewModel) {
+        self.viewModel = gameTypeViewModel
+        mode = gameTypeViewModel.mode
+        game = gameTypeViewModel.game
+        tag = gameTypeViewModel.tag
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDesign()
@@ -573,45 +591,19 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     // MARK: - UIPickerView
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        1
+        viewModel.numberOfComponents()
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch pickerView.tag {
-        case 1: mode.countRows
-        case 2: 10
-        default: 6 * mode.countQuestions - 4 * mode.countQuestions + 1
+        case 1: viewModel.numberOfQuestions()
+        case 2: viewModel.countdownOneQuestion()
+        default: viewModel.countdownAllQuestions()
         }
     }
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        let label = UILabel()
-        var title = String()
-        var attributed = NSAttributedString()
-        
-        switch pickerView.tag {
-        case 1: 
-            title = "\(row + 10)"
-            attributed = attributtedString(title: title, tag: pickerView.tag)
-        case 2:
-            title = "\(row + 6)"
-            attributed = attributtedString(title: title, tag: pickerView.tag)
-        default:
-            title = "\(row + 4 * mode.countQuestions)"
-            attributed = attributtedString(title: title, tag: pickerView.tag)
-        }
-        
-        label.textAlignment = .center
-        label.attributedText = attributed
-        return label
-    }
-    
-    private func attributtedString(title: String, tag: Int) -> NSAttributedString {
-        let color = tag == 1 ? game.favourite : color(tag: tag)
-        return NSAttributedString(string: title, attributes: [
-            .font: UIFont(name: "mr_fontick", size: 26) ?? "",
-            .foregroundColor: color
-        ])
+        viewModel.titles(pickerView, row, and: segmentedControl)
     }
     // MARK: - General methods
     private func setupDesign() {
@@ -666,19 +658,19 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func isCountdown() -> Bool {
-        mode.timeElapsed.timeElapsed ? true : false
+        viewModel.mode.timeElapsed.timeElapsed ? true : false
     }
     
     private func isOneQuestion() -> Bool {
-        mode.timeElapsed.questionSelect.oneQuestion
+        viewModel.mode.timeElapsed.questionSelect.oneQuestion
     }
     
     private func oneQuestionTime() -> Int {
-        mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
+        viewModel.mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
     }
     
     private func allQuestionTime() -> Int {
-        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
+        viewModel.mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
     }
     
     private func countdownOnOff(bool: Bool) {
@@ -698,8 +690,9 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func counterContinents() {
-        counterContinents(continents: mode.americaContinent, mode.europeContinent,
-                          mode.africaContinent, mode.asiaContinent, mode.oceaniaContinent)
+        counterContinents(continents: viewModel.mode.americaContinent, 
+                          viewModel.mode.europeContinent, viewModel.mode.africaContinent,
+                          viewModel.mode.asiaContinent, viewModel.mode.oceaniaContinent)
     }
     
     private func isCheckmark(isOn: Bool) -> String {
@@ -717,7 +710,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             pickerView.reloadAllComponents()
         }
     }
-    
+    /*
     private func color(tag: Int) -> UIColor {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
@@ -726,6 +719,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             return tag == 2 ? .grayLight : game.favourite
         }
     }
+     */
     // MARK: - Bar buttons activate
     @objc private func backToMenu() {
         delegate.dataToMenuFromGameType(setting: mode)

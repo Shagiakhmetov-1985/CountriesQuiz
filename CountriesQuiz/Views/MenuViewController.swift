@@ -212,15 +212,17 @@ class MenuViewController: UIViewController {
         setImage(image: "building.2", color: .redTangerineTango, size: 60)
     }()
     
-    private let viewModel = MenuViewModel()
-    
-    private var games = [Games]()
-    private var mode: Setting!
-    private var transition = Transition()
-    
+    private var viewModel: MenuViewModelProtocol! {
+        didSet {
+            viewModel.fetchData()
+        }
+    }
     private var contentSize: CGSize {
         viewModel.size(view: view)
     }
+    
+    private var transition = Transition()
+    
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -230,12 +232,10 @@ class MenuViewController: UIViewController {
         setupSubviewsOnScrollView()
         setupConstraints()
     }
-    
     // MARK: - General methods
     private func setupDesign() {
         view.backgroundColor = .white
-        games = viewModel.getGames()
-        mode = viewModel.fetchSetting()
+//        viewModel = MenuViewModel()
     }
     
     private func setupSubviews() {
@@ -260,8 +260,9 @@ class MenuViewController: UIViewController {
     // MARK: - Button activate. Press game type, setting
     @objc private func gameType(sender: UIButton) {
         let tag = sender.tag
-        let gameTypeViewModel = GameTypeViewModel(mode: mode, game: games[tag], tag: tag)
-        let gameTypeVC = GameTypeViewController(gameTypeViewModel)
+        let gameTypeViewModel = viewModel.gameTypeViewModel(tag: tag)
+        let gameTypeVC = GameTypeViewController()
+        gameTypeVC.viewModel = gameTypeViewModel
         gameTypeVC.delegate = self
         gameTypeVC.delegateInput = self
         navigationController?.pushViewController(gameTypeVC, animated: true)
@@ -271,7 +272,7 @@ class MenuViewController: UIViewController {
         let settingVC = SettingViewController()
         settingVC.modalPresentationStyle = .custom
         settingVC.transitioningDelegate = self
-        settingVC.mode = mode
+        settingVC.mode = viewModel.mode
         settingVC.delegate = self
         present(settingVC, animated: true)
     }
@@ -329,15 +330,15 @@ extension MenuViewController: SettingViewControllerDelegate,
                               MenuViewControllerInput {
     func dataToMenu(setting: Setting) {
         navigationController?.popToRootViewController(animated: true)
-        mode = setting
+        viewModel.mode = setting
     }
     
     func dataToMenuFromGameType(setting: Setting) {
-        mode = setting
+        viewModel.mode = setting
     }
     
     func dataToMenuFromSetting(setting: Setting) {
-        mode = setting
+        viewModel.mode = setting
     }
 }
 // MARK: - UIViewControllerTransitioningDelegate

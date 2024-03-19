@@ -7,12 +7,34 @@
 
 import UIKit
 
-class MenuViewModel {
+protocol MenuViewModelProtocol {
+    var mode: Setting? { get set }
+    var games: [Games] { get set }
+    func fetchData()
+    func size(view: UIView) -> CGSize
+    func gameTypeViewModel(tag: Int) -> GameTypeViewModelProtocol
+}
+
+class MenuViewModel: MenuViewModelProtocol {
+    var mode: Setting?
+    var games: [Games] = []
+    
+    func fetchData() {
+        mode = StorageManager.shared.fetchSetting()
+        games = getGames()
+    }
+    
     func size(view: UIView) -> CGSize {
         CGSize(width: view.frame.width, height: view.frame.height + 10)
     }
     
-    func getGames() -> [Games] {
+    func gameTypeViewModel(tag: Int) -> GameTypeViewModelProtocol {
+        let mode = mode ?? Setting.getSettingDefault()
+        let game = games[tag]
+        return GameTypeViewModel(mode: mode, game: game, tag: tag)
+    }
+    
+    private func getGames() -> [Games] {
         var games: [Games] = []
         
         let gameType = GameType.shared.gameType
@@ -43,9 +65,5 @@ class MenuViewModel {
         }
         
         return games
-    }
-    
-    func fetchSetting() -> Setting {
-        StorageManager.shared.fetchSetting()
     }
 }

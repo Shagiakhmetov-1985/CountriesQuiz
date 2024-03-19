@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3301D6C2B9C8D3E00024479 /* Box.swift */; };
 		C3342B352ACD9E6600C75C6E /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */; };
 		C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */; };
 		C33669D22B98A13D0081C39A /* MenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33669D12B98A13D0081C39A /* MenuViewModel.swift */; };
@@ -43,6 +44,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C3301D6C2B9C8D3E00024479 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabelCell.swift; sourceTree = "<group>"; };
 		C33669D12B98A13D0081C39A /* MenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewModel.swift; sourceTree = "<group>"; };
@@ -91,6 +93,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C3301D6B2B9C8CB800024479 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				C3301D6C2B9C8D3E00024479 /* Box.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		C33669D02B9899D70081C39A /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
@@ -178,6 +188,7 @@
 				C3E2EB452938E8C800AB40AD /* Supporting */,
 				C3E2EB442938E88100AB40AD /* Views */,
 				C33669D02B9899D70081C39A /* ViewModels */,
+				C3301D6B2B9C8CB800024479 /* Helpers */,
 				C3A5B9A12974258D000F15F0 /* Alert controller */,
 				C36773F4296D541E0096BCC5 /* AnimatedTransition */,
 				C34072392A690F3500E5C9A4 /* Extensions + UIKit */,
@@ -336,6 +347,7 @@
 				C36773F3296C3B880096BCC5 /* Transition.swift in Sources */,
 				C3613A712A7FB82C006C0F1E /* GameTypeManager.swift in Sources */,
 				C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */,
+				C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */,
 				C3342B352ACD9E6600C75C6E /* DetailsViewController.swift in Sources */,
 				C3E2EB4D2938ED6800AB40AD /* CountriesManager.swift in Sources */,
 				C3E2EB4B2938EA6800AB40AD /* FlagsOfCountries.swift in Sources */,

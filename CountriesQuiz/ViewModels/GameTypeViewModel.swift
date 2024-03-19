@@ -7,12 +7,91 @@
 
 import UIKit
 
-class GameTypeViewModel {
-    let mode: Setting
-    let game: Games
-    let tag: Int
+protocol GameTypeViewModelProtocol {
+    var setTag: Int { get }
+    var countQuestions: Int { get }
+    var allCountries: Bool { get }
+    var americaContinent: Bool { get }
+    var europeContinent: Bool { get }
+    var africaContinent: Bool { get }
+    var asiaContinent: Bool { get }
+    var oceaniaContinent: Bool { get }
+    var background: UIColor { get }
+    var colorPlay: UIColor { get }
+    var colorFavourite: UIColor { get }
+    var colorSwap: UIColor { get }
+    var colorDone: UIColor { get }
+    init(mode: Setting, game: Games, tag: Int)
+    func numberOfComponents() -> Int
+    func numberOfQuestions() -> Int
+    func countdownOneQuestion() -> Int
+    func countdownAllQuestions() -> Int
+    func titles(_ pickerView: UIPickerView, _ row: Int, and segmented: UISegmentedControl) -> UIView
+    func swap(_ tag: Int, _ button: UIButton)
+    func isCountdown() -> Bool
+    func isOneQuestion() -> Bool
+    func image(_ tag: Int) -> String
+    func isEnabled(_ tag: Int) -> Bool
+}
+
+class GameTypeViewModel: GameTypeViewModelProtocol {
+    var setTag: Int {
+        tag
+    }
     
-    init(mode: Setting, game: Games, tag: Int) {
+    var countQuestions: Int {
+        mode.countQuestions
+    }
+    
+    var allCountries: Bool {
+        mode.allCountries
+    }
+    
+    var americaContinent: Bool {
+        mode.americaContinent
+    }
+    
+    var europeContinent: Bool {
+        mode.europeContinent
+    }
+    
+    var africaContinent: Bool {
+        mode.africaContinent
+    }
+    
+    var asiaContinent: Bool {
+        mode.asiaContinent
+    }
+    
+    var oceaniaContinent: Bool {
+        mode.oceaniaContinent
+    }
+    
+    var background: UIColor {
+        game.background
+    }
+    
+    var colorPlay: UIColor {
+        game.play
+    }
+    
+    var colorFavourite: UIColor {
+        game.favourite
+    }
+    
+    var colorSwap: UIColor {
+        game.swap
+    }
+    
+    var colorDone: UIColor {
+        game.done
+    }
+    
+    private var mode: Setting
+    private let game: Games
+    private let tag: Int
+    
+    required init(mode: Setting, game: Games, tag: Int) {
         self.mode = mode
         self.game = game
         self.tag = tag
@@ -69,40 +148,45 @@ class GameTypeViewModel {
         tag == 2 ? false : true
     }
     // MARK: - Press swap button of setting
-    /*
-    func swap(_ tag: Int, _ mode: Setting) {
+    func swap(_ tag: Int, _ button: UIButton) {
         switch tag {
-        case 0, 1, 4: GameTypeFirst(mode: mode)
-        default: GameTypeSecond()
+        case 0, 1, 4: GameTypeFirst(button: button)
+        default: GameTypeSecond(button: button)
         }
     }
+    // MARK: - Setup design
+    func isCountdown() -> Bool {
+        mode.timeElapsed.timeElapsed ? true : false
+    }
     
-    private func GameTypeFirst(mode: Setting) {
-        mode.flag ? imageSwap(image: "building") : imageSwap(image: "flag")
+    func isOneQuestion() -> Bool {
+        mode.timeElapsed.questionSelect.oneQuestion
+    }
+    // MARK: - Private methods
+    private func GameTypeFirst(button: UIButton) {
+        mode.flag ? imageSwap("building", button) : imageSwap("flag", button)
         mode.flag.toggle()
         StorageManager.shared.saveSetting(setting: mode)
     }
-    
-    private func imageSwap(image: String) {
+    private func imageSwap(_ image: String, _ button: UIButton) {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: image, withConfiguration: size)
-        buttonSwap.setImage(image, for: .normal)
+        button.setImage(image, for: .normal)
     }
     
-    private func GameTypeSecond() {
+    private func GameTypeSecond(button: UIButton) {
         switch mode.scrabbleType {
-        case 0: imageSwap(image: "globe.europe.africa", scrabbleType: mode.scrabbleType + 1)
-        case 1: imageSwap(image: "building.2", scrabbleType: mode.scrabbleType + 1)
-        default: imageSwap(image: "flag", scrabbleType: 0)
+        case 0: imageSwap("globe.europe.africa", mode.scrabbleType + 1, button)
+        case 1: imageSwap("building.2", mode.scrabbleType + 1, button)
+        default: imageSwap("flag", 0, button)
         }
     }
     
-    private func imageSwap(image: String, scrabbleType: Int) {
-        imageSwap(image: image)
+    private func imageSwap(_ image: String, _ scrabbleType: Int, _ button: UIButton) {
+        imageSwap(image, button)
         mode.scrabbleType = scrabbleType
         StorageManager.shared.saveSetting(setting: mode)
     }
-     */
     // MARK: - Attributted for picker view
     private func attributted(title: String, tag: Int, segmented: UISegmentedControl) -> NSAttributedString {
         let color = tag == 1 ? game.favourite : color(tag: tag, segmented: segmented)

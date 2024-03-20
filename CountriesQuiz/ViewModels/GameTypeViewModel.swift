@@ -21,6 +21,11 @@ protocol GameTypeViewModelProtocol {
     var colorFavourite: UIColor { get }
     var colorSwap: UIColor { get }
     var colorDone: UIColor { get }
+    var diameter: CGFloat { get }
+    var image: String { get }
+    var name: String { get }
+    var description: String { get }
+    var gameType: TypeOfGame { get }
     init(mode: Setting, game: Games, tag: Int)
     func numberOfComponents() -> Int
     func numberOfQuestions() -> Int
@@ -30,11 +35,34 @@ protocol GameTypeViewModelProtocol {
     func swap(_ tag: Int, _ button: UIButton)
     func isCountdown() -> Bool
     func isOneQuestion() -> Bool
+    func oneQuestionTime() -> Int
+    func allQuestionsTime() -> Int
+    func isCheckmark(isOn: Bool) -> String
     func image(_ tag: Int) -> String
     func isEnabled(_ tag: Int) -> Bool
+    func countdownOnOff(isOn: Bool)
+    func oneQuestionOnOff(isOn: Bool)
+    func setTimeOneQuestion(time: Int)
+    func setTimeAllQuestions(time: Int)
+    func width(_ view: UIView) -> CGFloat
+    func bulletsList(list: [String]) -> UILabel
+    func bulletsListGameType(_ tag: Int) -> [String]
+    func imageFirstTitle(_ tag: Int) -> String
+    func colorTitle(_ tag: Int) -> UIColor
+    func labelFirstTitle(_ tag: Int) -> String
+    func labelTitleFirstDescription(_ tag: Int) -> String
+    func imageSecondTitle(_ tag: Int) -> String
+    func labelSecondTitle(_ tag: Int) -> String
+    func labelTitleSecondDescription(_ tag: Int) -> String
+    func comma() -> String
+    func countdownOnOff() -> String
+    func checkTimeDescription() -> String
+    func isSelect(isOn: Bool) -> UIColor
 }
 
 class GameTypeViewModel: GameTypeViewModelProtocol {
+    typealias ParagraphData = (bullet: String, paragraph: String)
+    
     var setTag: Int {
         tag
     }
@@ -85,6 +113,26 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     
     var colorDone: UIColor {
         game.done
+    }
+    
+    var diameter: CGFloat {
+        100
+    }
+    
+    var image: String {
+        game.image
+    }
+    
+    var name: String {
+        game.name
+    }
+    
+    var description: String {
+        game.description
+    }
+    
+    var gameType: TypeOfGame {
+        game.gameType
     }
     
     private var mode: Setting
@@ -161,6 +209,197 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     
     func isOneQuestion() -> Bool {
         mode.timeElapsed.questionSelect.oneQuestion
+    }
+    
+    func oneQuestionTime() -> Int {
+        mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
+    }
+    
+    func allQuestionsTime() -> Int {
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
+    }
+    
+    func isCheckmark(isOn: Bool) -> String {
+        isOn ? "checkmark.circle.fill" : "circle"
+    }
+    
+    func imageFirstTitle(_ tag: Int) -> String {
+        tag == 2 ? "globe.europe.africa" : "flag"
+    }
+    
+    func colorTitle(_ tag: Int) -> UIColor {
+        tag == 2 ? .white.withAlphaComponent(0.4) : .white
+    }
+    
+    func labelFirstTitle(_ tag: Int) -> String {
+        tag == 2 ? "Режим карты" : "Режим флага"
+    }
+    
+    func labelTitleFirstDescription(_ tag: Int) -> String {
+        switch tag {
+        case 0, 1: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования страны."
+        case 2: "В качестве вопроса задается географическая карта страны и пользователь должен выбрать ответ наименования страны. (Кнопка неактивна)"
+        case 3: "В качестве вопроса задается флаг страны и пользователь должен составить слово из букв наименования страны."
+        default: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования столицы."
+        }
+    }
+    
+    func imageSecondTitle(_ tag: Int) -> String {
+        tag == 3 ? "globe.europe.africa" : "building"
+    }
+    
+    func labelSecondTitle(_ tag: Int) -> String {
+        switch tag {
+        case 0, 1: "Режим наименования"
+        case 4: "Режим столицы"
+        default: "Режим карты"
+        }
+    }
+    
+    func labelTitleSecondDescription(_ tag: Int) -> String {
+        switch tag {
+        case 0, 1: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ флага страны."
+        case 4: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ наименования столицы."
+        default: "В качестве вопроса задается географическая карта страны и пользователь должен составить слово из букв наименования страны."
+        }
+    }
+    
+    func isSelect(isOn: Bool) -> UIColor {
+        isOn ? background : .white
+    }
+    // MARK: - Button titles
+    func comma() -> String {
+        comma(continents: allCountries, americaContinent, europeContinent,
+              africaContinent, asiaContinent, oceaniaContinent)
+    }
+    
+    func countdownOnOff() -> String {
+        isCountdown() ? "\(checkCountdownType())" : ""
+    }
+    
+    func checkTimeDescription() -> String {
+        isOneQuestion() ? "\(checkTitleGameType())" : "Время всех вопросов"
+    }
+    // MARK: - Bullets
+    func bulletsList(list: [String]) -> UILabel {
+        let label = UILabel()
+        let paragraphDataPairs: [ParagraphData] = bullets(list: list)
+        let stringAttributes: [NSAttributedString.Key: Any] = [.font: label.font!]
+        let bulletedAttributedString = makeBulletedAttributedString(
+            paragraphDataPairs: paragraphDataPairs,
+            attributes: stringAttributes)
+        label.attributedText = bulletedAttributedString
+        return label
+    }
+    
+    func bulletsListGameType(_ tag: Int) -> [String] {
+        switch tag {
+        case 0: return GameType.shared.bulletsQuizOfFlags
+        case 1: return GameType.shared.bulletsQuestionnaire
+        case 2: return GameType.shared.bulletsQuizOfMaps
+        case 3: return GameType.shared.bulletsScrabble
+        default: return GameType.shared.bulletsQuizOfCapitals
+        }
+    }
+    // MARK: - Set change setting
+    func countdownOnOff(isOn: Bool) {
+        mode.timeElapsed.timeElapsed = isOn
+    }
+    
+    func oneQuestionOnOff(isOn: Bool) {
+        mode.timeElapsed.questionSelect.oneQuestion = isOn
+    }
+    
+    func setTimeOneQuestion(time: Int) {
+        mode.timeElapsed.questionSelect.questionTime.oneQuestionTime = time
+    }
+    
+    func setTimeAllQuestions(time: Int) {
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = time
+    }
+    
+    func width(_ view: UIView) -> CGFloat {
+        view.frame.width / 2 + 10
+    }
+    // MARK: - Set bullet list
+    private func bullets(list: [String]) -> [ParagraphData] {
+        var paragraphData: [ParagraphData] = []
+        list.forEach { text in
+            let pair = ("➤ ", "\(text)")
+            paragraphData.append(pair)
+        }
+        return paragraphData
+    }
+    
+    private func makeBulletedAttributedString(
+        paragraphDataPairs: [ParagraphData],
+        attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
+        let fullAttributedString = NSMutableAttributedString()
+            paragraphDataPairs.forEach { paragraphData in
+                let attributedString = makeBulletString(
+                    bullet: paragraphData.bullet,
+                    content: paragraphData.paragraph,
+                    attributes: attributes)
+                fullAttributedString.append(attributedString)
+            }
+        return fullAttributedString
+    }
+    
+    private func makeBulletString(bullet: String, content: String,
+                                  attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
+        let formattedString: String = "\(bullet)\(content)\n"
+        let attributedString: NSMutableAttributedString = NSMutableAttributedString(
+            string: formattedString,
+            attributes: attributes)
+        
+        let headerIndent = (bullet as NSString).size(withAttributes: attributes).width + 6
+        attributedString.addAttributes([.paragraphStyle: makeParagraphStyle(headIndent: headerIndent)],
+                                       range: NSMakeRange(0, attributedString.length))
+        return attributedString
+    }
+    
+    private func makeParagraphStyle(headIndent: CGFloat) -> NSParagraphStyle {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.firstLineHeadIndent = 0
+        paragraphStyle.headIndent = headIndent
+        return paragraphStyle
+    }
+    // MARK: - Button titles
+    private func comma(continents: Bool...) -> String {
+        var text = ""
+        var number = 0
+        continents.forEach { continent in
+            number += 1
+            if continent {
+                text += text == "" ? checkContinent(continent: number) : ", " + checkContinent(continent: number)
+            }
+        }
+        return text
+    }
+    
+    private func checkContinent(continent: Int) -> String {
+        var text = ""
+        switch continent {
+        case 1: text = "Все страны"
+        case 2: text = "Америка"
+        case 3: text = "Европа"
+        case 4: text = "Африка"
+        case 5: text = "Азия"
+        default: text = "Океания"
+        }
+        return text
+    }
+    
+    private func checkCountdownType() -> String {
+        isOneQuestion() ? "\(checkTimeGameType())" : "\(allQuestionsTime())"
+    }
+    
+    private func checkTimeGameType() -> String {
+        gameType == .questionnaire ? "\(allQuestionsTime())" : "\(oneQuestionTime())"
+    }
+    
+    private func checkTitleGameType() -> String {
+        gameType == .questionnaire ? "Время всех вопросов" : "Время одного вопроса"
     }
     // MARK: - Private methods
     private func GameTypeFirst(button: UIButton) {

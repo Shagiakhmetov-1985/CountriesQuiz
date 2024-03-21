@@ -41,7 +41,7 @@ class MenuViewController: UIViewController {
     private lazy var contentView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
-        view.frame.size = contentSize
+        view.frame.size = contentSize()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -49,7 +49,7 @@ class MenuViewController: UIViewController {
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.frame = view.bounds
-        scrollView.contentSize = contentSize
+        scrollView.contentSize = contentSize()
         return scrollView
     }()
     
@@ -217,12 +217,6 @@ class MenuViewController: UIViewController {
             viewModel.fetchData()
         }
     }
-    private var contentSize: CGSize {
-        viewModel.size(view: view)
-    }
-    
-    private var transition = Transition()
-    
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -235,7 +229,7 @@ class MenuViewController: UIViewController {
     // MARK: - General methods
     private func setupDesign() {
         view.backgroundColor = .white
-//        viewModel = MenuViewModel()
+        viewModel = MenuViewModel()
     }
     
     private func setupSubviews() {
@@ -256,6 +250,10 @@ class MenuViewController: UIViewController {
         subviews.forEach { subview in
             subviewOther.addSubview(subview)
         }
+    }
+    
+    private func contentSize() -> CGSize {
+        viewModel.size(view: view)
     }
     // MARK: - Button activate. Press game type, setting
     @objc private func gameType(sender: UIButton) {
@@ -338,21 +336,17 @@ extension MenuViewController: SettingViewControllerDelegate,
     }
     
     func dataToMenuFromSetting(setting: Setting) {
-        viewModel.mode = setting
+        viewModel.setMode(setting)
     }
 }
 // MARK: - UIViewControllerTransitioningDelegate
 extension MenuViewController: UIViewControllerTransitioningDelegate {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        transition.transitionMode = .present
-        transition.startingPoint = buttonQuizOfFlags.center
-        return transition
+        viewModel.forPresented(buttonQuizOfFlags)
     }
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        transition.transitionMode = .dismiss
-        transition.startingPoint = buttonQuizOfFlags.center
-        return transition
+        viewModel.forDismissed(buttonQuizOfFlags)
     }
 }
 // MARK: - Set constraints

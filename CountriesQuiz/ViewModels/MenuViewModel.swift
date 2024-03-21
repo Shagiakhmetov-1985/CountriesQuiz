@@ -9,15 +9,18 @@ import UIKit
 
 protocol MenuViewModelProtocol {
     var mode: Setting? { get set }
-    var games: [Games] { get set }
     func fetchData()
     func size(view: UIView) -> CGSize
     func gameTypeViewModel(tag: Int) -> GameTypeViewModelProtocol
+    func forPresented(_ button: UIButton) -> Transition
+    func forDismissed(_ button: UIButton) -> Transition
+    func setMode(_ setting: Setting)
 }
 
 class MenuViewModel: MenuViewModelProtocol {
     var mode: Setting?
-    var games: [Games] = []
+    private var games: [Games] = []
+    private let transition = Transition()
     
     func fetchData() {
         mode = StorageManager.shared.fetchSetting()
@@ -65,5 +68,21 @@ class MenuViewModel: MenuViewModelProtocol {
         }
         
         return games
+    }
+    
+    func forPresented(_ button: UIButton) -> Transition {
+        transition.transitionMode = .present
+        transition.startingPoint = button.center
+        return transition
+    }
+    
+    func forDismissed(_ button: UIButton) -> Transition {
+        transition.transitionMode = .dismiss
+        transition.startingPoint = button.center
+        return transition
+    }
+    
+    func setMode(_ setting: Setting) {
+        mode = setting
     }
 }

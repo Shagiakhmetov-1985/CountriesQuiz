@@ -8,45 +8,81 @@
 import UIKit
 
 protocol GameTypeViewModelProtocol {
+    var setting: Setting { get }
+    var games: Games { get }
     var setTag: Int { get }
     var countQuestions: Int { get }
+    var countRows: Int { get }
+    var countRowsDefault: Int { get }
+    var countContinents: Int { get }
+    
     var allCountries: Bool { get }
     var americaContinent: Bool { get }
     var europeContinent: Bool { get }
     var africaContinent: Bool { get }
     var asiaContinent: Bool { get }
     var oceaniaContinent: Bool { get }
+    
     var background: UIColor { get }
     var colorPlay: UIColor { get }
     var colorFavourite: UIColor { get }
     var colorSwap: UIColor { get }
     var colorDone: UIColor { get }
-    var diameter: CGFloat { get }
     var image: String { get }
     var name: String { get }
     var description: String { get }
     var gameType: TypeOfGame { get }
+    
+    var diameter: CGFloat { get }
+    
+    var countAllCountries: Int { get }
+    var countCountriesOfAmerica: Int { get }
+    var countCountriesOfEurope: Int { get }
+    var countCountriesOfAfrica: Int { get }
+    var countCountriesOfAsia: Int { get }
+    var countCountriesOfOceania: Int { get }
+    
     init(mode: Setting, game: Games, tag: Int)
+    
     func numberOfComponents() -> Int
     func numberOfQuestions() -> Int
     func countdownOneQuestion() -> Int
     func countdownAllQuestions() -> Int
+    
     func titles(_ pickerView: UIPickerView, _ row: Int, and segmented: UISegmentedControl) -> UIView
-    func swap(_ tag: Int, _ button: UIButton)
+    func swap(_ button: UIButton)
+    
     func isCountdown() -> Bool
     func isOneQuestion() -> Bool
     func oneQuestionTime() -> Int
     func allQuestionsTime() -> Int
+    func isQuestionnaire() -> Bool
+    
     func isCheckmark(isOn: Bool) -> String
     func image(_ tag: Int) -> String
     func isEnabled(_ tag: Int) -> Bool
+    
     func countdownOnOff(isOn: Bool)
     func oneQuestionOnOff(isOn: Bool)
     func setTimeOneQuestion(time: Int)
     func setTimeAllQuestions(time: Int)
+    
+    func setCountQuestions(_ countQuestions: Int)
+    func setCountRows(_ countRows: Int)
+    
+    func setAllCountries(_ bool: Bool)
+    func setAmericaContinent(_ bool: Bool)
+    func setEuropeContinent(_ bool: Bool)
+    func setAfricaContinent(_ bool: Bool)
+    func setAsiaContinent(_ bool: Bool)
+    func setOceaniaContinent(_ bool: Bool)
+    
     func width(_ view: UIView) -> CGFloat
+    func size(_ tag: Int) -> CGFloat
+    
     func bulletsList(list: [String]) -> UILabel
     func bulletsListGameType(_ tag: Int) -> [String]
+    
     func imageFirstTitle(_ tag: Int) -> String
     func colorTitle(_ tag: Int) -> UIColor
     func labelFirstTitle(_ tag: Int) -> String
@@ -54,14 +90,24 @@ protocol GameTypeViewModelProtocol {
     func imageSecondTitle(_ tag: Int) -> String
     func labelSecondTitle(_ tag: Int) -> String
     func labelTitleSecondDescription(_ tag: Int) -> String
+    
     func comma() -> String
     func countdownOnOff() -> String
     func checkTimeDescription() -> String
+    
     func isSelect(isOn: Bool) -> UIColor
+    func setCountContinents(_ count: Int)
 }
 
 class GameTypeViewModel: GameTypeViewModelProtocol {
     typealias ParagraphData = (bullet: String, paragraph: String)
+    var setting: Setting {
+        mode
+    }
+    
+    var games: Games {
+        game
+    }
     
     var setTag: Int {
         tag
@@ -70,6 +116,16 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     var countQuestions: Int {
         mode.countQuestions
     }
+    
+    var countRows: Int {
+        mode.countRows
+    }
+    
+    var countRowsDefault: Int {
+        DefaultSetting.countRows.rawValue
+    }
+    
+    var countContinents = 0
     
     var allCountries: Bool {
         mode.allCountries
@@ -135,6 +191,30 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         game.gameType
     }
     
+    var countAllCountries: Int {
+        FlagsOfCountries.shared.countries.count
+    }
+    
+    var countCountriesOfAmerica: Int {
+        FlagsOfCountries.shared.countriesOfAmericanContinent.count
+    }
+    
+    var countCountriesOfEurope: Int {
+        FlagsOfCountries.shared.countriesOfEuropeanContinent.count
+    }
+    
+    var countCountriesOfAfrica: Int {
+        FlagsOfCountries.shared.countriesOfAfricanContinent.count
+    }
+    
+    var countCountriesOfAsia: Int {
+        FlagsOfCountries.shared.countriesOfAsianContinent.count
+    }
+    
+    var countCountriesOfOceania: Int {
+        FlagsOfCountries.shared.countriesOfOceanContinent.count
+    }
+    
     private var mode: Setting
     private let game: Games
     private let tag: Int
@@ -196,7 +276,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         tag == 2 ? false : true
     }
     // MARK: - Press swap button of setting
-    func swap(_ tag: Int, _ button: UIButton) {
+    func swap(_ button: UIButton) {
         switch tag {
         case 0, 1, 4: GameTypeFirst(button: button)
         default: GameTypeSecond(button: button)
@@ -267,6 +347,10 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     func isSelect(isOn: Bool) -> UIColor {
         isOn ? background : .white
     }
+    
+    func isQuestionnaire() -> Bool {
+        gameType == .questionnaire ? false : true
+    }
     // MARK: - Button titles
     func comma() -> String {
         comma(continents: allCountries, americaContinent, europeContinent,
@@ -320,6 +404,55 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     
     func width(_ view: UIView) -> CGFloat {
         view.frame.width / 2 + 10
+    }
+    
+    func size(_ tag: Int) -> CGFloat {
+        switch tag {
+        case 0, 4: 1.4
+        case 1: 1.55
+        case 2: 1.15
+        default: 1.65
+        }
+    }
+    
+    func setCountQuestions(_ countQuestions: Int) {
+        mode.countQuestions = countQuestions
+    }
+    
+    func setCountRows(_ countRows: Int) {
+        mode.countRows = countRows
+    }
+    
+    func setAllCountries(_ bool: Bool) {
+        mode.allCountries = bool
+    }
+    
+    func setAmericaContinent(_ bool: Bool) {
+        mode.americaContinent = bool
+    }
+    
+    func setEuropeContinent(_ bool: Bool) {
+        mode.europeContinent = bool
+    }
+    
+    func setAfricaContinent(_ bool: Bool) {
+        mode.africaContinent = bool
+    }
+    
+    func setAsiaContinent(_ bool: Bool) {
+        mode.asiaContinent = bool
+    }
+    
+    func setOceaniaContinent(_ bool: Bool) {
+        mode.oceaniaContinent = bool
+    }
+    
+    func setCountContinents(_ count: Int) {
+        if count == 0 {
+            countContinents = 0
+        } else {
+            countContinents += count
+        }
     }
     // MARK: - Set bullet list
     private func bullets(list: [String]) -> [ParagraphData] {

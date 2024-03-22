@@ -212,11 +212,8 @@ class MenuViewController: UIViewController {
         setImage(image: "building.2", color: .redTangerineTango, size: 60)
     }()
     
-    private var viewModel: MenuViewModelProtocol! {
-        didSet {
-            viewModel.fetchData()
-        }
-    }
+    private var viewModel: MenuViewModelProtocol!
+    
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -230,6 +227,7 @@ class MenuViewController: UIViewController {
     private func setupDesign() {
         view.backgroundColor = .white
         viewModel = MenuViewModel()
+        viewModel.fetchData()
     }
     
     private func setupSubviews() {

@@ -50,11 +50,11 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var labelBulletsList: UILabel = {
-        viewModel.bulletsList(list: viewModel.bulletsListGameType(viewModel.setTag))
+        viewModel.bulletsList(list: viewModel.bulletsListGameType())
     }()
     
     private lazy var imageFirstSwap: UIImageView = {
-        setupImage(image: viewModel.imageFirstTitle(viewModel.setTag), color: viewModel.colorTitle(viewModel.setTag), size: 25)
+        setupImage(image: viewModel.imageFirstTitle(), color: viewModel.colorTitle(), size: 25)
     }()
     
     private lazy var viewFirstSwap: UIView = {
@@ -64,7 +64,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelFirstSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: viewModel.labelFirstTitle(viewModel.setTag),
+            title: viewModel.labelFirstTitle(),
             size: 24,
             style: "Gill Sans",
             alignment: .left)
@@ -73,7 +73,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelFirstDescriptionSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: viewModel.labelTitleFirstDescription(viewModel.setTag),
+            title: viewModel.labelTitleFirstDescription(),
             size: 19,
             style: "Gill Sans",
             alignment: .left)
@@ -88,7 +88,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var imageSecondSwap: UIImageView = {
-        setupImage(image: viewModel.imageSecondTitle(viewModel.setTag), color: .white, size: 25)
+        setupImage(image: viewModel.imageSecondTitle(), color: .white, size: 25)
     }()
     
     private lazy var viewSecondSwap: UIView = {
@@ -98,7 +98,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelSecondSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: viewModel.labelSecondTitle(viewModel.setTag),
+            title: viewModel.labelSecondTitle(),
             size: 24,
             style: "Gill Sans",
             alignment: .left)
@@ -107,7 +107,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelSecondDescriptionSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: viewModel.labelTitleSecondDescription(viewModel.setTag),
+            title: viewModel.labelTitleSecondDescription(),
             size: 19,
             style: "Gill Sans",
             alignment: .left)
@@ -203,10 +203,10 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var buttonSwap: UIButton = {
         setupButton(
-            image: viewModel.image(viewModel.setTag),
+            image: viewModel.imageMode(),
             color: viewModel.colorSwap,
             action: #selector(swap),
-            isEnabled: viewModel.isEnabled(viewModel.setTag))
+            isEnabled: viewModel.isEnabled())
     }()
     
     private lazy var stackViewButtons: UIStackView = {
@@ -558,7 +558,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     var viewModel: GameTypeViewModelProtocol!
     var delegate: GameTypeViewControllerDelegate!
-    
     weak var delegateInput: MenuViewControllerInput!
     
     override func viewDidLoad() {
@@ -616,26 +615,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         }
     }
     
-    private func barButtonsOnOff(bool: Bool) {
-        let opacity: Float = bool ? 1 : 0
-        isEnabled(buttons: buttonBack, buttonHelp, bool: bool)
-        setupOpacityButtons(buttons: buttonBack, buttonHelp, opacity: opacity)
-    }
-    
-    private func isEnabled(buttons: UIButton..., bool: Bool) {
-        buttons.forEach { button in
-            button.isEnabled = bool
-        }
-    }
-    
-    private func setupOpacityButtons(buttons: UIButton..., opacity: Float) {
-        buttons.forEach { button in
-            UIView.animate(withDuration: 0.5) {
-                button.layer.opacity = opacity
-            }
-        }
-    }
-    
     private func counterContinents() {
         counterContinents(continents: viewModel.americaContinent,
                           viewModel.europeContinent, viewModel.africaContinent,
@@ -662,7 +641,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     @objc private func showDescription() {
         setupSubviews(subviews: viewHelp, on: view)
         setupConstraintsViewHelp()
-        barButtonsOnOff(bool: false)
+        viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
         
         viewHelp.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
         viewHelp.alpha = 0
@@ -708,17 +687,11 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     // MARK: - Methods for popup view controllers
     private func addSubviews(tag: Int) {
         switch tag {
-        case 1: setPickerViewCountQuestions()
+        case 1: viewModel.setPickerViewCountQuestions(pickerViewQuestions, viewSettingDescription)
         case 2: setButtonsContinents()
         case 3: setButtonCheckmarkCountdown()
         default: setPickerViewsTime()
         }
-    }
-    
-    private func setPickerViewCountQuestions() {
-        let row = viewModel.countQuestions - 10
-        setupSubviews(subviews: pickerViewQuestions, on: viewSettingDescription)
-        pickerViewQuestions.selectRow(row, inComponent: 0, animated: false)
     }
     
     private func setButtonsContinents() {
@@ -1103,7 +1076,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     @objc private func changeSetting(sender: UIButton) {
         setupSubviews(subviews: viewSetting, on: view)
         setting(tag: sender.tag)
-        barButtonsOnOff(bool: false)
+        viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
         
         viewSetting.transform = CGAffineTransform(translationX: 0, y: view.frame.height)
         viewSetting.alpha = 0
@@ -1456,7 +1429,7 @@ extension GameTypeViewController {
             viewDescription.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             viewDescription.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             viewDescription.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            viewDescription.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: viewModel.size(viewModel.setTag))
+            viewDescription.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: viewModel.size())
         ])
         
         NSLayoutConstraint.activate([
@@ -1631,7 +1604,7 @@ extension GameTypeViewController {
 // MARK: - PopUpViewDelegate
 extension GameTypeViewController: PopUpViewDelegate {
     func closeView() {
-        barButtonsOnOff(bool: true)
+        viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: true)
         UIView.animate(withDuration: 0.5) { [self] in
             visualEffectView.alpha = 0
             viewHelp.alpha = 0
@@ -1644,7 +1617,7 @@ extension GameTypeViewController: PopUpViewDelegate {
 // MARK: - PopUpViewSettingDelegate
 extension GameTypeViewController: PopUpViewSettingDelegate {
     @objc func closeViewSetting() {
-        barButtonsOnOff(bool: true)
+        viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: true)
         UIView.animate(withDuration: 0.5) { [self] in
             visualEffectView.alpha = 0
             viewSetting.alpha = 0

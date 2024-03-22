@@ -49,7 +49,7 @@ protocol GameTypeViewModelProtocol {
     func countdownOneQuestion() -> Int
     func countdownAllQuestions() -> Int
     
-    func titles(_ pickerView: UIPickerView, _ row: Int, and segmented: UISegmentedControl) -> UIView
+    func titles(_ pickerView: UIPickerView,_ row: Int, and segmented: UISegmentedControl) -> UIView
     func swap(_ button: UIButton)
     
     func isCountdown() -> Bool
@@ -59,13 +59,14 @@ protocol GameTypeViewModelProtocol {
     func isQuestionnaire() -> Bool
     
     func isCheckmark(isOn: Bool) -> String
-    func image(_ tag: Int) -> String
-    func isEnabled(_ tag: Int) -> Bool
+    func imageMode() -> String
+    func isEnabled() -> Bool
     
     func countdownOnOff(isOn: Bool)
     func oneQuestionOnOff(isOn: Bool)
     func setTimeOneQuestion(time: Int)
     func setTimeAllQuestions(time: Int)
+    func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool)
     
     func setCountQuestions(_ countQuestions: Int)
     func setCountRows(_ countRows: Int)
@@ -78,18 +79,18 @@ protocol GameTypeViewModelProtocol {
     func setOceaniaContinent(_ bool: Bool)
     
     func width(_ view: UIView) -> CGFloat
-    func size(_ tag: Int) -> CGFloat
+    func size() -> CGFloat
     
     func bulletsList(list: [String]) -> UILabel
-    func bulletsListGameType(_ tag: Int) -> [String]
+    func bulletsListGameType() -> [String]
     
-    func imageFirstTitle(_ tag: Int) -> String
-    func colorTitle(_ tag: Int) -> UIColor
-    func labelFirstTitle(_ tag: Int) -> String
-    func labelTitleFirstDescription(_ tag: Int) -> String
-    func imageSecondTitle(_ tag: Int) -> String
-    func labelSecondTitle(_ tag: Int) -> String
-    func labelTitleSecondDescription(_ tag: Int) -> String
+    func imageFirstTitle() -> String
+    func colorTitle() -> UIColor
+    func labelFirstTitle() -> String
+    func labelTitleFirstDescription() -> String
+    func imageSecondTitle() -> String
+    func labelSecondTitle() -> String
+    func labelTitleSecondDescription() -> String
     
     func comma() -> String
     func countdownOnOff() -> String
@@ -97,6 +98,9 @@ protocol GameTypeViewModelProtocol {
     
     func isSelect(isOn: Bool) -> UIColor
     func setCountContinents(_ count: Int)
+    
+    func setupSubviews(subviews: UIView..., on subviewOther: UIView)
+    func setPickerViewCountQuestions(_ pickerView: UIPickerView,_ view: UIView)
 }
 
 class GameTypeViewModel: GameTypeViewModelProtocol {
@@ -224,6 +228,12 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         self.game = game
         self.tag = tag
     }
+    // MARK: - Set subviews
+    func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
+        subviews.forEach { subview in
+            subviewOther.addSubview(subview)
+        }
+    }
     // MARK: - PickerView
     func numberOfComponents() -> Int {
         1
@@ -264,7 +274,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         return label
     }
     // MARK: - Image for button of setting
-    func image(_ tag: Int) -> String {
+    func imageMode() -> String {
         switch tag {
         case 0, 1, 4: return mode.flag ? "flag" : "building"
         case 2: return "globe.europe.africa"
@@ -272,8 +282,14 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         }
     }
     // MARK: - Enable or disable button of setting
-    func isEnabled(_ tag: Int) -> Bool {
+    func isEnabled() -> Bool {
         tag == 2 ? false : true
+    }
+    // MARK: - Show / hide bar buttons
+    func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool) {
+        let opacity: Float = bool ? 1 : 0
+        isEnabled(buttons: buttonBack, buttonHelp, bool: bool)
+        setupOpacityButtons(buttons: buttonBack, buttonHelp, opacity: opacity)
     }
     // MARK: - Press swap button of setting
     func swap(_ button: UIButton) {
@@ -303,19 +319,19 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         isOn ? "checkmark.circle.fill" : "circle"
     }
     
-    func imageFirstTitle(_ tag: Int) -> String {
+    func imageFirstTitle() -> String {
         tag == 2 ? "globe.europe.africa" : "flag"
     }
     
-    func colorTitle(_ tag: Int) -> UIColor {
+    func colorTitle() -> UIColor {
         tag == 2 ? .white.withAlphaComponent(0.4) : .white
     }
     
-    func labelFirstTitle(_ tag: Int) -> String {
+    func labelFirstTitle() -> String {
         tag == 2 ? "Режим карты" : "Режим флага"
     }
     
-    func labelTitleFirstDescription(_ tag: Int) -> String {
+    func labelTitleFirstDescription() -> String {
         switch tag {
         case 0, 1: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования страны."
         case 2: "В качестве вопроса задается географическая карта страны и пользователь должен выбрать ответ наименования страны. (Кнопка неактивна)"
@@ -324,11 +340,11 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         }
     }
     
-    func imageSecondTitle(_ tag: Int) -> String {
+    func imageSecondTitle() -> String {
         tag == 3 ? "globe.europe.africa" : "building"
     }
     
-    func labelSecondTitle(_ tag: Int) -> String {
+    func labelSecondTitle() -> String {
         switch tag {
         case 0, 1: "Режим наименования"
         case 4: "Режим столицы"
@@ -336,7 +352,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         }
     }
     
-    func labelTitleSecondDescription(_ tag: Int) -> String {
+    func labelTitleSecondDescription() -> String {
         switch tag {
         case 0, 1: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ флага страны."
         case 4: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ наименования столицы."
@@ -376,7 +392,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         return label
     }
     
-    func bulletsListGameType(_ tag: Int) -> [String] {
+    func bulletsListGameType() -> [String] {
         switch tag {
         case 0: return GameType.shared.bulletsQuizOfFlags
         case 1: return GameType.shared.bulletsQuestionnaire
@@ -406,7 +422,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         view.frame.width / 2 + 10
     }
     
-    func size(_ tag: Int) -> CGFloat {
+    func size() -> CGFloat {
         switch tag {
         case 0, 4: 1.4
         case 1: 1.55
@@ -453,6 +469,12 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         } else {
             countContinents += count
         }
+    }
+    // MARK: - Set popup view controller
+    func setPickerViewCountQuestions(_ pickerView: UIPickerView,_ view: UIView) {
+        let row = countQuestions - 10
+        setupSubviews(subviews: pickerView, on: view)
+        pickerView.selectRow(row, inComponent: 0, animated: false)
     }
     // MARK: - Set bullet list
     private func bullets(list: [String]) -> [ParagraphData] {
@@ -582,6 +604,20 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         case 0: return "flag"
         case 1: return "globe.europe.africa"
         default: return "building.2"
+        }
+    }
+    // MARK: - Show / hide bar buttons
+    private func isEnabled(buttons: UIButton..., bool: Bool) {
+        buttons.forEach { button in
+            button.isEnabled = bool
+        }
+    }
+    
+    private func setupOpacityButtons(buttons: UIButton..., opacity: Float) {
+        buttons.forEach { button in
+            UIView.animate(withDuration: 0.5) {
+                button.layer.opacity = opacity
+            }
         }
     }
 }

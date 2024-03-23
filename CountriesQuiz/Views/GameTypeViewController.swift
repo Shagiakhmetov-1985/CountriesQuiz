@@ -168,7 +168,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         scrollView.layer.cornerRadius = 15
         scrollView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        setupSubviews(subviews: viewDescription, on: scrollView)
+        viewModel.setupSubviews(subviews: viewDescription, on: scrollView)
         return scrollView
     }()
     
@@ -181,7 +181,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         view.backgroundColor = viewModel.colorSwap
         view.translatesAutoresizingMaskIntoConstraints = false
         view.delegate = self
-        setupSubviews(subviews: labelName, scrollView, on: view)
+        viewModel.setupSubviews(subviews: labelName, scrollView, on: view)
         return view
     }()
     
@@ -552,7 +552,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         view.backgroundColor = viewModel.colorSwap
         view.translatesAutoresizingMaskIntoConstraints = false
         view.delegate = self
-        setupSubviews(subviews: labelSetting, viewSettingDescription, stackView, on: view)
+        viewModel.setupSubviews(subviews: labelSetting, viewSettingDescription,
+                                stackView, on: view)
         return view
     }()
     
@@ -590,10 +591,10 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func setupSubviews() {
-        setupSubviews(subviews: viewGameType, imageGameType, labelGameName,
-                      stackViewButtons, buttonCountQuestions, buttonContinents,
-                      buttonCountdown, buttonTime, visualEffectView,
-                      on: view)
+        viewModel.setupSubviews(subviews: viewGameType, imageGameType, labelGameName,
+                                stackViewButtons, buttonCountQuestions, buttonContinents,
+                                buttonCountdown, buttonTime, visualEffectView,
+                                on: view)
     }
     
     private func setupBarButton() {
@@ -601,30 +602,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let rightBarButton = UIBarButtonItem(customView: buttonHelp)
         navigationItem.leftBarButtonItem = leftBarButton
         navigationItem.rightBarButtonItem = rightBarButton
-    }
-    
-    private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
-        subviews.forEach { subview in
-            subviewOther.addSubview(subview)
-        }
-    }
-    
-    private func removeSubviews(subviews: UIView...) {
-        subviews.forEach { subview in
-            subview.removeFromSuperview()
-        }
-    }
-    
-    private func counterContinents() {
-        counterContinents(continents: viewModel.americaContinent,
-                          viewModel.europeContinent, viewModel.africaContinent,
-                          viewModel.asiaContinent, viewModel.oceaniaContinent)
-    }
-    
-    private func setSubviewsTag(subviews: UIView..., tag: Int) {
-        subviews.forEach { subview in
-            subview.tag = tag
-        }
     }
     
     private func reloadPickerViews(pickerViews: UIPickerView...) {
@@ -639,7 +616,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     @objc private func showDescription() {
-        setupSubviews(subviews: viewHelp, on: view)
+        viewModel.setupSubviews(subviews: viewHelp, on: view)
         setupConstraintsViewHelp()
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
         
@@ -670,19 +647,19 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func addSubviewsOne(view: UIView) {
-        setupSubviews(subviews: labelDescription, labelBulletsList, 
-                      stackViewFirstSwap, on: view)
+        viewModel.setupSubviews(subviews: labelDescription, labelBulletsList,
+                                stackViewFirstSwap, on: view)
     }
     
     private func addSubviewsTwo(view: UIView) {
-        setupSubviews(subviews: labelDescription, labelBulletsList, 
-                      stackViewFirstSwap, stackViewSecondSwap, on: view)
+        viewModel.setupSubviews(subviews: labelDescription, labelBulletsList,
+                                stackViewFirstSwap, stackViewSecondSwap, on: view)
     }
     
     private func addSubviewsThree(view: UIView) {
-        setupSubviews(subviews: labelDescription, labelBulletsList, 
-                      stackViewFirstSwap, stackViewSecondSwap,
-                      stackViewThirdSwap, on: view)
+        viewModel.setupSubviews(subviews: labelDescription, labelBulletsList,
+                                stackViewFirstSwap, stackViewSecondSwap,
+                                stackViewThirdSwap, on: view)
     }
     // MARK: - Methods for popup view controllers
     private func addSubviews(tag: Int) {
@@ -695,8 +672,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func setButtonsContinents() {
-        counterContinents()
-        setupSubviews(subviews: stackViewContinents, on: viewSettingDescription)
+        viewModel.counterContinents()
+        viewModel.setupSubviews(subviews: stackViewContinents, on: viewSettingDescription)
         setColorPressButtons(buttons: buttonAllCountries, buttonAmericaContinent,
                              buttonEuropeContinent, buttonAfricaContinent,
                              buttonAsiaContinent, buttonOceanContinent)
@@ -730,7 +707,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func setButtonCheckmarkCountdown() {
-        setupSubviews(subviews: stackViewCheckmark, on: viewSettingDescription)
+        viewModel.setupSubviews(subviews: stackViewCheckmark, on: viewSettingDescription)
         checkButtonCheckmark()
     }
     
@@ -742,7 +719,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func setPickerViewsTime() {
-        setupSubviews(subviews: stackViewTime, on: viewSettingDescription)
+        viewModel.setupSubviews(subviews: stackViewTime, on: viewSettingDescription)
         setSegmentIndex()
         viewModel.isOneQuestion() ? checkQuestionnairePickerViews() : pickerViewThirdOn()
         setPickerViewsRows()
@@ -989,15 +966,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             }
         }
     }
-    
-    private func counterContinents(continents: Bool...) {
-        viewModel.setCountContinents(0)
-        continents.forEach { continent in
-            if continent {
-                viewModel.setCountContinents(1)
-            }
-        }
-    }
     // MARK: - Setup change setting, countdown
     private func checkmarkOnOff() {
         let size = UIImage.SymbolConfiguration(pointSize: 25)
@@ -1074,7 +1042,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     // MARK: - Press button count questions / continents / countdown / time
     @objc private func changeSetting(sender: UIButton) {
-        setupSubviews(subviews: viewSetting, on: view)
+        viewModel.setupSubviews(subviews: viewSetting, on: view)
         setting(tag: sender.tag)
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
         
@@ -1090,7 +1058,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func setting(tag: Int) {
         addSubviews(tag: tag)
         labelSetting.text = titleSetting(tag: tag)
-        setSubviewsTag(subviews: buttonDone, viewSetting, tag: tag)
+        viewModel.setSubviewsTag(subviews: buttonDone, viewSetting, tag: tag)
         setConstraintsSetting(tag: tag)
     }
     
@@ -1221,9 +1189,9 @@ extension GameTypeViewController {
         button.tag = tag
         button.isEnabled = isEnabled ?? true
         if let image = image {
-            setupSubviews(subviews: labelFirst, labelSecond, image, on: button)
+            viewModel.setupSubviews(subviews: labelFirst, labelSecond, image, on: button)
         } else {
-            setupSubviews(subviews: labelFirst, labelSecond, on: button)
+            viewModel.setupSubviews(subviews: labelFirst, labelSecond, on: button)
         }
         return button
     }
@@ -1256,7 +1224,7 @@ extension GameTypeViewController {
         button.tag = tag ?? 0
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(continents), for: .touchUpInside)
-        setupSubviews(subviews: addLabelFirst, addLabelSecond, on: button)
+        viewModel.setupSubviews(subviews: addLabelFirst, addLabelSecond, on: button)
         return button
     }
     
@@ -1624,10 +1592,10 @@ extension GameTypeViewController: PopUpViewSettingDelegate {
             viewSetting.transform = CGAffineTransform.init(translationX: 0, y: view.frame.height)
         } completion: { [self] _ in
             switch viewSetting.tag {
-            case 1: removeSubviews(subviews: viewSetting, pickerViewQuestions)
-            case 2: removeSubviews(subviews: viewSetting, stackViewContinents)
-            case 3: removeSubviews(subviews: viewSetting, stackViewCheckmark)
-            default: removeSubviews(subviews: viewSetting, stackViewTime)
+            case 1: viewModel.removeSubviews(subviews: viewSetting, pickerViewQuestions)
+            case 2: viewModel.removeSubviews(subviews: viewSetting, stackViewContinents)
+            case 3: viewModel.removeSubviews(subviews: viewSetting, stackViewCheckmark)
+            default: viewModel.removeSubviews(subviews: viewSetting, stackViewTime)
             }
         }
     }

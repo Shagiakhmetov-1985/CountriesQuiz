@@ -100,7 +100,10 @@ protocol GameTypeViewModelProtocol {
     func setCountContinents(_ count: Int)
     
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
+    func removeSubviews(subviews: UIView...)
     func setPickerViewCountQuestions(_ pickerView: UIPickerView,_ view: UIView)
+    func counterContinents()
+    func setSubviewsTag(subviews: UIView..., tag: Int)
 }
 
 class GameTypeViewModel: GameTypeViewModelProtocol {
@@ -232,6 +235,12 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
         subviews.forEach { subview in
             subviewOther.addSubview(subview)
+        }
+    }
+    
+    func removeSubviews(subviews: UIView...) {
+        subviews.forEach { subview in
+            subview.removeFromSuperview()
         }
     }
     // MARK: - PickerView
@@ -476,6 +485,17 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         setupSubviews(subviews: pickerView, on: view)
         pickerView.selectRow(row, inComponent: 0, animated: false)
     }
+    
+    func counterContinents() {
+        counterContinents(continents: americaContinent, europeContinent,
+                          africaContinent, asiaContinent, oceaniaContinent)
+    }
+    
+    func setSubviewsTag(subviews: UIView..., tag: Int) {
+        subviews.forEach { subview in
+            subview.tag = tag
+        }
+    }
     // MARK: - Set bullet list
     private func bullets(list: [String]) -> [ParagraphData] {
         var paragraphData: [ParagraphData] = []
@@ -617,6 +637,15 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         buttons.forEach { button in
             UIView.animate(withDuration: 0.5) {
                 button.layer.opacity = opacity
+            }
+        }
+    }
+    // MARK: - Methods for popup view controller
+    private func counterContinents(continents: Bool...) {
+        setCountContinents(0)
+        continents.forEach { continent in
+            if continent {
+                setCountContinents(1)
             }
         }
     }

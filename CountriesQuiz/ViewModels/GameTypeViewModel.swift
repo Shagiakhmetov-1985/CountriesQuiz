@@ -45,9 +45,7 @@ protocol GameTypeViewModelProtocol {
     init(mode: Setting, game: Games, tag: Int)
     
     func numberOfComponents() -> Int
-    func numberOfQuestions() -> Int
-    func countdownOneQuestion() -> Int
-    func countdownAllQuestions() -> Int
+    func numberOfRows(_ pickerView: UIPickerView) -> Int
     
     func titles(_ pickerView: UIPickerView,_ row: Int, and segmented: UISegmentedControl) -> UIView
     func swap(_ button: UIButton)
@@ -84,6 +82,7 @@ protocol GameTypeViewModelProtocol {
     func bulletsList(list: [String]) -> UILabel
     func bulletsListGameType() -> [String]
     
+    func titleSetting(tag: Int) -> String
     func imageFirstTitle() -> String
     func colorTitle() -> UIColor
     func labelFirstTitle() -> String
@@ -101,13 +100,21 @@ protocol GameTypeViewModelProtocol {
     
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
     func removeSubviews(subviews: UIView...)
+    func setupBarButtons(_ buttonBack: UIButton,_ buttonHelp: UIButton,_ navigationItem: UINavigationItem)
     func setPickerViewCountQuestions(_ pickerView: UIPickerView,_ view: UIView)
+    func setColors(buttons: UIButton..., completion: @escaping ([UIColor]) -> Void)
+    func setLabels(_ labels: UILabel..., and countLabels: UILabel..., colors: [UIColor])
+    func setButtonCheckmarkCountdown(_ stackView: UIStackView,_ view: UIView,_ button: UIButton)
+    func setPickerViewsTime(_ stackView: UIStackView,_ view: UIView,_ segmentedControl: UISegmentedControl)
+    func setPickerViewsTime(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView)
+    func segmentSelect(_ segment: UISegmentedControl,_ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView,_ label: UILabel)
     func counterContinents()
     func setSubviewsTag(subviews: UIView..., tag: Int)
 }
 
 class GameTypeViewModel: GameTypeViewModelProtocol {
     typealias ParagraphData = (bullet: String, paragraph: String)
+    
     var setting: Setting {
         mode
     }
@@ -243,21 +250,24 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
             subview.removeFromSuperview()
         }
     }
+    // MARK: - Setup bar button
+    func setupBarButtons(_ buttonBack: UIButton, _ buttonHelp: UIButton, _ navigationItem: UINavigationItem) {
+        let leftBarButton = UIBarButtonItem(customView: buttonBack)
+        let rightBarButton = UIBarButtonItem(customView: buttonHelp)
+        navigationItem.leftBarButtonItem = leftBarButton
+        navigationItem.rightBarButtonItem = rightBarButton
+    }
     // MARK: - PickerView
     func numberOfComponents() -> Int {
         1
     }
     
-    func numberOfQuestions() -> Int {
-        mode.countRows
-    }
-    
-    func countdownOneQuestion() -> Int {
-        10
-    }
-    
-    func countdownAllQuestions() -> Int {
-        6 * mode.countQuestions - 4 * mode.countQuestions + 1
+    func numberOfRows(_ pickerView: UIPickerView) -> Int {
+        switch pickerView.tag {
+        case 1: countRows
+        case 2: 10
+        default: 6 * mode.countQuestions - 4 * mode.countQuestions + 1
+        }
     }
     
     func titles(_ pickerView: UIPickerView, _ row: Int, and segmented: UISegmentedControl) -> UIView {
@@ -375,6 +385,15 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     
     func isQuestionnaire() -> Bool {
         gameType == .questionnaire ? false : true
+    }
+    
+    func titleSetting(tag: Int) -> String {
+        switch tag {
+        case 1: return "Количество вопросов"
+        case 2: return "Континенты"
+        case 3: return "Обратный отсчет"
+        default: return checkTimeDescription()
+        }
     }
     // MARK: - Button titles
     func comma() -> String {
@@ -495,6 +514,47 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         subviews.forEach { subview in
             subview.tag = tag
         }
+    }
+    
+    func setColors(buttons: UIButton..., completion: @escaping ([UIColor]) -> Void) {
+        var colors: [UIColor] = []
+        buttons.forEach { button in
+            let color = checkBool(tag: button.tag, button: button)
+            buttonOnOff(buttons: button, color: color.0)
+            colors.append(color.1)
+        }
+        completion(colors)
+    }
+    
+    func setLabels(_ labels: UILabel..., and countLabels: UILabel..., colors: [UIColor]) {
+        let iterration = min(labels.count, countLabels.count, colors.count)
+        for index in 0..<iterration {
+            labelOnOff(labels: labels[index], countLabels[index], color: colors[index])
+        }
+    }
+    
+    func setButtonCheckmarkCountdown(_ stackView: UIStackView, _ view: UIView, _ button: UIButton) {
+        setupSubviews(subviews: stackView, on: view)
+        checkButtonCheckmark(button: button)
+    }
+    
+    func setPickerViewsTime(_ stackView: UIStackView, _ view: UIView, _ segmentedControl: UISegmentedControl) {
+        setupSubviews(subviews: stackView, on: view)
+        setSegmentIndex(segmentedControl: segmentedControl)
+    }
+    
+    func setPickerViewsTime(_ pickerViewOneTime: UIPickerView, _ pickerViewAllTime: UIPickerView) {
+        isOneQuestion() ? checkQuestionnaire(pickerViewOneTime, pickerViewAllTime) :
+        pickerViewThirdOn(pickerViewOneTime, pickerViewAllTime)
+        setPickerViewsRows(pickerViewOneTime, pickerViewAllTime)
+        reloadPickerViews(pickerViews: pickerViewOneTime, pickerViewAllTime)
+    }
+    
+    func segmentSelect(_ segment: UISegmentedControl, _ pickerViewOne: UIPickerView, _ pickerViewAll: UIPickerView, _ label: UILabel) {
+        let index = segment.selectedSegmentIndex
+        index == 0 ? pickerViewSecondOn(pickerViewOne, pickerViewAll) : pickerViewThirdOn(pickerViewOne, pickerViewAll)
+        label.text = index == 1 ? "Время всех вопросов" : "Время одного вопроса"
+        reloadPickerViews(pickerViews: pickerViewOne, pickerViewAll)
     }
     // MARK: - Set bullet list
     private func bullets(list: [String]) -> [ParagraphData] {
@@ -647,6 +707,85 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
             if continent {
                 setCountContinents(1)
             }
+        }
+    }
+    
+    private func checkBool(tag: Int, button: UIButton) -> (UIColor, UIColor) {
+        switch tag {
+        case 0: checkBool(bool: allCountries, button: button)
+        case 1: checkBool(bool: americaContinent, button: button)
+        case 2: checkBool(bool: europeContinent, button: button)
+        case 3: checkBool(bool: africaContinent, button: button)
+        case 4: checkBool(bool: asiaContinent, button: button)
+        default: checkBool(bool: oceaniaContinent, button: button)
+        }
+    }
+    
+    private func checkBool(bool: Bool, button: UIButton) -> (UIColor, UIColor) {
+        bool ? (.white, background) : (background, .white)
+    }
+    
+    private func buttonOnOff(buttons: UIButton..., color: UIColor) {
+        buttons.forEach { button in
+            UIView.animate(withDuration: 0.3) {
+                button.backgroundColor = color
+            }
+        }
+    }
+    
+    private func labelOnOff(labels: UILabel..., color: UIColor) {
+        labels.forEach { label in
+            UIView.animate(withDuration: 0.3) {
+                label.textColor = color
+            }
+        }
+    }
+    
+    private func checkButtonCheckmark(button: UIButton) {
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
+        let symbol = isCountdown() ? "checkmark.circle.fill" : "circle"
+        let image = UIImage(systemName: symbol, withConfiguration: size)
+        button.setImage(image, for: .normal)
+    }
+    
+    private func setSegmentIndex(segmentedControl: UISegmentedControl) {
+        let index = gameType == .questionnaire ? 1 : 0
+        segmentedControl.selectedSegmentIndex = isOneQuestion() ? index : 1
+        segmentedControl.isUserInteractionEnabled = isQuestionnaire()
+    }
+    
+    private func checkQuestionnaire(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView) {
+        tag == 1 ? pickerViewThirdOn(pickerViewOneTime, pickerViewAllTime) : 
+        pickerViewSecondOn(pickerViewOneTime, pickerViewAllTime)
+    }
+    
+    private func pickerViewSecondOn(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView) {
+        setPickerView(pickerView: pickerViewOneTime, color: .white, isOn: true)
+        setPickerView(pickerView: pickerViewAllTime, color: .skyGrayLight, isOn: false)
+    }
+    
+    private func pickerViewThirdOn(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView) {
+        setPickerView(pickerView: pickerViewOneTime, color: .skyGrayLight, isOn: false)
+        setPickerView(pickerView: pickerViewAllTime, color: .white, isOn: true)
+    }
+    
+    private func setPickerView(pickerView: UIPickerView, color: UIColor, isOn: Bool) {
+        pickerView.isUserInteractionEnabled = isOn
+        UIView.animate(withDuration: 0.3) {
+            pickerView.backgroundColor = color
+        }
+    }
+    
+    private func setPickerViewsRows(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView) {
+        let rowOneQuestion = oneQuestionTime() - 6
+        let rowAllQuestions = allQuestionsTime() - 4 * countQuestions
+        pickerViewOneTime.selectRow(rowOneQuestion, inComponent: 0, animated: false)
+        pickerViewAllTime.selectRow(rowAllQuestions, inComponent: 0, animated: false)
+    }
+    
+    private func reloadPickerViews(pickerViews: UIPickerView...) {
+        pickerViews.forEach { pickerView in
+            pickerView.reloadAllComponents()
         }
     }
 }

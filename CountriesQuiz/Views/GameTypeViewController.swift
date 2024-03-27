@@ -596,12 +596,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func setupBarButton() {
         viewModel.setupBarButtons(buttonBack, buttonHelp, navigationItem)
     }
-    
-    private func reloadPickerViews(pickerViews: UIPickerView...) {
-        pickerViews.forEach { pickerView in
-            pickerView.reloadAllComponents()
-        }
-    }
     // MARK: - Bar buttons activate
     @objc private func backToMenu() {
         delegate.dataToMenuFromGameType(setting: viewModel.setting)
@@ -681,150 +675,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         case 2: setupConstraintsSettingContinents()
         case 3: setupConstraintsSettingCountdown()
         default: setupConstraintsSettingTime()
-        }
-    }
-    // MARK: - Press done for change setting, count questions
-    private func setupCountQuestions() {
-        let row = pickerViewQuestions.selectedRow(inComponent: 0)
-        viewModel.setCountQuestions(row + 10)
-        viewModel.setTimeAllQuestions(time: 5 * viewModel.countQuestions)
-        setupTitles(title: "\(row + 10)")
-        closeViewSetting()
-    }
-    
-    private func setupTitles(title: String) {
-        labelCountQuestion.text = title
-        labelTime.text = viewModel.countdownOnOff()
-    }
-    // MARK: - Press done for change setting, continents
-    private func setupContinents() {
-        setupCurrentContinents()
-        setupCountRows()
-        setupCountQuestions(countRows: viewModel.countRows)
-        setupTitlesContinents()
-        closeViewSetting()
-    }
-    
-    private func setupCurrentContinents() {
-        setupContinents(buttons: buttonAllCountries, buttonAmericaContinent,
-                        buttonEuropeContinent, buttonAfricaContinent,
-                        buttonAsiaContinent, buttonOceanContinent)
-    }
-    
-    private func setupCountRows() {
-        setupCountRows(continents: viewModel.allCountries, viewModel.americaContinent,
-                       viewModel.europeContinent, viewModel.africaContinent,
-                       viewModel.asiaContinent, viewModel.oceaniaContinent)
-    }
-    
-    private func setupContinents(buttons: UIButton...) {
-        var counter = 0
-        buttons.forEach { button in
-            let bool = button.backgroundColor == .white ? true : false
-            checkContinents(counter: counter, bool: bool)
-            counter += 1
-        }
-    }
-    
-    private func checkContinents(counter: Int, bool: Bool) {
-        switch counter {
-        case 0: viewModel.setAllCountries(bool)
-        case 1: viewModel.setAmericaContinent(bool)
-        case 2: viewModel.setEuropeContinent(bool)
-        case 3: viewModel.setAfricaContinent(bool)
-        case 4: viewModel.setAsiaContinent(bool)
-        default: viewModel.setOceaniaContinent(bool)
-        }
-    }
-    
-    private func setupCountRows(continents: Bool...) {
-        var countRows = 0
-        var counter = 0
-        continents.forEach { continent in
-            if continent {
-                countRows += checkContinents(continent: counter)
-            }
-            counter += 1
-        }
-        viewModel.setCountRows(checkCountRows(count: countRows - 9))
-    }
-    
-    private func checkContinents(continent: Int) -> Int {
-        switch continent {
-        case 0: viewModel.countAllCountries
-        case 1: viewModel.countCountriesOfAmerica
-        case 2: viewModel.countCountriesOfEurope
-        case 3: viewModel.countCountriesOfAfrica
-        case 4: viewModel.countCountriesOfAsia
-        default: viewModel.countCountriesOfOceania
-        }
-    }
-    
-    private func checkCountRows(count: Int) -> Int {
-        let countRows = viewModel.countRowsDefault
-        return count > countRows ? countRows : count
-    }
-    
-    private func setupCountQuestions(countRows: Int) {
-        let count = viewModel.countQuestions
-        viewModel.setCountQuestions(countRows + 9 < count ? countRows + 9 : count)
-    }
-    
-    private func setupTitlesContinents() {
-        labelContinents.text = viewModel.comma()
-        labelCountQuestion.text = "\(viewModel.countQuestions)"
-        reloadPickerViews(pickerViews: pickerViewQuestions)
-    }
-    // MARK: - Press done for change setting, countdown
-    private func setupCountdown() {
-        setupCheckmarkImageToggle()
-        setupTitlesCountdown()
-        setupButtonTime()
-        closeViewSetting()
-    }
-    
-    private func setupCheckmarkImageToggle() {
-        let size = UIImage.SymbolConfiguration(pointSize: 25)
-        let currentImage = buttonCheckmark.currentImage?.withConfiguration(size)
-        let imageCircle = UIImage(systemName: "circle", withConfiguration: size)
-        labelCountdown.text = currentImage == imageCircle ? "Нет" : "Да"
-        viewModel.countdownOnOff(isOn: currentImage == imageCircle ? false : true)
-    }
-    
-    private func setupTitlesCountdown() {
-        imageInfinity.isHidden = viewModel.isCountdown()
-        labelTime.text = viewModel.countdownOnOff()
-    }
-    
-    private func setupButtonTime() {
-        buttonTime.isEnabled = viewModel.isCountdown()
-        buttonTime.backgroundColor = viewModel.isCountdown() ? viewModel.colorSwap : .grayLight
-    }
-    // MARK: - Press done for change setting, time
-    private func setupTime() {
-        setupSegmentedControl()
-        setupTitleTime()
-        setupDataFromPickerViews()
-        closeViewSetting()
-    }
-    
-    private func setupSegmentedControl() {
-        let isOn = segmentedControl.selectedSegmentIndex == 0 ? true : false
-        viewModel.oneQuestionOnOff(isOn: isOn)
-    }
-    
-    private func setupTitleTime() {
-        labelTime.text = viewModel.countdownOnOff()
-        labelTimeDesription.text = viewModel.checkTimeDescription()
-    }
-    
-    private func setupDataFromPickerViews() {
-        if viewModel.isOneQuestion() {
-            let row = pickerViewOneTime.selectedRow(inComponent: 0)
-            viewModel.setTimeOneQuestion(time: row + 6)
-        } else {
-            let row = pickerViewAllTime.selectedRow(inComponent: 0)
-            viewModel.setTimeAllQuestions(time: row + 4 * viewModel.countQuestions)
         }
     }
     // MARK: - Setup change setting, continents
@@ -988,17 +838,28 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     @objc private func segmentSelect() {
         viewModel.segmentSelect(segmentedControl, pickerViewOneTime, pickerViewAllTime, labelSetting)
     }
-    // MARK: - Press done button
+    // MARK: - Press done button for change setting
     @objc private func done(sender: UIButton) {
-        doneChangeSetting(tag: sender.tag)
-    }
-    
-    private func doneChangeSetting(tag: Int) {
-        switch tag {
-        case 1: setupCountQuestions()
-        case 2: setupContinents()
-        case 3: setupCountdown()
-        default: setupTime()
+        switch sender.tag {
+            
+        case 1: viewModel.setQuestions(pickerViewQuestions, labelCountQuestion, labelTime) {
+            self.closeViewSetting()
+        }
+        case 2: viewModel.setContinents(
+            labelContinents, labelCountQuestion, pickerViewQuestions, buttonAllCountries,
+            buttonAmericaContinent, buttonEuropeContinent, buttonAfricaContinent,
+            buttonAsiaContinent, buttonOceanContinent) {
+                self.closeViewSetting()
+            }
+        case 3: viewModel.setCountdown(buttonCheckmark, labelCountdown, imageInfinity,
+                                       labelTime, buttonTime) {
+            self.closeViewSetting()
+        }
+        default: viewModel.setTime(segmentedControl, labelTime, labelTimeDesription,
+                                   pickerViewOneTime, pickerViewAllTime) {
+            self.closeViewSetting()
+        }
+            
         }
     }
 }

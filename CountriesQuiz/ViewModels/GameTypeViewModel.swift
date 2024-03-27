@@ -110,6 +110,14 @@ protocol GameTypeViewModelProtocol {
     func segmentSelect(_ segment: UISegmentedControl,_ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView,_ label: UILabel)
     func counterContinents()
     func setSubviewsTag(subviews: UIView..., tag: Int)
+    
+    func setQuestions(_ pickerView: UIPickerView,_ labelQuestions: UILabel,_ labelTime: UILabel, completion: @escaping () -> Void)
+    func setContinents(_ labelContinents: UILabel,_ labelQuestions: UILabel,_ pickerView: UIPickerView,
+                   _ buttons: UIButton..., completion: @escaping () -> Void)
+    func setCountdown(_ buttonCheckmark: UIButton,_ labelCountdown: UILabel,_ imageInfinity: UIImageView,
+                      _ labelTime: UILabel,_ buttonTime: UIButton, completion: @escaping () -> Void)
+    func setTime(_ segment: UISegmentedControl,_ labelTime: UILabel,_ labelDescription: UILabel,
+                 _ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView, completion: @escaping () -> Void)
 }
 
 class GameTypeViewModel: GameTypeViewModelProtocol {
@@ -556,6 +564,41 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         label.text = index == 1 ? "Время всех вопросов" : "Время одного вопроса"
         reloadPickerViews(pickerViews: pickerViewOne, pickerViewAll)
     }
+    // MARK: - Press done for change setting, count questions
+    func setQuestions(_ pickerView: UIPickerView, _ labelQuestions: UILabel, _ labelTime: UILabel, completion: @escaping () -> Void) {
+        let row = pickerView.selectedRow(inComponent: 0)
+        setCountQuestions(row + 10)
+        setTimeAllQuestions(time: 5 * countQuestions)
+        setTitleCountQuestions("\(row + 10)", labelQuestions)
+        setTitleTime(labelTime)
+        completion()
+    }
+    // MARK: - Press done for change setting, continents
+    func setContinents(_ labelContinents: UILabel, _ labelQuestions: UILabel,
+                   _ pickerView: UIPickerView, _ buttons: UIButton..., completion: @escaping () -> Void) {
+        setContinents(buttons: buttons)
+        setCountRows(continents: allCountries, americaContinent, europeContinent,
+                     africaContinent, asiaContinent, oceaniaContinent)
+        setCountQuestions(countRows: countRows)
+        setTitlesContinents(labelContinents, labelQuestions, pickerView)
+        completion()
+    }
+    // MARK: - Press done for change setting, countdown
+    func setCountdown(_ buttonCheckmark: UIButton, _ labelCountdown: UILabel, _ imageInfinity: UIImageView,
+                      _ labelTime: UILabel, _ buttonTime: UIButton, completion: @escaping () -> Void) {
+        setCheckmark(buttonCheckmark, labelCountdown)
+        setTitlesCountdown(imageInfinity, labelTime)
+        setButtonTime(buttonTime)
+        completion()
+    }
+    // MARK: - Press done for change setting, time
+    func setTime(_ segment: UISegmentedControl, _ labelTime: UILabel, _ labelDescription: UILabel, 
+                 _ pickerViewOne: UIPickerView, _ pickerViewAll: UIPickerView, completion: @escaping () -> Void) {
+        setSegmentedControl(segment)
+        setTitlesTime(labelTime, labelDescription)
+        setDataFromPickerViews(pickerViewOne, pickerViewAll)
+        completion()
+    }
     // MARK: - Set bullet list
     private func bullets(list: [String]) -> [ParagraphData] {
         var paragraphData: [ParagraphData] = []
@@ -786,6 +829,111 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     private func reloadPickerViews(pickerViews: UIPickerView...) {
         pickerViews.forEach { pickerView in
             pickerView.reloadAllComponents()
+        }
+    }
+    // MARK: - Press done for change setting, count questions
+    private func setTitleCountQuestions(_ title: String, _ labelQuestions: UILabel) {
+        labelQuestions.text = title
+    }
+    
+    private func setTitleTime(_ labelTime: UILabel) {
+        labelTime.text = countdownOnOff()
+    }
+    // MARK: - Press done for change setting, continents
+    private func setContinents(buttons: [UIButton]) {
+        var counter = 0
+        buttons.forEach { button in
+            let bool = button.backgroundColor == .white ? true : false
+            checkContinents(counter: counter, bool: bool)
+            counter += 1
+        }
+    }
+    
+    private func checkContinents(counter: Int, bool: Bool) {
+        switch counter {
+        case 0: setAllCountries(bool)
+        case 1: setAmericaContinent(bool)
+        case 2: setEuropeContinent(bool)
+        case 3: setAfricaContinent(bool)
+        case 4: setAsiaContinent(bool)
+        default: setOceaniaContinent(bool)
+        }
+    }
+    
+    private func setCountRows(continents: Bool...) {
+        var countRows = 0
+        var counter = 0
+        continents.forEach { continent in
+            if continent {
+                countRows += checkContinents(continent: counter)
+            }
+            counter += 1
+        }
+        setCountRows(checkCountRows(count: countRows - 9))
+    }
+    
+    private func checkContinents(continent: Int) -> Int {
+        switch continent {
+        case 0: countAllCountries
+        case 1: countCountriesOfAmerica
+        case 2: countCountriesOfEurope
+        case 3: countCountriesOfAfrica
+        case 4: countCountriesOfAsia
+        default: countCountriesOfOceania
+        }
+    }
+    
+    private func checkCountRows(count: Int) -> Int {
+        let countRows = countRowsDefault
+        return count > countRows ? countRows : count
+    }
+    
+    private func setCountQuestions(countRows: Int) {
+        let count = countQuestions
+        setCountQuestions(countRows + 9 < count ? countRows + 9 : count)
+    }
+    
+    private func setTitlesContinents(_ labelContinents: UILabel,_ labelQuestions: UILabel,_ pickerView: UIPickerView) {
+        labelContinents.text = comma()
+        labelQuestions.text = "\(countQuestions)"
+        reloadPickerViews(pickerViews: pickerView)
+    }
+    // MARK: - Press done for change setting, countdown
+    private func setCheckmark(_ button: UIButton,_ label: UILabel) {
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
+        let currentImage = button.currentImage?.withConfiguration(size)
+        let imageCircle = UIImage(systemName: "circle", withConfiguration: size)
+        label.text = currentImage == imageCircle ? "Нет" : "Да"
+        countdownOnOff(isOn: currentImage == imageCircle ? false : true)
+    }
+    
+    private func setTitlesCountdown(_ image: UIImageView,_ label: UILabel) {
+        image.isHidden = isCountdown()
+        label.text = countdownOnOff()
+    }
+    
+    private func setButtonTime(_ button: UIButton) {
+        button.isEnabled = isCountdown()
+        button.backgroundColor = isCountdown() ? colorSwap : .grayLight
+    }
+    // MARK: - Press done for change setting, time
+    private func setSegmentedControl(_ segment: UISegmentedControl) {
+        let isOn = segment.selectedSegmentIndex == 0 ? true : false
+        oneQuestionOnOff(isOn: isOn)
+    }
+    
+    private func setTitlesTime(_ labelTime: UILabel,_ labelDescription: UILabel) {
+        labelTime.text = countdownOnOff()
+        labelDescription.text = checkTimeDescription()
+    }
+    
+    private func setDataFromPickerViews(_ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView) {
+        if isOneQuestion() {
+            let row = pickerViewOne.selectedRow(inComponent: 0)
+            setTimeOneQuestion(time: row + 6)
+        } else {
+            let row = pickerViewAll.selectedRow(inComponent: 0)
+            setTimeAllQuestions(time: row + 4 * countQuestions)
         }
     }
 }

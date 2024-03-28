@@ -693,24 +693,21 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func colorAllCountries(sender: UIButton) {
         guard sender.backgroundColor == viewModel.background else { return }
         viewModel.setCountContinents(0)
-        buttonAllCountries(colorButton: .white, colorLabel: viewModel.background)
-        buttonsContinents(colorButton: viewModel.background, colorLabel: .white)
+        viewModel.buttonAllCountries(buttonAllCountries, labelAllCountries, labelCountAllCountries, .white, viewModel.background)
+        viewModel.buttonContinents(buttonAmericaContinent, buttonEuropeContinent,
+                                   buttonAfricaContinent, buttonAsiaContinent,
+                                   buttonOceanContinent, 
+                                   and: labelAmericaContinent, labelCountAmericaContinent,
+                                   labelEuropeContinent, labelCountEuropeContinent,
+                                   labelAfricaContinent, labelCountAfricaContinent,
+                                   labelAsiaContinent, labelCountAsiaContinent, labelOceanContinent,
+                                   labelCountOceanContinent,
+                                   and: viewModel.background, .white)
     }
     
     private func buttonAllCountries(colorButton: UIColor, colorLabel: UIColor) {
         buttonOnOff(buttons: buttonAllCountries, color: colorButton)
         labelOnOff(labels: labelAllCountries, labelCountAllCountries, color: colorLabel)
-    }
-    
-    private func buttonsContinents(colorButton: UIColor, colorLabel: UIColor) {
-        buttonOnOff(buttons: buttonAmericaContinent, buttonEuropeContinent,
-                    buttonAfricaContinent, buttonAsiaContinent,
-                    buttonOceanContinent, color: colorButton)
-        labelOnOff(labels: labelAmericaContinent, labelCountAmericaContinent,
-                   labelEuropeContinent, labelCountEuropeContinent,
-                   labelAfricaContinent, labelCountAfricaContinent, 
-                   labelAsiaContinent, labelCountAsiaContinent, labelOceanContinent,
-                   labelCountOceanContinent, color: colorLabel)
     }
     
     private func colorContinents(sender: UIButton) {

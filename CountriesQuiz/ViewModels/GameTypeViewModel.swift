@@ -111,6 +111,11 @@ protocol GameTypeViewModelProtocol {
     func counterContinents()
     func setSubviewsTag(subviews: UIView..., tag: Int)
     
+    func buttonAllCountries(_ buttonAllCountries: UIButton,_ labelAllCountries: UILabel,
+                            _ labelCountCountries: UILabel,_ colorButton: UIColor,_ colorLabel: UIColor)
+    func buttonContinents(_ buttons: UIButton...,and labels: UILabel...,and colorButton: UIColor,_ colorLabel: UIColor)
+    func colorContinents(_ sender: UIButton)
+    
     func setQuestions(_ pickerView: UIPickerView,_ labelQuestions: UILabel,_ labelTime: UILabel, completion: @escaping () -> Void)
     func setContinents(_ labelContinents: UILabel,_ labelQuestions: UILabel,_ pickerView: UIPickerView,
                    _ buttons: UIButton..., completion: @escaping () -> Void)
@@ -558,14 +563,35 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         reloadPickerViews(pickerViews: pickerViewOneTime, pickerViewAllTime)
     }
     
-    func segmentSelect(_ segment: UISegmentedControl, _ pickerViewOne: UIPickerView, _ pickerViewAll: UIPickerView, _ label: UILabel) {
+    func segmentSelect(_ segment: UISegmentedControl, _ pickerViewOne: UIPickerView, 
+                       _ pickerViewAll: UIPickerView, _ label: UILabel) {
         let index = segment.selectedSegmentIndex
         index == 0 ? pickerViewSecondOn(pickerViewOne, pickerViewAll) : pickerViewThirdOn(pickerViewOne, pickerViewAll)
         label.text = index == 1 ? "Время всех вопросов" : "Время одного вопроса"
         reloadPickerViews(pickerViews: pickerViewOne, pickerViewAll)
     }
+    // MARK: - Button press continents
+    func buttonAllCountries(_ buttonAllCountries: UIButton, _ labelAllCountries: UILabel, 
+                            _ labelCountCountries: UILabel, _ colorButton: UIColor, _ colorLabel: UIColor) {
+        buttonOnOff(buttons: buttonAllCountries, color: colorButton)
+        labelOnOff(labels: labelAllCountries, labelCountCountries, color: colorLabel)
+    }
+    
+    func buttonContinents(_ buttons: UIButton..., and labels: UILabel..., 
+                          and colorButton: UIColor, _ colorLabel: UIColor) {
+        setColorButton(buttons: buttons, color: colorButton)
+        setLabelColor(labels: labels, color: colorLabel)
+    }
+    
+    func colorContinents(_ sender: UIButton) {
+        let colorButton = sender.backgroundColor == background ? .white : background
+        let colorLabel = sender.backgroundColor == background ? background : .white
+        buttonOnOff(buttons: sender, color: colorButton)
+//        labelOnOff(tag: sender.tag, color: colorLabel)
+    }
     // MARK: - Press done for change setting, count questions
-    func setQuestions(_ pickerView: UIPickerView, _ labelQuestions: UILabel, _ labelTime: UILabel, completion: @escaping () -> Void) {
+    func setQuestions(_ pickerView: UIPickerView, _ labelQuestions: UILabel,
+                      _ labelTime: UILabel, completion: @escaping () -> Void) {
         let row = pickerView.selectedRow(inComponent: 0)
         setCountQuestions(row + 10)
         setTimeAllQuestions(time: 5 * countQuestions)
@@ -831,6 +857,40 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
             pickerView.reloadAllComponents()
         }
     }
+    // MARK: - Button press continents
+    private func setColorButton(buttons: [UIButton], color: UIColor) {
+        buttons.forEach { button in
+            buttonOnOff(buttons: button, color: color)
+        }
+    }
+    
+    private func setLabelColor(labels: [UILabel], color: UIColor) {
+        labels.forEach { label in
+            labelOnOff(labels: label, color: color)
+        }
+    }
+//    private func colorAllCountries(_ sender: UIButton,_ labelAllCountries: UILabel,
+//                                   _ labelCountCountries: UILabel) {
+//        guard sender.backgroundColor == background else { return }
+//        setCountContinents(0)
+//        buttonAllCountries(.white, background, sender, labelAllCountries, labelCountCountries)
+        
+//        buttonAllCountries(colorButton: .white, colorLabel: background)
+//        buttonsContinents(colorButton: background, colorLabel: .white)
+//    }
+    /*
+    private func buttonAllCountries(
+        _ colorButton: UIColor,_ colorLabel: UIColor,_ buttonAllCountries: UIButton,
+        _ labelAllCountries: UILabel,_ labelCountAllCountries: UILabel) {
+        buttonOnOff(buttons: buttonAllCountries, color: colorButton)
+        labelOnOff(labels: labelAllCountries, labelCountAllCountries, color: colorLabel)
+    }
+    
+    private func condition(sender: UIButton) {
+        countContinents == 0 ? colorAllCountries(sender: buttonAllCountries) :
+        colorContinents(sender: sender)
+    }
+     */
     // MARK: - Press done for change setting, count questions
     private func setTitleCountQuestions(_ title: String, _ labelQuestions: UILabel) {
         labelQuestions.text = title

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3301D6C2B9C8D3E00024479 /* Box.swift */; };
 		C333038A2BBAA3B700AEE04E /* GameTypeViewController + Subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33303892BBAA3B700AEE04E /* GameTypeViewController + Subviews.swift */; };
+		C333038C2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C333038B2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift */; };
 		C3342B352ACD9E6600C75C6E /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */; };
 		C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */; };
 		C33669D22B98A13D0081C39A /* MenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33669D12B98A13D0081C39A /* MenuViewModel.swift */; };
@@ -47,6 +48,7 @@
 /* Begin PBXFileReference section */
 		C3301D6C2B9C8D3E00024479 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		C33303892BBAA3B700AEE04E /* GameTypeViewController + Subviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameTypeViewController + Subviews.swift"; sourceTree = "<group>"; };
+		C333038B2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfFlagsViewModel.swift; sourceTree = "<group>"; };
 		C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabelCell.swift; sourceTree = "<group>"; };
 		C33669D12B98A13D0081C39A /* MenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewModel.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 			children = (
 				C33669D12B98A13D0081C39A /* MenuViewModel.swift */,
 				C33669D32B998DC30081C39A /* GameTypeViewModel.swift */,
+				C333038B2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -368,6 +371,7 @@
 				C36EC9FA2B2729D500ECF1EE /* ScrabbleViewController.swift in Sources */,
 				C376AC0929474EB400DE5E86 /* StorageManager.swift in Sources */,
 				C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */,
+				C333038C2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift in Sources */,
 				C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

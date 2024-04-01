@@ -125,6 +125,8 @@ protocol GameTypeViewModelProtocol {
                       _ labelTime: UILabel,_ buttonTime: UIButton, completion: @escaping () -> Void)
     func setTime(_ segment: UISegmentedControl,_ labelTime: UILabel,_ labelDescription: UILabel,
                  _ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView, completion: @escaping () -> Void)
+    
+    func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol
 }
 
 class GameTypeViewModel: GameTypeViewModelProtocol {
@@ -982,5 +984,9 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
             let row = pickerViewAll.selectedRow(inComponent: 0)
             setTimeAllQuestions(time: row + 4 * countQuestions)
         }
+    }
+    // MARK: - Transition to QuizOfFlagsViewController
+    func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol {
+        QuizOfFlagsViewModel(mode: mode, game: game)
     }
 }

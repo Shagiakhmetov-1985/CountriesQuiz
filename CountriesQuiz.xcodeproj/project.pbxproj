@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3301D6C2B9C8D3E00024479 /* Box.swift */; };
+		C333038A2BBAA3B700AEE04E /* GameTypeViewController + Subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33303892BBAA3B700AEE04E /* GameTypeViewController + Subviews.swift */; };
 		C3342B352ACD9E6600C75C6E /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */; };
 		C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */; };
 		C33669D22B98A13D0081C39A /* MenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33669D12B98A13D0081C39A /* MenuViewModel.swift */; };
@@ -45,6 +46,7 @@
 
 /* Begin PBXFileReference section */
 		C3301D6C2B9C8D3E00024479 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
+		C33303892BBAA3B700AEE04E /* GameTypeViewController + Subviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameTypeViewController + Subviews.swift"; sourceTree = "<group>"; };
 		C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabelCell.swift; sourceTree = "<group>"; };
 		C33669D12B98A13D0081C39A /* MenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewModel.swift; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 				C38DF4DC2A8F4A3D00550BCC /* UITableViewCell */,
 				C3E2EB332938E7F300AB40AD /* MenuViewController.swift */,
 				C3E7C9932A7B68AA0046A883 /* GameTypeViewController.swift */,
+				C33303892BBAA3B700AEE04E /* GameTypeViewController + Subviews.swift */,
 				C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */,
 				C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */,
 				C36EC9F92B2729D500ECF1EE /* ScrabbleViewController.swift */,
@@ -334,6 +337,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C333038A2BBAA3B700AEE04E /* GameTypeViewController + Subviews.swift in Sources */,
 				C3BFB8272B04E32F006BB074 /* PopUpViewSetting.swift in Sources */,
 				C33669D62B998F990081C39A /* Game.swift in Sources */,
 				C3E2EB342938E7F300AB40AD /* MenuViewController.swift in Sources */,

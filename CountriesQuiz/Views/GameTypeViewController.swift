@@ -580,6 +580,31 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         viewModel.titles(pickerView, row, and: segmentedControl)
     }
+    // MARK: - Press button count questions / continents / countdown / time
+    @objc func changeSetting(sender: UIButton) {
+        viewModel.setupSubviews(subviews: viewSetting, on: view)
+        setting(tag: sender.tag)
+        viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
+        
+        viewSetting.transform = CGAffineTransform(translationX: 0, y: view.frame.height)
+        viewSetting.alpha = 0
+        UIView.animate(withDuration: 0.5) { [self] in
+            visualEffectView.alpha = 1
+            viewSetting.alpha = 1
+            viewSetting.transform = .identity
+        }
+    }
+    // MARK: - Button press continents, change setting continents
+    @objc func continents(sender: UIButton) {
+        guard sender.tag > 0 else { return colorAllCountries(sender: sender) }
+        viewModel.setCountContinents(sender.backgroundColor == .white ? -1 : 1)
+        guard viewModel.countContinents > 4 else { return condition(sender: sender) }
+        colorAllCountries(sender: buttonAllCountries)
+    }
+    // MARK: - Button press checkmark, change setting countdown
+    @objc func countdown() {
+        viewModel.checkmarkOnOff(buttonCheckmark)
+    }
     // MARK: - General methods
     private func setupDesign() {
         view.backgroundColor = viewModel.background
@@ -677,83 +702,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         default: setupConstraintsSettingTime()
         }
     }
-    // MARK: - Setup change setting, continents
-    private func buttonPress(sender: UIButton) {
-        guard sender.tag > 0 else { return colorAllCountries(sender: sender) }
-        viewModel.setCountContinents(sender.backgroundColor == .white ? -1 : 1)
-        guard viewModel.countContinents > 4 else { return condition(sender: sender) }
-        colorAllCountries(sender: buttonAllCountries)
-    }
-    
-    private func condition(sender: UIButton) {
-        viewModel.countContinents == 0 ? colorAllCountries(sender: buttonAllCountries) :
-        colorContinents(sender: sender)
-    }
-    
-    private func colorAllCountries(sender: UIButton) {
-        guard sender.backgroundColor == viewModel.background else { return }
-        viewModel.setCountContinents(0)
-        viewModel.buttonAllCountries(buttonAllCountries, labelAllCountries, labelCountAllCountries, .white, viewModel.background)
-        viewModel.buttonContinents(buttonAmericaContinent, buttonEuropeContinent,
-                                   buttonAfricaContinent, buttonAsiaContinent,
-                                   buttonOceanContinent, 
-                                   and: labelAmericaContinent, labelCountAmericaContinent,
-                                   labelEuropeContinent, labelCountEuropeContinent,
-                                   labelAfricaContinent, labelCountAfricaContinent,
-                                   labelAsiaContinent, labelCountAsiaContinent, labelOceanContinent,
-                                   labelCountOceanContinent,
-                                   and: viewModel.background, .white)
-    }
-    
-    private func buttonAllCountries(colorButton: UIColor, colorLabel: UIColor) {
-        buttonOnOff(buttons: buttonAllCountries, color: colorButton)
-        labelOnOff(labels: labelAllCountries, labelCountAllCountries, color: colorLabel)
-    }
-    
-    private func colorContinents(sender: UIButton) {
-        let colorButton = sender.backgroundColor == viewModel.background ? .white : viewModel.background
-        let colorLabel = sender.backgroundColor == viewModel.background ? viewModel.background : .white
-        buttonOnOff(buttons: sender, color: colorButton)
-        labelOnOff(tag: sender.tag, color: colorLabel)
-        guard buttonAllCountries.backgroundColor == .white else { return }
-        buttonAllCountries(colorButton: viewModel.background, colorLabel: .white)
-    }
-    
-    private func labelOnOff(tag: Int, color: UIColor) {
-        switch tag {
-        case 0: labelOnOff(labels: labelAllCountries, labelCountAllCountries, color: color)
-        case 1: labelOnOff(labels: labelAmericaContinent, labelCountAmericaContinent, color: color)
-        case 2: labelOnOff(labels: labelEuropeContinent, labelCountEuropeContinent, color: color)
-        case 3: labelOnOff(labels: labelAfricaContinent, labelCountAfricaContinent, color: color)
-        case 4: labelOnOff(labels: labelAsiaContinent, labelCountAsiaContinent, color: color)
-        default: labelOnOff(labels: labelOceanContinent, labelCountOceanContinent, color: color)
-        }
-    }
-    
-    private func buttonOnOff(buttons: UIButton..., color: UIColor) {
-        buttons.forEach { button in
-            UIView.animate(withDuration: 0.3) {
-                button.backgroundColor = color
-            }
-        }
-    }
-    
-    private func labelOnOff(labels: UILabel..., color: UIColor) {
-        labels.forEach { label in
-            UIView.animate(withDuration: 0.3) {
-                label.textColor = color
-            }
-        }
-    }
-    // MARK: - Setup change setting, countdown
-    private func checkmarkOnOff() {
-        let size = UIImage.SymbolConfiguration(pointSize: 25)
-        let currentImage = buttonCheckmark.currentImage?.withConfiguration(size)
-        let imageCircle = UIImage(systemName: "circle", withConfiguration: size)
-        let imageCheckmark = UIImage(systemName: "checkmark.circle.fill", withConfiguration: size)
-        let image = currentImage == imageCircle ? imageCheckmark : imageCircle
-        buttonCheckmark.setImage(image, for: .normal)
-    }
     // MARK: - Start game, favourites and swap
     @objc private func startGame() {
         switch viewModel.setTag {
@@ -802,36 +750,52 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     @objc private func swap() {
         viewModel.swap(buttonSwap)
     }
-    // MARK: - Press button count questions / continents / countdown / time
-    @objc private func changeSetting(sender: UIButton) {
-        viewModel.setupSubviews(subviews: viewSetting, on: view)
-        setting(tag: sender.tag)
-        viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
-        
-        viewSetting.transform = CGAffineTransform(translationX: 0, y: view.frame.height)
-        viewSetting.alpha = 0
-        UIView.animate(withDuration: 0.5) { [self] in
-            visualEffectView.alpha = 1
-            viewSetting.alpha = 1
-            viewSetting.transform = .identity
-        }
-    }
-    
+    // MARK: - Press button count questions / continents / countdown / time. Continue
     private func setting(tag: Int) {
         addSubviews(tag: tag)
         labelSetting.text = viewModel.titleSetting(tag: tag)
         viewModel.setSubviewsTag(subviews: buttonDone, viewSetting, tag: tag)
         setConstraintsSetting(tag: tag)
     }
-    
-    @objc private func continents(sender: UIButton) {
-        buttonPress(sender: sender)
+    // MARK: - Button press continents, change setting continents. Continue
+    private func condition(sender: UIButton) {
+        viewModel.countContinents == 0 ? colorAllCountries(sender: buttonAllCountries) : colorContinents(sender: sender)
     }
     
-    @objc private func countdown() {
-        checkmarkOnOff()
+    private func colorAllCountries(sender: UIButton) {
+        guard sender.backgroundColor == viewModel.background else { return }
+        viewModel.setCountContinents(0)
+        viewModel.buttonAllCountries(buttonAllCountries, labelAllCountries, labelCountAllCountries, .white, viewModel.background)
+        viewModel.buttonContinents(buttonAmericaContinent, buttonEuropeContinent,
+                                   buttonAfricaContinent, buttonAsiaContinent,
+                                   buttonOceanContinent,
+                                   and: labelAmericaContinent, labelCountAmericaContinent,
+                                   labelEuropeContinent, labelCountEuropeContinent,
+                                   labelAfricaContinent, labelCountAfricaContinent,
+                                   labelAsiaContinent, labelCountAsiaContinent, labelOceanContinent,
+                                   labelCountOceanContinent,
+                                   and: viewModel.background, .white)
     }
     
+    private func colorContinents(sender: UIButton) {
+        let colorLabel = sender.backgroundColor == viewModel.background ? viewModel.background : .white
+        labelOnOff(tag: sender.tag, color: colorLabel)
+        viewModel.colorButtonContinent(sender)
+        guard buttonAllCountries.backgroundColor == .white else { return }
+        viewModel.buttonAllCountries(buttonAllCountries, labelAllCountries, labelCountAllCountries, viewModel.background, .white)
+    }
+    
+    private func labelOnOff(tag: Int, color: UIColor) {
+        switch tag {
+        case 0: viewModel.labelOnOff(labelAllCountries, labelCountAllCountries, and: color)
+        case 1: viewModel.labelOnOff(labelAmericaContinent, labelCountAmericaContinent, and: color)
+        case 2: viewModel.labelOnOff(labelEuropeContinent, labelCountEuropeContinent, and: color)
+        case 3: viewModel.labelOnOff(labelAfricaContinent, labelCountAfricaContinent, and: color)
+        case 4: viewModel.labelOnOff(labelAsiaContinent, labelCountAsiaContinent, and: color)
+        default: viewModel.labelOnOff(labelOceanContinent, labelCountOceanContinent, and: color)
+        }
+    }
+    // MARK: - Segmented control press, change setting time for one question or for all questions
     @objc private func segmentSelect() {
         viewModel.segmentSelect(segmentedControl, pickerViewOneTime, pickerViewAllTime, labelSetting)
     }
@@ -858,208 +822,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         }
             
         }
-    }
-}
-// MARK: - Setup views
-extension GameTypeViewController {
-    private func setupView(color: UIColor, radius: CGFloat? = nil,
-                           addSubview: UIView? = nil, addButton: UIButton? = nil) -> UIView {
-        let view = UIView()
-        view.backgroundColor = color
-        view.layer.cornerRadius = radius ?? 0
-        view.translatesAutoresizingMaskIntoConstraints = false
-        if let image = addSubview {
-            view.addSubview(image)
-        } else if let button = addButton {
-            view.addSubview(button)
-            view.layer.shadowColor = color.cgColor
-            view.layer.shadowOpacity = 0.4
-            view.layer.shadowOffset = CGSize(width: 0, height: 6)
-        }
-        return view
-    }
-}
-// MARK: - Setup images
-extension GameTypeViewController {
-    private func setupImage(image: String, color: UIColor, size: CGFloat) -> UIImageView {
-        let size = UIImage.SymbolConfiguration(pointSize: size)
-        let image = UIImage(systemName: image, withConfiguration: size)
-        let imageView = UIImageView(image: image)
-        imageView.tintColor = color
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }
-}
-// MARK: - Setup labels
-extension GameTypeViewController {
-    private func setupLabel(color: UIColor, title: String, size: CGFloat, style: String,
-                            alignment: NSTextAlignment? = nil) -> UILabel {
-        let label = UILabel()
-        label.text = title
-        label.textColor = color
-        label.font = UIFont(name: style, size: size)
-        label.textAlignment = alignment ?? .center
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }
-    
-    private func settingLabel(label: UILabel, size: CGFloat) {
-        label.textColor = .white
-        label.font = UIFont(name: "Gill Sans", size: size)
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-    }
-}
-// MARK: - Setup buttons
-extension GameTypeViewController {
-    private func setupButton(image: String, action: Selector) -> UIButton {
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
-        let image = UIImage(systemName: image, withConfiguration: size)
-        let button = UIButton(type: .system)
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.layer.cornerRadius = 12
-        button.layer.borderColor = UIColor.white.cgColor
-        button.layer.borderWidth = 1.5
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: action, for: .touchUpInside)
-        return button
-    }
-    
-    private func setupButton(image: String, color: UIColor, action: Selector,
-                             isEnabled: Bool? = nil) -> UIButton {
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
-        let image = UIImage(systemName: image, withConfiguration: size)
-        let button = Button(type: .system)
-        button.backgroundColor = color
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.layer.cornerRadius = 12
-        button.layer.shadowColor = color.cgColor
-        button.layer.shadowOpacity = 0.4
-        button.layer.shadowOffset = CGSize(width: 0, height: 6)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.isEnabled = isEnabled ?? true
-        button.addTarget(self, action: action, for: .touchUpInside)
-        return button
-    }
-    
-    private func setupButton(color: UIColor, labelFirst: UILabel,
-                             labelSecond: UILabel, image: UIImageView? = nil,
-                             tag: Int, isEnabled: Bool? = nil) -> UIButton {
-        let button = Button(type: .custom)
-        button.backgroundColor = color
-        button.layer.cornerRadius = 20
-        button.layer.shadowColor = color.cgColor
-        button.layer.shadowOpacity = 0.4
-        button.layer.shadowOffset = CGSize(width: 0, height: 6)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(changeSetting), for: .touchUpInside)
-        button.tag = tag
-        button.isEnabled = isEnabled ?? true
-        if let image = image {
-            viewModel.setupSubviews(subviews: labelFirst, labelSecond, image, on: button)
-        } else {
-            viewModel.setupSubviews(subviews: labelFirst, labelSecond, on: button)
-        }
-        return button
-    }
-    
-    private func setupButton(title: String, color: UIColor, action: Selector) -> UIButton {
-        let button = Button(type: .system)
-        button.setTitle(title, for: .normal)
-        button.setTitleColor(viewModel.colorFavourite, for: .normal)
-        button.titleLabel?.font = UIFont(name: "mr_fontick", size: 25)
-        button.backgroundColor = color
-        button.layer.cornerRadius = 12
-        button.layer.shadowColor = color.cgColor
-        button.layer.shadowOpacity = 0.4
-        button.layer.shadowOffset = CGSize(width: 0, height: 6)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: action, for: .touchUpInside)
-        return button
-    }
-    
-    private func setupButton(color: UIColor, addLabelFirst: UILabel,
-                             addLabelSecond: UILabel, tag: Int? = nil) -> UIButton {
-        let button = UIButton(type: .custom)
-        button.backgroundColor = color
-        button.layer.borderColor = UIColor.white.cgColor
-        button.layer.borderWidth = 2
-        button.layer.cornerRadius = 13
-        button.layer.shadowColor = UIColor.white.cgColor
-        button.layer.shadowOpacity = 0.4
-        button.layer.shadowOffset = CGSize(width: 0, height: 6)
-        button.tag = tag ?? 0
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(continents), for: .touchUpInside)
-        viewModel.setupSubviews(subviews: addLabelFirst, addLabelSecond, on: button)
-        return button
-    }
-    
-    private func setCheckmarkButton(image: String) -> UIButton {
-        let size = UIImage.SymbolConfiguration(pointSize: 25)
-        let image = UIImage(systemName: image, withConfiguration: size)
-        let button = UIButton(type: .system)
-        button.setImage(image, for: .normal)
-        button.tintColor = viewModel.background
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(countdown), for: .touchUpInside)
-        return button
-    }
-}
-// MARK: - Setup stack views
-extension GameTypeViewController {
-    private func setupStackView(buttonFirst: UIButton, buttonSecond: UIButton,
-                                buttonThird: UIButton? = nil,
-                                spacing: CGFloat? = nil) -> UIStackView {
-        var arrangedSubviews: [UIView] = []
-        if let buttonThird = buttonThird {
-            arrangedSubviews = [buttonFirst, buttonSecond, buttonThird]
-        } else {
-            arrangedSubviews = [buttonFirst, buttonSecond]
-        }
-        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
-        stackView.spacing = spacing ?? 20
-        stackView.distribution = .fillEqually
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-    
-    private func setupStackView(labelTop: UILabel, labelBottom: UILabel) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [labelTop, labelBottom])
-        stackView.axis = .vertical
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-    
-    private func setupStackView(view: UIView, stackView: UIStackView) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [view, stackView])
-        stackView.spacing = 10
-        stackView.alignment = .top
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-    
-    private func setupStackView(view: UIView, label: UILabel) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [view, label])
-        stackView.spacing = 10
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-}
-// MARK: - Setup picker views
-extension GameTypeViewController {
-    private func setupPickerView(color: UIColor? = nil, tag: Int) -> UIPickerView {
-        let pickerView = UIPickerView()
-        pickerView.backgroundColor = color
-        pickerView.layer.cornerRadius = 13
-        pickerView.tag = tag
-        pickerView.translatesAutoresizingMaskIntoConstraints = false
-        pickerView.delegate = self
-        pickerView.dataSource = self
-        return pickerView
     }
 }
 // MARK: - Setup constraints
@@ -1339,7 +1101,7 @@ extension GameTypeViewController {
         ])
     }
 }
-// MARK: - PopUpViewDelegate
+// MARK: - PopUpViewHelpDelegate
 extension GameTypeViewController: PopUpViewDelegate {
     func closeView() {
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: true)

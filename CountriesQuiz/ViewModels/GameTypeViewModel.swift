@@ -114,7 +114,9 @@ protocol GameTypeViewModelProtocol {
     func buttonAllCountries(_ buttonAllCountries: UIButton,_ labelAllCountries: UILabel,
                             _ labelCountCountries: UILabel,_ colorButton: UIColor,_ colorLabel: UIColor)
     func buttonContinents(_ buttons: UIButton...,and labels: UILabel...,and colorButton: UIColor,_ colorLabel: UIColor)
-    func colorContinents(_ sender: UIButton)
+    func colorButtonContinent(_ sender: UIButton)
+    func labelOnOff(_ labels: UILabel...,and color: UIColor)
+    func checkmarkOnOff(_ button: UIButton)
     
     func setQuestions(_ pickerView: UIPickerView,_ labelQuestions: UILabel,_ labelTime: UILabel, completion: @escaping () -> Void)
     func setContinents(_ labelContinents: UILabel,_ labelQuestions: UILabel,_ pickerView: UIPickerView,
@@ -542,7 +544,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     func setLabels(_ labels: UILabel..., and countLabels: UILabel..., colors: [UIColor]) {
         let iterration = min(labels.count, countLabels.count, colors.count)
         for index in 0..<iterration {
-            labelOnOff(labels: labels[index], countLabels[index], color: colors[index])
+            labelOnOff(labels[index], countLabels[index], and: colors[index])
         }
     }
     
@@ -574,20 +576,35 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     func buttonAllCountries(_ buttonAllCountries: UIButton, _ labelAllCountries: UILabel, 
                             _ labelCountCountries: UILabel, _ colorButton: UIColor, _ colorLabel: UIColor) {
         buttonOnOff(buttons: buttonAllCountries, color: colorButton)
-        labelOnOff(labels: labelAllCountries, labelCountCountries, color: colorLabel)
+        labelOnOff(labelAllCountries, labelCountCountries, and: colorLabel)
     }
     
     func buttonContinents(_ buttons: UIButton..., and labels: UILabel..., 
                           and colorButton: UIColor, _ colorLabel: UIColor) {
         setColorButton(buttons: buttons, color: colorButton)
-        setLabelColor(labels: labels, color: colorLabel)
+        setColorLabel(labels: labels, color: colorLabel)
     }
     
-    func colorContinents(_ sender: UIButton) {
-        let colorButton = sender.backgroundColor == background ? .white : background
-        let colorLabel = sender.backgroundColor == background ? background : .white
-        buttonOnOff(buttons: sender, color: colorButton)
-//        labelOnOff(tag: sender.tag, color: colorLabel)
+    func colorButtonContinent(_ sender: UIButton) {
+        let color = sender.backgroundColor == background ? .white : background
+        buttonOnOff(buttons: sender, color: color)
+    }
+    
+    func labelOnOff(_ labels: UILabel...,and color: UIColor) {
+        labels.forEach { label in
+            UIView.animate(withDuration: 0.3) {
+                label.textColor = color
+            }
+        }
+    }
+    // MARK: - Button press checkmark
+    func checkmarkOnOff(_ button: UIButton) {
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
+        let currentImage = button.currentImage?.withConfiguration(size)
+        let imageCircle = UIImage(systemName: "circle", withConfiguration: size)
+        let imageCheckmark = UIImage(systemName: "checkmark.circle.fill", withConfiguration: size)
+        let image = currentImage == imageCircle ? imageCheckmark : imageCircle
+        button.setImage(image, for: .normal)
     }
     // MARK: - Press done for change setting, count questions
     func setQuestions(_ pickerView: UIPickerView, _ labelQuestions: UILabel,
@@ -621,8 +638,8 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     func setTime(_ segment: UISegmentedControl, _ labelTime: UILabel, _ labelDescription: UILabel, 
                  _ pickerViewOne: UIPickerView, _ pickerViewAll: UIPickerView, completion: @escaping () -> Void) {
         setSegmentedControl(segment)
-        setTitlesTime(labelTime, labelDescription)
         setDataFromPickerViews(pickerViewOne, pickerViewAll)
+        setTitlesTime(labelTime, labelDescription)
         completion()
     }
     // MARK: - Set bullet list
@@ -802,14 +819,6 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         }
     }
     
-    private func labelOnOff(labels: UILabel..., color: UIColor) {
-        labels.forEach { label in
-            UIView.animate(withDuration: 0.3) {
-                label.textColor = color
-            }
-        }
-    }
-    
     private func checkButtonCheckmark(button: UIButton) {
         let size = UIImage.SymbolConfiguration(pointSize: 25)
         let symbol = isCountdown() ? "checkmark.circle.fill" : "circle"
@@ -864,33 +873,11 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         }
     }
     
-    private func setLabelColor(labels: [UILabel], color: UIColor) {
+    private func setColorLabel(labels: [UILabel], color: UIColor) {
         labels.forEach { label in
-            labelOnOff(labels: label, color: color)
+            labelOnOff(label, and: color)
         }
     }
-//    private func colorAllCountries(_ sender: UIButton,_ labelAllCountries: UILabel,
-//                                   _ labelCountCountries: UILabel) {
-//        guard sender.backgroundColor == background else { return }
-//        setCountContinents(0)
-//        buttonAllCountries(.white, background, sender, labelAllCountries, labelCountCountries)
-        
-//        buttonAllCountries(colorButton: .white, colorLabel: background)
-//        buttonsContinents(colorButton: background, colorLabel: .white)
-//    }
-    /*
-    private func buttonAllCountries(
-        _ colorButton: UIColor,_ colorLabel: UIColor,_ buttonAllCountries: UIButton,
-        _ labelAllCountries: UILabel,_ labelCountAllCountries: UILabel) {
-        buttonOnOff(buttons: buttonAllCountries, color: colorButton)
-        labelOnOff(labels: labelAllCountries, labelCountAllCountries, color: colorLabel)
-    }
-    
-    private func condition(sender: UIButton) {
-        countContinents == 0 ? colorAllCountries(sender: buttonAllCountries) :
-        colorContinents(sender: sender)
-    }
-     */
     // MARK: - Press done for change setting, count questions
     private func setTitleCountQuestions(_ title: String, _ labelQuestions: UILabel) {
         labelQuestions.text = title

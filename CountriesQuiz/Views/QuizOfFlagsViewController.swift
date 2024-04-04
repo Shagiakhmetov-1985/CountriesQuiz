@@ -124,17 +124,6 @@ class QuizOfFlagsViewController: UIViewController {
     var viewModel: QuizOfFlagsViewModelProtocol!
     weak var delegateInput: GameTypeViewControllerInput!
     
-    private var imageFlagSpring: NSLayoutConstraint!
-    private var labelNameSpring: NSLayoutConstraint!
-    private var stackViewSpring: NSLayoutConstraint!
-    
-    private var widthOfFlagFirst: NSLayoutConstraint!
-    private var widthOfFlagSecond: NSLayoutConstraint!
-    private var widthOfFlagThird: NSLayoutConstraint!
-    private var widthOfFlagFourth: NSLayoutConstraint!
-    
-    private let shapeLayer = CAShapeLayer()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupData()
@@ -142,15 +131,13 @@ class QuizOfFlagsViewController: UIViewController {
         setupSubviews()
         setupConstraints()
         setupBarButton()
-        runMoveSubviews()
+        viewModel.runMoveSubviews(view)
         startGame()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         guard viewModel.isCountdown() else { return }
-        circularShadow()
-        circular(strokeEnd: 0)
-        animationCircleTimeReset()
+        viewModel.setCircleTimer(labelTimer, view)
     }
     // MARK: - General methods
     private func setupData() {
@@ -200,23 +187,6 @@ class QuizOfFlagsViewController: UIViewController {
         Timer.scheduledTimer(timeInterval: time, target: self, selector: action,
                              userInfo: nil, repeats: repeats)
     }
-    // MARK: - Time for label, seconds and circle timer
-    private func checkCircleCountdown() -> Int {
-        viewModel.isOneQuestion() ? viewModel.oneQuestionTime() : viewModel.seconds / 10
-    }
-    // MARK: - Move flag and buttons
-    private func runMoveSubviews() {
-        viewModel.runMoveSubviews(viewModel.isFlag() ? imageFlagSpring : labelNameSpring, stackViewSpring, view)
-    }
-    // MARK: - Animation move subviews
-    private func animationSubviews(duration: CGFloat) {
-        viewModel.animationSubviews(viewModel.isFlag() ? imageFlagSpring : labelNameSpring, stackViewSpring, duration, view)
-    }
-    // MARK: - Animation label description and label number
-    private func showDescription() {
-        viewModel.showDescription(labelDescription)
-        viewModel.animationHideQuizShowDescription(labelQuiz, labelDescription)
-    }
     // MARK: - Start game
     private func startGame() {
         let time: CGFloat = viewModel.currentQuestion == 0 ? 1 : 0.25
@@ -227,8 +197,8 @@ class QuizOfFlagsViewController: UIViewController {
         viewModel.timer.invalidate()
         let time: CGFloat = viewModel.currentQuestion == 0 ? 0.5 : 0.25
         viewModel.animationShowQuizHideDescription(labelQuiz, labelDescription)
-        animationSubviews(duration: time)
-        checkSetCircularStrokeEnd()
+        viewModel.animationSubviews(time, view)
+        viewModel.checkSetCircularStrokeEnd()
         viewModel.timer = runTimer(time: time, action: #selector(isEnabledButton), repeats: false)
     }
     // MARK: - Enable subviews
@@ -240,7 +210,7 @@ class QuizOfFlagsViewController: UIViewController {
         
         guard viewModel.isCountdown() else { return }
         viewModel.setTitleTime()
-        animationCircleCountdown()
+        viewModel.animationCircleCountdown()
         runTimer()
     }
     // MARK: - Run timer
@@ -261,7 +231,7 @@ class QuizOfFlagsViewController: UIViewController {
         if !viewModel.isOneQuestion() {
             viewModel.setNextCurrentQuestion(viewModel.countQuestions - 1)
         }
-        showDescription()
+        viewModel.showDescription(labelQuiz, labelDescription)
         animationColorDisableButton()
     }
     // MARK: - Buttons back
@@ -277,11 +247,11 @@ class QuizOfFlagsViewController: UIViewController {
         viewModel.answerSelect.toggle()
         
         animationColorButtons(button: button)
-        showDescription()
+        viewModel.showDescription(labelQuiz, labelDescription)
         
         guard viewModel.isCountdown() else { return }
-        stopAnimationCircleTimer()
-        viewModel.checkTimeSpent(shapeLayer)
+        viewModel.stopAnimationCircleTimer()
+        viewModel.checkTimeSpent(viewModel.shapeLayer)
     }
     
     private func animationColorDisableButton() {
@@ -304,7 +274,7 @@ class QuizOfFlagsViewController: UIViewController {
             }
         } else {
             viewModel.checkAnswerLabel(button.tag, button)
-            viewModel.disableButtonFlag(button.tag, buttonFirst, buttonSecond, buttonThird, buttonFourth) {
+            viewModel.disableButtonLabel(button.tag, buttonFirst, buttonSecond, buttonThird, buttonFourth) {
                 self.delay()
             }
         }
@@ -314,70 +284,11 @@ class QuizOfFlagsViewController: UIViewController {
         guard viewModel.currentQuestion + 1 < viewModel.countQuestions else { return }
         viewModel.timer = runTimer(time: 3, action: #selector(hideSubviews), repeats: false)
     }
-    // MARK: - Refresh data for next question
-    private func updateData() {
-        viewModel.isFlag() ? updateDataFlag() : updateDataLabel()
-        guard viewModel.isCountdown() else { return }
-        resetTimer()
-    }
-    
-    private func updateDataFlag() {
-        let flag = viewModel.data.questions[viewModel.currentQuestion].flag
-        imageFlag.image = UIImage(named: flag)
-        updateButtonsFlag()
-        widthOfFlagFirst.constant = viewModel.checkWidthFlag(flag)
-    }
-    
-    private func updateDataLabel() {
-        labelCountry.text = viewModel.data.questions[viewModel.currentQuestion].name
-        updateButtonsLabel()
-        updateWidthFlags()
-    }
-    
-    private func updateButtonsFlag() {
-        buttonFirst.setTitle(viewModel.data.buttonFirst[viewModel.currentQuestion].name, for: .normal)
-        buttonSecond.setTitle(viewModel.data.buttonSecond[viewModel.currentQuestion].name, for: .normal)
-        buttonThird.setTitle(viewModel.data.buttonThird[viewModel.currentQuestion].name, for: .normal)
-        buttonFourth.setTitle(viewModel.data.buttonFourth[viewModel.currentQuestion].name, for: .normal)
-    }
-    
-    private func updateButtonsLabel() {
-        imageFirst.image = UIImage(named: viewModel.data.buttonFirst[viewModel.currentQuestion].flag)
-        imageSecond.image = UIImage(named: viewModel.data.buttonSecond[viewModel.currentQuestion].flag)
-        imageThird.image = UIImage(named: viewModel.data.buttonThird[viewModel.currentQuestion].flag)
-        imageFourth.image = UIImage(named: viewModel.data.buttonFourth[viewModel.currentQuestion].flag)
-    }
-    
-    private func updateWidthFlags() {
-        widthOfFlagFirst.constant = viewModel.widthFlag(viewModel.data.buttonFirst[viewModel.currentQuestion].flag, view)
-        widthOfFlagSecond.constant = viewModel.widthFlag(viewModel.data.buttonSecond[viewModel.currentQuestion].flag, view)
-        widthOfFlagThird.constant = viewModel.widthFlag(viewModel.data.buttonThird[viewModel.currentQuestion].flag, view)
-        widthOfFlagFourth.constant = viewModel.widthFlag(viewModel.data.buttonFourth[viewModel.currentQuestion].flag, view)
-    }
-    
-    private func resetTimer() {
-        if viewModel.isOneQuestion() && viewModel.seconds > 0 {
-            labelTimer.text = "\(viewModel.oneQuestionTime())"
-            animationCircleTimeReset()
-        } else if viewModel.isOneQuestion() && viewModel.seconds == 0 {
-            labelTimer.text = "\(viewModel.oneQuestionTime())"
-            circular(strokeEnd: 0)
-            animationCircleTimeReset()
-        }
-    }
-    
-    private func resetColorButton(buttons: UIButton...) {
-        let white = UIColor.white
-        let blue = UIColor.blueBlackSea
-        buttons.forEach { button in
-            viewModel.setButtonColor(button, white, blue)
-        }
-    }
     // MARK: - Run next question
     @objc private func hideSubviews() {
         viewModel.timer.invalidate()
         viewModel.answerSelect.toggle()
-        animationSubviews(duration: 0.25)
+        viewModel.animationSubviews(0.25, view)
         viewModel.timer = runTimer(time: 0.25, action: #selector(nextQuestion), repeats: false)
     }
     
@@ -385,11 +296,25 @@ class QuizOfFlagsViewController: UIViewController {
         viewModel.timer.invalidate()
         viewModel.setNextCurrentQuestion(1)
         
-        runMoveSubviews()
+        viewModel.runMoveSubviews(view)
         updateData()
         viewModel.animationShowQuizHideDescription(labelQuiz, labelDescription)
-        resetColorButton(buttons: buttonFirst, buttonSecond, buttonThird, buttonFourth)
+        viewModel.resetColorButtons(buttonFirst, buttonSecond, buttonThird, buttonFourth)
         startGame()
+    }
+    // MARK: - Refresh data for next question
+    private func updateData() {
+        if viewModel.isFlag() {
+            viewModel.updateDataFlag(imageFlag, viewModel.widthOfFlagFirst, buttonFirst,
+                                     buttonSecond, buttonThird, buttonFourth)
+        } else {
+            viewModel.updateDataLabel(labelCountry, view,
+                                      imageFirst, imageSecond, imageThird, imageFourth,
+                                      and: viewModel.widthOfFlagFirst, viewModel.widthOfFlagSecond,
+                                      viewModel.widthOfFlagThird, viewModel.widthOfFlagFourth)
+        }
+        guard viewModel.isCountdown() else { return }
+        viewModel.resetTimer(labelTimer, view)
     }
 }
 // MARK: - Touch on the screen
@@ -473,82 +398,6 @@ extension QuizOfFlagsViewController {
         return stackView
     }
 }
-// MARK: - Setup circle timer
-extension QuizOfFlagsViewController {
-    private func circularShadow() {
-        let center = CGPoint(x: labelTimer.center.x, y: labelTimer.center.y)
-        let endAngle = CGFloat.pi / 2
-        let startAngle = 2 * CGFloat.pi + endAngle
-        let circularPath = UIBezierPath(
-            arcCenter: center,
-            radius: 32,
-            startAngle: -startAngle,
-            endAngle: -endAngle,
-            clockwise: true)
-        
-        let trackShape = CAShapeLayer()
-        trackShape.path = circularPath.cgPath
-        trackShape.lineWidth = 5
-        trackShape.fillColor = UIColor.clear.cgColor
-        trackShape.strokeColor = UIColor.white.withAlphaComponent(0.3).cgColor
-        view.layer.addSublayer(trackShape)
-    }
-    
-    private func circular(strokeEnd: CGFloat) {
-        let center = CGPoint(x: labelTimer.center.x, y: labelTimer.center.y)
-        let endAngle = CGFloat.pi / 2
-        let startAngle = 2 * CGFloat.pi + endAngle
-        let circularPath = UIBezierPath(
-            arcCenter: center,
-            radius: 32,
-            startAngle: -startAngle,
-            endAngle: -endAngle,
-            clockwise: true)
-        
-        shapeLayer.path = circularPath.cgPath
-        shapeLayer.lineWidth = 5
-        shapeLayer.fillColor = UIColor.clear.cgColor
-        shapeLayer.strokeEnd = strokeEnd
-        shapeLayer.lineCap = CAShapeLayerLineCap.square
-        shapeLayer.strokeColor = UIColor.white.cgColor
-        view.layer.addSublayer(shapeLayer)
-    }
-    
-    private func checkSetCircularStrokeEnd() {
-        if viewModel.isOneQuestion() && viewModel.isCountdown() {
-            shapeLayer.strokeEnd = 1
-        } else if !viewModel.isOneQuestion() && viewModel.isCountdown() && viewModel.currentQuestion < 1 {
-            shapeLayer.strokeEnd = 1
-        }
-    }
-    
-    private func animationCircleCountdown() {
-        let timer = checkCircleCountdown()
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.toValue = 0
-        animation.duration = CFTimeInterval(timer)
-        animation.fillMode = CAMediaTimingFillMode.forwards
-        animation.isRemovedOnCompletion = false
-        shapeLayer.add(animation, forKey: "animation")
-    }
-    
-    private func animationCircleTimeReset() {
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.toValue = 1
-        animation.duration = CFTimeInterval(0.4)
-        animation.fillMode = CAMediaTimingFillMode.forwards
-        animation.isRemovedOnCompletion = false
-        shapeLayer.add(animation, forKey: "animation")
-    }
-    
-    private func stopAnimationCircleTimer() {
-        let oneQuestionTime = viewModel.time() * 10
-        let time = CGFloat(viewModel.seconds) / CGFloat(oneQuestionTime)
-        let result = round(100 * time) / 100
-        shapeLayer.removeAnimation(forKey: "animation")
-        shapeLayer.strokeEnd = result
-    }
-}
 // MARK: - Setup images
 extension QuizOfFlagsViewController {
     private func setImage(image: String, radius: CGFloat? = nil) -> UIImageView {
@@ -609,24 +458,24 @@ extension QuizOfFlagsViewController {
     
     private func constraintsFlag() {
         let flag = viewModel.data.questions[viewModel.currentQuestion].flag
-        widthOfFlagFirst = imageFlag.widthAnchor.constraint(equalToConstant: viewModel.checkWidthFlag(flag))
+        viewModel.widthOfFlagFirst = imageFlag.widthAnchor.constraint(equalToConstant: viewModel.checkWidthFlag(flag))
         
-        imageFlagSpring = NSLayoutConstraint(
+        viewModel.imageFlagSpring = NSLayoutConstraint(
             item: imageFlag, attribute: .centerX, relatedBy: .equal,
             toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(imageFlagSpring)
+        view.addConstraint(viewModel.imageFlagSpring)
         NSLayoutConstraint.activate([
             imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            widthOfFlagFirst,
+            viewModel.widthOfFlagFirst,
             imageFlag.heightAnchor.constraint(equalToConstant: 168)
         ])
     }
     
     private func constraintsLabel() {
-        labelNameSpring = NSLayoutConstraint(
+        viewModel.labelNameSpring = NSLayoutConstraint(
             item: labelCountry, attribute: .centerX, relatedBy: .equal,
             toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(labelNameSpring)
+        view.addConstraint(viewModel.labelNameSpring)
         NSLayoutConstraint.activate([
             labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
             labelCountry.widthAnchor.constraint(equalToConstant: viewModel.widthButtons(view))
@@ -649,10 +498,10 @@ extension QuizOfFlagsViewController {
     }
     
     private func buttons(subview: UIView, width: CGFloat, height: CGFloat) {
-        stackViewSpring = NSLayoutConstraint(
+        viewModel.stackViewSpring = NSLayoutConstraint(
             item: subview, attribute: .centerX, relatedBy: .equal,
             toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(stackViewSpring)
+        view.addConstraint(viewModel.stackViewSpring)
         NSLayoutConstraint.activate([
             subview.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
             subview.widthAnchor.constraint(equalToConstant: width),
@@ -674,27 +523,27 @@ extension QuizOfFlagsViewController {
     }
     
     private func setupImageButtonFirst(image: UIImageView, on button: UIButton, flag: String) {
-        widthOfFlagFirst = image.widthAnchor.constraint(
+        viewModel.widthOfFlagFirst = image.widthAnchor.constraint(
             equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(layout: widthOfFlagFirst, image: image, button: button)
+        setImageOnButton(layout: viewModel.widthOfFlagFirst, image: image, button: button)
     }
     
     private func setupImageButtonSecond(image: UIImageView, on button: UIView, flag: String) {
-        widthOfFlagSecond = image.widthAnchor.constraint(
+        viewModel.widthOfFlagSecond = image.widthAnchor.constraint(
             equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(layout: widthOfFlagSecond, image: image, button: button)
+        setImageOnButton(layout: viewModel.widthOfFlagSecond, image: image, button: button)
     }
     
     private func setupImageButtonThird(image: UIImageView, on button: UIView, flag: String) {
-        widthOfFlagThird = image.widthAnchor.constraint(
+        viewModel.widthOfFlagThird = image.widthAnchor.constraint(
             equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(layout: widthOfFlagThird, image: image, button: button)
+        setImageOnButton(layout: viewModel.widthOfFlagThird, image: image, button: button)
     }
     
     private func setupImageButtonFourth(image: UIImageView, on button: UIView, flag: String) {
-        widthOfFlagFourth = image.widthAnchor.constraint(
+        viewModel.widthOfFlagFourth = image.widthAnchor.constraint(
             equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(layout: widthOfFlagFourth, image: image, button: button)
+        setImageOnButton(layout: viewModel.widthOfFlagFourth, image: image, button: button)
     }
     
     private func setImageOnButton(layout: NSLayoutConstraint, image: UIImageView, button: UIView) {

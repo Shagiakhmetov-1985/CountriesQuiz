@@ -24,6 +24,13 @@ protocol QuizOfFlagsViewModelProtocol {
     var data: (questions: [Countries], buttonFirst: [Countries],
                buttonSecond: [Countries], buttonThird: [Countries],
                buttonFourth: [Countries]) { get }
+    var buttonFirst: String { get }
+    var buttonSecond: String { get }
+    var buttonThird: String { get }
+    var buttonFourth: String { get }
+    
+    var correctAnswers: [Countries] { get }
+    var incorrectAnswers: [Results] { get }
     
     init(mode: Setting, game: Games)
     
@@ -33,6 +40,7 @@ protocol QuizOfFlagsViewModelProtocol {
     func setOpacity(labels: UILabel..., opacity: Float)
     func setEnabled(controls: UIControl..., isEnabled: Bool)
     func setTitleTime()
+    func setTitleTimer(_ labelTimer: UILabel, completion: @escaping () -> Void)
     
     func isFlag() -> Bool
     func isCountdown() -> Bool
@@ -57,7 +65,15 @@ protocol QuizOfFlagsViewModelProtocol {
     func animationShowQuizHideDescription(_ labelQuiz: UILabel,_ labelDescription: UILabel)
     func animationHideQuizShowDescription(_ labelQuiz: UILabel,_ labelDescription: UILabel)
     func setSeconds(_ seconds: Int)
-    func setTimeSpent(_ shapeLayer: CAShapeLayer)
+    func checkTimeSpent(_ shapeLayer: CAShapeLayer)
+    
+    func addCorrectAnswer()
+    func addIncorrectAnswer(_ tag: Int)
+    func checkAnswerFlag(_ tag: Int,_ button: UIButton)
+    func checkAnswerLabel(_ tag: Int,_ button: UIButton)
+    func disableButtonFlag(_ tag: Int,_ buttons: UIButton..., completion: @escaping () -> Void)
+    func disableButtonLabel(_ tag: Int,_ buttons: UIButton..., completion: @escaping () -> Void)
+    func setButtonColor(_ button: UIButton,_ color: UIColor,_ titleColor: UIColor?)
 }
 
 class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
@@ -90,6 +106,22 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     var labelNumberQuiz: String {
         "\(currentQuestion + 1) / \(countQuestions)"
     }
+    
+    var buttonFirst: String {
+        data.buttonFirst[currentQuestion].name
+    }
+    var buttonSecond: String {
+        data.buttonSecond[currentQuestion].name
+    }
+    var buttonThird: String {
+        data.buttonThird[currentQuestion].name
+    }
+    var buttonFourth: String {
+        data.buttonFourth[currentQuestion].name
+    }
+    
+    var correctAnswers: [Countries] = []
+    var incorrectAnswers: [Results] = []
     
     let mode: Setting
     let game: Games
@@ -130,6 +162,17 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         } else if isOneQuestion() {
             setSeconds(time() * 10)
         }
+    }
+    // MARK: - Set title from run timer
+    func setTitleTimer(_ labelTimer: UILabel, completion: @escaping () -> Void) {
+        setSeconds(1)
+        guard seconds.isMultiple(of: 10) else { return }
+        let text = seconds / 10
+        labelTimer.text = "\(text)"
+        
+        guard seconds == 0 else { return }
+        timer.invalidate()
+        completion()
     }
     // MARK: - Set next current question
     func setNextCurrentQuestion(_ number: Int) {
@@ -206,6 +249,142 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         let choosingAnswers = getChoosingAnswers(questions: questions, randomCountries: randomCountries)
         let answers = getAnswers(choosingAnswers: choosingAnswers)
         data = (questions, answers.buttonFirst, answers.buttonSecond, answers.buttonThird, answers.buttonFourth)
+    }
+    // MARK: - Move image / label and buttons
+    func runMoveSubviews(_ firstLayoutConstraint: NSLayoutConstraint,
+                         _ secondLayoutConstrain: NSLayoutConstraint, _ view: UIView) {
+        let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
+        firstLayoutConstraint.constant += view.bounds.width * pointX
+        secondLayoutConstrain.constant += view.bounds.width * pointX
+    }
+    // MARK: - Animation move subviews
+    func animationSubviews(_ firstLayoutConstraint: NSLayoutConstraint,
+                           _ secondLayoutConstrain: NSLayoutConstraint,
+                           _ duration: CGFloat, _ view: UIView) {
+        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut) {
+            firstLayoutConstraint.constant -= view.bounds.width
+            secondLayoutConstrain.constant -= view.bounds.width
+            view.layoutIfNeeded()
+        }
+    }
+    // MARK: - Update progress view
+    func updateProgressView(_ progressView: UIProgressView) {
+        let time = TimeInterval(countQuestions)
+        let interval = 1 / time
+        let progress = progressView.progress + Float(interval)
+        
+        UIView.animate(withDuration: 0.5) {
+            progressView.setProgress(progress, animated: true)
+        }
+    }
+    // MARK: - Animation label description and label number
+    func showDescription(_ label: UILabel) {
+        guard currentQuestion == countQuestions - 1 else { return }
+        let red = UIColor.lightPurplePink
+        label.text = "Коснитесь экрана, чтобы завершить"
+        label.textColor = red
+    }
+    
+    func animationShowQuizHideDescription(_ labelQuiz: UILabel, _ labelDescription: UILabel) {
+        UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) { [self] in
+            setOpacity(labels: labelQuiz, opacity: 1)
+        }
+        guard labelDescription.layer.opacity == 1 else { return }
+        setOpacity(labels: labelDescription, opacity: 0)
+    }
+    
+    func animationHideQuizShowDescription(_ labelQuiz: UILabel, _ labelDescription: UILabel) {
+        UIView.animate(withDuration: 0.5, animations: { [self] in
+            setOpacity(labels: labelQuiz, opacity: 0)
+        })
+        
+        UIView.animate(withDuration: 1, delay: 0, options: [.repeat, .autoreverse], animations: { [self] in
+            setOpacity(labels: labelDescription, opacity: 1)
+        })
+    }
+    // MARK: - Time spent for every answer
+    func checkTimeSpent(_ shapeLayer: CAShapeLayer) {
+        if isOneQuestion() {
+            setTimeSpent(shapeLayer)
+        } else if !isOneQuestion(), currentQuestion + 1 == countQuestions {
+            setTimeSpent(shapeLayer)
+        }
+    }
+    // MARK: - Add correct answer after select from user
+    func addCorrectAnswer() {
+        correctAnswers.append(data.questions[currentQuestion])
+    }
+    // MARK: - Add incorrect answer after select from user
+    func addIncorrectAnswer(_ tag: Int) {
+        let setTag = tag == 0 ? 0 : tag
+        let timeUp = tag == 0 ? true : false
+        incorrectAnswer(numberQuestion: currentQuestion + 1, tag: setTag,
+                        question: data.questions[currentQuestion],
+                        buttonFirst: data.buttonFirst[currentQuestion],
+                        buttonSecond: data.buttonSecond[currentQuestion],
+                        buttonThird: data.buttonThird[currentQuestion],
+                        buttonFourth: data.buttonFourth[currentQuestion], 
+                        timeUp: timeUp)
+    }
+    // MARK: - Set color for buttons after select from user
+    func setButtonColor(_ button: UIButton, _ color: UIColor, _ titleColor: UIColor? = nil) {
+        UIView.animate(withDuration: 0.3) {
+            button.backgroundColor = color
+            button.layer.shadowColor = color.cgColor
+            button.setTitleColor(titleColor, for: .normal)
+        }
+    }
+    // MARK: - Animations of color buttons when user selected answer
+    func checkAnswerFlag(_ tag: Int, _ button: UIButton) {
+        let green = UIColor.greenYellowBrilliant
+        let red = UIColor.redTangerineTango
+        let white = UIColor.white
+        
+        if checkAnswer(tag) {
+            setButtonColor(button, green, white)
+            addCorrectAnswer()
+        } else {
+            setButtonColor(button, red, white)
+            addIncorrectAnswer(tag)
+        }
+    }
+    
+    func checkAnswerLabel(_ tag: Int, _ button: UIButton) {
+        let green = UIColor.greenYellowBrilliant
+        let red = UIColor.redTangerineTango
+        
+        if checkAnswer(tag) {
+            setButtonColor(button, green)
+            addCorrectAnswer()
+        } else {
+            setButtonColor(button, red)
+            addIncorrectAnswer(tag)
+        }
+    }
+    
+    func disableButtonFlag(_ tag: Int, _ buttons: UIButton..., completion: @escaping () -> Void) {
+        let gray = UIColor.grayLight
+        let white = UIColor.white.withAlphaComponent(0.9)
+        
+        buttons.forEach { button in
+            if !(button.tag == tag) {
+                setButtonColor(button, white, gray)
+            }
+            button.isEnabled = false
+        }
+        completion()
+    }
+    
+    func disableButtonLabel(_ tag: Int, _ buttons: UIButton..., completion: @escaping () -> Void) {
+        let gray = UIColor.skyGrayLight
+        
+        buttons.forEach { button in
+            if !(button.tag == tag) {
+                setButtonColor(button, gray)
+            }
+            button.isEnabled = false
+        }
+        completion()
     }
     // MARK: - Get countries for questions, countinue
     private func getRandomCountries() -> [Countries] {
@@ -436,63 +615,31 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         
         return (first, second, third, fourth)
     }
-    // MARK: - Move image / label and buttons
-    func runMoveSubviews(_ firstLayoutConstraint: NSLayoutConstraint,
-                         _ secondLayoutConstrain: NSLayoutConstraint, _ view: UIView) {
-        let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
-        firstLayoutConstraint.constant += view.bounds.width * pointX
-        secondLayoutConstrain.constant += view.bounds.width * pointX
-    }
-    // MARK: - Animation move subviews
-    func animationSubviews(_ firstLayoutConstraint: NSLayoutConstraint, 
-                           _ secondLayoutConstrain: NSLayoutConstraint,
-                           _ duration: CGFloat, _ view: UIView) {
-        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut) {
-            firstLayoutConstraint.constant -= view.bounds.width
-            secondLayoutConstrain.constant -= view.bounds.width
-            view.layoutIfNeeded()
-        }
-    }
-    // MARK: - Update progress view
-    func updateProgressView(_ progressView: UIProgressView) {
-        let time = TimeInterval(countQuestions)
-        let interval = 1 / time
-        let progress = progressView.progress + Float(interval)
-        
-        UIView.animate(withDuration: 0.5) {
-            progressView.setProgress(progress, animated: true)
-        }
-    }
-    // MARK: - Animation label description and label number
-    func showDescription(_ label: UILabel) {
-        guard currentQuestion == countQuestions - 1 else { return }
-        let red = UIColor.lightPurplePink
-        label.text = "Коснитесь экрана, чтобы завершить"
-        label.textColor = red
-    }
-    
-    func animationShowQuizHideDescription(_ labelQuiz: UILabel, _ labelDescription: UILabel) {
-        UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) { [self] in
-            setOpacity(labels: labelQuiz, opacity: 1)
-        }
-        guard labelDescription.layer.opacity == 1 else { return }
-        setOpacity(labels: labelDescription, opacity: 0)
-    }
-    
-    func animationHideQuizShowDescription(_ labelQuiz: UILabel, _ labelDescription: UILabel) {
-        UIView.animate(withDuration: 0.5, animations: { [self] in
-            setOpacity(labels: labelQuiz, opacity: 0)
-        })
-        
-        UIView.animate(withDuration: 1, delay: 0, options: [.repeat, .autoreverse], animations: { [self] in
-            setOpacity(labels: labelDescription, opacity: 1)
-        })
-    }
     // MARK: - Set time spent for every answer
-    func setTimeSpent(_ shapeLayer: CAShapeLayer) {
+    private func setTimeSpent(_ shapeLayer: CAShapeLayer) {
         let circleTimeSpent = 1 - shapeLayer.strokeEnd
         let seconds = time()
         let timeSpent = circleTimeSpent * CGFloat(seconds)
         spendTime.append(timeSpent)
+    }
+    // MARK: - Check correct or incorrect answer from select user
+    private func checkAnswer(_ tag: Int) -> Bool {
+        switch tag {
+        case 1: return data.questions[currentQuestion] == data.buttonFirst[currentQuestion] ? true : false
+        case 2: return data.questions[currentQuestion] == data.buttonSecond[currentQuestion] ? true : false
+        case 3: return data.questions[currentQuestion] == data.buttonThird[currentQuestion] ? true : false
+        default: return data.questions[currentQuestion] == data.buttonFourth[currentQuestion] ? true : false
+        }
+    }
+    // MARK: - Add incorrect answer after select from user, countinue
+    private func incorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
+                                 buttonFirst: Countries, buttonSecond: Countries,
+                                 buttonThird: Countries, buttonFourth: Countries,
+                                 timeUp: Bool) {
+        let answer = Results(currentQuestion: numberQuestion, tag: tag,
+                             question: question, buttonFirst: buttonFirst,
+                             buttonSecond: buttonSecond, buttonThird: buttonThird,
+                             buttonFourth: buttonFourth, timeUp: timeUp)
+        incorrectAnswers.append(answer)
     }
 }

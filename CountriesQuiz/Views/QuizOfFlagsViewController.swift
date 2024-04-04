@@ -63,9 +63,7 @@ class QuizOfFlagsViewController: UIViewController {
     }()
     
     private lazy var buttonFirst: UIButton = {
-        viewModel.isFlag() ?
-        setButton(title: viewModel.data.buttonFirst[viewModel.currentQuestion].name, tag: 1) :
-        setButton(addImage: imageFirst, tag: 1)
+        viewModel.isFlag() ? setButton(title: viewModel.buttonFirst, tag: 1) : setButton(addImage: imageFirst, tag: 1)
     }()
     
     private lazy var imageFirst: UIImageView = {
@@ -73,9 +71,7 @@ class QuizOfFlagsViewController: UIViewController {
     }()
     
     private lazy var buttonSecond: UIButton = {
-        viewModel.isFlag() ?
-        setButton(title: viewModel.data.buttonSecond[viewModel.currentQuestion].name, tag: 2) :
-        setButton(addImage: imageSecond, tag: 2)
+        viewModel.isFlag() ? setButton(title: viewModel.buttonSecond, tag: 2) : setButton(addImage: imageSecond, tag: 2)
     }()
     
     private lazy var imageSecond: UIImageView = {
@@ -83,9 +79,7 @@ class QuizOfFlagsViewController: UIViewController {
     }()
     
     private lazy var buttonThird: UIButton = {
-        viewModel.isFlag() ?
-        setButton(title: viewModel.data.buttonThird[viewModel.currentQuestion].name, tag: 3) :
-        setButton(addImage: imageThird, tag: 3)
+        viewModel.isFlag() ? setButton(title: viewModel.buttonThird, tag: 3) : setButton(addImage: imageThird, tag: 3)
     }()
     
     private lazy var imageThird: UIImageView = {
@@ -93,9 +87,7 @@ class QuizOfFlagsViewController: UIViewController {
     }()
     
     private lazy var buttonFourth: UIButton = {
-        viewModel.isFlag() ?
-        setButton(title: viewModel.data.buttonFourth[viewModel.currentQuestion].name, tag: 4) :
-        setButton(addImage: imageFourth, tag: 4)
+        viewModel.isFlag() ? setButton(title: viewModel.buttonFourth, tag: 4) : setButton(addImage: imageFourth, tag: 4)
     }()
     
     private lazy var imageFourth: UIImageView = {
@@ -142,9 +134,6 @@ class QuizOfFlagsViewController: UIViewController {
     private var widthOfFlagFourth: NSLayoutConstraint!
     
     private let shapeLayer = CAShapeLayer()
-    
-    private var correctAnswers: [Countries] = []
-    private var incorrectAnswers: [Results] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -260,19 +249,14 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     @objc private func timerTitle() {
-        viewModel.setSeconds(1)
-        guard viewModel.seconds.isMultiple(of: 10) else { return }
-        let text = viewModel.seconds / 10
-        labelTimer.text = "\(text)"
-        
-        guard viewModel.seconds == 0 else { return }
-        viewModel.timer.invalidate()
-        timeUp()
+        viewModel.setTitleTimer(labelTimer) {
+            self.timeUp()
+        }
     }
     
     private func timeUp() {
         viewModel.answerSelect.toggle()
-        incorrectAnswerTimeUp()
+        viewModel.addIncorrectAnswer(0)
         
         if !viewModel.isOneQuestion() {
             viewModel.setNextCurrentQuestion(viewModel.countQuestions - 1)
@@ -297,154 +281,38 @@ class QuizOfFlagsViewController: UIViewController {
         
         guard viewModel.isCountdown() else { return }
         stopAnimationCircleTimer()
-        checkTimeSpent()
+        viewModel.checkTimeSpent(shapeLayer)
     }
     
     private func animationColorDisableButton() {
         if viewModel.isFlag() {
-            disableButtonFlag(buttons: buttonFirst, buttonSecond,
-                              buttonThird, buttonFourth, tag: 0)
+            viewModel.disableButtonFlag(0, buttonFirst, buttonSecond, buttonThird, buttonFourth) {
+                self.delay()
+            }
         } else {
-            disableButtonLabel(buttons: buttonFirst, buttonSecond,
-                               buttonThird, buttonFourth, tag: 0)
+            viewModel.disableButtonLabel(0, buttonFirst, buttonSecond, buttonThird, buttonFourth) {
+                self.delay()
+            }
         }
     }
     
     private func animationColorButtons(button: UIButton) {
         if viewModel.isFlag() {
-            checkAnswerFlag(tag: button.tag, button: button)
-            disableButtonFlag(buttons: buttonFirst, buttonSecond,
-                              buttonThird, buttonFourth, tag: button.tag)
-        } else {
-            checkAnswerLabel(tag: button.tag, button: button)
-            disableButtonLabel(buttons: buttonFirst, buttonSecond,
-                               buttonThird, buttonFourth, tag: button.tag)
-        }
-    }
-    
-    private func checkAnswerFlag(tag: Int, button: UIButton) {
-        let green = UIColor.greenYellowBrilliant
-        let red = UIColor.redTangerineTango
-        let white = UIColor.white
-        
-        if checkAnswer(tag: tag) {
-            setButtonColor(button: button, color: green, titleColor: white)
-            correctAnswer()
-        } else {
-            setButtonColor(button: button, color: red, titleColor: white)
-            incorrectAnswer(tag: tag)
-        }
-    }
-    
-    private func checkAnswerLabel(tag: Int, button: UIButton) {
-        let green = UIColor.greenYellowBrilliant
-        let red = UIColor.redTangerineTango
-        
-        if checkAnswer(tag: tag) {
-            setButtonColor(button: button, color: green)
-            correctAnswer()
-        } else {
-            setButtonColor(button: button, color: red)
-            incorrectAnswer(tag: tag)
-        }
-    }
-    
-    private func setButtonColor(button: UIButton, color: UIColor, titleColor: UIColor? = nil) {
-        UIView.animate(withDuration: 0.3) {
-            button.backgroundColor = color
-            button.layer.shadowColor = color.cgColor
-            button.setTitleColor(titleColor, for: .normal)
-        }
-    }
-    
-    private func disableButtonFlag(buttons: UIButton..., tag: Int) {
-        let gray = UIColor.grayLight
-        let white = UIColor.white.withAlphaComponent(0.9)
-        
-        buttons.forEach { button in
-            if !(button.tag == tag) {
-                setButtonColor(button: button, color: white, titleColor: gray)
+            viewModel.checkAnswerFlag(button.tag, button)
+            viewModel.disableButtonFlag(button.tag, buttonFirst, buttonSecond, buttonThird, buttonFourth) {
+                self.delay()
             }
-            button.isEnabled = false
-        }
-        delay()
-    }
-    
-    private func disableButtonLabel(buttons: UIButton..., tag: Int) {
-        let gray = UIColor.skyGrayLight
-        
-        buttons.forEach { button in
-            if !(button.tag == tag) {
-                setButtonColor(button: button, color: gray)
+        } else {
+            viewModel.checkAnswerLabel(button.tag, button)
+            viewModel.disableButtonFlag(button.tag, buttonFirst, buttonSecond, buttonThird, buttonFourth) {
+                self.delay()
             }
-            button.isEnabled = false
         }
-        delay()
     }
     
     private func delay() {
         guard viewModel.currentQuestion + 1 < viewModel.countQuestions else { return }
         viewModel.timer = runTimer(time: 3, action: #selector(hideSubviews), repeats: false)
-    }
-    // MARK: - Time spent for every answer
-    private func checkTimeSpent() {
-        if viewModel.isOneQuestion() {
-            viewModel.setTimeSpent(shapeLayer)
-        } else if !viewModel.isOneQuestion(), viewModel.currentQuestion + 1 == viewModel.countQuestions {
-            viewModel.setTimeSpent(shapeLayer)
-        }
-    }
-    // MARK: - Add correct or incorrect answers
-    private func checkAnswer(tag: Int) -> Bool {
-        switch tag {
-        case 1:
-            return viewModel.data.questions[viewModel.currentQuestion] ==
-            viewModel.data.buttonFirst[viewModel.currentQuestion] ? true : false
-        case 2:
-            return viewModel.data.questions[viewModel.currentQuestion] ==
-            viewModel.data.buttonSecond[viewModel.currentQuestion] ? true : false
-        case 3:
-            return viewModel.data.questions[viewModel.currentQuestion] ==
-            viewModel.data.buttonThird[viewModel.currentQuestion] ? true : false
-        default:
-            return viewModel.data.questions[viewModel.currentQuestion] ==
-            viewModel.data.buttonFourth[viewModel.currentQuestion] ? true : false
-        }
-    }
-    
-    private func correctAnswer() {
-        correctAnswers.append(viewModel.data.questions[viewModel.currentQuestion])
-    }
-    
-    private func incorrectAnswer(tag: Int) {
-        incorrectAnswer(numberQuestion: viewModel.currentQuestion + 1, tag: tag,
-                        question: viewModel.data.questions[viewModel.currentQuestion],
-                        buttonFirst: viewModel.data.buttonFirst[viewModel.currentQuestion],
-                        buttonSecond: viewModel.data.buttonSecond[viewModel.currentQuestion],
-                        buttonThird: viewModel.data.buttonThird[viewModel.currentQuestion],
-                        buttonFourth: viewModel.data.buttonFourth[viewModel.currentQuestion],
-                        timeUp: false)
-    }
-    
-    private func incorrectAnswerTimeUp() {
-        incorrectAnswer(numberQuestion: viewModel.currentQuestion + 1, tag: 0,
-                        question: viewModel.data.questions[viewModel.currentQuestion],
-                        buttonFirst: viewModel.data.buttonFirst[viewModel.currentQuestion],
-                        buttonSecond: viewModel.data.buttonSecond[viewModel.currentQuestion],
-                        buttonThird: viewModel.data.buttonThird[viewModel.currentQuestion],
-                        buttonFourth: viewModel.data.buttonFourth[viewModel.currentQuestion],
-                        timeUp: true)
-    }
-    
-    private func incorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
-                                 buttonFirst: Countries, buttonSecond: Countries,
-                                 buttonThird: Countries, buttonFourth: Countries,
-                                 timeUp: Bool) {
-        let answer = Results(currentQuestion: numberQuestion, tag: tag,
-                             question: question, buttonFirst: buttonFirst,
-                             buttonSecond: buttonSecond, buttonThird: buttonThird,
-                             buttonFourth: buttonFourth, timeUp: timeUp)
-        incorrectAnswers.append(answer)
     }
     // MARK: - Refresh data for next question
     private func updateData() {
@@ -502,7 +370,7 @@ class QuizOfFlagsViewController: UIViewController {
         let white = UIColor.white
         let blue = UIColor.blueBlackSea
         buttons.forEach { button in
-            setButtonColor(button: button, color: white, titleColor: blue)
+            viewModel.setButtonColor(button, white, blue)
         }
     }
     // MARK: - Run next question
@@ -534,8 +402,8 @@ extension QuizOfFlagsViewController {
                 hideSubviews()
             } else {
                 let resultsVC = ResultsViewController()
-                resultsVC.correctAnswers = correctAnswers
-                resultsVC.incorrectAnswers = incorrectAnswers
+                resultsVC.correctAnswers = viewModel.correctAnswers
+                resultsVC.incorrectAnswers = viewModel.incorrectAnswers
                 resultsVC.mode = viewModel.setting
                 resultsVC.game = viewModel.games
                 resultsVC.spendTime = viewModel.spendTime

@@ -547,14 +547,14 @@ extension QuizOfCapitalsViewController {
             if currentQuestion + 1 < mode.countQuestions {
                 hideSubviews()
             } else {
-                let resultsVC = ResultsViewController()
-                resultsVC.correctAnswers = correctAnswers
-                resultsVC.incorrectAnswers = incorrectAnswers
-                resultsVC.mode = mode
-                resultsVC.game = game
-                resultsVC.spendTime = spendTime
-                resultsVC.delegateQuizOfCapitals = self
-                navigationController?.pushViewController(resultsVC, animated: true)
+//                let resultsVC = ResultsViewController()
+//                resultsVC.correctAnswers = correctAnswers
+//                resultsVC.incorrectAnswers = incorrectAnswers
+//                resultsVC.mode = mode
+//                resultsVC.game = game
+//                resultsVC.spendTime = spendTime
+//                resultsVC.delegateQuizOfCapitals = self
+//                navigationController?.pushViewController(resultsVC, animated: true)
             }
         }
     }

@@ -135,116 +135,73 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     var setting: Setting {
         mode
     }
-    
     var games: Games {
         game
     }
-    
     var setTag: Int {
         tag
     }
-    
     var countQuestions: Int {
         mode.countQuestions
     }
-    
     var countRows: Int {
         mode.countRows
     }
-    
-    var countRowsDefault: Int {
-        DefaultSetting.countRows.rawValue
-    }
-    
+    var countRowsDefault: Int = DefaultSetting.countRows.rawValue
     var countContinents = 0
-    
     var allCountries: Bool {
         mode.allCountries
     }
-    
     var americaContinent: Bool {
         mode.americaContinent
     }
-    
     var europeContinent: Bool {
         mode.europeContinent
     }
-    
     var africaContinent: Bool {
         mode.africaContinent
     }
-    
     var asiaContinent: Bool {
         mode.asiaContinent
     }
-    
     var oceaniaContinent: Bool {
         mode.oceaniaContinent
     }
-    
     var background: UIColor {
         game.background
     }
-    
     var colorPlay: UIColor {
         game.play
     }
-    
     var colorFavourite: UIColor {
         game.favourite
     }
-    
     var colorSwap: UIColor {
         game.swap
     }
-    
     var colorDone: UIColor {
         game.done
     }
-    
-    var diameter: CGFloat {
-        100
-    }
-    
+    var diameter: CGFloat = 100
     var image: String {
         game.image
     }
-    
     var name: String {
         game.name
     }
-    
     var description: String {
         game.description
     }
-    
     var gameType: TypeOfGame {
         game.gameType
     }
     
-    var countAllCountries: Int {
-        FlagsOfCountries.shared.countries.count
-    }
-    
-    var countCountriesOfAmerica: Int {
-        FlagsOfCountries.shared.countriesOfAmericanContinent.count
-    }
-    
-    var countCountriesOfEurope: Int {
-        FlagsOfCountries.shared.countriesOfEuropeanContinent.count
-    }
-    
-    var countCountriesOfAfrica: Int {
-        FlagsOfCountries.shared.countriesOfAfricanContinent.count
-    }
-    
-    var countCountriesOfAsia: Int {
-        FlagsOfCountries.shared.countriesOfAsianContinent.count
-    }
-    
-    var countCountriesOfOceania: Int {
-        FlagsOfCountries.shared.countriesOfOceanContinent.count
-    }
+    var countAllCountries: Int = FlagsOfCountries.shared.countries.count
+    var countCountriesOfAmerica: Int = FlagsOfCountries.shared.countriesOfAmericanContinent.count
+    var countCountriesOfEurope: Int = FlagsOfCountries.shared.countriesOfEuropeanContinent.count
+    var countCountriesOfAfrica: Int = FlagsOfCountries.shared.countriesOfAfricanContinent.count
+    var countCountriesOfAsia: Int = FlagsOfCountries.shared.countriesOfAsianContinent.count
+    var countCountriesOfOceania: Int = FlagsOfCountries.shared.countriesOfOceanContinent.count
     
     private var mode: Setting
     private let game: Games
@@ -644,6 +601,10 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         setTitlesTime(labelTime, labelDescription)
         completion()
     }
+    // MARK: - Transition to QuizOfFlagsViewController
+    func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol {
+        QuizOfFlagsViewModel(mode: mode, game: game)
+    }
     // MARK: - Set bullet list
     private func bullets(list: [String]) -> [ParagraphData] {
         var paragraphData: [ParagraphData] = []
@@ -984,9 +945,5 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
             let row = pickerViewAll.selectedRow(inComponent: 0)
             setTimeAllQuestions(time: row + 4 * countQuestions)
         }
-    }
-    // MARK: - Transition to QuizOfFlagsViewController
-    func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol {
-        QuizOfFlagsViewModel(mode: mode, game: game)
     }
 }

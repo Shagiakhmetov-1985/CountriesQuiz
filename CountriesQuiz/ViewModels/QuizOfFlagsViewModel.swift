@@ -95,6 +95,8 @@ protocol QuizOfFlagsViewModelProtocol {
     func updateDataLabel(_ labelCountry: UILabel,_ view: UIView,_ images: UIImageView...,and widthOfFlags: NSLayoutConstraint...)
     func resetColorButtons(_ buttons: UIButton...)
     func resetTimer(_ labelTimer: UILabel,_ view: UIView)
+    
+    func resultsViewController() -> ResultsViewModelProtocol
 }
 
 class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
@@ -534,6 +536,11 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
             shapeLayer.strokeEnd = 1
         }
     }
+    // MARK: - Transition to ResultViewController
+    func resultsViewController() -> ResultsViewModelProtocol {
+        ResultsViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
+                         incorrectAnswers: incorrectAnswers, spendTime: spendTime)
+    }
     // MARK: - Get countries for questions, countinue
     private func getRandomCountries() -> [Countries] {
         checkContinents(continents: mode.allCountries, mode.americaContinent,
@@ -802,10 +809,10 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         var counter = 0
         buttons.forEach { button in
             switch counter {
-            case 0: button.setTitle(data.buttonFirst[currentQuestion].name, for: .normal)
-            case 1: button.setTitle(data.buttonSecond[currentQuestion].name, for: .normal)
-            case 2: button.setTitle(data.buttonThird[currentQuestion].name, for: .normal)
-            default: button.setTitle(data.buttonFourth[currentQuestion].name, for: .normal)
+            case 0: button.setTitle(buttonFirst, for: .normal)
+            case 1: button.setTitle(buttonSecond, for: .normal)
+            case 2: button.setTitle(buttonThird, for: .normal)
+            default: button.setTitle(buttonFourth, for: .normal)
             }
             counter += 1
         }

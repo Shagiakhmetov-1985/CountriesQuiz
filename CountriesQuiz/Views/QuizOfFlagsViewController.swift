@@ -326,12 +326,9 @@ extension QuizOfFlagsViewController {
             if viewModel.currentQuestion + 1 < viewModel.countQuestions {
                 hideSubviews()
             } else {
+                let resultsViewModel = viewModel.resultsViewController()
                 let resultsVC = ResultsViewController()
-                resultsVC.correctAnswers = viewModel.correctAnswers
-                resultsVC.incorrectAnswers = viewModel.incorrectAnswers
-                resultsVC.mode = viewModel.setting
-                resultsVC.game = viewModel.games
-                resultsVC.spendTime = viewModel.spendTime
+                resultsVC.viewModel = resultsViewModel
                 resultsVC.delegateQuizOfFlag = self
                 navigationController?.pushViewController(resultsVC, animated: true)
             }

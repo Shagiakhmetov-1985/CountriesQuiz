@@ -910,14 +910,14 @@ extension QuestionnaireViewController {
     }
     
     private func resultsVC() {
-        let resultsVC = ResultsViewController()
-        resultsVC.mode = mode
-        resultsVC.game = game
-        resultsVC.correctAnswers = correctAnswers
-        resultsVC.incorrectAnswers = incorrectAnswers
-        resultsVC.spendTime = spendTime
-        resultsVC.delegateQuestionnaire = self
-        navigationController?.pushViewController(resultsVC, animated: true)
+//        let resultsVC = ResultsViewController()
+//        resultsVC.mode = mode
+//        resultsVC.game = game
+//        resultsVC.correctAnswers = correctAnswers
+//        resultsVC.incorrectAnswers = incorrectAnswers
+//        resultsVC.spendTime = spendTime
+//        resultsVC.delegateQuestionnaire = self
+//        navigationController?.pushViewController(resultsVC, animated: true)
     }
 }
 // MARK: - Setup buttons

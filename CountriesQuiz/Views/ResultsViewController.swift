@@ -288,38 +288,19 @@ class ResultsViewController: UIViewController {
     }
     
     @objc private func circleCorrectAnswers() {
-        viewModel.timer.invalidate()
-        let delay = 0.75
-        let delayTimer = delay + 0.3
-        let correctAnswers = Float(viewModel.correctAnswers.count)
-        let value = correctAnswers / Float(viewModel.mode.countQuestions)
-        setCircle(color: .greenHarlequin.withAlphaComponent(0.3), radius: 80, strokeEnd: 1)
-        setCircle(color: .greenHarlequin, radius: 80, strokeEnd: 0, value: value, duration: delay)
-        viewModel.showAnimate(stackView: stackViewCorrect)
-        
-        viewModel.timer = runTimer(interval: delayTimer, action: #selector(circleIncorrectAnswers))
+        viewModel.circleCorrectAnswers(view, stackViewCorrect) { [self] delay in
+            viewModel.timer = runTimer(interval: delay, action: #selector(circleIncorrectAnswers))
+        }
     }
     
     @objc private func circleIncorrectAnswers() {
-        viewModel.timer.invalidate()
-        let delay = 0.75
-        let delayTimer = delay + 0.3
-        let incorrectAnswers = Float(viewModel.incorrectAnswers.count)
-        let value = incorrectAnswers / Float(viewModel.mode.countQuestions)
-        setCircle(color: .redTangerineTango.withAlphaComponent(0.3), radius: 61, strokeEnd: 1)
-        setCircle(color: .redTangerineTango, radius: 61, strokeEnd: 0, value: value, duration: delay)
-        viewModel.showAnimate(stackView: stackViewIncorrect)
-        
-        viewModel.timer = runTimer(interval: delayTimer, action: #selector(circleSpentTime))
+        viewModel.circleIncorrectAnswers(view, stackViewIncorrect) { [self] delay in
+            viewModel.timer = runTimer(interval: delay, action: #selector(circleSpentTime))
+        }
     }
     
     @objc private func circleSpentTime() {
-        viewModel.timer.invalidate()
-        let delay = 0.75
-        let value = viewModel.circleTime / 100
-        setCircle(color: .blueMiddlePersian.withAlphaComponent(0.3), radius: 42, strokeEnd: 1)
-        setCircle(color: .blueMiddlePersian, radius: 42, strokeEnd: 0, value: value, duration: delay)
-        viewModel.showAnimate(stackView: stackViewTimeSpend)
+        viewModel.circleSpentTime(view, stackViewTimeSpend)
     }
     // MARK: - Press exit button
     @objc private func exitToMenu() {
@@ -331,11 +312,10 @@ class ResultsViewController: UIViewController {
     }
     // MARK: - Show incorrect answers
     @objc private func showIncorrectAnswers() {
+        let incorrectAnswers = viewModel.incorrectAnswersViewController()
         let incorrectAnswersVC = IncorrectAnswersViewController()
         let navigationVC = UINavigationController(rootViewController: incorrectAnswersVC)
-        incorrectAnswersVC.mode = viewModel.mode
-        incorrectAnswersVC.game = viewModel.game
-        incorrectAnswersVC.results = viewModel.incorrectAnswers
+        incorrectAnswersVC.viewModel = incorrectAnswers
         navigationVC.modalPresentationStyle = .custom
         present(navigationVC, animated: true)
     }
@@ -390,43 +370,6 @@ extension ResultsViewController {
         return imageView
     }
 }
-// MARK: - Setup circle shapes
-extension ResultsViewController {
-    private func setCircle(color: UIColor, radius: CGFloat, strokeEnd: CGFloat,
-                           value: Float? = nil, duration: CGFloat? = nil) {
-        let center = CGPoint(x: view.frame.width / 3, y: 230)
-        let endAngle = CGFloat.pi / 2
-        let startAngle = 2 * CGFloat.pi + endAngle
-        let circularPath = UIBezierPath(
-            arcCenter: center,
-            radius: radius,
-            startAngle: -startAngle,
-            endAngle: -endAngle,
-            clockwise: true)
-        
-        let trackShape = CAShapeLayer()
-        trackShape.path = circularPath.cgPath
-        trackShape.lineWidth = 16
-        trackShape.fillColor = UIColor.clear.cgColor
-        trackShape.strokeEnd = strokeEnd
-        trackShape.strokeColor = color.cgColor
-        trackShape.lineCap = CAShapeLayerLineCap.round
-        view.layer.addSublayer(trackShape)
-        
-        if let value = value, let duration = duration {
-            animateCircle(shape: trackShape, value: value, duration: duration)
-        }
-    }
-    
-    private func animateCircle(shape: CAShapeLayer, value: Float, duration: CGFloat) {
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.toValue = value
-        animation.duration = CFTimeInterval(duration)
-        animation.fillMode = CAMediaTimingFillMode.forwards
-        animation.isRemovedOnCompletion = false
-        shape.add(animation, forKey: "animation")
-    }
-}
 // MARK: - Setup constraints
 extension ResultsViewController {
     private func setConstraints() {
@@ -438,19 +381,19 @@ extension ResultsViewController {
         setupSquare(subview: buttonDetails, sizes: 40)
         
         constraintsView(subview: viewCorrectAnswers, layout: view.topAnchor,
-                        constant: 335, leading: 20, trailing: -widthHalf(),
+                        constant: 335, leading: 20, trailing: -viewModel.width(view),
                         height: 110, labelFirst: labelCorrectCount,
                         image: imageCorrectAnswers, labelSecond: labelCorrectTitle)
         constraintsView(subview: viewIncorrectAnswers, layout: viewCorrectAnswers.bottomAnchor,
-                        constant: 20, leading: 20, trailing: -widthHalf(),
+                        constant: 20, leading: 20, trailing: -viewModel.width(view),
                         height: 110, labelFirst: labelIncorrectCount,
                         image: imageIncorrectAnswers, labelSecond: labelIncorrectTitle)
         constraintsView(subview: viewTimeSpend, layout: view.topAnchor,
-                        constant: 335, leading: widthHalf(), trailing: -20,
+                        constant: 335, leading: viewModel.width(view), trailing: -20,
                         height: 120, labelFirst: labelNumberTimeSpend,
                         image: imageTimeSpend, labelSecond: labelTimeSpend)
         constraintsView(subview: viewCountQuestions, layout: viewTimeSpend.bottomAnchor,
-                        constant: 20, leading: widthHalf(), trailing: -20,
+                        constant: 20, leading: viewModel.width(view), trailing: -20,
                         height: 100, labelFirst: labelCountQuestions,
                         image: imageCountQuestions, labelSecond: labelCountTitle)
         
@@ -471,10 +414,6 @@ extension ResultsViewController {
             buttonComplete.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             buttonComplete.heightAnchor.constraint(equalToConstant: 55)
         ])
-    }
-    
-    private func widthHalf() -> CGFloat {
-        view.frame.width / 2 + 10
     }
     
     private func constraintsView(subview: UIView, layout: NSLayoutYAxisAnchor,

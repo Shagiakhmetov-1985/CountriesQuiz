@@ -34,18 +34,16 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(checkCell(), forCellReuseIdentifier: "cell")
+        tableView.register(viewModel.checkCell(), forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = game.background
+        tableView.backgroundColor = viewModel.game.background
         tableView.separatorColor = .white
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
-    var mode: Setting!
-    var game: Games!
-    var results: [Results]!
+    var viewModel: IncorrectAnswersViewModelProtocol!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,49 +54,33 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        results.count
+        viewModel.numberOfRows
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        mode.flag ? 70 : 95
+        viewModel.heightForRow
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        customCell(cell: cell, indexPath: indexPath)
+        viewModel.customCell(cell: cell, indexPath: indexPath)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailsVC = DetailsViewController()
-        detailsVC.mode = mode
-        detailsVC.game = game
-        detailsVC.result = results[indexPath.row]
+        detailsVC.mode = viewModel.mode
+        detailsVC.game = viewModel.game
+        detailsVC.result = viewModel.results[indexPath.row]
         navigationController?.pushViewController(detailsVC, animated: true)
-        
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    // MARK: - General methods
-    private func customCell(cell: UITableViewCell, indexPath: IndexPath) {
-        if mode.flag {
-            flagCell(cell: cell as! CustomCell, indexPath: indexPath)
-        } else {
-            labelCell(cell: cell as! CustomLabelCell, indexPath: indexPath)
-        }
-    }
-    
     private func setupDesign() {
-        view.backgroundColor = game.background
+        view.backgroundColor = viewModel.game.background
     }
     
     private func setupSubviews() {
-        setupSubviews(subviews: labelTitle, tableView, on: view)
-    }
-    
-    private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
-        subviews.forEach { subview in
-            subviewOther.addSubview(subview)
-        }
+        viewModel.setupSubviews(subviews: labelTitle, tableView, on: view)
     }
     
     private func setupBarButton() {
@@ -106,34 +88,8 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         navigationItem.leftBarButtonItem = barButton
     }
     
-    private func setProgress(value: Int) -> Float {
-        Float(value) / Float(mode.countQuestions)
-    }
-    
-    private func setText(value: Int) -> String {
-        "\(value) / \(mode.countQuestions)"
-    }
-    
     @objc private func exitToResults() {
         dismiss(animated: true)
-    }
-    // MARK: - Properties for any game type
-    private func checkCell() -> AnyClass {
-        mode.flag ? CustomCell.self : CustomLabelCell.self
-    }
-    // MARK: - Custom cell for quiestions of flags
-    private func flagCell(cell: CustomCell, indexPath: IndexPath) {
-        cell.image.image = UIImage(named: results[indexPath.row].question.flag)
-        cell.progressView.progress = setProgress(value: results[indexPath.row].currentQuestion)
-        cell.labelNumber.text = setText(value: results[indexPath.row].currentQuestion)
-        cell.contentView.backgroundColor = game.background
-    }
-    // MARK: - Custom cell for questions of country name
-    private func labelCell(cell: CustomLabelCell, indexPath: IndexPath) {
-        cell.labelCountry.text = results[indexPath.row].question.name
-        cell.progressView.progress = setProgress(value: results[indexPath.row].currentQuestion)
-        cell.labelNumber.text = setText(value: results[indexPath.row].currentQuestion)
-        cell.contentView.backgroundColor = game.background
     }
 }
 // MARK: - Setup constraints

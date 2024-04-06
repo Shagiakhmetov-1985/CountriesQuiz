@@ -30,6 +30,7 @@ protocol ResultsViewModelProtocol {
     func isOneQuestion() -> Bool
     func oneQuestionTime() -> Int
     func allQuestionsTime() -> Int
+    func width(_ view: UIView) -> CGFloat
     
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
     func opacity(subviews: UIView..., opacity: Float)
@@ -38,7 +39,11 @@ protocol ResultsViewModelProtocol {
     func percentIncorrectAnswers() -> String
     func percentCheckMode() -> CGFloat
     
-    func showAnimate(stackView: UIStackView)
+    func circleCorrectAnswers(_ view: UIView,_ stackView: UIStackView, completion: @escaping (CGFloat) -> Void)
+    func circleIncorrectAnswers(_ view: UIView,_ stackView: UIStackView, completion: @escaping (CGFloat) -> Void)
+    func circleSpentTime(_ view: UIView,_ stackView: UIStackView)
+    
+    func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol
 }
 
 class ResultsViewModel: ResultsViewModelProtocol {
@@ -93,6 +98,10 @@ class ResultsViewModel: ResultsViewModelProtocol {
     func allQuestionsTime() -> Int {
         mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
     }
+    
+    func width(_ view: UIView) -> CGFloat {
+        view.frame.width / 2 + 10
+    }
     // MARK: - Set subviews
     func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
         subviews.forEach { subview in
@@ -121,11 +130,48 @@ class ResultsViewModel: ResultsViewModelProtocol {
     func percentCheckMode() -> CGFloat {
         isOneQuestion() ? checkGameType() : timeSpend()
     }
-    // MARK: - Animations
-    func showAnimate(stackView: UIStackView) {
-        UIView.animate(withDuration: 1) {
-            self.opacity(subviews: stackView, opacity: 1)
-        }
+    // MARK: - Set circles
+    func circleCorrectAnswers(_ view: UIView, _ stackView: UIStackView, completion: @escaping (CGFloat) -> Void) {
+        timer.invalidate()
+        let delay: CGFloat = 0.75
+        let delayTimer = delay + 0.3
+        let correctAnswers = Float(correctAnswers.count)
+        let value = correctAnswers / Float(mode.countQuestions)
+        setCircle(color: .greenHarlequin.withAlphaComponent(0.3), radius: 80,
+                            strokeEnd: 1, value: nil, duration: nil, view: view)
+        setCircle(color: .greenHarlequin, radius: 80, strokeEnd: 0,
+                            value: value, duration: delay, view: view)
+        showAnimate(stackView: stackView)
+        completion(delayTimer)
+    }
+    
+    func circleIncorrectAnswers(_ view: UIView, _ stackView: UIStackView, completion: @escaping (CGFloat) -> Void) {
+        timer.invalidate()
+        let delay: CGFloat = 0.75
+        let delayTimer = delay + 0.3
+        let incorrectAnswers = Float(incorrectAnswers.count)
+        let value = incorrectAnswers / Float(mode.countQuestions)
+        setCircle(color: .redTangerineTango.withAlphaComponent(0.3), radius: 61,
+                            strokeEnd: 1, value: nil, duration: nil, view: view)
+        setCircle(color: .redTangerineTango, radius: 61, strokeEnd: 0,
+                            value: value, duration: delay, view: view)
+        showAnimate(stackView: stackView)
+        completion(delayTimer)
+    }
+    
+    func circleSpentTime(_ view: UIView, _ stackView: UIStackView) {
+        timer.invalidate()
+        let delay: CGFloat = 0.75
+        let value = circleTime / 100
+        setCircle(color: .blueMiddlePersian.withAlphaComponent(0.3), radius: 42,
+                            strokeEnd: 1, value: nil, duration: nil, view: view)
+        setCircle(color: .blueMiddlePersian, radius: 42, strokeEnd: 0,
+                            value: value, duration: delay, view: view)
+        showAnimate(stackView: stackView)
+    }
+    // MARK: - Transition to IncorrectAnswersViewController
+    func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol {
+        IncorrectAnswersViewModel(mode: mode, game: game, results: incorrectAnswers)
     }
     // MARK: - Constants, countinue
     private func checkTitleTimeSpend() -> String {
@@ -209,5 +255,46 @@ class ResultsViewModel: ResultsViewModelProtocol {
             seconds = timeSpent / CGFloat(time) * 100
         }
         return seconds
+    }
+    // MARK: - Animations
+    private func showAnimate(stackView: UIStackView) {
+        UIView.animate(withDuration: 1) {
+            self.opacity(subviews: stackView, opacity: 1)
+        }
+    }
+    // MARK: - Set circles
+    private func setCircle(color: UIColor, radius: CGFloat, strokeEnd: CGFloat,
+                   value: Float? = nil, duration: CGFloat? = nil, view: UIView) {
+        let center = CGPoint(x: view.frame.width / 3, y: 230)
+        let endAngle = CGFloat.pi / 2
+        let startAngle = 2 * CGFloat.pi + endAngle
+        let circularPath = UIBezierPath(
+            arcCenter: center,
+            radius: radius,
+            startAngle: -startAngle,
+            endAngle: -endAngle,
+            clockwise: true)
+        
+        let trackShape = CAShapeLayer()
+        trackShape.path = circularPath.cgPath
+        trackShape.lineWidth = 16
+        trackShape.fillColor = UIColor.clear.cgColor
+        trackShape.strokeEnd = strokeEnd
+        trackShape.strokeColor = color.cgColor
+        trackShape.lineCap = CAShapeLayerLineCap.round
+        view.layer.addSublayer(trackShape)
+        
+        if let value = value, let duration = duration {
+            animateCircle(shape: trackShape, value: value, duration: duration)
+        }
+    }
+    
+    private func animateCircle(shape: CAShapeLayer, value: Float, duration: CGFloat) {
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.toValue = value
+        animation.duration = CFTimeInterval(duration)
+        animation.fillMode = CAMediaTimingFillMode.forwards
+        animation.isRemovedOnCompletion = false
+        shape.add(animation, forKey: "animation")
     }
 }

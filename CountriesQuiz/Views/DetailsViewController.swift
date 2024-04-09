@@ -13,215 +13,215 @@ class DetailsViewController: UIViewController {
     }()
     
     private lazy var imageFlag: UIImageView = {
-        setupImage(image: result.question.flag)
+        setupImage(image: viewModel.result.question.flag)
     }()
     
     private lazy var labelCountry: UILabel = {
-        setupLabel(title: result.question.name, size: 32, color: .white)
+        setupLabel(title: viewModel.result.question.name, size: 32, color: .white)
     }()
     
     private lazy var progressView: UIProgressView = {
-        setupProgressView(progress: setProgress())
+        setupProgressView(progress: viewModel.progress)
     }()
     
     private lazy var labelNumberQuiz: UILabel = {
-        setupLabel(title: setNumberQuestion(), size: 23, color: .white)
+        setupLabel(title: viewModel.numberQuestion, size: 23, color: .white)
     }()
     
     private lazy var viewFirst: UIView = {
-        switch game.gameType {
+        switch viewModel.game.gameType {
         case .quizOfFlag, .quizOfCapitals: setupView(
-            color: setBackgroundColor(
-                question: result.question,
-                answer: result.buttonFirst,
+            color: viewModel.setBackgroundColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonFirst,
                 tag: 1,
-                select: result.tag),
-            subview: isFlag() ? labelFirst : subview(imageFirst, labelFirst))
+                select: viewModel.result.tag),
+            subview: viewModel.isFlag() ? labelFirst : viewModel.subview(imageFirst, labelFirst))
         default: setupView(
             checkmark: checkmarkFirst,
-            color: setButtonColor(
-                question: result.question,
-                answer: result.buttonFirst,
+            color: viewModel.setButtonColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonFirst,
                 tag: 1,
-                select: result.tag),
-            subview: isFlag() ? labelFirst : imageFirst)
+                select: viewModel.result.tag),
+            subview: viewModel.isFlag() ? labelFirst : imageFirst)
         }
     }()
     
     private lazy var labelFirst: UILabel = {
         setupLabel(
-            title: checkTitleGameType(title: result.buttonFirst),
+            title: viewModel.setTitle(title: viewModel.result.buttonFirst),
             size: 23,
             color: checkGameType(
-                question: result.question,
-                answer: result.buttonFirst,
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonFirst,
                 tag: 1,
-                select: result.tag))
+                select: viewModel.result.tag))
     }()
     
     private lazy var imageFirst: UIImageView = {
-        setupImage(image: result.buttonFirst.flag, radius: 8)
+        setupImage(image: viewModel.result.buttonFirst.flag, radius: 8)
     }()
     
     private lazy var checkmarkFirst: UIImageView = {
         setupCheckmark(
-            image: setCheckmark(
-                question: result.question,
-                answer: result.buttonFirst,
+            image: viewModel.setCheckmark(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonFirst,
                 tag: 1,
-                select: result.tag),
-            color: setColor(
-                question: result.question,
-                answer: result.buttonFirst,
+                select: viewModel.result.tag),
+            color: viewModel.setColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonFirst,
                 tag: 1,
-                select: result.tag))
+                select: viewModel.result.tag))
     }()
     
     private lazy var viewSecond: UIView = {
-        switch game.gameType {
+        switch viewModel.game.gameType {
         case .quizOfFlag, .quizOfCapitals: setupView(
-            color: setBackgroundColor(
-                question: result.question,
-                answer: result.buttonSecond,
+            color: viewModel.setBackgroundColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonSecond,
                 tag: 2,
-                select: result.tag),
-            subview: isFlag() ? labelSecond : subview(imageSecond, labelSecond))
+                select: viewModel.result.tag),
+            subview: viewModel.isFlag() ? labelSecond : viewModel.subview(imageSecond, labelSecond))
         default: setupView(
             checkmark: checkmarkSecond,
-            color: setButtonColor(
-                question: result.question,
-                answer: result.buttonSecond,
+            color: viewModel.setButtonColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonSecond,
                 tag: 2,
-                select: result.tag),
-            subview: isFlag() ? labelSecond : imageSecond)
+                select: viewModel.result.tag),
+            subview: viewModel.isFlag() ? labelSecond : imageSecond)
         }
     }()
     
     private lazy var labelSecond: UILabel = {
         setupLabel(
-            title: checkTitleGameType(title: result.buttonSecond),
+            title: viewModel.setTitle(title: viewModel.result.buttonSecond),
             size: 23,
             color: checkGameType(
-                question: result.question,
-                answer: result.buttonSecond,
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonSecond,
                 tag: 2,
-                select: result.tag))
+                select: viewModel.result.tag))
     }()
     
     private lazy var checkmarkSecond: UIImageView = {
         setupCheckmark(
-            image: setCheckmark(
-                question: result.question,
-                answer: result.buttonSecond,
+            image: viewModel.setCheckmark(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonSecond,
                 tag: 2,
-                select: result.tag),
-            color: setColor(
-                question: result.question,
-                answer: result.buttonSecond,
+                select: viewModel.result.tag),
+            color: viewModel.setColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonSecond,
                 tag: 2,
-                select: result.tag))
+                select: viewModel.result.tag))
     }()
     
     private lazy var imageSecond: UIImageView = {
-        setupImage(image: result.buttonSecond.flag, radius: 8)
+        setupImage(image: viewModel.result.buttonSecond.flag, radius: 8)
     }()
     
     private lazy var viewThird: UIView = {
-        switch game.gameType {
+        switch viewModel.game.gameType {
         case .quizOfFlag, .quizOfCapitals: setupView(
-            color: setBackgroundColor(
-                question: result.question,
-                answer: result.buttonThird,
+            color: viewModel.setBackgroundColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonThird,
                 tag: 3,
-                select: result.tag),
-            subview: isFlag() ? labelThird : subview(imageThird, labelThird))
+                select: viewModel.result.tag),
+            subview: viewModel.isFlag() ? labelThird : viewModel.subview(imageThird, labelThird))
         default: setupView(
             checkmark: checkmarkThird,
-            color: setButtonColor(
-                question: result.question,
-                answer: result.buttonThird,
+            color: viewModel.setButtonColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonThird,
                 tag: 3,
-                select: result.tag),
-            subview: isFlag() ? labelThird : imageThird)
+                select: viewModel.result.tag),
+            subview: viewModel.isFlag() ? labelThird : imageThird)
         }
     }()
     
     private lazy var labelThird: UILabel = {
         setupLabel(
-            title: checkTitleGameType(title: result.buttonThird),
+            title: viewModel.setTitle(title: viewModel.result.buttonThird),
             size: 23,
             color: checkGameType(
-                question: result.question,
-                answer: result.buttonThird,
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonThird,
                 tag: 3,
-                select: result.tag))
+                select: viewModel.result.tag))
     }()
     
     private lazy var imageThird: UIImageView = {
-        setupImage(image: result.buttonThird.flag, radius: 8)
+        setupImage(image: viewModel.result.buttonThird.flag, radius: 8)
     }()
     
     private lazy var checkmarkThird: UIImageView = {
         setupCheckmark(
-            image: setCheckmark(
-                question: result.question,
-                answer: result.buttonThird,
+            image: viewModel.setCheckmark(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonThird,
                 tag: 3,
-                select: result.tag),
-            color: setColor(
-                question: result.question,
-                answer: result.buttonThird,
+                select: viewModel.result.tag),
+            color: viewModel.setColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonThird,
                 tag: 3,
-                select: result.tag))
+                select: viewModel.result.tag))
     }()
     
     private lazy var viewFourth: UIView = {
-        switch game.gameType {
+        switch viewModel.game.gameType {
         case .quizOfFlag, .quizOfCapitals: setupView(
-            color: setBackgroundColor(
-                question: result.question,
-                answer: result.buttonFourth,
+            color: viewModel.setBackgroundColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonFourth,
                 tag: 4,
-                select: result.tag),
-            subview: isFlag() ? labelFourth : subview(imageFourth, labelFourth))
+                select: viewModel.result.tag),
+            subview: viewModel.isFlag() ? labelFourth : viewModel.subview(imageFourth, labelFourth))
         default: setupView(
             checkmark: checkmarkFourth,
-            color: setButtonColor(
-                question: result.question,
-                answer: result.buttonFourth,
+            color: viewModel.setButtonColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonFourth,
                 tag: 4,
-                select: result.tag),
-            subview: isFlag() ? labelFourth : imageFourth)
+                select: viewModel.result.tag),
+            subview: viewModel.isFlag() ? labelFourth : imageFourth)
         }
     }()
     
     private lazy var labelFourth: UILabel = {
         setupLabel(
-            title: checkTitleGameType(title: result.buttonFourth),
+            title: viewModel.setTitle(title: viewModel.result.buttonFourth),
             size: 23,
             color: checkGameType(
-                question: result.question,
-                answer: result.buttonFourth,
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonFourth,
                 tag: 4,
-                select: result.tag))
+                select: viewModel.result.tag))
     }()
     
     private lazy var imageFourth: UIImageView = {
-        setupImage(image: result.buttonFourth.flag, radius: 8)
+        setupImage(image: viewModel.result.buttonFourth.flag, radius: 8)
     }()
     
     private lazy var checkmarkFourth: UIImageView = {
         setupCheckmark(
-            image: setCheckmark(
-                question: result.question,
-                answer: result.buttonFourth,
+            image: viewModel.setCheckmark(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonFourth,
                 tag: 4,
-                select: result.tag),
-            color: setColor(
-                question: result.question,
-                answer: result.buttonFourth,
+                select: viewModel.result.tag),
+            color: viewModel.setColor(
+                question: viewModel.result.question,
+                answer: viewModel.result.buttonFourth,
                 tag: 4,
-                select: result.tag))
+                select: viewModel.result.tag))
     }()
     
     private lazy var stackViewFlag: UIStackView = {
@@ -244,9 +244,7 @@ class DetailsViewController: UIViewController {
         setupStackView(stackViewFirst: stackViewFirst, stackViewSecond: stackViewSecond)
     }()
     
-    var mode: Setting!
-    var game: Games!
-    var result: Results!
+    var viewModel: DetailsViewModelProtocol!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -257,134 +255,39 @@ class DetailsViewController: UIViewController {
     }
     // MARK: - General methods
     private func setupDesign() {
-        view.backgroundColor = game.background
+        view.backgroundColor = viewModel.game.background
         navigationItem.hidesBackButton = true
+        viewModel.setSubviews(stackViewFlag, stackViewLabel)
     }
     
     private func setupBarButton() {
-        let barButton = UIBarButtonItem(customView: buttonBack)
-        navigationItem.leftBarButtonItem = barButton
+        viewModel.setupBarButton(buttonBack, navigationItem)
     }
     
     private func setupSubviews() {
-        isFlag() ? setupSubviewsFlag() : setupSubviewsLabel()
+        viewModel.isFlag() ? setupSubviewsFlag() : setupSubviewsLabel()
     }
     
     private func setupSubviewsFlag() {
-        setupSubviews(subviews: imageFlag, progressView, labelNumberQuiz,
-                      stackViewFlag, on: view)
+        viewModel.setupSubviews(subviews: imageFlag, progressView, labelNumberQuiz,
+                                stackViewFlag, on: view)
     }
     
     private func setupSubviewsLabel() {
-        setupSubviews(subviews: labelCountry, progressView, labelNumberQuiz,
-                      checkStackView(), on: view)
-    }
-    
-    private func setupSubviews(subviews: UIView..., on otherSubview: UIView) {
-        subviews.forEach { subview in
-            otherSubview.addSubview(subview)
-        }
-    }
-    
-    private func isFlag() -> Bool {
-        mode.flag ? true : false
+        viewModel.setupSubviews(subviews: labelCountry, progressView, labelNumberQuiz,
+                                viewModel.stackView, on: view)
     }
     
     private func checkGameType(question: Countries, answer: Countries,
                                tag: Int, select: Int) -> UIColor {
-        switch game.gameType {
+        switch viewModel.game.gameType {
         case .quizOfFlag, .quizOfCapitals:
-            setTitleColor(question: question, answer: answer, tag: tag, select: select)
+            viewModel.setTitleColor(question: question, answer: answer, tag: tag, select: select)
         default:
-            setColor(question: question, answer: answer, tag: tag, select: select)
+            viewModel.setColor(question: question, answer: answer, tag: tag, select: select)
         }
     }
     
-    private func checkTitleGameType(title: Countries) -> String {
-        switch game.gameType {
-        case .quizOfFlag, .questionnaire: title.name
-        default: title.capitals
-        }
-    }
-    
-    private func subview(_ image: UIImageView,_ label: UILabel) -> UIView {
-        game.gameType == .quizOfFlag ? image : label
-    }
-    // MARK: - Set progress view and number of question
-    private func setProgress() -> Float {
-        Float(result.currentQuestion) / Float(mode.countQuestions)
-    }
-    
-    private func setNumberQuestion() -> String {
-        "\(result.currentQuestion) / \(mode.countQuestions)"
-    }
-    
-    private func checkStackView() -> UIStackView {
-        switch game.gameType {
-        case .quizOfFlag, .questionnaire: stackViewLabel
-        default: stackViewFlag
-        }
-    }
-    // MARK: - Set colors for buttons and titles, game type quiz of flags / capitals
-    private func setBackgroundColor(question: Countries, answer: Countries,
-                                    tag: Int, select: Int) -> UIColor {
-        switch true {
-        case question == answer && (tag == select || !(tag == select)):
-            return .greenYellowBrilliant
-        case !(question == answer) && tag == select:
-            return game.gameType == .quizOfFlag ? .redTangerineTango : .bismarkFuriozo
-        default:
-            return mode.flag ? .white.withAlphaComponent(0.9) : checkColor()
-        }
-    }
-    
-    private func checkColor() -> UIColor {
-        game.gameType == .quizOfFlag ? .skyGrayLight : .white.withAlphaComponent(0.9)
-    }
-    
-    private func setTitleColor(question: Countries, answer: Countries,
-                               tag: Int, select: Int) -> UIColor {
-        switch true {
-        case question == answer || tag == select:
-            return .white
-        default:
-            return .grayLight
-        }
-    }
-    // MARK: - Set colors for buttons, titles and checkmarks, game type questionnaire
-    private func setButtonColor(question: Countries, answer: Countries,
-                                tag: Int, select: Int) -> UIColor {
-        switch true {
-        case question == answer || tag == select:
-            return .white
-        default:
-            return .clear
-        }
-    }
-    
-    private func setColor(question: Countries, answer: Countries,
-                          tag: Int, select: Int) -> UIColor {
-        switch true {
-        case question == answer && (tag == select || !(tag == select)):
-            return .greenHarlequin
-        case !(question == answer) && tag == select:
-            return .redTangerineTango
-        default:
-            return .white
-        }
-    }
-    // MARK: - Set checkmarks
-    private func setCheckmark(question: Countries, answer: Countries,
-                              tag: Int, select: Int) -> String {
-        switch true {
-        case question == answer && (tag == select || !(tag == select)):
-            return "checkmark.circle.fill"
-        case !(question == answer) && tag == select:
-            return "xmark.circle.fill"
-        default:
-            return "circle"
-        }
-    }
     @objc private func backToIncorrectAnswers() {
         navigationController?.popViewController(animated: true)
     }
@@ -443,7 +346,7 @@ extension DetailsViewController {
 extension DetailsViewController {
     private func setupProgressView(progress: Float) -> UIProgressView {
         let progressView = UIProgressView()
-        progressView.layer.cornerRadius = radius()
+        progressView.layer.cornerRadius = viewModel.radius
         progressView.clipsToBounds = true
         progressView.progressTintColor = .white
         progressView.trackTintColor = .white.withAlphaComponent(0.3)
@@ -462,7 +365,7 @@ extension DetailsViewController {
         view.layer.shadowOpacity = 0.4
         view.layer.shadowOffset = CGSize(width: 0, height: 6)
         view.translatesAutoresizingMaskIntoConstraints = false
-        setupSubviews(subviews: subview, on: view)
+        viewModel.setupSubviews(subviews: subview, on: view)
         return view
     }
     
@@ -474,7 +377,7 @@ extension DetailsViewController {
         view.layer.borderColor = UIColor.white.cgColor
         view.layer.borderWidth = 1.5
         view.translatesAutoresizingMaskIntoConstraints = false
-        setupSubviews(subviews: checkmark, subview, on: view)
+        viewModel.setupSubviews(subviews: checkmark, subview, on: view)
         return view
     }
 }
@@ -514,12 +417,12 @@ extension DetailsViewController {
     private func setupConstraints() {
         setupSquare(subview: buttonBack, sizes: 40)
         
-        isFlag() ? constraintsFlag() : constraintsLabel()
+        viewModel.isFlag() ? constraintsFlag() : constraintsLabel()
         
         NSLayoutConstraint.activate([
             progressView.topAnchor.constraint(equalTo: layoutYAxisAnchor(), constant: 30),
             progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            progressView.heightAnchor.constraint(equalToConstant: radius() * 2)
+            progressView.heightAnchor.constraint(equalToConstant: viewModel.radius * 2)
         ])
         
         NSLayoutConstraint.activate([
@@ -529,15 +432,15 @@ extension DetailsViewController {
             labelNumberQuiz.widthAnchor.constraint(equalToConstant: 85)
         ])
         
-        isFlag() ? constraintsStackViewFlag() : constraintsStackViewLabel()
+        viewModel.isFlag() ? constraintsStackViewFlag() : constraintsStackViewLabel()
     }
     
     private func constraintsFlag() {
-        let flag = result.question.flag
+        let flag = viewModel.result.question.flag
         NSLayoutConstraint.activate([
             imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
             imageFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag(flag: flag)),
+            imageFlag.widthAnchor.constraint(equalToConstant: viewModel.width(flag)),
             imageFlag.heightAnchor.constraint(equalToConstant: 168)
         ])
     }
@@ -545,26 +448,26 @@ extension DetailsViewController {
     private func constraintsLabel() {
         NSLayoutConstraint.activate([
             labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
-            labelCountry.widthAnchor.constraint(equalToConstant: setupConstraintWidth())
+            labelCountry.widthAnchor.constraint(equalToConstant: viewModel.widthLabel(view))
         ])
     }
     
     private func layoutYAxisAnchor() -> NSLayoutYAxisAnchor {
-        isFlag() ? imageFlag.bottomAnchor : labelCountry.bottomAnchor
+        viewModel.isFlag() ? imageFlag.bottomAnchor : labelCountry.bottomAnchor
     }
     
     private func constraintsStackViewFlag() {
         NSLayoutConstraint.activate([
             stackViewFlag.topAnchor.constraint(equalTo: labelNumberQuiz.bottomAnchor, constant: 25),
             stackViewFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackViewFlag.widthAnchor.constraint(equalToConstant: setupConstraintFlag()),
+            stackViewFlag.widthAnchor.constraint(equalToConstant: viewModel.widthStackViewFlag(view)),
             stackViewFlag.heightAnchor.constraint(equalToConstant: 215)
         ])
         constraintsOnViewFlag()
     }
     
     private func constraintsOnViewFlag() {
-        switch game.gameType {
+        switch viewModel.game.gameType {
         case .quizOfFlag, .quizOfCapitals:
             setupLabel(label: labelFirst, on: viewFirst)
             setupLabel(label: labelSecond, on: viewSecond)
@@ -580,21 +483,21 @@ extension DetailsViewController {
     
     private func constraintsStackViewLabel() {
         NSLayoutConstraint.activate([
-            checkStackView().topAnchor.constraint(equalTo: labelNumberQuiz.bottomAnchor, constant: 25),
-            checkStackView().centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            checkStackView().widthAnchor.constraint(equalToConstant: setupConstraintWidth()),
-            checkStackView().heightAnchor.constraint(equalToConstant: heightStackView())
+            viewModel.stackView.topAnchor.constraint(equalTo: labelNumberQuiz.bottomAnchor, constant: 25),
+            viewModel.stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            viewModel.stackView.widthAnchor.constraint(equalToConstant: viewModel.widthLabel(view)),
+            viewModel.stackView.heightAnchor.constraint(equalToConstant: viewModel.height())
         ])
         constraintsOnViewLabel()
     }
     
     private func constraintsOnViewLabel() {
-        switch game.gameType {
+        switch viewModel.game.gameType {
         case .quizOfFlag:
-            setImageOnButton(image: imageFirst, button: viewFirst, flag: result.buttonFirst.flag)
-            setImageOnButton(image: imageSecond, button: viewSecond, flag: result.buttonSecond.flag)
-            setImageOnButton(image: imageThird, button: viewThird, flag: result.buttonThird.flag)
-            setImageOnButton(image: imageFourth, button: viewFourth, flag: result.buttonFourth.flag)
+            setImageOnButton(image: imageFirst, button: viewFirst, flag: viewModel.result.buttonFirst.flag)
+            setImageOnButton(image: imageSecond, button: viewSecond, flag: viewModel.result.buttonSecond.flag)
+            setImageOnButton(image: imageThird, button: viewThird, flag: viewModel.result.buttonThird.flag)
+            setImageOnButton(image: imageFourth, button: viewFourth, flag: viewModel.result.buttonFourth.flag)
         case .quizOfCapitals:
             setupLabel(label: labelFirst, on: viewFirst)
             setupLabel(label: labelSecond, on: viewSecond)
@@ -602,19 +505,19 @@ extension DetailsViewController {
             setupLabel(label: labelFourth, on: viewFourth)
         default:
             setImageOnButton(checkmark: checkmarkFirst, image: imageFirst,
-                             button: viewFirst, flag: result.buttonFirst.flag)
+                             button: viewFirst, flag: viewModel.result.buttonFirst.flag)
             setImageOnButton(checkmark: checkmarkSecond, image: imageSecond,
-                             button: viewSecond, flag: result.buttonSecond.flag)
+                             button: viewSecond, flag: viewModel.result.buttonSecond.flag)
             setImageOnButton(checkmark: checkmarkThird, image: imageThird,
-                             button: viewThird, flag: result.buttonThird.flag)
+                             button: viewThird, flag: viewModel.result.buttonThird.flag)
             setImageOnButton(checkmark: checkmarkFourth, image: imageFourth,
-                             button: viewFourth, flag: result.buttonFourth.flag)
+                             button: viewFourth, flag: viewModel.result.buttonFourth.flag)
         }
     }
     
     private func setImageOnButton(checkmark: UIImageView? = nil, image: UIImageView,
                                   button: UIView, flag: String) {
-        let layout = image.widthAnchor.constraint(equalToConstant: widthFlag(flag: flag))
+        let layout = image.widthAnchor.constraint(equalToConstant: viewModel.widthImage(flag, view))
         if let checkmark = checkmark {
             setImageOnButton(layout: layout, checkmark: checkmark, image: image, button: button)
         } else {
@@ -654,7 +557,7 @@ extension DetailsViewController {
             image.centerXAnchor.constraint(equalTo: button.centerXAnchor),
             image.centerYAnchor.constraint(equalTo: button.centerYAnchor),
             layout,
-            image.heightAnchor.constraint(equalToConstant: setHeight())
+            image.heightAnchor.constraint(equalToConstant: viewModel.heightImage())
         ])
     }
     
@@ -664,54 +567,10 @@ extension DetailsViewController {
             checkmark.centerYAnchor.constraint(equalTo: button.centerYAnchor),
             checkmark.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 5),
             layout,
-            image.heightAnchor.constraint(equalToConstant: setHeight()),
-            image.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: setWidthOrCenter().2),
+            image.heightAnchor.constraint(equalToConstant: viewModel.heightImage()),
+            image.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: viewModel.widthOrCenter(view).2),
             image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
         setupSquare(subview: checkmark, sizes: 30)
-    }
-    
-    private func checkWidthFlag(flag: String) -> CGFloat {
-        switch flag {
-        case "nepal", "vatican city", "switzerland": return 168
-        default: return 280
-        }
-    }
-    
-    private func radius() -> CGFloat {
-        6
-    }
-    
-    private func setupConstraintFlag() -> CGFloat {
-        view.bounds.width - 40
-    }
-    
-    private func setupConstraintWidth() -> CGFloat {
-        view.bounds.width - 20
-    }
-    
-    private func heightStackView() -> CGFloat {
-        game.gameType == .questionnaire ? 235 : 215
-    }
-    
-    private func setHeight() -> CGFloat {
-        let buttonHeight = heightStackView() / 2 - 4
-        return buttonHeight - 10
-    }
-    
-    private func widthFlag(flag: String) -> CGFloat {
-        switch flag {
-        case "nepal", "vatican city", "switzerland": setHeight()
-        default: game.gameType == .questionnaire ? setWidthOrCenter().1 : setWidthOrCenter().0
-        }
-    }
-    
-    private func setWidthOrCenter() -> (CGFloat, CGFloat, CGFloat) {
-        let buttonWidth = ((view.frame.width - 20) / 2) - 4
-        let flagWidth = buttonWidth - 10
-        let flagWidthQuestionnaire = buttonWidth - 45
-        let centerFlag = flagWidthQuestionnaire / 2 + 5
-        let constant = buttonWidth / 2 - centerFlag
-        return (flagWidth, flagWidthQuestionnaire, constant)
     }
 }

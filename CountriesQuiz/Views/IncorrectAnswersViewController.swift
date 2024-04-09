@@ -68,13 +68,13 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailsViewModel = viewModel.detailsViewModel(indexPath.row)
         let detailsVC = DetailsViewController()
-        detailsVC.mode = viewModel.mode
-        detailsVC.game = viewModel.game
-        detailsVC.result = viewModel.results[indexPath.row]
+        detailsVC.viewModel = detailsViewModel
         navigationController?.pushViewController(detailsVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
     private func setupDesign() {
         view.backgroundColor = viewModel.game.background
     }

@@ -22,6 +22,8 @@ protocol IncorrectAnswersViewModelProtocol {
     func isFlag() -> Bool
     func checkCell() -> AnyClass
     func customCell(cell: UITableViewCell, indexPath: IndexPath)
+    
+    func detailsViewModel(_ indexPath: Int) -> DetailsViewModelProtocol
 }
 
 class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
@@ -84,5 +86,9 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
         cell.progressView.progress = setProgress(value: results[indexPath.row].currentQuestion)
         cell.labelNumber.text = setText(value: results[indexPath.row].currentQuestion)
         cell.contentView.backgroundColor = game.background
+    }
+    // MARK: - Transition to DetailsViewController
+    func detailsViewModel(_ indexPath: Int) -> DetailsViewModelProtocol {
+        DetailsViewModel(mode: mode, game: game, result: results[indexPath])
     }
 }

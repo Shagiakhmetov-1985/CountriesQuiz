@@ -127,6 +127,7 @@ protocol GameTypeViewModelProtocol {
                  _ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView, completion: @escaping () -> Void)
     
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol
+    func questionnaireViewModel() -> QuestionnaireViewModelProtocol
 }
 
 class GameTypeViewModel: GameTypeViewModelProtocol {
@@ -605,6 +606,10 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol {
         QuizOfFlagsViewModel(mode: mode, game: game)
     }
+    // MARK: - Transition to QuestionnaireViewController
+    func questionnaireViewModel() -> QuestionnaireViewModelProtocol {
+        QuestionnaireViewModel(mode: mode, game: game)
+    }
     // MARK: - Set bullet list
     private func bullets(list: [String]) -> [ParagraphData] {
         var paragraphData: [ParagraphData] = []
@@ -685,7 +690,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     private func checkTitleGameType() -> String {
         gameType == .questionnaire ? "Время всех вопросов" : "Время одного вопроса"
     }
-    // MARK: - Private methods
+    // MARK: - Button change type game mode
     private func GameTypeFirst(button: UIButton) {
         mode.flag ? imageSwap("building", button) : imageSwap("flag", button)
         mode.flag.toggle()

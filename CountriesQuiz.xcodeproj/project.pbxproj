@@ -35,6 +35,7 @@
 		C3A6B9D32AF0DB3D00DBE77F /* PopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A6B9D22AF0DB3D00DBE77F /* PopUpView.swift */; };
 		C3B187C82ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */; };
 		C3B35F20293FADC300A8493F /* fontick.otf in Resources */ = {isa = PBXBuildFile; fileRef = C3B35F1F293FADC300A8493F /* fontick.otf */; };
+		C3BADD042BC7EF5A0098BDCB /* QuestionnaireViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BADD032BC7EF5A0098BDCB /* QuestionnaireViewModel.swift */; };
 		C3BFB8272B04E32F006BB074 /* PopUpViewSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BFB8262B04E32F006BB074 /* PopUpViewSetting.swift */; };
 		C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D292EA293F5F0900786752 /* SettingViewController.swift */; };
 		C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */; };
@@ -77,6 +78,7 @@
 		C3A6B9D22AF0DB3D00DBE77F /* PopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpView.swift; sourceTree = "<group>"; };
 		C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfCapitalsViewController.swift; sourceTree = "<group>"; };
 		C3B35F1F293FADC300A8493F /* fontick.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontick.otf; sourceTree = "<group>"; };
+		C3BADD032BC7EF5A0098BDCB /* QuestionnaireViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireViewModel.swift; sourceTree = "<group>"; };
 		C3BFB8262B04E32F006BB074 /* PopUpViewSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpViewSetting.swift; sourceTree = "<group>"; };
 		C3D292EA293F5F0900786752 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		C3E2EB2C2938E7F300AB40AD /* CountriesQuiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CountriesQuiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,6 +119,7 @@
 				C33669D12B98A13D0081C39A /* MenuViewModel.swift */,
 				C33669D32B998DC30081C39A /* GameTypeViewModel.swift */,
 				C333038B2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift */,
+				C3BADD032BC7EF5A0098BDCB /* QuestionnaireViewModel.swift */,
 				C341078D2BBFE4C800D0E993 /* ResultsViewModel.swift */,
 				C359C3082BC1947300473B33 /* IncorrectAnswersViewModel.swift */,
 				C33762AD2BC4386700A417AB /* DetailsViewModel.swift */,
@@ -352,6 +355,7 @@
 				C333038A2BBAA3B700AEE04E /* GameTypeViewController + Subviews.swift in Sources */,
 				C3BFB8272B04E32F006BB074 /* PopUpViewSetting.swift in Sources */,
 				C33669D62B998F990081C39A /* Game.swift in Sources */,
+				C3BADD042BC7EF5A0098BDCB /* QuestionnaireViewModel.swift in Sources */,
 				C3E2EB342938E7F300AB40AD /* MenuViewController.swift in Sources */,
 				C36773F1296BF9E10096BCC5 /* QuizOfFlagsViewController.swift in Sources */,
 				C38DF4DE2A8F4A5B00550BCC /* CustomCell.swift in Sources */,

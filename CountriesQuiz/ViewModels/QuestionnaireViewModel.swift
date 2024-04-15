@@ -9,9 +9,16 @@ import UIKit
 
 protocol QuestionnaireViewModelProtocol {
     var countQuestions: Int { get }
+    var currentQuestion: Int { get }
+    var numberQuestion: Int { get }
     var time: Int { get }
     var image: String { get }
     var name: String { get }
+    var background: UIColor { get }
+    var height: CGFloat { get }
+    var radius: CGFloat { get }
+    var timer: Timer { get set }
+    
     var buttonFirstImage: String { get }
     var buttonSecondImage: String { get }
     var buttonThirdImage: String { get }
@@ -20,20 +27,34 @@ protocol QuestionnaireViewModelProtocol {
     var buttonSecondName: String { get }
     var buttonThirdName: String { get }
     var buttonFourthName: String { get }
-    var background: UIColor { get }
-    var height: CGFloat { get }
-    var radius: CGFloat { get }
+    
+    var question: Countries { get }
+    var answerFirst: Countries { get }
+    var answerSecond: Countries { get }
+    var answerThird: Countries { get }
+    var answerFourth: Countries { get }
     
     var data: (questions: [Countries], buttonFirst: [Countries],
                buttonSecond: [Countries], buttonThird: [Countries],
                buttonFourth: [Countries]) { get }
     
+    var imageFlagSpring: NSLayoutConstraint! { get set }
+    var labelNameSpring: NSLayoutConstraint! { get set }
+    var stackViewSpring: NSLayoutConstraint! { get set }
+    
+    var widthOfFlagFirst: NSLayoutConstraint! { get set }
+    var widthOfFlagSecond: NSLayoutConstraint! { get set }
+    var widthOfFlagThird: NSLayoutConstraint! { get set }
+    var widthOfFlagFourth: NSLayoutConstraint! { get set }
+    
     init(mode: Setting, game: Games)
     
+    func setButtons(_ buttonOne: UIButton,_ buttonTwo: UIButton,_ buttonThree: UIButton,_ buttonFour: UIButton)
     func setSubviews(subviews: UIView..., on subviewOther: UIView)
-    func setOpacity(subviews: UIView..., opacity: Float)
+    func setOpacity(subviews: UIView..., opacity: Float, duration: CGFloat)
     func setEnabled(subviews: UIControl..., isEnabled: Bool)
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
+    func buttonsForAnswers(isOn: Bool)
     
     func setProgressView(_ progressView: UIProgressView)
     
@@ -43,12 +64,20 @@ protocol QuestionnaireViewModelProtocol {
     func checkLastQuestion(_ buttonFirst: UIButton,_ buttonSecond: UIButton)
     
     func getQuestions()
+    func showLabelQuiz(_ label: UILabel, duration: CGFloat, opacity: Float)
+    func moveSubviews(_ view: UIView)
+    func moveBackSubviews(_ view: UIView)
+    func animationSubviews(duration: CGFloat,_ view: UIView)
+    func animationBackSubviews(_ view: UIView)
+    func selectIsEnabled(_ tag: Int,_ isOn: Bool,_ currentQuestion: Int)
 }
 
 class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     var countQuestions: Int {
         mode.countQuestions
     }
+    var currentQuestion = 0
+    var numberQuestion = 0
     var time: Int {
         mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
     }
@@ -82,6 +111,21 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     var buttonFourthName: String {
         data.buttonFourth[currentQuestion].name
     }
+    var question: Countries {
+        data.questions[numberQuestion]
+    }
+    var answerFirst: Countries {
+        data.buttonFirst[numberQuestion]
+    }
+    var answerSecond: Countries {
+        data.buttonSecond[numberQuestion]
+    }
+    var answerThird: Countries {
+        data.buttonThird[numberQuestion]
+    }
+    var answerFourth: Countries {
+        data.buttonFourth[numberQuestion]
+    }
     var background: UIColor {
         game.background
     }
@@ -89,34 +133,59 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         isFlag() ? 215 : 235
     }
     var radius: CGFloat = 6
+    var timer = Timer()
     
     var data: (questions: [Countries], buttonFirst: [Countries],
                buttonSecond: [Countries], buttonThird: [Countries],
                buttonFourth: [Countries]) = ([], [], [], [], [])
     
+    var imageFlagSpring: NSLayoutConstraint!
+    var labelNameSpring: NSLayoutConstraint!
+    var stackViewSpring: NSLayoutConstraint!
+    
+    var widthOfFlagFirst: NSLayoutConstraint!
+    var widthOfFlagSecond: NSLayoutConstraint!
+    var widthOfFlagThird: NSLayoutConstraint!
+    var widthOfFlagFourth: NSLayoutConstraint!
+    
     let mode: Setting
     let game: Games
     
-    private var currentQuestion = 0
-    private var numberQuestion = 0
+    private var seconds = 0
+    
     private var correctAnswers: [Countries] = []
     private var incorrectAnswers: [Results] = []
     private var spendTime: [CGFloat] = []
+    
+    private var buttonFirst: UIButton!
+    private var buttonSecond: UIButton!
+    private var buttonThird: UIButton!
+    private var buttonFourth: UIButton!
     
     required init(mode: Setting, game: Games) {
         self.mode = mode
         self.game = game
     }
     // MARK: - Set subviews
+    func setButtons(_ buttonOne: UIButton, _ buttonTwo: UIButton, 
+                    _ buttonThree: UIButton, _ buttonFour: UIButton) {
+        buttonFirst = buttonOne
+        buttonSecond = buttonTwo
+        buttonThird = buttonThree
+        buttonFourth = buttonFour
+    }
+    
     func setSubviews(subviews: UIView..., on subviewOther: UIView) {
         subviews.forEach { subview in
             subviewOther.addSubview(subview)
         }
     }
     
-    func setOpacity(subviews: UIView..., opacity: Float) {
-        subviews.forEach { subview in
-            subview.layer.opacity = opacity
+    func setOpacity(subviews: UIView..., opacity: Float, duration: CGFloat) {
+        UIView.animate(withDuration: duration) {
+            subviews.forEach { subview in
+                subview.layer.opacity = opacity
+            }
         }
     }
     
@@ -162,6 +231,67 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         
         UIView.animate(withDuration: 0.5) {
             progressView.setProgress(progress, animated: true)
+        }
+    }
+    // MARK: - Buttons for answers are enabled on / off
+    func buttonsForAnswers(isOn: Bool) {
+        setEnabled(subviews: buttonFirst, buttonSecond, buttonThird, buttonFourth, isEnabled: isOn)
+    }
+    // MARK: - Show label for questionnaire
+    func showLabelQuiz(_ label: UILabel, duration: CGFloat, opacity: Float) {
+        guard currentQuestion == 0 else { return }
+        setOpacity(subviews: label, opacity: opacity, duration: duration)
+    }
+    // MARK: - Move subviews
+    func moveSubviews(_ view: UIView) {
+        let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
+        if isFlag() {
+            imageFlagSpring.constant += view.frame.width * pointX
+        } else {
+            labelNameSpring.constant += view.frame.width * pointX
+        }
+        stackViewSpring.constant += view.frame.width * pointX
+    }
+    
+    func moveBackSubviews(_ view: UIView) {
+        if isFlag() {
+            imageFlagSpring.constant -= view.frame.width * 2
+        } else {
+            labelNameSpring.constant -= view.frame.width * 2
+        }
+        stackViewSpring.constant -= view.frame.width * 2
+    }
+    // MARK: - Animation move subviews
+    func animationSubviews(duration: CGFloat, _ view: UIView) {
+        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut) { [self] in
+            if isFlag() {
+                imageFlagSpring.constant -= view.bounds.width
+            } else {
+                labelNameSpring.constant -= view.bounds.width
+            }
+            stackViewSpring.constant -= view.bounds.width
+            view.layoutIfNeeded()
+        }
+    }
+    
+    func animationBackSubviews(_ view: UIView) {
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut) { [self] in
+            if isFlag() {
+                imageFlagSpring.constant += view.bounds.width
+            } else {
+                labelNameSpring.constant += view.bounds.width
+            }
+            stackViewSpring.constant += view.bounds.width
+            view.layoutIfNeeded()
+        }
+    }
+    // MARK: - Set select answer
+    func selectIsEnabled(_ tag: Int, _ isOn: Bool, _ currentQuestion: Int) {
+        switch tag {
+        case 1: data.buttonFirst[currentQuestion].select = isOn
+        case 2: data.buttonSecond[currentQuestion].select = isOn
+        case 3: data.buttonThird[currentQuestion].select = isOn
+        default: data.buttonFourth[currentQuestion].select = isOn
         }
     }
     // MARK: - Get countries for questions, countinue

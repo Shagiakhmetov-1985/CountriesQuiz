@@ -38,10 +38,10 @@ protocol QuizOfFlagsViewModelProtocol {
     var labelNameSpring: NSLayoutConstraint! { get set }
     var stackViewSpring: NSLayoutConstraint! { get set }
     
-    var widthOfFlagFirst: NSLayoutConstraint! { get set}
-    var widthOfFlagSecond: NSLayoutConstraint! { get set}
-    var widthOfFlagThird: NSLayoutConstraint! { get set}
-    var widthOfFlagFourth: NSLayoutConstraint! { get set}
+    var widthOfFlagFirst: NSLayoutConstraint! { get set }
+    var widthOfFlagSecond: NSLayoutConstraint! { get set }
+    var widthOfFlagThird: NSLayoutConstraint! { get set }
+    var widthOfFlagFourth: NSLayoutConstraint! { get set }
     
     init(mode: Setting, game: Games)
     

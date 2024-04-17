@@ -18,6 +18,8 @@ protocol QuestionnaireViewModelProtocol {
     var height: CGFloat { get }
     var radius: CGFloat { get }
     var timer: Timer { get set }
+    var countdown: Timer { get set }
+    var lastQuestion: Bool { get }
     
     var buttonFirstImage: String { get }
     var buttonSecondImage: String { get }
@@ -38,6 +40,8 @@ protocol QuestionnaireViewModelProtocol {
                buttonSecond: [Countries], buttonThird: [Countries],
                buttonFourth: [Countries]) { get }
     
+    var shapeLayer: CAShapeLayer { get }
+    
     var imageFlagSpring: NSLayoutConstraint! { get set }
     var labelNameSpring: NSLayoutConstraint! { get set }
     var stackViewSpring: NSLayoutConstraint! { get set }
@@ -52,6 +56,7 @@ protocol QuestionnaireViewModelProtocol {
     func setButtons(_ buttonOne: UIButton,_ buttonTwo: UIButton,_ buttonThree: UIButton,_ buttonFour: UIButton)
     func setSubviews(subviews: UIView..., on subviewOther: UIView)
     func setOpacity(subviews: UIView..., opacity: Float, duration: CGFloat)
+    func setFlash(subviews: UIView..., opacity: Float)
     func setEnabled(subviews: UIControl..., isEnabled: Bool)
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func buttonsForAnswers(isOn: Bool)
@@ -70,6 +75,21 @@ protocol QuestionnaireViewModelProtocol {
     func animationSubviews(duration: CGFloat,_ view: UIView)
     func animationBackSubviews(_ view: UIView)
     func selectIsEnabled(_ tag: Int,_ isOn: Bool,_ currentQuestion: Int)
+    func setCurrentQuestion(_ number: Int)
+    func setNumberQuestion(_ number: Int)
+    
+    func setCircleTimer(_ labelTimer: UILabel,_ view: UIView)
+    func updateNumberQuestion(_ labelNumber: UILabel)
+    func setTime()
+    func runCircleTimer()
+    func setTitleTimer(_ labelTimer: UILabel, completion: @escaping () -> Void)
+    func setSeconds(_ time: Int)
+    func setLastQuestion(_ isLast: Bool)
+    func showFinishTitle(_ labelQuiz: UILabel,_ labelDescription: UILabel)
+    func endGame(_ labelQuiz: UILabel,_ labelDescription: UILabel)
+    func checkLastQuestionForShowTitle(_ labelQuiz: UILabel,_ labelDescription: UILabel)
+    func checkTimeUp(completion: @escaping () -> Void)
+    func buttonsBackForwardOnOff(_ buttonBack: UIButton,_ buttonForward: UIButton)
 }
 
 class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
@@ -134,10 +154,14 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     }
     var radius: CGFloat = 6
     var timer = Timer()
+    var countdown = Timer()
+    var lastQuestion = false
     
     var data: (questions: [Countries], buttonFirst: [Countries],
                buttonSecond: [Countries], buttonThird: [Countries],
                buttonFourth: [Countries]) = ([], [], [], [], [])
+    
+    var shapeLayer = CAShapeLayer()
     
     var imageFlagSpring: NSLayoutConstraint!
     var labelNameSpring: NSLayoutConstraint!
@@ -187,6 +211,14 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
                 subview.layer.opacity = opacity
             }
         }
+    }
+    
+    func setFlash(subviews: UIView..., opacity: Float) {
+        UIView.animate(withDuration: 1, delay: 0, options: [.repeat, .autoreverse], animations: {
+            subviews.forEach { subview in
+                subview.layer.opacity = opacity
+            }
+        })
     }
     
     func setEnabled(subviews: UIControl..., isEnabled: Bool) {
@@ -292,6 +324,100 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         case 2: data.buttonSecond[currentQuestion].select = isOn
         case 3: data.buttonThird[currentQuestion].select = isOn
         default: data.buttonFourth[currentQuestion].select = isOn
+        }
+    }
+    // MARK: - Set current question / number question
+    func setCurrentQuestion(_ number: Int) {
+        if number == 1 {
+            currentQuestion += number
+        } else {
+            currentQuestion = number
+        }
+    }
+    
+    func setNumberQuestion(_ number: Int) {
+        switch number {
+        case 1: numberQuestion += number
+        case 0: numberQuestion = number
+        default: numberQuestion -= number
+        }
+    }
+    // MARK: - Set circle time
+    func setCircleTimer(_ labelTimer: UILabel, _ view: UIView) {
+        circleShadow(labelTimer, view)
+        circle(0, labelTimer, view)
+        animationCircleTimeReset()
+    }
+    // MARK: - Refresh data for show next / previous question
+    func updateNumberQuestion(_ labelNumber: UILabel) {
+        labelNumber.text = "\(checkCurrentQuestion() + 1) / \(countQuestions)"
+    }
+    // MARK: - Set title time
+    func setTime() {
+        seconds = time * 10
+    }
+    // MARK: - Run circle timer
+    func runCircleTimer() {
+        shapeLayer.strokeEnd = 1
+        animationCircleCountdown()
+    }
+    // MARK: - Set seconds
+    func setSeconds(_ time: Int) {
+        if time == 1 {
+            seconds -= time
+        } else {
+            seconds = time
+        }
+    }
+    // MARK: - Set title from timer
+    func setTitleTimer(_ labelTimer: UILabel, completion: @escaping () -> Void) {
+        setSeconds(1)
+        guard seconds.isMultiple(of: 10) else { return }
+        let text = seconds / 10
+        labelTimer.text = "\(text)"
+        
+        guard seconds == 0 else { return }
+        countdown.invalidate()
+        completion()
+    }
+    // MARK: - Set last question
+    func setLastQuestion(_ isLast: Bool) {
+        lastQuestion = isLast
+    }
+    // MARK: - End game
+    func showFinishTitle(_ labelQuiz: UILabel, _ labelDescription: UILabel) {
+        setOpacity(subviews: labelQuiz, opacity: 0, duration: 0.5)
+        setFlash(subviews: labelDescription, opacity: 1)
+    }
+    
+    func endGame(_ labelQuiz: UILabel, _ labelDescription: UILabel) {
+        labelDescription.text = "Время вышло! Коснитесь экрана, чтобы завершить"
+        showFinishTitle(labelQuiz, labelDescription)
+        setLastQuestion(true)
+    }
+    
+    func checkLastQuestionForShowTitle(_ labelQuiz: UILabel,_ labelDescription: UILabel) {
+        guard lastQuestion, numberQuestion == currentQuestion else { return }
+        showFinishTitle(labelQuiz, labelDescription)
+    }
+    
+    func checkTimeUp(completion: @escaping () -> Void) {
+        seconds > 0 ? buttonsForAnswers(isOn: true) : completion()
+    }
+    // MARK: - Set on / off buttons back and forward
+    func buttonsBackForwardOnOff(_ buttonBack: UIButton, _ buttonForward: UIButton) {
+        if numberQuestion == currentQuestion {
+            buttonsBackForward(buttonBack: buttonBack, buttonForward: buttonForward,
+                               opacityBack: 1, opacityForward: 0,
+                               isEnabledBack: true, isEnabledForward: false)
+        } else if numberQuestion > 0, numberQuestion < currentQuestion {
+            buttonsBackForward(buttonBack: buttonBack, buttonForward: buttonForward,
+                               opacityBack: 1, opacityForward: 1,
+                               isEnabledBack: true, isEnabledForward: true)
+        } else {
+            buttonsBackForward(buttonBack: buttonBack, buttonForward: buttonForward,
+                               opacityBack: 0, opacityForward: 1,
+                               isEnabledBack: false, isEnabledForward: true)
         }
     }
     // MARK: - Get countries for questions, countinue
@@ -522,5 +648,72 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         }
         
         return (first, second, third, fourth)
+    }
+    // MARK: - Set circle timer, countinue
+    private func circleShadow(_ labelTimer: UILabel, _ view: UIView) {
+        let center = CGPoint(x: labelTimer.center.x, y: labelTimer.center.y)
+        let endAngle = CGFloat.pi / 2
+        let startAngle = 2 * CGFloat.pi + endAngle
+        let circularPath = UIBezierPath(
+            arcCenter: center,
+            radius: 32,
+            startAngle: -startAngle,
+            endAngle: -endAngle,
+            clockwise: true)
+        
+        let trackShape = CAShapeLayer()
+        trackShape.path = circularPath.cgPath
+        trackShape.lineWidth = 5
+        trackShape.fillColor = UIColor.clear.cgColor
+        trackShape.strokeColor = UIColor.white.withAlphaComponent(0.3).cgColor
+        view.layer.addSublayer(trackShape)
+    }
+    
+    private func circle(_ strokeEnd: CGFloat, _ labelTimer: UILabel, _ view: UIView) {
+        let center = CGPoint(x: labelTimer.center.x, y: labelTimer.center.y)
+        let endAngle = CGFloat.pi / 2
+        let startAngle = 2 * CGFloat.pi + endAngle
+        let circularPath = UIBezierPath(
+            arcCenter: center,
+            radius: 32,
+            startAngle: -startAngle,
+            endAngle: -endAngle,
+            clockwise: true)
+        
+        shapeLayer.path = circularPath.cgPath
+        shapeLayer.lineWidth = 5
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.strokeEnd = strokeEnd
+        shapeLayer.lineCap = CAShapeLayerLineCap.square
+        shapeLayer.strokeColor = UIColor.white.cgColor
+        view.layer.addSublayer(shapeLayer)
+    }
+    
+    private func animationCircleTimeReset() {
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.toValue = 1
+        animation.duration = CFTimeInterval(0.4)
+        animation.fillMode = CAMediaTimingFillMode.forwards
+        animation.isRemovedOnCompletion = false
+        shapeLayer.add(animation, forKey: "animation")
+    }
+    
+    private func animationCircleCountdown() {
+        let timer = time
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.toValue = 0
+        animation.duration = CFTimeInterval(timer)
+        animation.fillMode = CAMediaTimingFillMode.forwards
+        animation.isRemovedOnCompletion = false
+        shapeLayer.add(animation, forKey: "animation")
+    }
+    // MARK: - Show or hide buttons back and forward
+    private func buttonsBackForward(buttonBack: UIButton, buttonForward: UIButton,
+                                    opacityBack: Float, opacityForward: Float,
+                                    isEnabledBack: Bool, isEnabledForward: Bool) {
+        setOpacity(subviews: buttonBack, opacity: opacityBack, duration: 0.3)
+        setOpacity(subviews: buttonForward, opacity: opacityForward, duration: 0.3)
+        setEnabled(subviews: buttonBack, isEnabled: isEnabledBack)
+        setEnabled(subviews: buttonForward, isEnabled: isEnabledForward)
     }
 }

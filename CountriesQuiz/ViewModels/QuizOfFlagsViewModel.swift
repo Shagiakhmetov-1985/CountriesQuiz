@@ -29,9 +29,6 @@ protocol QuizOfFlagsViewModelProtocol {
     var buttonThird: String { get }
     var buttonFourth: String { get }
     
-    var correctAnswers: [Countries] { get }
-    var incorrectAnswers: [Results] { get }
-    
     var shapeLayer: CAShapeLayer { get }
     
     var imageFlagSpring: NSLayoutConstraint! { get set }

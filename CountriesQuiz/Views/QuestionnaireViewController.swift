@@ -207,8 +207,6 @@ class QuestionnaireViewController: UIViewController {
     
     private var seconds = 0
     
-    private var correctAnswers: [Countries] = []
-    private var incorrectAnswers: [Results] = []
     private var spendTime: [CGFloat] = []
     
     override func viewDidLoad() {
@@ -235,6 +233,8 @@ class QuestionnaireViewController: UIViewController {
         view.backgroundColor = viewModel.background
         navigationItem.hidesBackButton = true
         viewModel.setButtons(buttonFirst, buttonSecond, buttonThird, buttonFourth)
+        viewModel.setImages(checkmarkFirst, checkmarkSecond, checkmarkThird, checkmarkFourth)
+        viewModel.setLabels(labelFirst, labelSecond, labelThird, labelFourth)
     }
     
     private func setupBarButton() {
@@ -326,116 +326,15 @@ class QuestionnaireViewController: UIViewController {
         viewModel.buttonsForAnswers(isOn: false)
         viewModel.endGame(labelQuiz, labelDescription)
     }
-    // MARK: - Save data for select answer by user
-    private func select(button: UIButton) {
-        guard !checkSelect(tag: button.tag) else { return }
-        
-        let question = viewModel.checkCurrentQuestion()
-        var tag = 0
-        while tag < 4 {
-            tag += 1
-            if !(tag == button.tag) {
-                viewModel.selectIsEnabled(tag, false, question)
-            }
-        }
-        viewModel.selectIsEnabled(button.tag, true, question)
-        checkCorrectAnswer(tag: button.tag)
-    }
-    
-    private func checkSelect(tag: Int) -> Bool {
-        switch tag {
-        case 1: return viewModel.answerFirst.select
-        case 2: return viewModel.answerSecond.select
-        case 3: return viewModel.answerThird.select
-        default: return viewModel.answerFourth.select
-        }
-    }
-    // MARK: - Animations buttons when user press button
-    private func buttonSelect(button: UIButton) {
-        let tag = button.tag
-        setupButtonsDisabled(tag: tag)
-        buttonIsEnabled(button: button, color: .white)
-    }
-    
-    private func imageSelect(image: UIImageView) {
-        let tag = image.tag
-        setupCheckmarksDisabled(tag: tag)
-        imageIsEnabled(image: image, color: .greenHarlequin, symbol: "checkmark.circle.fill")
-    }
-    
-    private func labelSelect(label: UILabel) {
-        let tag = label.tag
-        setupLabelsDisabled(tag: tag)
-        labelIsEnabled(label: label, color: .greenHarlequin)
-    }
-    
-    private func setupButtonsDisabled(tag: Int) {
-        selectButtonsDisabled(buttons: buttonFirst, buttonSecond,
-                              buttonThird, buttonFourth, tag: tag)
-    }
-    
-    private func selectButtonsDisabled(buttons: UIButton..., tag: Int) {
-        buttons.forEach { button in
-            if !(button.tag == tag) {
-                buttonIsEnabled(button: button, color: .clear)
-            }
-        }
-    }
-    
-    private func setupCheckmarksDisabled(tag: Int) {
-        selectImagesDisabled(images: checkmarkFirst, checkmarkSecond,
-                             checkmarkThird, checkmarkFourth, tag: tag)
-    }
-    
-    private func selectImagesDisabled(images: UIImageView..., tag: Int) {
-        images.forEach { image in
-            if !(image.tag == tag) {
-                imageIsEnabled(image: image, color: .white, symbol: "circle")
-            }
-        }
-    }
-    
-    private func setupLabelsDisabled(tag: Int) {
-        selectLabelsDisabled(labels: labelFirst, labelSecond,
-                             labelThird, labelFourth, tag: tag)
-    }
-    
-    private func selectLabelsDisabled(labels: UILabel..., tag: Int) {
-        labels.forEach { label in
-            if !(label.tag == tag) {
-                labelIsEnabled(label: label, color: .white)
-            }
-        }
-    }
-    
-    private func buttonIsEnabled(button: UIButton, color: UIColor) {
-        UIView.animate(withDuration: 0.3) {
-            button.backgroundColor = color
-        }
-    }
-    
-    private func imageIsEnabled(image: UIImageView, color: UIColor, symbol: String) {
-        UIView.animate(withDuration: 0.3) {
-            let size = UIImage.SymbolConfiguration(pointSize: 30)
-            image.tintColor = color
-            image.image = UIImage(systemName: symbol, withConfiguration: size)
-        }
-    }
-    
-    private func labelIsEnabled(label: UILabel, color: UIColor) {
-        UIView.animate(withDuration: 0.3) {
-            label.textColor = color
-        }
-    }
     // MARK: - Refresh data for show next question
     private func updateData() {
         updateDataFlagLabel()
         viewModel.updateNumberQuestion(labelNumber)
         
-        setupCheckmarksDisabled(tag: 0)
-        setupButtonsDisabled(tag: 0)
+        viewModel.setColorButtonsDisabled(0)
+        viewModel.setImagesDisabled(0)
         if viewModel.isFlag() {
-            setupLabelsDisabled(tag: 0)
+            viewModel.setLabelsDisabled(0)
         }
         
         checkSelect(selects: viewModel.answerFirst.select, viewModel.answerSecond.select,
@@ -454,22 +353,10 @@ class QuestionnaireViewController: UIViewController {
     
     private func tagSelect(tag: Int) {
         switch tag {
-        case 1: setupSelect(button: buttonFirst, image: checkmarkFirst,
-                            label: viewModel.isFlag() ? labelFirst : nil)
-        case 2: setupSelect(button: buttonSecond, image: checkmarkSecond,
-                            label: viewModel.isFlag() ? labelSecond : nil)
-        case 3: setupSelect(button: buttonThird, image: checkmarkThird,
-                            label: viewModel.isFlag() ? labelThird : nil)
-        default: setupSelect(button: buttonFourth, image: checkmarkFourth,
-                             label: viewModel.isFlag() ? labelFourth : nil)
-        }
-    }
-    
-    private func setupSelect(button: UIButton, image: UIImageView, label: UILabel? = nil) {
-        buttonSelect(button: button)
-        imageSelect(image: image)
-        if let label = label {
-            labelSelect(label: label)
+        case 1: viewModel.setAppearenceButtons(buttonFirst, checkmarkFirst, viewModel.isFlag() ? labelFirst : nil)
+        case 2: viewModel.setAppearenceButtons(buttonSecond, checkmarkSecond, viewModel.isFlag() ? labelSecond : nil)
+        case 3: viewModel.setAppearenceButtons(buttonThird, checkmarkThird, viewModel.isFlag() ? labelThird : nil)
+        default: viewModel.setAppearenceButtons(buttonFourth, checkmarkFourth, viewModel.isFlag() ? labelFourth : nil)
         }
     }
     
@@ -510,65 +397,6 @@ class QuestionnaireViewController: UIViewController {
         viewModel.widthOfFlagThird.constant = widthFlag(flag: viewModel.data.buttonThird[number].flag)
         viewModel.widthOfFlagFourth.constant = widthFlag(flag: viewModel.data.buttonFourth[number].flag)
     }
-    // MARK: - Check answer, select correct or incorrect answer by user
-    private func checkCorrectAnswer(tag: Int) {
-        if checkAnswer(tag: tag) {
-            correctAnswer()
-            deleteIncorrectAnswer()
-        } else {
-            incorrectAnswer(tag: tag)
-            deleteCorrectAnswer()
-        }
-    }
-    
-    private func checkAnswer(tag: Int) -> Bool {
-        switch tag {
-        case 1: return viewModel.question.flag == viewModel.answerFirst.flag ? true : false
-        case 2: return viewModel.question.flag == viewModel.answerSecond.flag ? true : false
-        case 3: return viewModel.question.flag == viewModel.answerThird.flag ? true : false
-        default: return viewModel.question.flag == viewModel.answerFourth.flag ? true : false
-        }
-    }
-    
-    private func deleteCorrectAnswer() {
-        guard !correctAnswers.isEmpty else { return }
-        let question = viewModel.question
-        guard let index = correctAnswers.firstIndex(of: question) else { return }
-        correctAnswers.remove(at: index)
-    }
-    
-    private func correctAnswer() {
-        correctAnswers.append(viewModel.question)
-    }
-    
-    private func deleteIncorrectAnswer() {
-        guard !incorrectAnswers.isEmpty else { return }
-        let topics = incorrectAnswers.map({ $0.question })
-        let question = viewModel.question
-        guard let index = topics.firstIndex(of: question) else { return }
-        incorrectAnswers.remove(at: index)
-    }
-    
-    private func incorrectAnswer(tag: Int) {
-        incorrectAnswer(numberQuestion: viewModel.numberQuestion + 1, tag: tag,
-                        question: viewModel.question,
-                        buttonFirst: viewModel.answerFirst,
-                        buttonSecond: viewModel.answerSecond,
-                        buttonThird: viewModel.answerThird,
-                        buttonFourth: viewModel.answerFourth,
-                        timeUp: false)
-    }
-    
-    private func incorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
-                                 buttonFirst: Countries, buttonSecond: Countries,
-                                 buttonThird: Countries, buttonFourth: Countries,
-                                 timeUp: Bool) {
-        let answer = Results(currentQuestion: numberQuestion, tag: tag,
-                             question: question, buttonFirst: buttonFirst,
-                             buttonSecond: buttonSecond, buttonThird: buttonThird,
-                             buttonFourth: buttonFourth, timeUp: timeUp)
-        incorrectAnswers.append(answer)
-    }
     // MARK: - Business logic
     @objc private func exitToGameType() {
         navigationController?.popViewController(animated: true)
@@ -603,8 +431,9 @@ class QuestionnaireViewController: UIViewController {
     }
     
     private func action(button: UIButton, image: UIImageView, label: UILabel? = nil) {
-        select(button: button)
-        setupSelect(button: button, image: image, label: label)
+        viewModel.setSelectButton(button)
+        viewModel.checkCorrectAnswer(button.tag)
+        viewModel.setAppearenceButtons(button, image, label)
         
         viewModel.buttonsForAnswers(isOn: false)
         viewModel.checkLastQuestion(buttonBack, buttonForward)
@@ -617,7 +446,7 @@ class QuestionnaireViewController: UIViewController {
         if viewModel.numberQuestion + 1 < viewModel.countQuestions {
             viewModel.timer = runTimer(duration: 0.7, action: #selector(hideQuestion), repeats: false)
         } else {
-            finishQuestionnaire()
+            viewModel.selectAnswerForLastQuestion(labelQuiz, labelDescription)
         }
     }
     
@@ -656,11 +485,6 @@ class QuestionnaireViewController: UIViewController {
         viewModel.timer.invalidate()
         viewModel.animationBackSubviews(view)
         viewModel.timer = runTimer(duration: 0.25, action: #selector(nextQuestion), repeats: false)
-    }
-    // MARK: - Finish game
-    private func finishQuestionnaire() {
-        viewModel.setLastQuestion(true)
-        viewModel.showFinishTitle(labelQuiz, labelDescription)
     }
 }
 // MARK: - Touches began

@@ -54,6 +54,8 @@ protocol QuestionnaireViewModelProtocol {
     init(mode: Setting, game: Games)
     
     func setButtons(_ buttonOne: UIButton,_ buttonTwo: UIButton,_ buttonThree: UIButton,_ buttonFour: UIButton)
+    func setImages(_ imageOne: UIImageView,_ imageTwo: UIImageView,_ imageThree: UIImageView,_ imageFour: UIImageView)
+    func setLabels(_ labelOne: UILabel,_ labelTwo: UILabel,_ labelThree: UILabel,_ labelFour: UILabel)
     func setSubviews(subviews: UIView..., on subviewOther: UIView)
     func setOpacity(subviews: UIView..., opacity: Float, duration: CGFloat)
     func setFlash(subviews: UIView..., opacity: Float)
@@ -74,9 +76,16 @@ protocol QuestionnaireViewModelProtocol {
     func moveBackSubviews(_ view: UIView)
     func animationSubviews(duration: CGFloat,_ view: UIView)
     func animationBackSubviews(_ view: UIView)
+    func setSelectButton(_ button: UIButton)
     func selectIsEnabled(_ tag: Int,_ isOn: Bool,_ currentQuestion: Int)
     func setCurrentQuestion(_ number: Int)
     func setNumberQuestion(_ number: Int)
+    func checkCorrectAnswer(_ tag: Int)
+    func setAppearenceButtons(_ button: UIButton,_ image: UIImageView,_ label: UILabel?)
+    func setColorButtonsDisabled(_ tag: Int)
+    func setImagesDisabled(_ tag: Int)
+    func setLabelsDisabled(_ tag: Int)
+    func selectAnswerForLastQuestion(_ labelQuiz: UILabel,_ labelDescription: UILabel)
     
     func setCircleTimer(_ labelTimer: UILabel,_ view: UIView)
     func updateNumberQuestion(_ labelNumber: UILabel)
@@ -186,6 +195,16 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     private var buttonThird: UIButton!
     private var buttonFourth: UIButton!
     
+    private var imageFirst: UIImageView!
+    private var imageSecond: UIImageView!
+    private var imageThird: UIImageView!
+    private var imageFourth: UIImageView!
+    
+    private var labelFirst: UILabel!
+    private var labelSecond: UILabel!
+    private var labelThird: UILabel!
+    private var labelFourth: UILabel!
+    
     required init(mode: Setting, game: Games) {
         self.mode = mode
         self.game = game
@@ -197,6 +216,22 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         buttonSecond = buttonTwo
         buttonThird = buttonThree
         buttonFourth = buttonFour
+    }
+    
+    func setImages(_ imageOne: UIImageView, _ imageTwo: UIImageView, 
+                   _ imageThree: UIImageView, _ imageFour: UIImageView) {
+        imageFirst = imageOne
+        imageSecond = imageTwo
+        imageThird = imageThree
+        imageFourth = imageFour
+    }
+    
+    func setLabels(_ labelOne: UILabel, _ labelTwo: UILabel, 
+                   _ labelThree: UILabel, _ labelFour: UILabel) {
+        labelFirst = labelOne
+        labelSecond = labelTwo
+        labelThird = labelThree
+        labelFourth = labelFour
     }
     
     func setSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -318,6 +353,15 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         }
     }
     // MARK: - Set select answer
+    func setSelectButton(_ button: UIButton) {
+        guard !checkSelect(tag: button.tag) else { return }
+        let question = checkCurrentQuestion()
+        (1...4).forEach { tag in
+            let isOn = tag == button.tag ? true : false
+            selectIsEnabled(tag, isOn, question)
+        }
+    }
+    
     func selectIsEnabled(_ tag: Int, _ isOn: Bool, _ currentQuestion: Int) {
         switch tag {
         case 1: data.buttonFirst[currentQuestion].select = isOn
@@ -396,13 +440,18 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         setLastQuestion(true)
     }
     
-    func checkLastQuestionForShowTitle(_ labelQuiz: UILabel,_ labelDescription: UILabel) {
+    func checkLastQuestionForShowTitle(_ labelQuiz: UILabel, _ labelDescription: UILabel) {
         guard lastQuestion, numberQuestion == currentQuestion else { return }
         showFinishTitle(labelQuiz, labelDescription)
     }
     
     func checkTimeUp(completion: @escaping () -> Void) {
         seconds > 0 ? buttonsForAnswers(isOn: true) : completion()
+    }
+    
+    func selectAnswerForLastQuestion(_ labelQuiz: UILabel, _ labelDescription: UILabel) {
+        setLastQuestion(true)
+        showFinishTitle(labelQuiz, labelDescription)
     }
     // MARK: - Set on / off buttons back and forward
     func buttonsBackForwardOnOff(_ buttonBack: UIButton, _ buttonForward: UIButton) {
@@ -419,6 +468,36 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
                                opacityBack: 0, opacityForward: 1,
                                isEnabledBack: false, isEnabledForward: true)
         }
+    }
+    // MARK: - Check answer, select correct or incorrect answer by user
+    func checkCorrectAnswer(_ tag: Int) {
+        if checkAnswer(tag: tag) {
+            addCorrectAnswer()
+            deleteIncorrectAnswer()
+        } else {
+            addIncorrectAnswer(tag: tag)
+            deleteCorrectAnswer()
+        }
+    }
+    // MARK: - Set color buttons, images and labels when user press button of answer
+    func setAppearenceButtons(_ button: UIButton, _ image: UIImageView, _ label: UILabel? = nil) {
+        setButtonsSelect(button: button)
+        setImagesSelect(image: image)
+        if let label = label {
+            setLabelsSelect(label: label)
+        }
+    }
+    
+    func setColorButtonsDisabled(_ tag: Int) {
+        setColorButtonsDisabled(buttons: buttonFirst, buttonSecond, buttonThird, buttonFourth, tag: tag)
+    }
+    
+    func setImagesDisabled(_ tag: Int) {
+        setImagesDisabled(images: imageFirst, imageSecond, imageThird, imageFourth, tag: tag)
+    }
+    
+    func setLabelsDisabled(_ tag: Int) {
+        setLabelsDisabled(labels: labelFirst, labelSecond, labelThird, labelFourth, tag: tag)
     }
     // MARK: - Get countries for questions, countinue
     private func getRandomCountries() -> [Countries] {
@@ -715,5 +794,120 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         setOpacity(subviews: buttonForward, opacity: opacityForward, duration: 0.3)
         setEnabled(subviews: buttonBack, isEnabled: isEnabledBack)
         setEnabled(subviews: buttonForward, isEnabled: isEnabledForward)
+    }
+    // MARK: - Set select answer, countinue
+    private func checkSelect(tag: Int) -> Bool {
+        switch tag {
+        case 1: return answerFirst.select
+        case 2: return answerSecond.select
+        case 3: return answerThird.select
+        default: return answerFourth.select
+        }
+    }
+    // MARK: - Check answer, select correct or incorrect answer by user, countinue
+    private func checkAnswer(tag: Int) -> Bool {
+        switch tag {
+        case 1: return question.flag == answerFirst.flag ? true : false
+        case 2: return question.flag == answerSecond.flag ? true : false
+        case 3: return question.flag == answerThird.flag ? true : false
+        default: return question.flag == answerFourth.flag ? true : false
+        }
+    }
+    
+    private func addCorrectAnswer() {
+        correctAnswers.append(question)
+    }
+    
+    private func deleteIncorrectAnswer() {
+        guard !incorrectAnswers.isEmpty else { return }
+        let topics = incorrectAnswers.map({ $0.question })
+        guard let index = topics.firstIndex(of: question) else { return }
+        incorrectAnswers.remove(at: index)
+    }
+    
+    private func addIncorrectAnswer(tag: Int) {
+        incorrectAnswer(numberQuestion: numberQuestion + 1, tag: tag,
+                        question: question,
+                        buttonFirst: answerFirst,
+                        buttonSecond: answerSecond,
+                        buttonThird: answerThird,
+                        buttonFourth: answerFourth,
+                        timeUp: false)
+    }
+    
+    private func deleteCorrectAnswer() {
+        guard !correctAnswers.isEmpty else { return }
+        guard let index = correctAnswers.firstIndex(of: question) else { return }
+        correctAnswers.remove(at: index)
+    }
+    
+    private func incorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
+                                 buttonFirst: Countries, buttonSecond: Countries,
+                                 buttonThird: Countries, buttonFourth: Countries,
+                                 timeUp: Bool) {
+        let answer = Results(currentQuestion: numberQuestion, tag: tag,
+                             question: question, buttonFirst: buttonFirst,
+                             buttonSecond: buttonSecond, buttonThird: buttonThird,
+                             buttonFourth: buttonFourth, timeUp: timeUp)
+        incorrectAnswers.append(answer)
+    }
+    // MARK: - Set animation color buttons, images and labels when user press button of answer
+    private func setButtonsSelect(button: UIButton) {
+        setColorButtonsDisabled(button.tag)
+        setColorButton(button: button, color: .white)
+    }
+    
+    private func setColorButtonsDisabled(buttons: UIButton..., tag: Int) {
+        buttons.forEach { button in
+            if !(button.tag == tag) {
+                setColorButton(button: button, color: .clear)
+            }
+        }
+    }
+    
+    private func setColorButton(button: UIButton, color: UIColor) {
+        UIView.animate(withDuration: 0.3) {
+            button.backgroundColor = color
+        }
+    }
+    
+    private func setImagesSelect(image: UIImageView) {
+        setImagesDisabled(image.tag)
+        setImage(image: image, color: .greenHarlequin, symbol: "checkmark.circle.fill")
+    }
+    
+    private func setImagesDisabled(images: UIImageView..., tag: Int) {
+        images.forEach { image in
+            if !(image.tag == tag) {
+                setImage(image: image, color: .white, symbol: "circle")
+            }
+        }
+    }
+    
+    private func setImage(image: UIImageView, color: UIColor, symbol: String) {
+        UIView.animate(withDuration: 0.3) {
+            let size = UIImage.SymbolConfiguration(pointSize: 30)
+            image.tintColor = color
+            image.image = UIImage(systemName: symbol, withConfiguration: size)
+        }
+    }
+    
+    private func setLabelsSelect(label: UILabel) {
+        setLabelsDisabled(label.tag)
+        setColorLabel(label: label, color: .greenHarlequin)
+    }
+    
+    private func setLabelsDisabled(labels: UILabel..., tag: Int) {
+        labels.forEach { label in
+            if !(label.tag == tag) {
+                setColorLabel(label: label, color: .white)
+            }
+        }
+    }
+    
+    private func setColorLabel(label: UILabel, color: UIColor) {
+        UIView.animate(withDuration: 0.3) {
+            label.textColor = color
+        }
     }
 }

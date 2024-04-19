@@ -69,6 +69,12 @@ protocol QuestionnaireViewModelProtocol {
     func isCountdown() -> Bool
     func checkCurrentQuestion() -> Int
     func checkLastQuestion(_ buttonFirst: UIButton,_ buttonSecond: UIButton)
+    func checkWidthFlag(_ flag: String) -> CGFloat
+    func widthFlag(_ flag: String,_ view: UIView) -> CGFloat
+    func setWidthAndCenterFlag(_ view: UIView) -> (CGFloat, CGFloat)
+    func setHeight() -> CGFloat
+    func setConstant(_ view: UIView) -> CGFloat
+    func widthLabel(_ view: UIView) -> CGFloat
     
     func getQuestions()
     func showLabelQuiz(_ label: UILabel, duration: CGFloat, opacity: Float)
@@ -99,6 +105,12 @@ protocol QuestionnaireViewModelProtocol {
     func checkLastQuestionForShowTitle(_ labelQuiz: UILabel,_ labelDescription: UILabel)
     func checkTimeUp(completion: @escaping () -> Void)
     func buttonsBackForwardOnOff(_ buttonBack: UIButton,_ buttonForward: UIButton)
+    func updateDataQuestion(_ imageFlag: UIImageView,_ labelCountry: UILabel,_ view: UIView)
+    func setSelectedResponse()
+    func stopTimer()
+    func setTimeSpent()
+    
+    func resultsViewController() -> ResultsViewModelProtocol
 }
 
 class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
@@ -283,6 +295,41 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         guard !(currentQuestion + 1 == countQuestions) else { return }
         setEnabled(subviews: buttonFirst, buttonSecond, isEnabled: false)
     }
+    
+    func checkWidthFlag(_ flag: String) -> CGFloat {
+        switch flag {
+        case "nepal", "vatican city", "switzerland": return 168
+        default: return 280
+        }
+    }
+    
+    func widthFlag(_ flag: String, _ view: UIView) -> CGFloat {
+        switch flag {
+        case "nepal", "vatican city", "switzerland": return setHeight()
+        default: return setWidthAndCenterFlag(view).0
+        }
+    }
+    
+    func setWidthAndCenterFlag(_ view: UIView) -> (CGFloat, CGFloat) {
+        let buttonWidth = ((view.frame.width - 20) / 2) - 4
+        let flagWidth = buttonWidth - 45
+        let centerFlag = flagWidth / 2 + 5
+        let constant = buttonWidth / 2 - centerFlag
+        return (flagWidth, constant)
+    }
+    
+    func setHeight() -> CGFloat {
+        let buttonHeight = height / 2 - 4
+        return buttonHeight - 10
+    }
+    
+    func setConstant(_ view: UIView) -> CGFloat {
+        view.frame.width / 2 - 27.5
+    }
+    
+    func widthLabel(_ view: UIView) -> CGFloat {
+        view.bounds.width - 105
+    }
     // MARK: - Get countries for questions
     func getQuestions() {
         let randomCountries = getRandomCountries()
@@ -396,6 +443,20 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     func updateNumberQuestion(_ labelNumber: UILabel) {
         labelNumber.text = "\(checkCurrentQuestion() + 1) / \(countQuestions)"
     }
+    
+    func updateDataQuestion(_ imageFlag: UIImageView, _ labelCountry: UILabel, _ view: UIView) {
+        let number = checkCurrentQuestion()
+        if isFlag() {
+            let flag = data.questions[number].flag
+            imageFlag.image = UIImage(named: flag)
+            widthOfFlagFirst.constant = checkWidthFlag(flag)
+            updateLabels()
+        } else {
+            labelCountry.text = data.questions[number].name
+            updateImages()
+            updateWidthFlag(view)
+        }
+    }
     // MARK: - Set title time
     func setTime() {
         seconds = time * 10
@@ -498,6 +559,32 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     
     func setLabelsDisabled(_ tag: Int) {
         setLabelsDisabled(labels: labelFirst, labelSecond, labelThird, labelFourth, tag: tag)
+    }
+    // MARK: - Set selected button for next / previous question
+    func setSelectedResponse() {
+        checkSelected(selects: answerFirst.select, answerSecond.select, answerThird.select, answerFourth.select)
+    }
+    // MARK: - Stop timer when game came to end
+    func stopTimer() {
+        guard seconds > 0 else { return }
+        countdown.invalidate()
+        let time = time * 10
+        let timeSpent = CGFloat(seconds) / CGFloat(time)
+        let strokeEnd = round(timeSpent * 100) / 100
+        shapeLayer.strokeEnd = strokeEnd
+    }
+    // MARK: - Set time spent
+    func setTimeSpent() {
+        guard seconds > 0 else { return }
+        let circleTimeSpent = 1 - shapeLayer.strokeEnd
+        let time = time
+        let timeSpent = circleTimeSpent * CGFloat(time)
+        spendTime.append(timeSpent)
+    }
+    // MARK: - Transition to ResuiltViewController
+    func resultsViewController() -> ResultsViewModelProtocol {
+        ResultsViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
+                         incorrectAnswers: incorrectAnswers, spendTime: spendTime)
     }
     // MARK: - Get countries for questions, countinue
     private func getRandomCountries() -> [Countries] {
@@ -908,6 +995,49 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     private func setColorLabel(label: UILabel, color: UIColor) {
         UIView.animate(withDuration: 0.3) {
             label.textColor = color
+        }
+    }
+    // MARK: - Refresh data for show next question
+    private func updateLabels() {
+        let number = checkCurrentQuestion()
+        labelFirst.text = data.buttonFirst[number].name
+        labelSecond.text = data.buttonSecond[number].name
+        labelThird.text = data.buttonThird[number].name
+        labelFourth.text = data.buttonFourth[number].name
+    }
+    
+    private func updateImages() {
+        let number = checkCurrentQuestion()
+        imageFirst.image = UIImage(named: data.buttonFirst[number].flag)
+        imageSecond.image = UIImage(named: data.buttonSecond[number].flag)
+        imageThird.image = UIImage(named: data.buttonThird[number].flag)
+        imageFourth.image = UIImage(named: data.buttonFourth[number].flag)
+    }
+    
+    private func updateWidthFlag(_ view: UIView) {
+        let number = checkCurrentQuestion()
+        widthOfFlagFirst.constant = widthFlag(data.buttonFirst[number].flag, view)
+        widthOfFlagSecond.constant = widthFlag(data.buttonSecond[number].flag, view)
+        widthOfFlagThird.constant = widthFlag(data.buttonThird[number].flag, view)
+        widthOfFlagFourth.constant = widthFlag(data.buttonFourth[number].flag, view)
+    }
+    // MARK: - Set selected button for next / previous question, countinue
+    private func checkSelected(selects: Bool...) {
+        var tag = 1
+        selects.forEach { select in
+            if select {
+                setSelected(tag: tag)
+            }
+            tag += 1
+        }
+    }
+    
+    private func setSelected(tag: Int) {
+        switch tag {
+        case 1: setAppearenceButtons(buttonFirst, imageFirst, isFlag() ? labelFirst : nil)
+        case 2: setAppearenceButtons(buttonSecond, imageSecond, isFlag() ? labelSecond : nil)
+        case 3: setAppearenceButtons(buttonThird, imageThird, isFlag() ? labelThird : nil)
+        default: setAppearenceButtons(buttonFourth, imageFourth, isFlag() ? labelFourth : nil)
         }
     }
 }

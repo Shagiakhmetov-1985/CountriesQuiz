@@ -441,9 +441,9 @@ extension QuizOfFlagsViewController {
             labelDescription.centerYAnchor.constraint(equalTo: labelQuiz.centerYAnchor)
         ])
         
-        viewModel.isFlag() ?
-        buttons(subview: stackViewFlag, width: viewModel.widthButtons(view), height: 215) :
-        buttons(subview: stackViewLabel, width: viewModel.widthButtons(view), height: viewModel.heightStackView)
+        let stackView = viewModel.isFlag() ? stackViewFlag : stackViewLabel
+        let height = viewModel.isFlag() ? 215 : viewModel.heightStackView
+        buttons(subview: stackView, width: viewModel.widthButtons(view), height: height)
     }
     
     private func constraintsTimer() {

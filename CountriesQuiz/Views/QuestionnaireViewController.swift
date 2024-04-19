@@ -205,10 +205,6 @@ class QuestionnaireViewController: UIViewController {
     var viewModel: QuestionnaireViewModelProtocol!
     weak var delegateInput: GameTypeViewControllerInput!
     
-    private var seconds = 0
-    
-    private var spendTime: [CGFloat] = []
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupData()
@@ -299,7 +295,7 @@ class QuestionnaireViewController: UIViewController {
         
         viewModel.setTime()
         viewModel.runCircleTimer()
-        runTimer()
+        viewModel.countdown = runTimer(duration: 0.1, action: #selector(runCountdown), repeats: true)
     }
     
     @objc private func nextQuestion() {
@@ -311,10 +307,6 @@ class QuestionnaireViewController: UIViewController {
         }
     }
     // MARK: - Run timer
-    private func runTimer() {
-        viewModel.countdown = runTimer(duration: 0.1, action: #selector(runCountdown), repeats: true)
-    }
-    
     @objc private func runCountdown() {
         viewModel.setTitleTimer(labelTimer) {
             self.timeUp()
@@ -325,77 +317,6 @@ class QuestionnaireViewController: UIViewController {
         viewModel.setEnabled(subviews: buttonBack, buttonForward, buttonExit, isEnabled: false)
         viewModel.buttonsForAnswers(isOn: false)
         viewModel.endGame(labelQuiz, labelDescription)
-    }
-    // MARK: - Refresh data for show next question
-    private func updateData() {
-        updateDataFlagLabel()
-        viewModel.updateNumberQuestion(labelNumber)
-        
-        viewModel.setColorButtonsDisabled(0)
-        viewModel.setImagesDisabled(0)
-        if viewModel.isFlag() {
-            viewModel.setLabelsDisabled(0)
-        }
-        
-        checkSelect(selects: viewModel.answerFirst.select, viewModel.answerSecond.select,
-                    viewModel.answerThird.select, viewModel.answerFourth.select)
-    }
-    
-    private func checkSelect(selects: Bool...) {
-        var tag = 1
-        selects.forEach { select in
-            if select {
-                tagSelect(tag: tag)
-            }
-            tag += 1
-        }
-    }
-    
-    private func tagSelect(tag: Int) {
-        switch tag {
-        case 1: viewModel.setAppearenceButtons(buttonFirst, checkmarkFirst, viewModel.isFlag() ? labelFirst : nil)
-        case 2: viewModel.setAppearenceButtons(buttonSecond, checkmarkSecond, viewModel.isFlag() ? labelSecond : nil)
-        case 3: viewModel.setAppearenceButtons(buttonThird, checkmarkThird, viewModel.isFlag() ? labelThird : nil)
-        default: viewModel.setAppearenceButtons(buttonFourth, checkmarkFourth, viewModel.isFlag() ? labelFourth : nil)
-        }
-    }
-    
-    private func updateDataFlagLabel() {
-        let number = viewModel.checkCurrentQuestion()
-        if viewModel.isFlag() {
-            let flag = viewModel.data.questions[number].flag
-            imageFlag.image = UIImage(named: flag)
-            viewModel.widthOfFlagFirst.constant = checkWidthFlag(flag: flag)
-            updateLabels()
-        } else {
-            labelCountry.text = viewModel.data.questions[number].name
-            updateImages()
-            updateWidthFlag()
-        }
-    }
-    
-    private func updateLabels() {
-        let number = viewModel.checkCurrentQuestion()
-        labelFirst.text = viewModel.data.buttonFirst[number].name
-        labelSecond.text = viewModel.data.buttonSecond[number].name
-        labelThird.text = viewModel.data.buttonThird[number].name
-        labelFourth.text = viewModel.data.buttonFourth[number].name
-    }
-    
-    private func updateImages() {
-        let number = viewModel.checkCurrentQuestion()
-        imageFirst.image = UIImage(named: viewModel.data.buttonFirst[number].flag)
-        imageSecond.image = UIImage(named: viewModel.data.buttonSecond[number].flag)
-        imageThird.image = UIImage(named: viewModel.data.buttonThird[number].flag)
-        imageFourth.image = UIImage(named: viewModel.data.buttonFourth[number].flag)
-    }
-    
-    private func updateWidthFlag() {
-        let number = viewModel.checkCurrentQuestion()
-        viewModel.widthOfFlagFirst.constant = widthFlag(flag: viewModel.data.buttonFirst[number].flag)
-        viewModel.widthOfFlagSecond.constant = widthFlag(flag: viewModel.data.buttonSecond[number].flag)
-        viewModel.widthOfFlagThird.constant = widthFlag(flag: viewModel.data.buttonThird[number].flag)
-        viewModel.widthOfFlagFourth.constant = widthFlag(flag: viewModel.data.buttonFourth[number].flag)
     }
     // MARK: - Business logic
     @objc private func exitToGameType() {
@@ -486,43 +407,36 @@ class QuestionnaireViewController: UIViewController {
         viewModel.animationBackSubviews(view)
         viewModel.timer = runTimer(duration: 0.25, action: #selector(nextQuestion), repeats: false)
     }
+    // MARK: - Refresh data for show next question
+    private func updateData() {
+        viewModel.updateDataQuestion(imageFlag, labelCountry, view)
+        viewModel.updateNumberQuestion(labelNumber)
+        
+        viewModel.setColorButtonsDisabled(0)
+        viewModel.setImagesDisabled(0)
+        if viewModel.isFlag() {
+            viewModel.setLabelsDisabled(0)
+        }
+        
+        viewModel.setSelectedResponse()
+    }
 }
 // MARK: - Touches began
 extension QuestionnaireViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         guard viewModel.lastQuestion, viewModel.numberQuestion == viewModel.currentQuestion else { return }
-        stopTimer()
-        checkTimeSpent()
+        viewModel.stopTimer()
+        viewModel.setTimeSpent()
         resultsVC()
     }
     
-    private func stopTimer() {
-        guard seconds > 0 else { return }
-        viewModel.countdown.invalidate()
-        let time = viewModel.time * 10
-        let timeSpent = CGFloat(seconds) / CGFloat(time)
-        let strokeEnd = round(timeSpent * 100) / 100
-        viewModel.shapeLayer.strokeEnd = strokeEnd
-    }
-    
-    private func checkTimeSpent() {
-        guard seconds > 0 else { return }
-        let circleTimeSpent = 1 - viewModel.shapeLayer.strokeEnd
-        let time = viewModel.time
-        let timeSpent = circleTimeSpent * CGFloat(time)
-        spendTime.append(timeSpent)
-    }
-    
     private func resultsVC() {
-//        let resultsVC = ResultsViewController()
-//        resultsVC.mode = mode
-//        resultsVC.game = game
-//        resultsVC.correctAnswers = correctAnswers
-//        resultsVC.incorrectAnswers = incorrectAnswers
-//        resultsVC.spendTime = spendTime
-//        resultsVC.delegateQuestionnaire = self
-//        navigationController?.pushViewController(resultsVC, animated: true)
+        let resultsViewModel = viewModel.resultsViewController()
+        let resultsVC = ResultsViewController()
+        resultsVC.viewModel = resultsViewModel
+        resultsVC.delegateQuestionnaire = self
+        navigationController?.pushViewController(resultsVC, animated: true)
     }
 }
 // MARK: - Setup buttons
@@ -638,8 +552,8 @@ extension QuestionnaireViewController {
                                     constant: 140)
         }
         
-        constraintsButtons(button: buttonBack, constant: -setConstant())
-        constraintsButtons(button: buttonForward, constant: setConstant())
+        constraintsButtons(button: buttonBack, constant: -viewModel.setConstant(view))
+        constraintsButtons(button: buttonForward, constant: viewModel.setConstant(view))
         
         NSLayoutConstraint.activate([
             labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
@@ -661,17 +575,7 @@ extension QuestionnaireViewController {
             labelDescription.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
-        viewModel.stackViewSpring = NSLayoutConstraint(
-            item: checkStackView(),
-            attribute: .centerX, relatedBy: .equal, toItem: view,
-            attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(viewModel.stackViewSpring)
-        NSLayoutConstraint.activate([
-            checkStackView().topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
-            checkStackView().widthAnchor.constraint(equalToConstant: view.frame.width - 20),
-            checkStackView().heightAnchor.constraint(equalToConstant: viewModel.height)
-        ])
-        constraintsOnButton()
+        buttons(subview: viewModel.isFlag() ? stackViewFlag : stackViewLabel)
     }
     
     private func constraintsTimer() {
@@ -683,7 +587,7 @@ extension QuestionnaireViewController {
     
     private func constraintsQuestionFlag() {
         let flag = viewModel.question.flag
-        viewModel.widthOfFlagFirst = imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag(flag: flag))
+        viewModel.widthOfFlagFirst = imageFlag.widthAnchor.constraint(equalToConstant: viewModel.checkWidthFlag(flag))
         
         viewModel.imageFlagSpring = NSLayoutConstraint(
             item: imageFlag, attribute: .centerX, relatedBy: .equal,
@@ -703,7 +607,7 @@ extension QuestionnaireViewController {
         view.addConstraint(viewModel.labelNameSpring)
         NSLayoutConstraint.activate([
             labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            labelCountry.widthAnchor.constraint(equalToConstant: setupConstraintLabel())
+            labelCountry.widthAnchor.constraint(equalToConstant: viewModel.widthLabel(view))
         ])
     }
     
@@ -739,6 +643,20 @@ extension QuestionnaireViewController {
         viewModel.isFlag() ? imageFlag.centerYAnchor : labelCountry.topAnchor
     }
     
+    private func buttons(subview: UIStackView) {
+        viewModel.stackViewSpring = NSLayoutConstraint(
+            item: subview,
+            attribute: .centerX, relatedBy: .equal, toItem: view,
+            attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(viewModel.stackViewSpring)
+        NSLayoutConstraint.activate([
+            subview.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
+            subview.widthAnchor.constraint(equalToConstant: view.frame.width - 20),
+            subview.heightAnchor.constraint(equalToConstant: viewModel.height)
+        ])
+        constraintsOnButton()
+    }
+    
     private func constraintsOnButton() {
         if viewModel.isFlag() {
             constraintsOnButton(image: checkmarkFirst, label: labelFirst, button: buttonFirst)
@@ -772,7 +690,7 @@ extension QuestionnaireViewController {
     private func imagesOnButtonFirst(checkmark: UIImageView, image: UIImageView,
                                      button: UIButton, flag: String) {
         viewModel.widthOfFlagFirst = image.widthAnchor.constraint(
-            equalToConstant: widthFlag(flag: flag))
+            equalToConstant: viewModel.widthFlag(flag, view))
         setImageOnButton(checkmark: checkmark, image: image, button: button,
                          layout: viewModel.widthOfFlagFirst)
     }
@@ -780,7 +698,7 @@ extension QuestionnaireViewController {
     private func imagesOnButtonSecond(checkmark: UIImageView, image: UIImageView,
                                       button: UIButton, flag: String) {
         viewModel.widthOfFlagSecond = image.widthAnchor.constraint(
-            equalToConstant: widthFlag(flag: flag))
+            equalToConstant: viewModel.widthFlag(flag, view))
         setImageOnButton(checkmark: checkmark, image: image, button: button,
                          layout: viewModel.widthOfFlagSecond)
     }
@@ -788,7 +706,7 @@ extension QuestionnaireViewController {
     private func imagesOnButtonThird(checkmark: UIImageView, image: UIImageView,
                                      button: UIButton, flag: String) {
         viewModel.widthOfFlagThird = image.widthAnchor.constraint(
-            equalToConstant: widthFlag(flag: flag))
+            equalToConstant: viewModel.widthFlag(flag, view))
         setImageOnButton(checkmark: checkmark, image: image, button: button,
                          layout: viewModel.widthOfFlagThird)
     }
@@ -796,7 +714,7 @@ extension QuestionnaireViewController {
     private func imagesOnButtonFourth(checkmark: UIImageView, image: UIImageView,
                                       button: UIButton, flag: String) {
         viewModel.widthOfFlagFourth = image.widthAnchor.constraint(
-            equalToConstant: widthFlag(flag: flag))
+            equalToConstant: viewModel.widthFlag(flag, view))
         setImageOnButton(checkmark: checkmark, image: image, button: button,
                          layout: viewModel.widthOfFlagFourth)
     }
@@ -807,50 +725,11 @@ extension QuestionnaireViewController {
             checkmark.centerYAnchor.constraint(equalTo: button.centerYAnchor),
             checkmark.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 5),
             layout,
-            image.heightAnchor.constraint(equalToConstant: setHeight()),
-            image.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: setWidthAndCenterFlag().1),
+            image.heightAnchor.constraint(equalToConstant: viewModel.setHeight()),
+            image.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: viewModel.setWidthAndCenterFlag(view).1),
             image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
         setupSquare(subview: checkmark, sizes: 30)
-    }
-    
-    private func checkStackView() -> UIStackView {
-        viewModel.isFlag() ? stackViewFlag : stackViewLabel
-    }
-    
-    private func setupConstraintLabel() -> CGFloat {
-        view.bounds.width - 105
-    }
-    
-    private func checkWidthFlag(flag: String) -> CGFloat {
-        switch flag {
-        case "nepal", "vatican city", "switzerland": return 168
-        default: return 280
-        }
-    }
-    
-    private func widthFlag(flag: String) -> CGFloat {
-        switch flag {
-        case "nepal", "vatican city", "switzerland": return setHeight()
-        default: return setWidthAndCenterFlag().0
-        }
-    }
-    
-    private func setWidthAndCenterFlag() -> (CGFloat, CGFloat) {
-        let buttonWidth = ((view.frame.width - 20) / 2) - 4
-        let flagWidth = buttonWidth - 45
-        let centerFlag = flagWidth / 2 + 5
-        let constant = buttonWidth / 2 - centerFlag
-        return (flagWidth, constant)
-    }
-    
-    private func setHeight() -> CGFloat {
-        let buttonHeight = viewModel.height / 2 - 4
-        return buttonHeight - 10
-    }
-    
-    private func setConstant() -> CGFloat {
-        view.frame.width / 2 - 27.5
     }
 }
 // MARK: - QuestionnaireViewControllerInput

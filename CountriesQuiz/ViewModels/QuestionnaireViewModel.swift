@@ -54,6 +54,7 @@ protocol QuestionnaireViewModelProtocol {
     init(mode: Setting, game: Games)
     
     func setButtons(_ buttonOne: UIButton,_ buttonTwo: UIButton,_ buttonThree: UIButton,_ buttonFour: UIButton)
+    func setCheckmarks(_ imageOne: UIImageView,_ imageTwo: UIImageView,_ imageThree: UIImageView,_ imageFour: UIImageView)
     func setImages(_ imageOne: UIImageView,_ imageTwo: UIImageView,_ imageThree: UIImageView,_ imageFour: UIImageView)
     func setLabels(_ labelOne: UILabel,_ labelTwo: UILabel,_ labelThree: UILabel,_ labelFour: UILabel)
     func setSubviews(subviews: UIView..., on subviewOther: UIView)
@@ -89,7 +90,7 @@ protocol QuestionnaireViewModelProtocol {
     func checkCorrectAnswer(_ tag: Int)
     func setAppearenceButtons(_ button: UIButton,_ image: UIImageView,_ label: UILabel?)
     func setColorButtonsDisabled(_ tag: Int)
-    func setImagesDisabled(_ tag: Int)
+    func setCheckmarksDisabled(_ tag: Int)
     func setLabelsDisabled(_ tag: Int)
     func selectAnswerForLastQuestion(_ labelQuiz: UILabel,_ labelDescription: UILabel)
     
@@ -207,6 +208,11 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     private var buttonThird: UIButton!
     private var buttonFourth: UIButton!
     
+    private var checkmarkFirst: UIImageView!
+    private var checkmarkSecond: UIImageView!
+    private var checkmarkThird: UIImageView!
+    private var checkmarkFourth: UIImageView!
+    
     private var imageFirst: UIImageView!
     private var imageSecond: UIImageView!
     private var imageThird: UIImageView!
@@ -228,6 +234,13 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         buttonSecond = buttonTwo
         buttonThird = buttonThree
         buttonFourth = buttonFour
+    }
+    
+    func setCheckmarks(_ imageOne: UIImageView, _ imageTwo: UIImageView, _ imageThree: UIImageView, _ imageFour: UIImageView) {
+        checkmarkFirst = imageOne
+        checkmarkSecond = imageTwo
+        checkmarkThird = imageThree
+        checkmarkFourth = imageFour
     }
     
     func setImages(_ imageOne: UIImageView, _ imageTwo: UIImageView, 
@@ -427,10 +440,10 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     }
     
     func setNumberQuestion(_ number: Int) {
-        switch number {
-        case 1: numberQuestion += number
-        case 0: numberQuestion = number
-        default: numberQuestion -= number
+        if number == 0 {
+            numberQuestion = number
+        } else {
+            numberQuestion += number
         }
     }
     // MARK: - Set circle time
@@ -543,7 +556,7 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     // MARK: - Set color buttons, images and labels when user press button of answer
     func setAppearenceButtons(_ button: UIButton, _ image: UIImageView, _ label: UILabel? = nil) {
         setButtonsSelect(button: button)
-        setImagesSelect(image: image)
+        setCheckmarksSelect(image: image)
         if let label = label {
             setLabelsSelect(label: label)
         }
@@ -553,8 +566,8 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         setColorButtonsDisabled(buttons: buttonFirst, buttonSecond, buttonThird, buttonFourth, tag: tag)
     }
     
-    func setImagesDisabled(_ tag: Int) {
-        setImagesDisabled(images: imageFirst, imageSecond, imageThird, imageFourth, tag: tag)
+    func setCheckmarksDisabled(_ tag: Int) {
+        setCheckmarksDisabled(images: checkmarkFirst, checkmarkSecond, checkmarkThird, checkmarkFourth, tag: tag)
     }
     
     func setLabelsDisabled(_ tag: Int) {
@@ -958,12 +971,12 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         }
     }
     
-    private func setImagesSelect(image: UIImageView) {
-        setImagesDisabled(image.tag)
+    private func setCheckmarksSelect(image: UIImageView) {
+        setCheckmarksDisabled(image.tag)
         setImage(image: image, color: .greenHarlequin, symbol: "checkmark.circle.fill")
     }
     
-    private func setImagesDisabled(images: UIImageView..., tag: Int) {
+    private func setCheckmarksDisabled(images: UIImageView..., tag: Int) {
         images.forEach { image in
             if !(image.tag == tag) {
                 setImage(image: image, color: .white, symbol: "circle")
@@ -1034,10 +1047,10 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     
     private func setSelected(tag: Int) {
         switch tag {
-        case 1: setAppearenceButtons(buttonFirst, imageFirst, isFlag() ? labelFirst : nil)
-        case 2: setAppearenceButtons(buttonSecond, imageSecond, isFlag() ? labelSecond : nil)
-        case 3: setAppearenceButtons(buttonThird, imageThird, isFlag() ? labelThird : nil)
-        default: setAppearenceButtons(buttonFourth, imageFourth, isFlag() ? labelFourth : nil)
+        case 1: setAppearenceButtons(buttonFirst, checkmarkFirst, isFlag() ? labelFirst : nil)
+        case 2: setAppearenceButtons(buttonSecond, checkmarkSecond, isFlag() ? labelSecond : nil)
+        case 3: setAppearenceButtons(buttonThird, checkmarkThird, isFlag() ? labelThird : nil)
+        default: setAppearenceButtons(buttonFourth, checkmarkFourth, isFlag() ? labelFourth : nil)
         }
     }
 }

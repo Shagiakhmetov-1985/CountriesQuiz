@@ -229,7 +229,8 @@ class QuestionnaireViewController: UIViewController {
         view.backgroundColor = viewModel.background
         navigationItem.hidesBackButton = true
         viewModel.setButtons(buttonFirst, buttonSecond, buttonThird, buttonFourth)
-        viewModel.setImages(checkmarkFirst, checkmarkSecond, checkmarkThird, checkmarkFourth)
+        viewModel.setCheckmarks(checkmarkFirst, checkmarkSecond, checkmarkThird, checkmarkFourth)
+        viewModel.setImages(imageFirst, imageSecond, imageThird, imageFourth)
         viewModel.setLabels(labelFirst, labelSecond, labelThird, labelFourth)
     }
     
@@ -413,7 +414,7 @@ class QuestionnaireViewController: UIViewController {
         viewModel.updateNumberQuestion(labelNumber)
         
         viewModel.setColorButtonsDisabled(0)
-        viewModel.setImagesDisabled(0)
+        viewModel.setCheckmarksDisabled(0)
         if viewModel.isFlag() {
             viewModel.setLabelsDisabled(0)
         }

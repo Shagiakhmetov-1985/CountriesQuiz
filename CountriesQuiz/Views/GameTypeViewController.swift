@@ -736,9 +736,9 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func quizOfCapitalsViewController() {
+        let quizOfCapitalsViewModel = viewModel.quizOfCapitalsViewModel()
         let startGameVC = QuizOfCapitalsViewController()
-        startGameVC.mode = viewModel.setting
-        startGameVC.game = viewModel.games
+        startGameVC.viewModel = quizOfCapitalsViewModel
         startGameVC.delegateInput = self
         navigationController?.pushViewController(startGameVC, animated: true)
     }

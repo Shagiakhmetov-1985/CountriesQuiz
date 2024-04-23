@@ -128,6 +128,7 @@ protocol GameTypeViewModelProtocol {
     
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol
     func questionnaireViewModel() -> QuestionnaireViewModelProtocol
+    func quizOfCapitalsViewModel() -> QuizOfCapitalsViewModelProtocol
 }
 
 class GameTypeViewModel: GameTypeViewModelProtocol {
@@ -609,6 +610,10 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     // MARK: - Transition to QuestionnaireViewController
     func questionnaireViewModel() -> QuestionnaireViewModelProtocol {
         QuestionnaireViewModel(mode: mode, game: game)
+    }
+    // MARK: - Transition to QuizOfCapitalsViewController
+    func quizOfCapitalsViewModel() -> QuizOfCapitalsViewModelProtocol {
+        QuizOfCapitalsViewModel(mode: mode, game: game)
     }
     // MARK: - Set bullet list
     private func bullets(list: [String]) -> [ParagraphData] {

@@ -136,6 +136,7 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         guard viewModel.isCountdown() else { return }
         viewModel.setCircleTimer(labelTimer, view)
     }

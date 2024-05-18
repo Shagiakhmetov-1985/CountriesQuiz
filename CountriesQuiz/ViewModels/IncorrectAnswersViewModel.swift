@@ -65,6 +65,10 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
     func checkCell() -> AnyClass {
         isFlag() ? CustomCell.self : CustomLabelCell.self
     }
+    // MARK: - Transition to DetailsViewController
+    func detailsViewModel(_ indexPath: Int) -> DetailsViewModelProtocol {
+        DetailsViewModel(mode: mode, game: game, result: results[indexPath])
+    }
     // MARK: - Constants, countinue
     private func setProgress(value: Int) -> Float {
         Float(value) / Float(mode.countQuestions)
@@ -86,9 +90,5 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
         cell.progressView.progress = setProgress(value: results[indexPath.row].currentQuestion)
         cell.labelNumber.text = setText(value: results[indexPath.row].currentQuestion)
         cell.contentView.backgroundColor = game.background
-    }
-    // MARK: - Transition to DetailsViewController
-    func detailsViewModel(_ indexPath: Int) -> DetailsViewModelProtocol {
-        DetailsViewModel(mode: mode, game: game, result: results[indexPath])
     }
 }

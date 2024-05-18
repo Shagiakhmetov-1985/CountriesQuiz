@@ -174,8 +174,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     }
     // MARK: - Set title from run timer
     func setTitleTimer(_ labelTimer: UILabel, completion: @escaping () -> Void) {
-        print(seconds)
-        setSeconds(1)
+        setCountdownSeconds(1)
         guard seconds.isMultiple(of: 10) else { return }
         let text = seconds / 10
         labelTimer.text = "\(text)"
@@ -256,15 +255,15 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     }
     // MARK: - Set time
     func setTime() {
-        if isOneQuestion(), currentQuestion < 1 {
-            seconds = isOneQuestion() ? oneQuestionTime * 10 : allQuestionsTime * 10
+        if !isOneQuestion(), currentQuestion < 1 {
+            setCountdownSeconds(time * 10)
         } else if isOneQuestion() {
-            seconds = isOneQuestion() ? oneQuestionTime * 10 : allQuestionsTime * 10
+            setCountdownSeconds(time * 10)
         }
     }
     // MARK: - Animation label description and label number
     func showDescription(_ labelQuiz: UILabel, _ labelDescription: UILabel) {
-        showDescription(labelQuiz)
+        showDescription(labelDescription)
         animationHideQuizShowDescription(labelQuiz, labelDescription)
     }
     
@@ -276,7 +275,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     // MARK: - Zeroing out data
     func exitToGameType() {
         timer.invalidate()
-        setSeconds(0)
+        setCountdownSeconds(0)
         setNextCurrentQuestion(0)
     }
     // MARK: - Set circle timer
@@ -325,6 +324,8 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         answerSelect.toggle()
         checkButton(tag: button.tag, button: button)
         disableButton(buttons: buttonFirst, buttonSecond, buttonThird, buttonFourth, tag: button.tag)
+        setEnabled(controls: buttonFirst, buttonSecond, buttonThird, buttonFourth, isEnabled: false)
+        completion()
     }
     
     func addIncorrectAnswer(_ tag: Int) {
@@ -344,6 +345,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         addIncorrectAnswer(0)
         showDescription(labelQuiz, labelDescription)
         disableButton(buttons: buttonFirst, buttonSecond, buttonThird, buttonFourth, tag: 0)
+        setEnabled(controls: buttonFirst, buttonSecond, buttonThird, buttonFourth, isEnabled: false)
         guard !isOneQuestion() else { return }
         currentQuestion = countQuestions
     }
@@ -623,7 +625,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         label.textColor = red
     }
     // MARK: - Set seconds
-    private func setSeconds(_ time: Int) {
+    private func setCountdownSeconds(_ time: Int) {
         if time == 1 {
             seconds -= time
         } else {
@@ -729,7 +731,6 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
             if !(button.tag == tag) {
                 setButtonColor(button: button, color: white, titleColor: gray)
             }
-            button.isEnabled = false
         }
     }
     // MARK: - Add incorrect answer select from user

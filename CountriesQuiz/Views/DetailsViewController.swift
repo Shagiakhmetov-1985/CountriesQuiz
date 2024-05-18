@@ -257,7 +257,7 @@ class DetailsViewController: UIViewController {
     private func setupDesign() {
         view.backgroundColor = viewModel.game.background
         navigationItem.hidesBackButton = true
-        viewModel.setSubviews(stackViewFlag, stackViewLabel)
+//        viewModel.setSubviews(stackViewFlag, stackViewLabel)
     }
     
     private func setupBarButton() {
@@ -275,7 +275,7 @@ class DetailsViewController: UIViewController {
     
     private func setupSubviewsLabel() {
         viewModel.setupSubviews(subviews: labelCountry, progressView, labelNumberQuiz,
-                                viewModel.stackView, on: view)
+                                stackViewLabel, on: view)
     }
     
     private func checkGameType(question: Countries, answer: Countries,
@@ -483,10 +483,10 @@ extension DetailsViewController {
     
     private func constraintsStackViewLabel() {
         NSLayoutConstraint.activate([
-            viewModel.stackView.topAnchor.constraint(equalTo: labelNumberQuiz.bottomAnchor, constant: 25),
-            viewModel.stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            viewModel.stackView.widthAnchor.constraint(equalToConstant: viewModel.widthLabel(view)),
-            viewModel.stackView.heightAnchor.constraint(equalToConstant: viewModel.height())
+            stackViewLabel.topAnchor.constraint(equalTo: labelNumberQuiz.bottomAnchor, constant: 25),
+            stackViewLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackViewLabel.widthAnchor.constraint(equalToConstant: viewModel.widthLabel(view)),
+            stackViewLabel.heightAnchor.constraint(equalToConstant: viewModel.height())
         ])
         constraintsOnViewLabel()
     }

@@ -11,7 +11,6 @@ protocol DetailsViewModelProtocol {
     var radius: CGFloat { get }
     var numberQuestion: String { get }
     var progress: Float { get }
-    var stackView: UIStackView { get }
     
     var mode: Setting { get }
     var game: Games { get }
@@ -19,7 +18,6 @@ protocol DetailsViewModelProtocol {
     
     init(mode: Setting, game: Games, result: Results)
     
-    func setSubviews(_ stackViewFirst: UIStackView,_ stackViewSecond: UIStackView)
     func setupSubviews(subviews: UIView..., on otherSubview: UIView)
     func setupBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     
@@ -50,19 +48,10 @@ class DetailsViewModel: DetailsViewModelProtocol {
     var progress: Float {
         Float(result.currentQuestion) / Float(mode.countQuestions)
     }
-    var stackView: UIStackView {
-        switch game.gameType {
-        case .quizOfFlag, .questionnaire: stackViewLabel
-        default: stackViewFlag
-        }
-    }
     
     let mode: Setting
     let game: Games
     let result: Results
-    
-    private var stackViewFlag: UIStackView!
-    private var stackViewLabel: UIStackView!
     
     required init(mode: Setting, game: Games, result: Results) {
         self.mode = mode
@@ -70,11 +59,6 @@ class DetailsViewModel: DetailsViewModelProtocol {
         self.result = result
     }
     // MARK: - Set subviews
-    func setSubviews(_ stackViewFirst: UIStackView, _ stackViewSecond: UIStackView) {
-        stackViewFlag = stackViewFirst
-        stackViewLabel = stackViewSecond
-    }
-    
     func setupSubviews(subviews: UIView..., on otherSubview: UIView) {
         subviews.forEach { subview in
             otherSubview.addSubview(subview)

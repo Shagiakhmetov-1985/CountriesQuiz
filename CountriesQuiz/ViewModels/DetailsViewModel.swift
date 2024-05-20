@@ -31,7 +31,6 @@ protocol DetailsViewModelProtocol {
     func widthOrCenter(_ view: UIView) -> (CGFloat, CGFloat, CGFloat)
     
     func setTitle(title: Countries) -> String
-    func subview(_ image: UIImageView,_ label: UILabel) -> UIView
     
     func setBackgroundColor(question: Countries, answer: Countries, tag: Int, select: Int) -> UIColor
     func setTitleColor(question: Countries, answer: Countries, tag: Int, select: Int) -> UIColor
@@ -68,10 +67,6 @@ class DetailsViewModel: DetailsViewModelProtocol {
     func setupBarButton(_ button: UIButton, _ navigationItem: UINavigationItem) {
         let barButton = UIBarButtonItem(customView: button)
         navigationItem.leftBarButtonItem = barButton
-    }
-    
-    func subview(_ image: UIImageView, _ label: UILabel) -> UIView {
-        game.gameType == .quizOfFlag ? image : label
     }
     // MARK: - Constants
     func isFlag() -> Bool {

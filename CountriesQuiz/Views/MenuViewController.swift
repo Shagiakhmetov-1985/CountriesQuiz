@@ -265,10 +265,11 @@ class MenuViewController: UIViewController {
     }
     
     @objc private func setting() {
+        let settingViewModel = viewModel.settingViewModel()
         let settingVC = SettingViewController()
         settingVC.modalPresentationStyle = .custom
         settingVC.transitioningDelegate = self
-        settingVC.mode = viewModel.mode
+        settingVC.viewModel = settingViewModel
         settingVC.delegate = self
         present(settingVC, animated: true)
     }

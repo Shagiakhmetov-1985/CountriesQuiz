@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3301D6C2B9C8D3E00024479 /* Box.swift */; };
+		C33167C72BF9F7EB00504F47 /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33167C62BF9F7EB00504F47 /* SettingViewModel.swift */; };
 		C333038A2BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33303892BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift */; };
 		C333038C2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C333038B2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift */; };
 		C3342B352ACD9E6600C75C6E /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */; };
@@ -52,6 +53,7 @@
 
 /* Begin PBXFileReference section */
 		C3301D6C2B9C8D3E00024479 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
+		C33167C62BF9F7EB00504F47 /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
 		C33303892BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameTypeViewController + UIKit.swift"; sourceTree = "<group>"; };
 		C333038B2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfFlagsViewModel.swift; sourceTree = "<group>"; };
 		C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				C341078D2BBFE4C800D0E993 /* ResultsViewModel.swift */,
 				C359C3082BC1947300473B33 /* IncorrectAnswersViewModel.swift */,
 				C33762AD2BC4386700A417AB /* DetailsViewModel.swift */,
+				C33167C62BF9F7EB00504F47 /* SettingViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -371,6 +374,7 @@
 				C38DF4DB2A8E4BF000550BCC /* IncorrectAnswersViewController.swift in Sources */,
 				C36773F3296C3B880096BCC5 /* Transition.swift in Sources */,
 				C3613A712A7FB82C006C0F1E /* GameTypeManager.swift in Sources */,
+				C33167C72BF9F7EB00504F47 /* SettingViewModel.swift in Sources */,
 				C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */,
 				C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */,
 				C3342B352ACD9E6600C75C6E /* DetailsViewController.swift in Sources */,

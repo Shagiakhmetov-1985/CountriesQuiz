@@ -36,7 +36,7 @@ class DetailsViewController: UIViewController {
                 answer: viewModel.result.buttonFirst,
                 tag: 1,
                 select: viewModel.result.tag),
-            subview: viewModel.isFlag() ? labelFirst : viewModel.subview(imageFirst, labelFirst))
+            subview: viewModel.isFlag() ? labelFirst : imageFirst)
         default: setupView(
             checkmark: checkmarkFirst,
             color: viewModel.setButtonColor(
@@ -85,7 +85,7 @@ class DetailsViewController: UIViewController {
                 answer: viewModel.result.buttonSecond,
                 tag: 2,
                 select: viewModel.result.tag),
-            subview: viewModel.isFlag() ? labelSecond : viewModel.subview(imageSecond, labelSecond))
+            subview: viewModel.isFlag() ? labelSecond : imageSecond)
         default: setupView(
             checkmark: checkmarkSecond,
             color: viewModel.setButtonColor(
@@ -134,7 +134,7 @@ class DetailsViewController: UIViewController {
                 answer: viewModel.result.buttonThird,
                 tag: 3,
                 select: viewModel.result.tag),
-            subview: viewModel.isFlag() ? labelThird : viewModel.subview(imageThird, labelThird))
+            subview: viewModel.isFlag() ? labelThird : imageThird)
         default: setupView(
             checkmark: checkmarkThird,
             color: viewModel.setButtonColor(
@@ -183,7 +183,7 @@ class DetailsViewController: UIViewController {
                 answer: viewModel.result.buttonFourth,
                 tag: 4,
                 select: viewModel.result.tag),
-            subview: viewModel.isFlag() ? labelFourth : viewModel.subview(imageFourth, labelFourth))
+            subview: viewModel.isFlag() ? labelFourth : imageFourth)
         default: setupView(
             checkmark: checkmarkFourth,
             color: viewModel.setButtonColor(
@@ -257,7 +257,6 @@ class DetailsViewController: UIViewController {
     private func setupDesign() {
         view.backgroundColor = viewModel.game.background
         navigationItem.hidesBackButton = true
-//        viewModel.setSubviews(stackViewFlag, stackViewLabel)
     }
     
     private func setupBarButton() {

@@ -11,10 +11,12 @@ protocol MenuViewModelProtocol {
     var mode: Setting? { get set }
     func fetchData()
     func size(view: UIView) -> CGSize
-    func gameTypeViewModel(tag: Int) -> GameTypeViewModelProtocol
     func forPresented(_ button: UIButton) -> Transition
     func forDismissed(_ button: UIButton) -> Transition
     func setMode(_ setting: Setting)
+    
+    func gameTypeViewModel(tag: Int) -> GameTypeViewModelProtocol
+    func settingViewModel() -> SettingViewModelProtocol
 }
 
 class MenuViewModel: MenuViewModelProtocol {
@@ -84,5 +86,10 @@ class MenuViewModel: MenuViewModelProtocol {
     
     func setMode(_ setting: Setting) {
         mode = setting
+    }
+    
+    func settingViewModel() -> SettingViewModelProtocol {
+        let mode = mode ?? Setting.getSettingDefault()
+        return SettingViewModel(mode: mode)
     }
 }

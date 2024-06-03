@@ -305,6 +305,15 @@ class SettingViewController: UIViewController {
     // MARK: - Private methods
     private func setupDesign() {
         view.backgroundColor = .blueMiddlePersian
+        viewModel.setButtons(buttonAllCountries, buttonAmericaContinent, buttonEuropeContinent,
+                             buttonAfricaContinent, buttonAsiaContinent, buttonOceaniaContinent)
+        viewModel.setLabels(labelAllCountries, labelCountAllCountries, labelAmericaContinent,
+                            labelCountAmericaContinent, labelEuropeContinent, labelCountEuropeContinent,
+                            labelAfricaContinent, labelCountAfricaContinent, labelAsiaContinent,
+                            labelCountAsiaContinent, labelOceaniaContinent, labelCountOceaniaContinent,
+                            labelTimeElapsedQuestion, labelTimeElapsedNumber)
+        viewModel.setSegmentedControl(segmentedControl)
+        viewModel.setPickerViews(pickerViewOneQuestion, pickerViewAllQuestions)
         setupPickerViewNumberQuestions()
         setupPickerViewOneQuestion()
     }
@@ -326,26 +335,20 @@ class SettingViewController: UIViewController {
     }
     
     private func setupSubviewsOnView() {
-        setupSubviews(subviews: stackViewButtons, contentView, on: view)
+        viewModel.setupSubviews(subviews: stackViewButtons, contentView, on: view)
     }
     
     private func setupSubviewsOnContentView() {
-        setupSubviews(subviews: scrollView, on: contentView)
+        viewModel.setupSubviews(subviews: scrollView, on: contentView)
     }
     
     private func setupSubviewsOnScrollView() {
-        setupSubviews(subviews: stackViewNumberQuestion, pickerViewNumberQuestion,
-                      buttonAllCountries, buttonAmericaContinent,
-                      buttonEuropeContinent, buttonAfricaContinent,
-                      buttonAsiaContinent, buttonOceaniaContinent,
-                      stackViewTimeElapsed, stackViewLabelTimeElapsed,
-                      segmentedControl, stackViewPickerViews, on: scrollView)
-    }
-    
-    private func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
-        subviews.forEach { subview in
-            subviewOther.addSubview(subview)
-        }
+        viewModel.setupSubviews(subviews: stackViewNumberQuestion, pickerViewNumberQuestion,
+                                buttonAllCountries, buttonAmericaContinent,
+                                buttonEuropeContinent, buttonAfricaContinent,
+                                buttonAsiaContinent, buttonOceaniaContinent,
+                                stackViewTimeElapsed, stackViewLabelTimeElapsed,
+                                segmentedControl, stackViewPickerViews, on: scrollView)
     }
     // MARK: - Activating buttons
     @objc private func backToMenu() {
@@ -365,7 +368,7 @@ class SettingViewController: UIViewController {
     }
     
     private func conditions() -> Bool {
-        !mode.allCountries && mode.countQuestions > 50
+        !viewModel.allCountries && viewModel.countQuestions > 50
     }
     // MARK: - Setting label of number questions
     private func setLabelNumberQuestions() -> String {
@@ -376,6 +379,8 @@ class SettingViewController: UIViewController {
     }
     // MARK: - Setting of checkmarks
     @objc private func buttonCheckmark(sender: UIButton) {
+        viewModel.buttonCheckmark(sender: sender)
+        /*
         switch sender {
         case buttonAllCountries:
             checkmarkOnAllCountries()
@@ -403,6 +408,7 @@ class SettingViewController: UIViewController {
                             mode.europeContinent, mode.africaContinent,
                             mode.asiaContinent, mode.oceaniaContinent)
         buttonIsEnabled()
+         */
     }
     
     private func checkmarkOnAllCountries() {
@@ -508,9 +514,7 @@ class SettingViewController: UIViewController {
     }
     
     private func checkmarkTimeElapsed(button: UIButton) {
-//        viewModel.setTime(!viewModel.isTime())
-        
-        mode.timeElapsed.timeElapsed.toggle()
+        viewModel.setTimeToggle(viewModel.isTime())
         let isOn = viewModel.isTime()
         checkmarkOnOff(buttons: button, image: checkmark(isOn: isOn))
         checkmarkColors(isOn: isOn)
@@ -823,7 +827,7 @@ extension SettingViewController {
         button.tag = tag
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(buttonCheckmark), for: .touchUpInside)
-        setupSubviews(subviews: addLabelFirst, addLabelSecond, on: button)
+        viewModel.setupSubviews(subviews: addLabelFirst, addLabelSecond, on: button)
         return button
     }
 }

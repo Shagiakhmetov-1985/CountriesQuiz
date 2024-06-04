@@ -37,15 +37,18 @@ protocol SettingViewModelProtocol {
                    _ africaContinent: UILabel,_ countAfricaContinent: UILabel,
                    _ asiaContinent: UILabel,_ countAsiaContinent: UILabel,
                    _ oceaniaContinent: UILabel,_ countOceaniaContinent: UILabel,
-                   _ labelTimeQuestion: UILabel,_ labelTimeNumber: UILabel)
+                   _ labelTimeQuestion: UILabel,_ labelTimeNumber: UILabel,_ labelNum: UILabel)
     func setSegmentedControl(_ segmentControl: UISegmentedControl)
-    func setPickerViews(_ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView)
+    func setPickerViews(_ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView,_ pickerViewNumber: UIPickerView)
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
     
     func contentSize(_ view: UIView?) -> CGSize
     func isTime() -> Bool
     func isOneQuestion() -> Bool
     func topAnchorCheck(_ view: UIView) -> CGFloat
+    func select(isOn: Bool) -> UIColor
+    func checkmark(isOn: Bool) -> String
+    func isMoreFiftyQuestions() -> Bool
     
     func setOneQuestionTime(_ time: Int)
     func setAllQuestionsTime(_ time: Int)
@@ -54,6 +57,7 @@ protocol SettingViewModelProtocol {
     func setOneQuestion(_ isOn: Bool)
     func setMode(_ mode: Setting)
     func setTimeToggle(_ isOn: Bool)
+    func setCountCountries(continents: Bool...)
     
     func buttonCheckmark(sender: UIButton)
 }
@@ -110,6 +114,10 @@ class SettingViewModel: SettingViewModelProtocol {
     
     var mode: Setting
     
+    private var defaultCountRows: Int {
+        DefaultSetting.countRows.rawValue
+    }
+    
     private var buttonAllCountries: UIButton!
     private var buttonAmericaContinent: UIButton!
     private var buttonEuropeContinent: UIButton!
@@ -131,11 +139,13 @@ class SettingViewModel: SettingViewModelProtocol {
     private var labelCountOceaniaContinent: UILabel!
     private var labelTimeElapsedQuestion: UILabel!
     private var labelTimeElapsedNumber: UILabel!
+    private var labelNumber: UILabel!
     
     private var segmentedControl: UISegmentedControl!
     
     private var pickerViewOneQuestion: UIPickerView!
     private var pickerViewAllQuestions: UIPickerView!
+    private var pickerViewNumberQuestion: UIPickerView!
     
     required init(mode: Setting) {
         self.mode = mode
@@ -158,7 +168,8 @@ class SettingViewModel: SettingViewModelProtocol {
                    _ africaContinent: UILabel, _ countAfricaContinent: UILabel,
                    _ asiaContinent: UILabel, _ countAsiaContinent: UILabel,
                    _ oceaniaContinent: UILabel, _ countOceaniaContinent: UILabel,
-                   _ labelTimeQuestion: UILabel, _ labelTimeNumber: UILabel) {
+                   _ labelTimeQuestion: UILabel, _ labelTimeNumber: UILabel,
+                   _ labelNum: UILabel) {
         labelAllCountries = allCountries
         labelCountAllCountries = countAllCountries
         labelAmericaContinent = americaContinent
@@ -173,15 +184,17 @@ class SettingViewModel: SettingViewModelProtocol {
         labelCountOceaniaContinent = countOceaniaContinent
         labelTimeElapsedQuestion = labelTimeQuestion
         labelTimeElapsedNumber = labelTimeNumber
+        labelNumber = labelNum
     }
     
     func setSegmentedControl(_ segmentControl: UISegmentedControl) {
         segmentedControl = segmentControl
     }
     
-    func setPickerViews(_ pickerViewOne: UIPickerView, _ pickerViewAll: UIPickerView) {
+    func setPickerViews(_ pickerViewOne: UIPickerView, _ pickerViewAll: UIPickerView, _ pickerViewNumber: UIPickerView) {
         pickerViewOneQuestion = pickerViewOne
         pickerViewAllQuestions = pickerViewAll
+        pickerViewNumberQuestion = pickerViewNumber
     }
     
     func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -205,6 +218,18 @@ class SettingViewModel: SettingViewModelProtocol {
     
     func topAnchorCheck(_ view: UIView) -> CGFloat {
         view.frame.height > 736 ? 60 : 30
+    }
+    
+    func select(isOn: Bool) -> UIColor {
+        isOn ? .blueMiddlePersian : .white
+    }
+    
+    func checkmark(isOn: Bool) -> String {
+        isOn ? "checkmark.circle.fill" : "circle"
+    }
+    
+    func isMoreFiftyQuestions() -> Bool {
+        !allCountries && countQuestions > 50
     }
     // MARK: - Set new constants
     func setOneQuestionTime(_ time: Int) {
@@ -242,9 +267,25 @@ class SettingViewModel: SettingViewModelProtocol {
             buttonOnAllCountries()
             labelsOnAllCountries()
             settingOnAllCountries()
+        case buttonAmericaContinent:
+            setCheckmarkToggle(buttons: sender, isOn: americaContinent)
+            
         default:
             checkmarkTimeElapsed(button: sender)
         }
+    }
+    // MARK: - Set count countries from checkmarks
+    func setCountCountries(continents: Bool...) {
+        var count = 0
+        var counter = 0
+        continents.forEach { continent in
+            counter += 1
+            if continent {
+                count += checkCountCountries(continent: counter)
+            }
+        }
+        count = checkCountRows(count: count - 9)
+        
     }
     // MARK: - Constants, countinue
     private func checkSizeScreenIphone(_ view: UIView) -> CGFloat {
@@ -270,10 +311,10 @@ class SettingViewModel: SettingViewModelProtocol {
     }
     
     private func settingOnAllCountries() {
-        checkmarkSettingOnOff(buttons: buttonAllCountries, bool: true)
+        checkmarkSettingOnOff(buttons: buttonAllCountries, isOn: true)
         checkmarkSettingOnOff(buttons: buttonAmericaContinent, buttonEuropeContinent,
                               buttonAfricaContinent, buttonAsiaContinent,
-                              buttonOceaniaContinent, bool: false)
+                              buttonOceaniaContinent, isOn: false)
     }
     
     private func buttonOnOff(buttons: UIButton..., color: UIColor) {
@@ -292,19 +333,62 @@ class SettingViewModel: SettingViewModelProtocol {
         }
     }
     
-    private func checkmarkSettingOnOff(buttons: UIButton..., bool: Bool) {
+    private func labelOnOff(button: UIButton, color: UIColor) {
+        switch button.tag {
+        case 2: labelOnOff(labels: labelAmericaContinent, labelCountAmericaContinent, color: color)
+        case 3: labelOnOff(labels: labelEuropeContinent, labelCountEuropeContinent, color: color)
+        case 4: labelOnOff(labels: labelAfricaContinent, labelCountAfricaContinent, color: color)
+        case 5: labelOnOff(labels: labelAsiaContinent, labelCountAsiaContinent, color: color)
+        default: labelOnOff(labels: labelOceaniaContinent, labelCountOceaniaContinent, color: color)
+        }
+    }
+    
+    private func checkmarkSettingOnOff(buttons: UIButton..., isOn: Bool) {
         buttons.forEach { button in
             switch button.tag {
-            case 1: mode.allCountries = bool
-            case 2: mode.americaContinent = bool
-            case 3: mode.europeContinent = bool
-            case 4: mode.africaContinent = bool
-            case 5: mode.asiaContinent = bool
-            default: mode.oceaniaContinent = bool
+            case 1: mode.allCountries = isOn
+            case 2: mode.americaContinent = isOn
+            case 3: mode.europeContinent = isOn
+            case 4: mode.africaContinent = isOn
+            case 5: mode.asiaContinent = isOn
+            default: mode.oceaniaContinent = isOn
             }
         }
     }
     
+    private func setCheckmarkToggle(buttons: UIButton..., isOn: Bool) {
+        let toggle = isOn ? false : true
+        buttons.forEach { button in
+            switch button.tag {
+            case 1: mode.allCountries = toggle
+            case 2: mode.americaContinent = toggle
+            case 3: mode.europeContinent = toggle
+            case 4: mode.africaContinent = toggle
+            case 5: mode.asiaContinent = toggle
+            default: mode.oceaniaContinent = toggle
+            }
+        }
+    }
+    
+    private func checkmarkContinents(button: UIButton, isOn: Bool) {
+        if americaContinent, europeContinent, africaContinent, asiaContinent, oceaniaContinent {
+            buttonOnAllCountries()
+            labelsOnAllCountries()
+            settingOnAllCountries()
+        } else if !americaContinent, !europeContinent, !africaContinent, !asiaContinent, !oceaniaContinent {
+            buttonOnAllCountries()
+            labelsOnAllCountries()
+            settingOnAllCountries()
+        } else {
+            buttonOnOff(buttons: buttonAllCountries, color: .blueMiddlePersian)
+            buttonOnOff(buttons: button, color: select(isOn: !isOn))
+            
+            labelOnOff(labels: labelAllCountries, labelCountAllCountries, color: .white)
+            labelOnOff(button: button, color: select(isOn: isOn))
+            checkmarkSettingOnOff(buttons: buttonAllCountries, isOn: false)
+        }
+    }
+    // MARK: - Toggle time elapsed, change color for labels, segmented control and picker views
     private func checkmarkTimeElapsed(button: UIButton) {
         setTimeToggle(isTime())
         let isOn = isTime()
@@ -318,10 +402,6 @@ class SettingViewModel: SettingViewModelProtocol {
             let image = UIImage(systemName: image, withConfiguration: configuration)
             button.configuration?.image = image
         }
-    }
-    
-    private func checkmark(isOn: Bool) -> String {
-        isOn ? "checkmark.circle.fill" : "circle"
     }
     
     private func checkmarkColors(isOn: Bool) {
@@ -397,5 +477,66 @@ class SettingViewModel: SettingViewModelProtocol {
         default:
             return tag == 2 ? .skyGrayLight : .white
         }
+    }
+    // MARK: - Set count countries from checkmarks, countinue
+    private func checkCountCountries(continent: Int) -> Int {
+        switch continent {
+        case 1: countCountries
+        case 2: countCountriesOfAmerica
+        case 3: countCountriesOfEurope
+        case 4: countCountriesOfAfrica
+        case 5: countCountriesOfAsia
+        default: countCountriesOfOceania
+        }
+    }
+    
+    private func checkCountRows(count: Int) -> Int {
+        count > defaultCountRows ? defaultCountRows : count
+    }
+    // MARK: - Set row picker view from update count rows
+    private func setRowPickerView(newCountRows: Int) {
+        if newCountRows < countRows {
+            let countQuestions = newCountRows + 9
+            
+            setCountRows(newCountRows)
+            pickerViewNumberQuestion.reloadAllComponents()
+            pickerViewNumberQuestion.selectRow(newCountRows, inComponent: 0, animated: false)
+            checkCountQuestions(newCountQuestions: countQuestions)
+        } else {
+            setCountRows(newCountRows)
+            pickerViewNumberQuestion.reloadAllComponents()
+        }
+    }
+    
+    private func checkCountQuestions(newCountQuestions: Int) {
+        if newCountQuestions < countQuestions {
+            let averageQuestionTime = 5 * newCountQuestions
+            let currentRow = averageQuestionTime - (4 * newCountQuestions)
+            
+            setupDataFromPickerView(countQuestion: newCountQuestions,
+                                    averageTime: averageQuestionTime,
+                                    currentRow: currentRow)
+        }
+    }
+    
+    private func setupDataFromPickerView(countQuestion: Int, averageTime: Int, currentRow: Int) {
+        labelNumber.text = "\(countQuestion)"
+        labelTimeElapsedNumber.text = checkPickerViewEnabled(time: averageTime)
+        
+        setCountQuestions(countQuestion)
+        setAllQuestionsTime(averageTime)
+        
+        updateRowPickerView(pickerView: pickerViewAllQuestions, row: currentRow)
+    }
+    
+    private func checkPickerViewEnabled(time: Int) -> String {
+        let text = "\(oneQuestionTime)"
+        guard pickerViewAllQuestions.isUserInteractionEnabled else { return text }
+        return "\(time)"
+    }
+    
+    private func updateRowPickerView(pickerView: UIPickerView, row: Int) {
+        pickerView.reloadAllComponents()
+        pickerView.selectRow(row, inComponent: 0, animated: false)
     }
 }

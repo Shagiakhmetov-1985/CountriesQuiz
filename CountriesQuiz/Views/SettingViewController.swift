@@ -19,8 +19,8 @@ class SettingViewController: UIViewController {
     private lazy var buttonDefault: UIButton = {
         setupButton(
             image: "arrow.counterclockwise",
-            color: conditions() ? .white : .grayStone,
-            isEnabled: conditions() ? true : false,
+            color: viewModel.isMoreFiftyQuestions() ? .white : .grayStone,
+            isEnabled: viewModel.isMoreFiftyQuestions() ? true : false,
             action: #selector(defaultSetting))
     }()
     
@@ -75,19 +75,19 @@ class SettingViewController: UIViewController {
         setLabel(
             title: "Все страны мира",
             size: 26,
-            color: select(isOn: viewModel.allCountries))
+            color: viewModel.select(isOn: viewModel.allCountries))
     }()
     
     private lazy var labelCountAllCountries: UILabel = {
         setLabel(
             title: "Количество стран: \(viewModel.countCountries)",
             size: 20,
-            color: select(isOn: viewModel.allCountries))
+            color: viewModel.select(isOn: viewModel.allCountries))
     }()
     
     private lazy var buttonAllCountries: UIButton = {
         setButtonContinents(
-            color: select(isOn: !viewModel.allCountries),
+            color: viewModel.select(isOn: !viewModel.allCountries),
             tag: 1,
             addLabelFirst: labelAllCountries,
             addLabelSecond: labelCountAllCountries)
@@ -97,19 +97,19 @@ class SettingViewController: UIViewController {
         setLabel(
             title: "Континент Америки",
             size: 26,
-            color: select(isOn: viewModel.americaContinent))
+            color: viewModel.select(isOn: viewModel.americaContinent))
     }()
     
     private lazy var labelCountAmericaContinent: UILabel = {
         setLabel(
             title: "Количество стран: \(viewModel.countCountriesOfAmerica)",
             size: 20,
-            color: select(isOn: viewModel.americaContinent))
+            color: viewModel.select(isOn: viewModel.americaContinent))
     }()
     
     private lazy var buttonAmericaContinent: UIButton = {
         setButtonContinents(
-            color: select(isOn: !viewModel.americaContinent),
+            color: viewModel.select(isOn: !viewModel.americaContinent),
             tag: 2,
             addLabelFirst: labelAmericaContinent,
             addLabelSecond: labelCountAmericaContinent)
@@ -119,19 +119,19 @@ class SettingViewController: UIViewController {
         setLabel(
             title: "Континент Европы",
             size: 26,
-            color: select(isOn: viewModel.europeContinent))
+            color: viewModel.select(isOn: viewModel.europeContinent))
     }()
     
     private lazy var labelCountEuropeContinent: UILabel = {
         setLabel(
             title: "Количество стран: \(viewModel.countCountriesOfEurope)",
             size: 20,
-            color: select(isOn: viewModel.europeContinent))
+            color: viewModel.select(isOn: viewModel.europeContinent))
     }()
     
     private lazy var buttonEuropeContinent: UIButton = {
         setButtonContinents(
-            color: select(isOn: !viewModel.europeContinent),
+            color: viewModel.select(isOn: !viewModel.europeContinent),
             tag: 3,
             addLabelFirst: labelEuropeContinent,
             addLabelSecond: labelCountEuropeContinent)
@@ -141,19 +141,19 @@ class SettingViewController: UIViewController {
         setLabel(
             title: "Континент Африки",
             size: 26,
-            color: select(isOn: viewModel.africaContinent))
+            color: viewModel.select(isOn: viewModel.africaContinent))
     }()
     
     private lazy var labelCountAfricaContinent: UILabel = {
         setLabel(
             title: "Количество стран: \(viewModel.countCountriesOfAfrica)",
             size: 20,
-            color: select(isOn: viewModel.africaContinent))
+            color: viewModel.select(isOn: viewModel.africaContinent))
     }()
     
     private lazy var buttonAfricaContinent: UIButton = {
         setButtonContinents(
-            color: select(isOn: !viewModel.africaContinent),
+            color: viewModel.select(isOn: !viewModel.africaContinent),
             tag: 4,
             addLabelFirst: labelAfricaContinent,
             addLabelSecond: labelCountAfricaContinent)
@@ -163,19 +163,19 @@ class SettingViewController: UIViewController {
         setLabel(
             title: "Континент Азии",
             size: 26,
-            color: select(isOn: viewModel.asiaContinent))
+            color: viewModel.select(isOn: viewModel.asiaContinent))
     }()
     
     private lazy var labelCountAsiaContinent: UILabel = {
         setLabel(
             title: "Количество стран: \(viewModel.countCountriesOfAsia)",
             size: 20,
-            color: select(isOn: viewModel.asiaContinent))
+            color: viewModel.select(isOn: viewModel.asiaContinent))
     }()
     
     private lazy var buttonAsiaContinent: UIButton = {
         setButtonContinents(
-            color: select(isOn: !viewModel.asiaContinent),
+            color: viewModel.select(isOn: !viewModel.asiaContinent),
             tag: 5,
             addLabelFirst: labelAsiaContinent,
             addLabelSecond: labelCountAsiaContinent)
@@ -185,19 +185,19 @@ class SettingViewController: UIViewController {
         setLabel(
             title: "Континент Океании",
             size: 26,
-            color: select(isOn: viewModel.oceaniaContinent))
+            color: viewModel.select(isOn: viewModel.oceaniaContinent))
     }()
     
     private lazy var labelCountOceaniaContinent: UILabel = {
         setLabel(
             title: "Количество стран: \(viewModel.countCountriesOfOceania)",
             size: 20,
-            color: select(isOn: viewModel.oceaniaContinent))
+            color: viewModel.select(isOn: viewModel.oceaniaContinent))
     }()
     
     private lazy var buttonOceaniaContinent: UIButton = {
         setButtonContinents(
-            color: select(isOn: !viewModel.oceaniaContinent),
+            color: viewModel.select(isOn: !viewModel.oceaniaContinent),
             tag: 6,
             addLabelFirst: labelOceaniaContinent,
             addLabelSecond: labelCountOceaniaContinent)
@@ -208,7 +208,7 @@ class SettingViewController: UIViewController {
     }()
     
     private lazy var buttonTimeElapsed: UIButton = {
-        setButtonCheckmark(image: checkmark(isOn: viewModel.isTime()), tag: 7)
+        setButtonCheckmark(image: viewModel.checkmark(isOn: viewModel.isTime()), tag: 7)
     }()
     
     private lazy var labelTimeElapsed: UILabel = {
@@ -311,9 +311,9 @@ class SettingViewController: UIViewController {
                             labelCountAmericaContinent, labelEuropeContinent, labelCountEuropeContinent,
                             labelAfricaContinent, labelCountAfricaContinent, labelAsiaContinent,
                             labelCountAsiaContinent, labelOceaniaContinent, labelCountOceaniaContinent,
-                            labelTimeElapsedQuestion, labelTimeElapsedNumber)
+                            labelTimeElapsedQuestion, labelTimeElapsedNumber, labelNumber)
         viewModel.setSegmentedControl(segmentedControl)
-        viewModel.setPickerViews(pickerViewOneQuestion, pickerViewAllQuestions)
+        viewModel.setPickerViews(pickerViewOneQuestion, pickerViewAllQuestions, pickerViewNumberQuestion)
         setupPickerViewNumberQuestions()
         setupPickerViewOneQuestion()
     }
@@ -366,10 +366,6 @@ class SettingViewController: UIViewController {
         buttonDefault.tintColor = color
         buttonDefault.layer.borderColor = color.cgColor
     }
-    
-    private func conditions() -> Bool {
-        !viewModel.allCountries && viewModel.countQuestions > 50
-    }
     // MARK: - Setting label of number questions
     private func setLabelNumberQuestions() -> String {
         let isEnabled = pickerViewOneQuestion.isUserInteractionEnabled
@@ -380,264 +376,10 @@ class SettingViewController: UIViewController {
     // MARK: - Setting of checkmarks
     @objc private func buttonCheckmark(sender: UIButton) {
         viewModel.buttonCheckmark(sender: sender)
-        /*
-        switch sender {
-        case buttonAllCountries:
-            checkmarkOnAllCountries()
-            settingOnAllCountries()
-        case buttonAmericaContinent:
-            mode.americaContinent.toggle()
-            checkmarkContinents(button: sender, isOn: mode.americaContinent)
-        case buttonEuropeContinent:
-            mode.europeContinent.toggle()
-            checkmarkContinents(button: sender, isOn: mode.europeContinent)
-        case buttonAfricaContinent:
-            mode.africaContinent.toggle()
-            checkmarkContinents(button: sender, isOn: mode.africaContinent)
-        case buttonAsiaContinent:
-            mode.asiaContinent.toggle()
-            checkmarkContinents(button: sender, isOn: mode.asiaContinent)
-        case buttonOceaniaContinent:
-            mode.oceaniaContinent.toggle()
-            checkmarkContinents(button: sender, isOn: mode.oceaniaContinent)
-        default:
-            checkmarkTimeElapsed(button: sender)
-        }
-        
-        setupCountCountries(continents: mode.allCountries, mode.americaContinent,
-                            mode.europeContinent, mode.africaContinent,
-                            mode.asiaContinent, mode.oceaniaContinent)
+        viewModel.setCountCountries(continents: mode.allCountries, mode.americaContinent,
+                                    mode.europeContinent, mode.africaContinent,
+                                    mode.asiaContinent, mode.oceaniaContinent)
         buttonIsEnabled()
-         */
-    }
-    
-    private func checkmarkOnAllCountries() {
-        buttonOnOff(buttons: buttonAllCountries, color: .white)
-        buttonOnOff(buttons: buttonAmericaContinent, buttonEuropeContinent,
-                    buttonAfricaContinent, buttonAsiaContinent,
-                    buttonOceaniaContinent, color: .blueMiddlePersian)
-        
-        labelOnOff(labels: labelAllCountries, labelCountAllCountries,
-                   color: .blueMiddlePersian)
-        labelOnOff(labels: labelAmericaContinent, labelCountAmericaContinent,
-                   labelEuropeContinent, labelCountEuropeContinent,
-                   labelAfricaContinent, labelCountAfricaContinent,
-                   labelAsiaContinent, labelCountAsiaContinent,
-                   labelOceaniaContinent, labelCountOceaniaContinent,
-                   color: .white)
-    }
-    
-    private func settingOnAllCountries() {
-        checkmarkSettingOnOff(buttons: buttonAllCountries, bool: true)
-        checkmarkSettingOnOff(buttons: buttonAmericaContinent, buttonEuropeContinent,
-                              buttonAfricaContinent, buttonAsiaContinent,
-                              buttonOceaniaContinent, bool: false)
-    }
-    
-    private func buttonOnOff(buttons: UIButton..., color: UIColor) {
-        buttons.forEach { button in
-            UIView.animate(withDuration: 0.3) {
-                button.backgroundColor = color
-            }
-        }
-    }
-    
-    private func labelOnOff(labels: UILabel..., color: UIColor) {
-        labels.forEach { label in
-            UIView.animate(withDuration: 0.3) {
-                label.textColor = color
-            }
-        }
-    }
-    
-    private func labelOnOff(button: UIButton, color: UIColor) {
-        switch button.tag {
-        case 2:
-            labelOnOff(labels: labelAmericaContinent,
-                       labelCountAmericaContinent, color: color)
-        case 3:
-            labelOnOff(labels: labelEuropeContinent,
-                       labelCountEuropeContinent, color: color)
-        case 4:
-            labelOnOff(labels: labelAfricaContinent,
-                       labelCountAfricaContinent, color: color)
-        case 5:
-            labelOnOff(labels: labelAsiaContinent,
-                       labelCountAsiaContinent, color: color)
-        default:
-            labelOnOff(labels: labelOceaniaContinent,
-                       labelCountOceaniaContinent, color: color)
-        }
-    }
-    
-    private func checkmarkOnOff(buttons: UIButton..., image: String) {
-        buttons.forEach { button in
-            let configuration = UIImage.SymbolConfiguration(pointSize: 25)
-            let image = UIImage(systemName: image, withConfiguration: configuration)
-            button.configuration?.image = image
-        }
-    }
-    
-    private func checkmarkSettingOnOff(buttons: UIButton..., bool: Bool) {
-        buttons.forEach { button in
-            switch button.tag {
-            case 1: mode.allCountries = bool
-            case 2: mode.americaContinent = bool
-            case 3: mode.europeContinent = bool
-            case 4: mode.africaContinent = bool
-            case 5: mode.asiaContinent = bool
-            default: mode.oceaniaContinent = bool
-            }
-        }
-    }
-    
-    private func checkmarkContinents(button: UIButton, isOn: Bool) {
-        if mode.americaContinent, mode.europeContinent,
-           mode.africaContinent, mode.asiaContinent,
-           mode.oceaniaContinent {
-            checkmarkOnAllCountries()
-            settingOnAllCountries()
-        } else if !mode.allCountries, !mode.americaContinent,
-                  !mode.europeContinent, !mode.africaContinent,
-                  !mode.asiaContinent, !mode.oceaniaContinent {
-            checkmarkOnAllCountries()
-            settingOnAllCountries()
-        } else {
-            buttonOnOff(buttons: buttonAllCountries, color: .blueMiddlePersian)
-            buttonOnOff(buttons: button, color: select(isOn: !isOn))
-            
-            labelOnOff(labels: labelAllCountries, labelCountAllCountries,
-                       color: .white)
-            labelOnOff(button: button, color: select(isOn: isOn))
-            checkmarkSettingOnOff(buttons: buttonAllCountries, bool: false)
-        }
-    }
-    
-    private func checkmarkTimeElapsed(button: UIButton) {
-        viewModel.setTimeToggle(viewModel.isTime())
-        let isOn = viewModel.isTime()
-        checkmarkOnOff(buttons: button, image: checkmark(isOn: isOn))
-        checkmarkColors(isOn: isOn)
-    }
-    
-    private func checkmarkColors(isOn: Bool) {
-        checkmarkLabels(white: .white, gray: .skyGrayLight, isOn: isOn)
-        checkmarkSegmentedControl(blue: .blueMiddlePersian, gray: .grayLight, isOn: isOn)
-        checkmarkPickerViews(isOn: isOn)
-    }
-    
-    private func checkmarkLabels(white: UIColor, gray: UIColor, isOn: Bool) {
-        UIView.animate(withDuration: 0.3) {
-            self.labelTimeElapsedQuestion.textColor = isOn ? white : gray
-            self.labelTimeElapsedNumber.textColor = isOn ? white : gray
-        }
-    }
-    
-    private func checkmarkSegmentedControl(blue: UIColor, gray: UIColor, isOn: Bool) {
-        let white = UIColor.white
-        let lightGray = UIColor.skyGrayLight
-        UIView.animate(withDuration: 0.3) { [self] in
-            segmentedControl.isUserInteractionEnabled = isOn ? true : false
-            segmentedControl.backgroundColor = isOn ? white : lightGray
-            segmentedControl.selectedSegmentTintColor = isOn ? blue : gray
-            segmentedControl.layer.borderColor = isOn ? white.cgColor : lightGray.cgColor
-        }
-        segmentSelectColors(blue: blue, gray: gray, white: white,
-                            lightGray: lightGray, isOn: isOn)
-    }
-    
-    private func segmentSelectColors(blue: UIColor, gray: UIColor, white: UIColor,
-                                     lightGray: UIColor, isOn: Bool) {
-        let font = UIFont(name: "mr_fontick", size: 26)
-        let titleSelectedColor: UIColor = isOn ? white : lightGray
-        segmentedControl.setTitleTextAttributes([
-            NSAttributedString.Key
-                .font: font ?? "",
-            .foregroundColor: titleSelectedColor
-        ], for: .selected)
-        
-        let titleNormalColor: UIColor = isOn ? blue : gray
-        segmentedControl.setTitleTextAttributes([
-            NSAttributedString.Key
-                .font: font ?? "",
-            .foregroundColor: titleNormalColor
-        ], for: .normal)
-    }
-    // MARK: - Setting checkmarks and buttons for select continents and picker views
-    private func checkmarkPickerViews(isOn: Bool) {
-        pickerViewOnOff(pickerView: pickerViewOneQuestion, isOn: isOn, tag: 2)
-        pickerViewOnOff(pickerView: pickerViewAllQuestions, isOn: isOn, tag: 3)
-    }
-    
-    private func pickerViewOnOff(pickerView: UIPickerView, isOn: Bool, tag: Int) {
-        UIView.animate(withDuration: 0.3) { [self] in
-            pickerView.isUserInteractionEnabled = isOn ? isEnabled(tag: tag) : false
-            pickerView.backgroundColor = isOn ? isEnabledColor(tag: tag) : .skyGrayLight
-        }
-        pickerView.reloadAllComponents()
-    }
-    
-    private func checkmark(isOn: Bool) -> String {
-        isOn ? "checkmark.circle.fill" : "circle"
-    }
-    
-    private func select(isOn: Bool) -> UIColor {
-        isOn ? .blueMiddlePersian : .white
-    }
-    
-    private func setupCountCountries(continents: Bool...) {
-        var count = 0
-        var number = 0
-        continents.forEach { continent in
-            number += 1
-            if continent {
-                count += checkCountQuestions(continent: number)
-            }
-        }
-        count = checkCountRows(count: count - 9)
-        setupRowsPickerView(countRows: count)
-    }
-    
-    private func checkCountQuestions(continent: Int) -> Int {
-        var count: Int
-        switch continent {
-        case 1: count = FlagsOfCountries.shared.countries.count
-        case 2: count = FlagsOfCountries.shared.countriesOfAmericanContinent.count
-        case 3: count = FlagsOfCountries.shared.countriesOfEuropeanContinent.count
-        case 4: count = FlagsOfCountries.shared.countriesOfAfricanContinent.count
-        case 5: count = FlagsOfCountries.shared.countriesOfAsianContinent.count
-        default: count = FlagsOfCountries.shared.countriesOfOceanContinent.count
-        }
-        return count
-    }
-    
-    private func checkCountRows(count: Int) -> Int {
-        count > DefaultSetting.countRows.rawValue ? DefaultSetting.countRows.rawValue : count
-    }
-    
-    private func setupRowsPickerView(countRows: Int) {
-        if countRows < viewModel.countRows {
-            let countQuestions = countRows + 9
-            
-            viewModel.setCountRows(countRows)
-            pickerViewNumberQuestion.reloadAllComponents()
-            pickerViewNumberQuestion.selectRow(countRows, inComponent: 0, animated: false)
-            checkCountQuestions(countQuestions: countQuestions)
-        } else {
-            viewModel.setCountRows(countRows)
-            pickerViewNumberQuestion.reloadAllComponents()
-        }
-    }
-    
-    private func checkCountQuestions(countQuestions: Int) {
-        if countQuestions < viewModel.countQuestions {
-            let averageQuestionTime = 5 * countQuestions
-            let currentRow = averageQuestionTime - (4 * countQuestions)
-            
-            setupDataFromPickerView(countQuestion: countQuestions,
-                                    averageTime: averageQuestionTime,
-                                    currentRow: currentRow)
-        }
     }
     // MARK: - Setting of segmented control
     @objc private func segmentedControlAction() {
@@ -729,7 +471,7 @@ class SettingViewController: UIViewController {
         viewModel.setMode(Setting.getSettingDefault())
         
         setupLabels()
-        checkmarkOnAllCountries()
+//        checkmarkOnAllCountries()
         segmentedControl.selectedSegmentIndex = 0
         
         setupPickerViews()
@@ -758,8 +500,11 @@ class SettingViewController: UIViewController {
     }
     
     private func buttonIsEnabled() {
-        conditions() ? buttonIsEnabled(isEnabled: true, color: .white) :
-        buttonIsEnabled(isEnabled: false, color: .grayStone)
+        if viewModel.isMoreFiftyQuestions() {
+            buttonIsEnabled(isEnabled: true, color: .white)
+        } else {
+            buttonIsEnabled(isEnabled: false, color: .grayStone)
+        }
     }
 }
 // MARK: - Setup view

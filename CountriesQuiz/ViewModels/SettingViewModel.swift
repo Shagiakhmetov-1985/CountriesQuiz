@@ -58,8 +58,14 @@ protocol SettingViewModelProtocol {
     func setMode(_ mode: Setting)
     func setTimeToggle(_ isOn: Bool)
     func setCountCountries(continents: Bool...)
+    func setPickerViewNumberQuestion()
+    func setPickerViewOneQuestion()
+    func setPickerViewAllQuestions()
+    func setLabelNumberQuestions() -> String
     
     func buttonCheckmark(sender: UIButton)
+    func segmentAction()
+    func buttonIsEnabled(_ button: UIButton)
 }
 
 class SettingViewModel: SettingViewModelProtocol {
@@ -231,6 +237,26 @@ class SettingViewModel: SettingViewModelProtocol {
     func isMoreFiftyQuestions() -> Bool {
         !allCountries && countQuestions > 50
     }
+    
+    func setPickerViewNumberQuestion() {
+        let row = countQuestions - 10
+        pickerViewNumberQuestion.selectRow(row, inComponent: 0, animated: false)
+    }
+    
+    func setPickerViewOneQuestion() {
+        let row = oneQuestionTime - 6
+        pickerViewOneQuestion.selectRow(row, inComponent: 0, animated: false)
+    }
+    
+    func setPickerViewAllQuestions() {
+        let row = allQuestionsTime - 4 * countQuestions
+        pickerViewAllQuestions.selectRow(row, inComponent: 0, animated: false)
+    }
+    
+    func setLabelNumberQuestions() -> String {
+        let isEnabled = pickerViewOneQuestion.isUserInteractionEnabled
+        return isEnabled ? "\(oneQuestionTime)" : "\(allQuestionsTime)"
+    }
     // MARK: - Set new constants
     func setOneQuestionTime(_ time: Int) {
         mode.timeElapsed.questionSelect.questionTime.oneQuestionTime = time
@@ -276,16 +302,46 @@ class SettingViewModel: SettingViewModelProtocol {
     }
     // MARK: - Set count countries from checkmarks
     func setCountCountries(continents: Bool...) {
-        var count = 0
+        var countCountries = 0
         var counter = 0
         continents.forEach { continent in
             counter += 1
             if continent {
-                count += checkCountCountries(continent: counter)
+                countCountries += checkCountCountries(continent: counter)
             }
         }
-        count = checkCountRows(count: count - 9)
-        
+        let countRows = checkCountRows(count: countCountries - 9)
+        setRowPickerView(newCountRows: countRows)
+    }
+    // MARK: - Press segmented control
+    func segmentAction() {
+        if segmentedControl.selectedSegmentIndex == 0 {
+            let index = segmentedControl.selectedSegmentIndex
+            let currentRow = allQuestionsTime - (4 * countQuestions)
+            segmentAction(index, true, .white)
+            segmentAction(index + 1, false, .skyGrayLight)
+            
+            setDataFromSegment(row: currentRow, pickerView: pickerViewAllQuestions,
+                               isOneQuestion: true, title: "Время одного вопроса:",
+                               titleTime: "\(oneQuestionTime)")
+        } else {
+            let index = segmentedControl.selectedSegmentIndex
+            let currentRow = oneQuestionTime - 6
+            segmentAction(index, false, .skyGrayLight)
+            segmentAction(index + 1, true, .white)
+            
+            setDataFromSegment(row: currentRow, pickerView: pickerViewAllQuestions,
+                               isOneQuestion: true, title: "Время всех вопросов:",
+                               titleTime: "\(allQuestionsTime)")
+        }
+    }
+    // MARK: - Set button default
+    func buttonIsEnabled(_ button: UIButton) {
+        if isMoreFiftyQuestions() {
+            buttonIsEnabled(button: button, isOn: true, color: .white)
+        } else {
+            buttonIsEnabled(button: button, isOn: false, color: .grayStone)
+        }
     }
     // MARK: - Constants, countinue
     private func checkSizeScreenIphone(_ view: UIView) -> CGFloat {
@@ -538,5 +594,28 @@ class SettingViewModel: SettingViewModelProtocol {
     private func updateRowPickerView(pickerView: UIPickerView, row: Int) {
         pickerView.reloadAllComponents()
         pickerView.selectRow(row, inComponent: 0, animated: false)
+    }
+    // MARK: - Change color, enabled picker view and reload from press segmented control
+    private func segmentAction(_ index: Int, _ isOn: Bool, _ color: UIColor) {
+        let pickerView = index == 0 ? pickerViewOneQuestion : pickerViewAllQuestions
+        pickerView?.isUserInteractionEnabled = isOn
+        UIView.animate(withDuration: 0.3) {
+            pickerView?.backgroundColor = color
+        }
+        pickerView?.reloadAllComponents()
+    }
+    // MARK: - Show data from press segmented control
+    private func setDataFromSegment(row: Int, pickerView: UIPickerView, isOneQuestion: Bool,
+                                    title: String, titleTime: String) {
+        pickerView.selectRow(row, inComponent: 0, animated: false)
+        setOneQuestion(isOneQuestion)
+        labelTimeElapsedQuestion.text = title
+        labelTimeElapsedNumber.text = titleTime
+    }
+    // MARK: - Set button default, countinue
+    private func buttonIsEnabled(button: UIButton, isOn: Bool, color: UIColor) {
+        button.isEnabled = isOn
+        button.tintColor = color
+        button.layer.borderColor = color.cgColor
     }
 }

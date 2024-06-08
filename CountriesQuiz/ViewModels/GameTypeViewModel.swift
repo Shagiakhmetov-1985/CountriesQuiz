@@ -198,12 +198,12 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         game.gameType
     }
     
-    var countAllCountries: Int = FlagsOfCountries.shared.countries.count
-    var countCountriesOfAmerica: Int = FlagsOfCountries.shared.countriesOfAmericanContinent.count
-    var countCountriesOfEurope: Int = FlagsOfCountries.shared.countriesOfEuropeanContinent.count
-    var countCountriesOfAfrica: Int = FlagsOfCountries.shared.countriesOfAfricanContinent.count
-    var countCountriesOfAsia: Int = FlagsOfCountries.shared.countriesOfAsianContinent.count
-    var countCountriesOfOceania: Int = FlagsOfCountries.shared.countriesOfOceanContinent.count
+    var countAllCountries = FlagsOfCountries.shared.countries.count
+    var countCountriesOfAmerica = FlagsOfCountries.shared.countriesOfAmericanContinent.count
+    var countCountriesOfEurope = FlagsOfCountries.shared.countriesOfEuropeanContinent.count
+    var countCountriesOfAfrica = FlagsOfCountries.shared.countriesOfAfricanContinent.count
+    var countCountriesOfAsia = FlagsOfCountries.shared.countriesOfAsianContinent.count
+    var countCountriesOfOceania = FlagsOfCountries.shared.countriesOfOceanContinent.count
     
     private var mode: Setting
     private let game: Games
@@ -255,13 +255,13 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         switch tag {
         case 1:
             title = "\(row + 10)"
-            attributed = attributted(title: title, tag: tag, segmented: segmented)
+            attributed = setAttributed(title: title, tag: tag, segmented: segmented)
         case 2:
             title = "\(row + 6)"
-            attributed = attributted(title: title, tag: tag, segmented: segmented)
+            attributed = setAttributed(title: title, tag: tag, segmented: segmented)
         default:
             title = "\(row + 4 * mode.countQuestions)"
-            attributed = attributted(title: title, tag: tag, segmented: segmented)
+            attributed = setAttributed(title: title, tag: tag, segmented: segmented)
         }
         
         label.textAlignment = .center
@@ -721,7 +721,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         StorageManager.shared.saveSetting(setting: mode)
     }
     // MARK: - Attributted for picker view
-    private func attributted(title: String, tag: Int, segmented: UISegmentedControl) -> NSAttributedString {
+    private func setAttributed(title: String, tag: Int, segmented: UISegmentedControl) -> NSAttributedString {
         let color = tag == 1 ? game.favourite : color(tag: tag, segmented: segmented)
         return NSAttributedString(string: title, attributes: [
             .font: UIFont(name: "mr_fontick", size: 26) ?? "",

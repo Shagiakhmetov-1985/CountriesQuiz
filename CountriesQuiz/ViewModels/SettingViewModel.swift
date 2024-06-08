@@ -49,6 +49,12 @@ protocol SettingViewModelProtocol {
     func select(isOn: Bool) -> UIColor
     func checkmark(isOn: Bool) -> String
     func isMoreFiftyQuestions() -> Bool
+    func isEnabled(_ tag: Int) -> Bool
+    func isEnabledColor(_ tag: Int) -> UIColor
+    func isEnabledText() -> String
+    func numberOfComponents() -> Int
+    func numberOfRows(_ pickerView: UIPickerView) -> Int
+    func titles(_ pickerView: UIPickerView,_ row: Int) -> UIView
     
     func setOneQuestionTime(_ time: Int)
     func setAllQuestionsTime(_ time: Int)
@@ -62,6 +68,13 @@ protocol SettingViewModelProtocol {
     func setPickerViewOneQuestion()
     func setPickerViewAllQuestions()
     func setLabelNumberQuestions() -> String
+    func resetTitlesLabels()
+    func resetPickerViews()
+    func resetContinents()
+    func resetSegmentedControl()
+    func didSelectRowCount(_ row: Int,_ button: UIButton)
+    func didSelectRowOneQuestion(_ row: Int)
+    func didSelectRowAllQuestions(_ row: Int)
     
     func buttonCheckmark(sender: UIButton)
     func segmentAction()
@@ -257,6 +270,64 @@ class SettingViewModel: SettingViewModelProtocol {
         let isEnabled = pickerViewOneQuestion.isUserInteractionEnabled
         return isEnabled ? "\(oneQuestionTime)" : "\(allQuestionsTime)"
     }
+    
+    func isEnabledText() -> String {
+        let segmentIndex = segmentedControl.selectedSegmentIndex == 0
+        return segmentIndex ? "Время одного вопроса:" : "Время всех вопросов:"
+    }
+    
+    func isEnabled(_ tag: Int) -> Bool {
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            return tag == 2 ? true : false
+        default:
+            return tag == 2 ? false : true
+        }
+    }
+    
+    func isEnabledColor(_ tag: Int) -> UIColor {
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            return tag == 2 ? .white : .skyGrayLight
+        default:
+            return tag == 2 ? .skyGrayLight : .white
+        }
+    }
+    
+    func numberOfComponents() -> Int {
+        1
+    }
+    
+    func numberOfRows(_ pickerView: UIPickerView) -> Int {
+        switch pickerView.tag {
+        case 1: countRows
+        case 2: 10
+        default: (6 * countQuestions) - (4 * countQuestions) + 1
+        }
+    }
+    
+    func titles(_ pickerView: UIPickerView, _ row: Int) -> UIView {
+        let label = UILabel()
+        let tag = pickerView.tag
+        var title = String()
+        var attributed = NSAttributedString()
+        
+        switch pickerView.tag {
+        case 1:
+            title = "\(row + 10)"
+            attributed = setAttributed(title: title, tag: tag)
+        case 2:
+            title = "\(row + 6)"
+            attributed = setAttributed(title: title, tag: tag)
+        default:
+            title = "\(row + 4 * countQuestions)"
+            attributed = setAttributed(title: title, tag: tag)
+        }
+        
+        label.textAlignment = .center
+        label.attributedText = attributed
+        return label
+    }
     // MARK: - Set new constants
     func setOneQuestionTime(_ time: Int) {
         mode.timeElapsed.questionSelect.questionTime.oneQuestionTime = time
@@ -285,6 +356,27 @@ class SettingViewModel: SettingViewModelProtocol {
     func setTimeToggle(_ isOn: Bool) {
         let toggle = isOn ? false : true
         mode.timeElapsed.timeElapsed = toggle
+    }
+    
+    func didSelectRowCount(_ row: Int, _ button: UIButton) {
+        let countQuestion = row + 10
+        let averageTime = 5 * countQuestion
+        let row = averageTime - 4 * countQuestion
+        setCountQuestions(countQuestion)
+        setDataFromPickerView(count: countQuestion, averageTime: averageTime, row: row)
+        buttonIsEnabled(button)
+    }
+    
+    func didSelectRowOneQuestion(_ row: Int) {
+        let time = row + 6
+        labelTimeElapsedNumber.text = "\(time)"
+        setOneQuestionTime(time)
+    }
+    
+    func didSelectRowAllQuestions(_ row: Int) {
+        let time = row + 4 * countQuestions
+        labelTimeElapsedNumber.text = "\(time)"
+        setAllQuestionsTime(time)
     }
     // MARK: - Press buttons of continents
     func buttonCheckmark(sender: UIButton) {
@@ -342,6 +434,32 @@ class SettingViewModel: SettingViewModelProtocol {
         } else {
             buttonIsEnabled(button: button, isOn: false, color: .grayStone)
         }
+    }
+    // MARK: - Reset data for labels, picker views and segmented control from press reset button
+    func resetTitlesLabels() {
+        labelNumber.text = "\(countQuestions)"
+        labelTimeElapsedNumber.text = "\(oneQuestionTime)"
+    }
+    
+    func resetPickerViews() {
+        let countQuestions = countQuestions - 10
+        let averageTime = 5 * countQuestions
+        let timeOneQuestion = oneQuestionTime - 6
+        let timeAllQuestions = averageTime - (4 * countQuestions)
+        
+        updateRowPickerView(pickerView: pickerViewNumberQuestion, row: countQuestions)
+        updateRowPickerView(pickerView: pickerViewOneQuestion, row: timeOneQuestion)
+        updateRowPickerView(pickerView: pickerViewAllQuestions, row: timeAllQuestions)
+    }
+    
+    func resetContinents() {
+        buttonOnAllCountries()
+        labelsOnAllCountries()
+        settingOnAllCountries()
+    }
+    
+    func resetSegmentedControl() {
+        segmentedControl.selectedSegmentIndex = 0
     }
     // MARK: - Constants, countinue
     private func checkSizeScreenIphone(_ view: UIView) -> CGFloat {
@@ -511,28 +629,10 @@ class SettingViewModel: SettingViewModelProtocol {
     
     private func pickerViewOnOff(pickerView: UIPickerView, isOn: Bool, tag: Int) {
         UIView.animate(withDuration: 0.3) { [self] in
-            pickerView.isUserInteractionEnabled = isOn ? isEnabled(tag: tag) : false
-            pickerView.backgroundColor = isOn ? isEnabledColor(tag: tag) : .skyGrayLight
+            pickerView.isUserInteractionEnabled = isOn ? isEnabled(tag) : false
+            pickerView.backgroundColor = isOn ? isEnabledColor(tag) : .skyGrayLight
         }
         pickerView.reloadAllComponents()
-    }
-    // MARK: - Enabled or disabled picker view and color and label
-    private func isEnabled(tag: Int) -> Bool {
-        switch segmentedControl.selectedSegmentIndex {
-        case 0:
-            return tag == 2 ? true : false
-        default:
-            return tag == 2 ? false : true
-        }
-    }
-    
-    private func isEnabledColor(tag: Int) -> UIColor {
-        switch segmentedControl.selectedSegmentIndex {
-        case 0:
-            return tag == 2 ? .white : .skyGrayLight
-        default:
-            return tag == 2 ? .skyGrayLight : .white
-        }
     }
     // MARK: - Set count countries from checkmarks, countinue
     private func checkCountCountries(continent: Int) -> Int {
@@ -565,24 +665,20 @@ class SettingViewModel: SettingViewModelProtocol {
     }
     
     private func checkCountQuestions(newCountQuestions: Int) {
-        if newCountQuestions < countQuestions {
-            let averageQuestionTime = 5 * newCountQuestions
-            let currentRow = averageQuestionTime - (4 * newCountQuestions)
-            
-            setupDataFromPickerView(countQuestion: newCountQuestions,
-                                    averageTime: averageQuestionTime,
-                                    currentRow: currentRow)
-        }
+        guard newCountQuestions < countQuestions else { return }
+        let averageTime = 5 * newCountQuestions
+        let row = averageTime - (4 * newCountQuestions)
+        setDataFromPickerView(count: newCountQuestions, averageTime: averageTime, row: row)
     }
     
-    private func setupDataFromPickerView(countQuestion: Int, averageTime: Int, currentRow: Int) {
-        labelNumber.text = "\(countQuestion)"
+    private func setDataFromPickerView(count: Int, averageTime: Int, row: Int) {
+        labelNumber.text = "\(count)"
         labelTimeElapsedNumber.text = checkPickerViewEnabled(time: averageTime)
         
-        setCountQuestions(countQuestion)
+        setCountQuestions(count)
         setAllQuestionsTime(averageTime)
         
-        updateRowPickerView(pickerView: pickerViewAllQuestions, row: currentRow)
+        updateRowPickerView(pickerView: pickerViewAllQuestions, row: row)
     }
     
     private func checkPickerViewEnabled(time: Int) -> String {
@@ -617,5 +713,22 @@ class SettingViewModel: SettingViewModelProtocol {
         button.isEnabled = isOn
         button.tintColor = color
         button.layer.borderColor = color.cgColor
+    }
+    // MARK: - Attributted for picker views
+    private func setAttributed(title: String, tag: Int) -> NSAttributedString {
+        let color = tag == 1 ? .blueMiddlePersian : isEnabledTextColor(tag)
+        return NSAttributedString(string: title, attributes: [
+            .font: UIFont(name: "mr_fontick", size: 26) ?? "",
+            .foregroundColor: color
+        ])
+    }
+    
+    private func isEnabledTextColor(_ tag: Int) -> UIColor {
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            return tag == 2 ? .blueMiddlePersian : .grayLight
+        default:
+            return tag == 2 ? .grayLight : .blueMiddlePersian
+        }
     }
 }

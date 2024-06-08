@@ -43,10 +43,6 @@ class SettingViewController: UIViewController {
         return view
     }()
     
-//    private var contentSize: CGSize {
-//        CGSize(width: view.frame.width, height: view.frame.height + checkSizeScreenIphone())
-//    }
-    
     private lazy var labelNumberQuestions: UILabel = {
         setLabel(
             title: "Количество вопросов",
@@ -221,7 +217,7 @@ class SettingViewController: UIViewController {
     
     private lazy var labelTimeElapsedQuestion: UILabel = {
         setLabel(
-            title: isEnabledText(),
+            title: viewModel.isEnabledText(),
             size: 26,
             color: viewModel.isTime() ? .white : .skyGrayLight,
             numberOfLines: 1)
@@ -270,16 +266,16 @@ class SettingViewController: UIViewController {
     
     private lazy var pickerViewOneQuestion: UIPickerView = {
         setPickerView(
-            backgroundColor: viewModel.isTime() ? isEnabledColor(tag: 2) : .skyGrayLight,
+            backgroundColor: viewModel.isTime() ? viewModel.isEnabledColor(2) : .skyGrayLight,
             tag: 2,
-            isEnabled: viewModel.isTime() ? isEnabled(tag: 2) : false)
+            isEnabled: viewModel.isTime() ? viewModel.isEnabled(2) : false)
     }()
     
     private lazy var pickerViewAllQuestions: UIPickerView = {
         setPickerView(
-            backgroundColor: viewModel.isTime() ? isEnabledColor(tag: 3) : .skyGrayLight,
+            backgroundColor: viewModel.isTime() ? viewModel.isEnabledColor(3) : .skyGrayLight,
             tag: 3,
-            isEnabled: viewModel.isTime() ? isEnabled(tag: 3) : false)
+            isEnabled: viewModel.isTime() ? viewModel.isEnabled(3) : false)
     }()
     
     private lazy var stackViewPickerViews: UIStackView = {
@@ -295,26 +291,43 @@ class SettingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDesign()
+        setupButtons()
+        setupLabels()
+        setupSegmentedControl()
+        setupPickerViews()
         setupSubviewsOnView()
         setupSubviewsOnContentView()
         setupSubviewsOnScrollView()
         setupConstraints()
     }
-    // MARK: - Private methods
+    // MARK: - General methods
     private func setupDesign() {
         view.backgroundColor = .blueMiddlePersian
+        viewModel.setPickerViewNumberQuestion()
+        viewModel.setPickerViewOneQuestion()
+        viewModel.setPickerViewAllQuestions()
+    }
+    
+    private func setupButtons() {
         viewModel.setButtons(buttonAllCountries, buttonAmericaContinent, buttonEuropeContinent,
                              buttonAfricaContinent, buttonAsiaContinent, buttonOceaniaContinent)
+    }
+    
+    private func setupLabels() {
         viewModel.setLabels(labelAllCountries, labelCountAllCountries, labelAmericaContinent,
                             labelCountAmericaContinent, labelEuropeContinent, labelCountEuropeContinent,
                             labelAfricaContinent, labelCountAfricaContinent, labelAsiaContinent,
                             labelCountAsiaContinent, labelOceaniaContinent, labelCountOceaniaContinent,
                             labelTimeElapsedQuestion, labelTimeElapsedNumber, labelNumber)
+    }
+    
+    private func setupSegmentedControl() {
         viewModel.setSegmentedControl(segmentedControl)
-        viewModel.setPickerViews(pickerViewOneQuestion, pickerViewAllQuestions, pickerViewNumberQuestion)
-        viewModel.setPickerViewNumberQuestion()
-        viewModel.setPickerViewOneQuestion()
-        viewModel.setPickerViewAllQuestions()
+    }
+    
+    private func setupPickerViews() {
+        viewModel.setPickerViews(pickerViewOneQuestion, pickerViewAllQuestions,
+                                 pickerViewNumberQuestion)
     }
     
     private func setupSubviewsOnView() {
@@ -343,12 +356,6 @@ class SettingViewController: UIViewController {
     @objc private func defaultSetting() {
         showAlert(setting: viewModel.mode)
     }
-    
-    private func buttonIsEnabled(isEnabled: Bool, color: UIColor) {
-        buttonDefault.isEnabled = isEnabled
-        buttonDefault.tintColor = color
-        buttonDefault.layer.borderColor = color.cgColor
-    }
     // MARK: - Setting of checkmarks
     @objc private func buttonCheckmark(sender: UIButton) {
         viewModel.buttonCheckmark(sender: sender)
@@ -361,69 +368,16 @@ class SettingViewController: UIViewController {
     @objc private func segmentedControlAction() {
         viewModel.segmentAction()
     }
-    // MARK: - Enabled or disabled picker view and color and label
-    private func isEnabled(tag: Int) -> Bool {
-        switch segmentedControl.selectedSegmentIndex {
-        case 0:
-            return tag == 2 ? true : false
-        default:
-            return tag == 2 ? false : true
-        }
-    }
-    
-    private func isEnabledColor(tag: Int) -> UIColor {
-        switch segmentedControl.selectedSegmentIndex {
-        case 0:
-            return tag == 2 ? .white : .skyGrayLight
-        default:
-            return tag == 2 ? .skyGrayLight : .white
-        }
-    }
-    
-    private func isEnabledTextColor(tag: Int) -> UIColor {
-        switch segmentedControl.selectedSegmentIndex {
-        case 0:
-            return tag == 2 ? .blueMiddlePersian : .grayLight
-        default:
-            return tag == 2 ? .grayLight : .blueMiddlePersian
-        }
-    }
-    
-    private func isEnabledText() -> String {
-        let segmentIndex = segmentedControl.selectedSegmentIndex == 0
-        return segmentIndex ? "Время одного вопроса:" : "Время всех вопросов:"
-    }
     // MARK: - Reset setting default
     private func resetSetting() {
         viewModel.setMode(Setting.getSettingDefault())
         
-        setupLabels()
-//        checkmarkOnAllCountries()
-        segmentedControl.selectedSegmentIndex = 0
+        viewModel.resetTitlesLabels()
+        viewModel.resetPickerViews()
+        viewModel.resetContinents()
+        viewModel.resetSegmentedControl()
         
-        setupPickerViews()
         viewModel.buttonIsEnabled(buttonDefault)
-    }
-    
-    private func setupLabels() {
-        labelNumber.text = "\(viewModel.countQuestions)"
-        labelTimeElapsedNumber.text = "\(viewModel.oneQuestionTime)"
-    }
-    
-    private func setupPickerViews() {
-        let countQuestions = viewModel.countQuestions - 10
-        let averageTime = 5 * viewModel.countQuestions
-        let timeOneQuestion = viewModel.oneQuestionTime - 6
-        let timeAllQuestions = averageTime - (4 * viewModel.countQuestions)
-        
-        setupPickerViews(pickerView: pickerViewNumberQuestion, row: countQuestions)
-        setupPickerViews(pickerView: pickerViewOneQuestion, row: timeOneQuestion)
-        setupPickerViews(pickerView: pickerViewAllQuestions, row: timeAllQuestions)
-    }
-    
-    private func setupPickerViews(pickerView: UIPickerView, row: Int) {
-        pickerView.reloadAllComponents()
-        pickerView.selectRow(row, inComponent: 0, animated: false)
     }
 }
 // MARK: - Setup view
@@ -513,71 +467,22 @@ extension SettingViewController {
 // MARK: - Setup picker view
 extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        1
+        viewModel.numberOfComponents()
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        switch pickerView.tag {
-        case 1:
-            return viewModel.countRows
-        case 2:
-            return 10
-        default:
-            return (6 * viewModel.countQuestions) - (4 * viewModel.countQuestions) + 1
-        }
+        viewModel.numberOfRows(pickerView)
     }
     
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent 
-                    component: Int, reusing view: UIView?) -> UIView {
-        let label = UILabel()
-        var title = ""
-        var attributed = NSAttributedString()
-        
-        switch pickerView.tag {
-        case 1:
-            title = "\(row + 10)"
-            attributed = attributedString(title: title)
-        case 2:
-            title = "\(row + 6)"
-            attributed = attributedStringTimeElapsed(title: title, tag: 2)
-        default:
-            let allQuestionTime = 4 * viewModel.countQuestions
-            title = "\(row + allQuestionTime)"
-            attributed = attributedStringTimeElapsed(title: title, tag: 3)
-        }
-        
-        label.textAlignment = .center
-        label.attributedText = attributed
-        return label
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        viewModel.titles(pickerView, row)
     }
     
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, 
-                    inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch pickerView.tag {
-        case 1:
-            
-            let countQuestion = row + 10
-            let averageTime = 5 * countQuestion
-            let rowAverageTime = averageTime - (4 * countQuestion)
-            
-            viewModel.setCountQuestions(countQuestion)
-            setupDataFromPickerView(countQuestion: countQuestion,
-                                    averageTime: averageTime,
-                                    currentRow: rowAverageTime)
-            viewModel.buttonIsEnabled(buttonDefault)
-            
-        case 2:
-            
-            let time = row + 6
-            labelTimeElapsedNumber.text = "\(time)"
-            viewModel.setOneQuestionTime(time)
-            
-        default:
-            
-            let time = row + (4 * viewModel.countQuestions)
-            labelTimeElapsedNumber.text = "\(time)"
-            viewModel.setAllQuestionsTime(time)
-            
+        case 1: viewModel.didSelectRowCount(row, buttonDefault)
+        case 2: viewModel.didSelectRowOneQuestion(row)
+        default: viewModel.didSelectRowAllQuestions(row)
         }
     }
     
@@ -592,37 +497,6 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         pickerView.dataSource = self
         pickerView.delegate = self
         return pickerView
-    }
-    
-    private func attributedString(title: String) -> NSAttributedString {
-        NSAttributedString(string: title, attributes: [
-            .font: UIFont(name: "mr_fontick", size: 26) ?? "",
-            .foregroundColor: UIColor.blueMiddlePersian
-        ])
-    }
-    
-    private func attributedStringTimeElapsed(title: String, tag: Int) -> NSAttributedString {
-        let color: UIColor = viewModel.isTime() ? isEnabledTextColor(tag: tag) : .grayLight
-        return NSAttributedString(string: title, attributes: [
-            .font: UIFont(name: "mr_fontick", size: 26) ?? "",
-            .foregroundColor: color
-        ])
-    }
-    
-    private func checkPickerViewEnabled(time: Int) -> String {
-        let text = "\(viewModel.oneQuestionTime)"
-        guard pickerViewAllQuestions.isUserInteractionEnabled else { return text }
-        return "\(time)"
-    }
-    
-    private func setupDataFromPickerView(countQuestion: Int, averageTime: Int, currentRow: Int) {
-        labelNumber.text = "\(countQuestion)"
-        labelTimeElapsedNumber.text = checkPickerViewEnabled(time: averageTime)
-        
-        viewModel.setCountQuestions(countQuestion)
-        viewModel.setAllQuestionsTime(averageTime)
-        
-        setupPickerViews(pickerView: pickerViewAllQuestions, row: currentRow)
     }
 }
 // MARK: - Setup stack view

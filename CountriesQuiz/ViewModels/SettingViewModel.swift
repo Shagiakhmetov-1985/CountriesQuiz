@@ -49,9 +49,9 @@ protocol SettingViewModelProtocol {
     func select(isOn: Bool) -> UIColor
     func checkmark(isOn: Bool) -> String
     func isMoreFiftyQuestions() -> Bool
-    func isEnabled(_ tag: Int) -> Bool
-    func isEnabledColor(_ tag: Int) -> UIColor
-    func isEnabledText() -> String
+    func isEnabled(_ tag: Int,_ segment: UISegmentedControl) -> Bool
+    func isEnabledColor(_ tag: Int,_ segment: UISegmentedControl) -> UIColor
+    func isEnabledText(_ segment: UISegmentedControl) -> String
     func numberOfComponents() -> Int
     func numberOfRows(_ pickerView: UIPickerView) -> Int
     func titles(_ pickerView: UIPickerView,_ row: Int) -> UIView
@@ -67,7 +67,7 @@ protocol SettingViewModelProtocol {
     func setPickerViewNumberQuestion()
     func setPickerViewOneQuestion()
     func setPickerViewAllQuestions()
-    func setLabelNumberQuestions() -> String
+    func setLabelNumberQuestions(_ pickerView: UIPickerView) -> String
     func resetTitlesLabels()
     func resetPickerViews()
     func resetContinents()
@@ -266,18 +266,18 @@ class SettingViewModel: SettingViewModelProtocol {
         pickerViewAllQuestions.selectRow(row, inComponent: 0, animated: false)
     }
     
-    func setLabelNumberQuestions() -> String {
-        let isEnabled = pickerViewOneQuestion.isUserInteractionEnabled
+    func setLabelNumberQuestions(_ pickerView: UIPickerView) -> String {
+        let isEnabled = pickerView.isUserInteractionEnabled
         return isEnabled ? "\(oneQuestionTime)" : "\(allQuestionsTime)"
     }
     
-    func isEnabledText() -> String {
-        let segmentIndex = segmentedControl.selectedSegmentIndex == 0
+    func isEnabledText(_ segment: UISegmentedControl) -> String {
+        let segmentIndex = segment.selectedSegmentIndex == 0
         return segmentIndex ? "Время одного вопроса:" : "Время всех вопросов:"
     }
     
-    func isEnabled(_ tag: Int) -> Bool {
-        switch segmentedControl.selectedSegmentIndex {
+    func isEnabled(_ tag: Int, _ segment: UISegmentedControl) -> Bool {
+        switch segment.selectedSegmentIndex {
         case 0:
             return tag == 2 ? true : false
         default:
@@ -285,8 +285,8 @@ class SettingViewModel: SettingViewModelProtocol {
         }
     }
     
-    func isEnabledColor(_ tag: Int) -> UIColor {
-        switch segmentedControl.selectedSegmentIndex {
+    func isEnabledColor(_ tag: Int, _ segment: UISegmentedControl) -> UIColor {
+        switch segment.selectedSegmentIndex {
         case 0:
             return tag == 2 ? .white : .skyGrayLight
         default:
@@ -387,7 +387,19 @@ class SettingViewModel: SettingViewModelProtocol {
             settingOnAllCountries()
         case buttonAmericaContinent:
             setCheckmarkToggle(buttons: sender, isOn: americaContinent)
-            
+            checkmarkContinents(button: sender, isOn: americaContinent)
+        case buttonEuropeContinent:
+            setCheckmarkToggle(buttons: sender, isOn: europeContinent)
+            checkmarkContinents(button: sender, isOn: europeContinent)
+        case buttonAfricaContinent:
+            setCheckmarkToggle(buttons: sender, isOn: africaContinent)
+            checkmarkContinents(button: sender, isOn: africaContinent)
+        case buttonAsiaContinent:
+            setCheckmarkToggle(buttons: sender, isOn: asiaContinent)
+            checkmarkContinents(button: sender, isOn: asiaContinent)
+        case buttonOceaniaContinent:
+            setCheckmarkToggle(buttons: sender, isOn: oceaniaContinent)
+            checkmarkContinents(button: sender, isOn: oceaniaContinent)
         default:
             checkmarkTimeElapsed(button: sender)
         }
@@ -408,22 +420,20 @@ class SettingViewModel: SettingViewModelProtocol {
     // MARK: - Press segmented control
     func segmentAction() {
         if segmentedControl.selectedSegmentIndex == 0 {
-            let index = segmentedControl.selectedSegmentIndex
-            let currentRow = allQuestionsTime - (4 * countQuestions)
-            segmentAction(index, true, .white)
-            segmentAction(index + 1, false, .skyGrayLight)
+            let currentRow = oneQuestionTime - 6
+            segmentAction(pickerViewOneQuestion, true, .white)
+            segmentAction(pickerViewAllQuestions, false, .skyGrayLight)
             
-            setDataFromSegment(row: currentRow, pickerView: pickerViewAllQuestions,
+            setDataFromSegment(row: currentRow, pickerView: pickerViewOneQuestion,
                                isOneQuestion: true, title: "Время одного вопроса:",
                                titleTime: "\(oneQuestionTime)")
         } else {
-            let index = segmentedControl.selectedSegmentIndex
-            let currentRow = oneQuestionTime - 6
-            segmentAction(index, false, .skyGrayLight)
-            segmentAction(index + 1, true, .white)
+            let currentRow = allQuestionsTime - (4 * countQuestions)
+            segmentAction(pickerViewOneQuestion, false, .skyGrayLight)
+            segmentAction(pickerViewAllQuestions, true, .white)
             
             setDataFromSegment(row: currentRow, pickerView: pickerViewAllQuestions,
-                               isOneQuestion: true, title: "Время всех вопросов:",
+                               isOneQuestion: false, title: "Время всех вопросов:",
                                titleTime: "\(allQuestionsTime)")
         }
     }
@@ -629,8 +639,8 @@ class SettingViewModel: SettingViewModelProtocol {
     
     private func pickerViewOnOff(pickerView: UIPickerView, isOn: Bool, tag: Int) {
         UIView.animate(withDuration: 0.3) { [self] in
-            pickerView.isUserInteractionEnabled = isOn ? isEnabled(tag) : false
-            pickerView.backgroundColor = isOn ? isEnabledColor(tag) : .skyGrayLight
+            pickerView.isUserInteractionEnabled = isOn ? isEnabled(tag, segmentedControl) : false
+            pickerView.backgroundColor = isOn ? isEnabledColor(tag, segmentedControl) : .skyGrayLight
         }
         pickerView.reloadAllComponents()
     }
@@ -692,13 +702,12 @@ class SettingViewModel: SettingViewModelProtocol {
         pickerView.selectRow(row, inComponent: 0, animated: false)
     }
     // MARK: - Change color, enabled picker view and reload from press segmented control
-    private func segmentAction(_ index: Int, _ isOn: Bool, _ color: UIColor) {
-        let pickerView = index == 0 ? pickerViewOneQuestion : pickerViewAllQuestions
-        pickerView?.isUserInteractionEnabled = isOn
+    private func segmentAction(_ pickerView: UIPickerView, _ isOn: Bool, _ color: UIColor) {
+        pickerView.isUserInteractionEnabled = isOn
         UIView.animate(withDuration: 0.3) {
-            pickerView?.backgroundColor = color
+            pickerView.backgroundColor = color
         }
-        pickerView?.reloadAllComponents()
+        pickerView.reloadAllComponents()
     }
     // MARK: - Show data from press segmented control
     private func setDataFromSegment(row: Int, pickerView: UIPickerView, isOneQuestion: Bool,
@@ -726,9 +735,13 @@ class SettingViewModel: SettingViewModelProtocol {
     private func isEnabledTextColor(_ tag: Int) -> UIColor {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
-            return tag == 2 ? .blueMiddlePersian : .grayLight
+            return tag == 2 ? isEnabledTime() : .grayLight
         default:
-            return tag == 2 ? .grayLight : .blueMiddlePersian
+            return tag == 2 ? .grayLight : isEnabledTime()
         }
+    }
+    
+    private func isEnabledTime() -> UIColor {
+        isTime() ? .blueMiddlePersian : .grayLight
     }
 }

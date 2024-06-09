@@ -217,7 +217,7 @@ class SettingViewController: UIViewController {
     
     private lazy var labelTimeElapsedQuestion: UILabel = {
         setLabel(
-            title: viewModel.isEnabledText(),
+            title: viewModel.isEnabledText(segmentedControl),
             size: 26,
             color: viewModel.isTime() ? .white : .skyGrayLight,
             numberOfLines: 1)
@@ -225,7 +225,7 @@ class SettingViewController: UIViewController {
     
     private lazy var labelTimeElapsedNumber: UILabel = {
         setLabel(
-            title: viewModel.setLabelNumberQuestions(),
+            title: viewModel.setLabelNumberQuestions(pickerViewOneQuestion),
             size: 26,
             color: viewModel.isTime() ? .white : .skyGrayLight)
     }()
@@ -266,16 +266,16 @@ class SettingViewController: UIViewController {
     
     private lazy var pickerViewOneQuestion: UIPickerView = {
         setPickerView(
-            backgroundColor: viewModel.isTime() ? viewModel.isEnabledColor(2) : .skyGrayLight,
+            backgroundColor: viewModel.isTime() ? viewModel.isEnabledColor(2, segmentedControl) : .skyGrayLight,
             tag: 2,
-            isEnabled: viewModel.isTime() ? viewModel.isEnabled(2) : false)
+            isEnabled: viewModel.isTime() ? viewModel.isEnabled(2, segmentedControl) : false)
     }()
     
     private lazy var pickerViewAllQuestions: UIPickerView = {
         setPickerView(
-            backgroundColor: viewModel.isTime() ? viewModel.isEnabledColor(3) : .skyGrayLight,
+            backgroundColor: viewModel.isTime() ? viewModel.isEnabledColor(3, segmentedControl) : .skyGrayLight,
             tag: 3,
-            isEnabled: viewModel.isTime() ? viewModel.isEnabled(3) : false)
+            isEnabled: viewModel.isTime() ? viewModel.isEnabled(3, segmentedControl) : false)
     }()
     
     private lazy var stackViewPickerViews: UIStackView = {
@@ -303,9 +303,6 @@ class SettingViewController: UIViewController {
     // MARK: - General methods
     private func setupDesign() {
         view.backgroundColor = .blueMiddlePersian
-        viewModel.setPickerViewNumberQuestion()
-        viewModel.setPickerViewOneQuestion()
-        viewModel.setPickerViewAllQuestions()
     }
     
     private func setupButtons() {
@@ -328,6 +325,9 @@ class SettingViewController: UIViewController {
     private func setupPickerViews() {
         viewModel.setPickerViews(pickerViewOneQuestion, pickerViewAllQuestions,
                                  pickerViewNumberQuestion)
+        viewModel.setPickerViewNumberQuestion()
+        viewModel.setPickerViewOneQuestion()
+        viewModel.setPickerViewAllQuestions()
     }
     
     private func setupSubviewsOnView() {

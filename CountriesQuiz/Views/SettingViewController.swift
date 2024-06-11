@@ -354,7 +354,8 @@ class SettingViewController: UIViewController {
     }
     
     @objc private func defaultSetting() {
-        showAlert(setting: viewModel.mode)
+        let alert = viewModel.showAlert(viewModel.mode, buttonDefault)
+        present(alert, animated: true)
     }
     // MARK: - Setting of checkmarks
     @objc private func buttonCheckmark(sender: UIButton) {
@@ -367,17 +368,6 @@ class SettingViewController: UIViewController {
     // MARK: - Setting of segmented control
     @objc private func segmentedControlAction() {
         viewModel.segmentAction()
-    }
-    // MARK: - Reset setting default
-    private func resetSetting() {
-        viewModel.setMode(Setting.getSettingDefault())
-        
-        viewModel.resetTitlesLabels()
-        viewModel.resetPickerViews()
-        viewModel.resetContinents()
-        viewModel.resetSegmentedControl()
-        
-        viewModel.buttonIsEnabled(buttonDefault)
     }
 }
 // MARK: - Setup view
@@ -546,8 +536,8 @@ extension SettingViewController {
             stackViewButtons.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             stackViewButtons.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
-        setupSquare(subview: buttonBack, sizes: 40)
-        setupSquare(subview: buttonDefault, sizes: 40)
+        viewModel.setSquare(subview: buttonBack, sizes: 40)
+        viewModel.setSquare(subview: buttonDefault, sizes: 40)
         
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: stackViewButtons.bottomAnchor, constant: 20),
@@ -562,135 +552,61 @@ extension SettingViewController {
             stackViewNumberQuestion.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
-        setupConstraints(subviewFirst: pickerViewNumberQuestion,
-                         to: stackViewNumberQuestion,
-                         leadingConstant: 20, constant: 12)
-        setupHeightSubview(subview: pickerViewNumberQuestion, height: 110)
+        viewModel.setConstraints(pickerViewNumberQuestion, to: stackViewNumberQuestion,
+                                 leadingConstant: 20, constant: 12, view)
+        viewModel.setHeightSubview(pickerViewNumberQuestion, height: 110)
         
-        setupConstraints(
-            subviewFirst: buttonAllCountries, to: pickerViewNumberQuestion,
-            leadingConstant: 20, constant: 15)
-        setupConstraintsOnButton(
-            labelFirst: labelAllCountries, and: labelCountAllCountries,
-            button: buttonAllCountries)
-        setupHeightSubview(subview: buttonAllCountries, height: 60)
+        viewModel.setConstraints(buttonAllCountries, to: pickerViewNumberQuestion,
+                                 leadingConstant: 20, constant: 15, view)
+        viewModel.setConstraintsOnButton(labelAllCountries, and: labelCountAllCountries,
+                                         on: buttonAllCountries)
+        viewModel.setHeightSubview(buttonAllCountries, height: 60)
         
-        setupConstraints(
-            subviewFirst: buttonAmericaContinent, to: buttonAllCountries,
-            leadingConstant: 20, constant: 15)
-        setupConstraintsOnButton(
-            labelFirst: labelAmericaContinent, and: labelCountAmericaContinent,
-            button: buttonAmericaContinent)
-        setupHeightSubview(subview: buttonAmericaContinent, height: 60)
+        viewModel.setConstraints(buttonAmericaContinent, to: buttonAllCountries,
+                                 leadingConstant: 20, constant: 15, view)
+        viewModel.setConstraintsOnButton(labelAmericaContinent, and: labelCountAmericaContinent,
+                                         on: buttonAmericaContinent)
+        viewModel.setHeightSubview(buttonAmericaContinent, height: 60)
         
-        setupConstraints(
-            subviewFirst: buttonEuropeContinent, to: buttonAmericaContinent,
-            leadingConstant: 20, constant: 15)
-        setupConstraintsOnButton(
-            labelFirst: labelEuropeContinent, and: labelCountEuropeContinent,
-            button: buttonEuropeContinent)
-        setupHeightSubview(subview: buttonEuropeContinent, height: 60)
+        viewModel.setConstraints(buttonEuropeContinent, to: buttonAmericaContinent,
+                                 leadingConstant: 20, constant: 15, view)
+        viewModel.setConstraintsOnButton(labelEuropeContinent, and: labelCountEuropeContinent,
+                                         on: buttonEuropeContinent)
+        viewModel.setHeightSubview(buttonEuropeContinent, height: 60)
         
-        setupConstraints(
-            subviewFirst: buttonAfricaContinent, to: buttonEuropeContinent,
-            leadingConstant: 20, constant: 15)
-        setupConstraintsOnButton(
-            labelFirst: labelAfricaContinent, and: labelCountAfricaContinent,
-            button: buttonAfricaContinent)
-        setupHeightSubview(subview: buttonAfricaContinent, height: 60)
+        viewModel.setConstraints(buttonAfricaContinent, to: buttonEuropeContinent,
+                                 leadingConstant: 20, constant: 15, view)
+        viewModel.setConstraintsOnButton(labelAfricaContinent, and: labelCountAfricaContinent,
+                                         on: buttonAfricaContinent)
+        viewModel.setHeightSubview(buttonAfricaContinent, height: 60)
         
-        setupConstraints(
-            subviewFirst: buttonAsiaContinent, to: buttonAfricaContinent,
-            leadingConstant: 20, constant: 15)
-        setupConstraintsOnButton(
-            labelFirst: labelAsiaContinent, and: labelCountAsiaContinent,
-            button: buttonAsiaContinent)
-        setupHeightSubview(subview: buttonAsiaContinent, height: 60)
+        viewModel.setConstraints(buttonAsiaContinent, to: buttonAfricaContinent,
+                                 leadingConstant: 20, constant: 15, view)
+        viewModel.setConstraintsOnButton(labelAsiaContinent, and: labelCountAsiaContinent,
+                                         on: buttonAsiaContinent)
+        viewModel.setHeightSubview(buttonAsiaContinent, height: 60)
         
-        setupConstraints(
-            subviewFirst: buttonOceaniaContinent, to: buttonAsiaContinent,
-            leadingConstant: 20, constant: 15)
-        setupConstraintsOnButton(
-            labelFirst: labelOceaniaContinent, and: labelCountOceaniaContinent,
-            button: buttonOceaniaContinent)
-        setupHeightSubview(subview: buttonOceaniaContinent, height: 60)
+        viewModel.setConstraints(buttonOceaniaContinent, to: buttonAsiaContinent,
+                                 leadingConstant: 20, constant: 15, view)
+        viewModel.setConstraintsOnButton(labelOceaniaContinent, and: labelCountOceaniaContinent,
+                                         on: buttonOceaniaContinent)
+        viewModel.setHeightSubview(buttonOceaniaContinent, height: 60)
         
-        setupConstraints(subviewFirst: stackViewTimeElapsed,
-                         to: buttonOceaniaContinent,
-                         leadingConstant: 20, constant: 15)
-        setupSquare(subview: viewTimeElapsed, sizes: 60)
-        setupConstraintsCentersOnView(viewFirst: buttonTimeElapsed, on: viewTimeElapsed)
-        setupSquare(subview: buttonTimeElapsed, sizes: 50)
+        viewModel.setConstraints(stackViewTimeElapsed, to: buttonOceaniaContinent,
+                                 leadingConstant: 20, constant: 15, view)
+        viewModel.setSquare(subview: viewTimeElapsed, sizes: 60)
+        viewModel.setConstraintsCentersOnView(buttonTimeElapsed, on: viewTimeElapsed)
+        viewModel.setSquare(subview: buttonTimeElapsed, sizes: 50)
         
-        setupConstraints(subviewFirst: stackViewLabelTimeElapsed,
-                         to: stackViewTimeElapsed,
-                         leadingConstant: view.frame.width / 8,
-                         constant: 15)
+        viewModel.setConstraints(stackViewLabelTimeElapsed, to: stackViewTimeElapsed,
+                                 leadingConstant: view.frame.width / 8, constant: 15, view)
         
-        setupConstraints(subviewFirst: segmentedControl,
-                         to: stackViewLabelTimeElapsed,
-                         leadingConstant: 20, constant: 15)
-        setupHeightSubview(subview: segmentedControl, height: 40)
+        viewModel.setConstraints(segmentedControl, to: stackViewLabelTimeElapsed,
+                                 leadingConstant: 20, constant: 15, view)
+        viewModel.setHeightSubview(segmentedControl, height: 40)
         
-        setupConstraints(subviewFirst: stackViewPickerViews,
-                         to: segmentedControl,
-                         leadingConstant: 20, constant: 15)
-        setupHeightSubview(subview: stackViewPickerViews, height: 110)
-    }
-    
-    private func setupConstraints(subviewFirst: UIView, to subviewSecond: UIView,
-                                  leadingConstant: CGFloat, constant: CGFloat) {
-        NSLayoutConstraint.activate([
-            subviewFirst.topAnchor.constraint(equalTo: subviewSecond.bottomAnchor, constant: constant),
-            subviewFirst.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leadingConstant),
-            subviewFirst.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-    }
-    
-    private func setupSquare(subview: UIView, sizes: CGFloat) {
-        NSLayoutConstraint.activate([
-            subview.heightAnchor.constraint(equalToConstant: sizes),
-            subview.widthAnchor.constraint(equalToConstant: sizes)
-        ])
-    }
-    
-    private func setupHeightSubview(subview: UIView, height: CGFloat) {
-        NSLayoutConstraint.activate([
-            subview.heightAnchor.constraint(equalToConstant: height)
-        ])
-    }
-    
-    private func setupConstraintsCentersOnView(viewFirst: UIView, on viewSecond: UIView) {
-        NSLayoutConstraint.activate([
-            viewFirst.centerXAnchor.constraint(equalTo: viewSecond.centerXAnchor),
-            viewFirst.centerYAnchor.constraint(equalTo: viewSecond.centerYAnchor)
-        ])
-    }
-    
-    private func setupConstraintsOnButton(labelFirst: UILabel, and labelSecond: UILabel,
-                                          button: UIButton) {
-        NSLayoutConstraint.activate([
-            labelFirst.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-            labelFirst.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: -12.5),
-            labelSecond.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-            labelSecond.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: 12.5)
-        ])
-    }
-}
-// MARK: - Alert controller
-extension SettingViewController {
-    private func showAlert(setting: Setting) {
-        let title = "Сбросить настройки"
-        
-        let alert = AlertController(
-            title: title,
-            message: "Вы действительно хотите скинуть все настройки до заводских?",
-            preferredStyle: .alert)
-        
-        alert.action(setting: setting) {
-            self.resetSetting()
-        }
-        
-        present(alert, animated: true)
+        viewModel.setConstraints(stackViewPickerViews, to: segmentedControl,
+                                 leadingConstant: 20, constant: 15, view)
+        viewModel.setHeightSubview(stackViewPickerViews, height: 110)
     }
 }

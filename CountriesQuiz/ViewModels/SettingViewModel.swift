@@ -68,10 +68,6 @@ protocol SettingViewModelProtocol {
     func setPickerViewOneQuestion()
     func setPickerViewAllQuestions()
     func setLabelNumberQuestions(_ pickerView: UIPickerView) -> String
-    func resetTitlesLabels()
-    func resetPickerViews()
-    func resetContinents()
-    func resetSegmentedControl()
     func didSelectRowCount(_ row: Int,_ button: UIButton)
     func didSelectRowOneQuestion(_ row: Int)
     func didSelectRowAllQuestions(_ row: Int)
@@ -79,6 +75,14 @@ protocol SettingViewModelProtocol {
     func buttonCheckmark(sender: UIButton)
     func segmentAction()
     func buttonIsEnabled(_ button: UIButton)
+    func showAlert(_ setting: Setting,_ button: UIButton) -> UIAlertController
+    
+    func setConstraints(_ subviewFirst: UIView, to subviewSecond: UIView,
+                        leadingConstant: CGFloat, constant: CGFloat,_ view: UIView)
+    func setSquare(subview: UIView, sizes: CGFloat)
+    func setHeightSubview(_ subview: UIView, height: CGFloat)
+    func setConstraintsCentersOnView(_ viewFirst: UIView, on viewSecond: UIView)
+    func setConstraintsOnButton(_ labelFirst: UILabel, and labelSecond: UILabel, on button: UIButton)
 }
 
 class SettingViewModel: SettingViewModelProtocol {
@@ -445,31 +449,59 @@ class SettingViewModel: SettingViewModelProtocol {
             buttonIsEnabled(button: button, isOn: false, color: .grayStone)
         }
     }
-    // MARK: - Reset data for labels, picker views and segmented control from press reset button
-    func resetTitlesLabels() {
-        labelNumber.text = "\(countQuestions)"
-        labelTimeElapsedNumber.text = "\(oneQuestionTime)"
-    }
-    
-    func resetPickerViews() {
-        let countQuestions = countQuestions - 10
-        let averageTime = 5 * countQuestions
-        let timeOneQuestion = oneQuestionTime - 6
-        let timeAllQuestions = averageTime - (4 * countQuestions)
+    // MARK: - Show alert controller
+    func showAlert(_ setting: Setting, _ button: UIButton) -> UIAlertController {
+        let title = "Сбросить настройки"
+        let message = "Вы действительно хотите сбросить настройки до заводских?"
         
-        updateRowPickerView(pickerView: pickerViewNumberQuestion, row: countQuestions)
-        updateRowPickerView(pickerView: pickerViewOneQuestion, row: timeOneQuestion)
-        updateRowPickerView(pickerView: pickerViewAllQuestions, row: timeAllQuestions)
+        let alert = AlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert)
+        
+        alert.action(setting: setting) {
+            self.resetSetting(button: button)
+        }
+        
+        return alert
+    }
+    // MARK: - Constraints
+    func setConstraints(_ subviewFirst: UIView, to subviewSecond: UIView,
+                        leadingConstant: CGFloat, constant: CGFloat, _ view: UIView) {
+        NSLayoutConstraint.activate([
+            subviewFirst.topAnchor.constraint(equalTo: subviewSecond.bottomAnchor, constant: constant),
+            subviewFirst.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leadingConstant),
+            subviewFirst.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
     }
     
-    func resetContinents() {
-        buttonOnAllCountries()
-        labelsOnAllCountries()
-        settingOnAllCountries()
+    func setSquare(subview: UIView, sizes: CGFloat) {
+        NSLayoutConstraint.activate([
+            subview.heightAnchor.constraint(equalToConstant: sizes),
+            subview.widthAnchor.constraint(equalToConstant: sizes)
+        ])
     }
     
-    func resetSegmentedControl() {
-        segmentedControl.selectedSegmentIndex = 0
+    func setHeightSubview(_ subview: UIView, height: CGFloat) {
+        NSLayoutConstraint.activate([
+            subview.heightAnchor.constraint(equalToConstant: height)
+        ])
+    }
+    
+    func setConstraintsCentersOnView(_ viewFirst: UIView, on viewSecond: UIView) {
+        NSLayoutConstraint.activate([
+            viewFirst.centerXAnchor.constraint(equalTo: viewSecond.centerXAnchor),
+            viewFirst.centerYAnchor.constraint(equalTo: viewSecond.centerYAnchor)
+        ])
+    }
+    
+    func setConstraintsOnButton(_ labelFirst: UILabel, and labelSecond: UILabel, on button: UIButton) {
+        NSLayoutConstraint.activate([
+            labelFirst.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            labelFirst.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: -12.5),
+            labelSecond.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            labelSecond.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: 12.5)
+        ])
     }
     // MARK: - Constants, countinue
     private func checkSizeScreenIphone(_ view: UIView) -> CGFloat {
@@ -743,5 +775,42 @@ class SettingViewModel: SettingViewModelProtocol {
     
     private func isEnabledTime() -> UIColor {
         isTime() ? .blueMiddlePersian : .grayLight
+    }
+    // MARK: - Alert controller action and reset data
+    private func resetSetting(button: UIButton) {
+        setMode(Setting.getSettingDefault())
+        
+        resetTitlesLabels()
+        resetPickerViews()
+        resetContinents()
+        resetSegmentedControl()
+        
+        buttonIsEnabled(button)
+    }
+    
+    private func resetTitlesLabels() {
+        labelNumber.text = "\(countQuestions)"
+        labelTimeElapsedNumber.text = "\(oneQuestionTime)"
+    }
+    
+    private func resetPickerViews() {
+        let countQuestions = countQuestions - 10
+        let averageTime = 5 * countQuestions
+        let timeOneQuestion = oneQuestionTime - 6
+        let timeAllQuestions = averageTime - (4 * countQuestions)
+        
+        updateRowPickerView(pickerView: pickerViewNumberQuestion, row: countQuestions)
+        updateRowPickerView(pickerView: pickerViewOneQuestion, row: timeOneQuestion)
+        updateRowPickerView(pickerView: pickerViewAllQuestions, row: timeAllQuestions)
+    }
+    
+    private func resetContinents() {
+        buttonOnAllCountries()
+        labelsOnAllCountries()
+        settingOnAllCountries()
+    }
+    
+    private func resetSegmentedControl() {
+        segmentedControl.selectedSegmentIndex = 0
     }
 }

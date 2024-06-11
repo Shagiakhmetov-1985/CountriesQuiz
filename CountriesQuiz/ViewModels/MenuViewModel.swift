@@ -10,13 +10,19 @@ import UIKit
 protocol MenuViewModelProtocol {
     var mode: Setting? { get set }
     func fetchData()
-    func size(view: UIView) -> CGSize
+    func size(view: UIView?) -> CGSize
     func forPresented(_ button: UIButton) -> Transition
     func forDismissed(_ button: UIButton) -> Transition
     func setMode(_ setting: Setting)
     
     func gameTypeViewModel(tag: Int) -> GameTypeViewModelProtocol
     func settingViewModel() -> SettingViewModelProtocol
+    
+    func setSquare(subview: UIView, sizes: CGFloat)
+    func setCenterSubview(subview: UIView, on subviewOther: UIView)
+    func setConstraintsList(button: UIButton, image: UIImageView, label: UILabel,
+                            circle: UIImageView, imageGame: UIImageView,
+                            layout: NSLayoutYAxisAnchor, view: UIView)
 }
 
 class MenuViewModel: MenuViewModelProtocol {
@@ -29,8 +35,9 @@ class MenuViewModel: MenuViewModelProtocol {
         games = getGames()
     }
     
-    func size(view: UIView) -> CGSize {
-        CGSize(width: view.frame.width, height: view.frame.height + 10)
+    func size(view: UIView?) -> CGSize {
+        guard let view = view else { return CGSize(width: 0, height: 0) }
+        return CGSize(width: view.frame.width, height: view.frame.height + 5)
     }
     
     func gameTypeViewModel(tag: Int) -> GameTypeViewModelProtocol {
@@ -91,5 +98,46 @@ class MenuViewModel: MenuViewModelProtocol {
     func settingViewModel() -> SettingViewModelProtocol {
         let mode = mode ?? Setting.getSettingDefault()
         return SettingViewModel(mode: mode)
+    }
+    
+    func setSquare(subview: UIView, sizes: CGFloat) {
+        NSLayoutConstraint.activate([
+            subview.widthAnchor.constraint(equalToConstant: sizes),
+            subview.heightAnchor.constraint(equalToConstant: sizes)
+        ])
+    }
+    
+    func setCenterSubview(subview: UIView, on subviewOther: UIView) {
+        NSLayoutConstraint.activate([
+            subview.centerXAnchor.constraint(equalTo: subviewOther.centerXAnchor),
+            subview.centerYAnchor.constraint(equalTo: subviewOther.centerYAnchor)
+        ])
+    }
+    
+    func setConstraintsList(button: UIButton, image: UIImageView, label: UILabel, 
+                            circle: UIImageView, imageGame: UIImageView,
+                            layout: NSLayoutYAxisAnchor, view: UIView) {
+        NSLayoutConstraint.activate([
+            button.topAnchor.constraint(equalTo: layout, constant: 15),
+            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            button.heightAnchor.constraint(equalToConstant: 120)
+        ])
+        
+        NSLayoutConstraint.activate([
+            image.topAnchor.constraint(equalTo: button.topAnchor, constant: 20),
+            image.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 20),
+            label.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            circle.topAnchor.constraint(equalTo: button.topAnchor),
+            circle.trailingAnchor.constraint(equalTo: button.trailingAnchor)
+        ])
+        setCenterSubview(subview: imageGame, on: circle)
     }
 }

@@ -39,17 +39,19 @@ class MenuViewController: UIViewController {
     }()
     
     private lazy var contentView: UIView = {
+        let currentView = view
         let view = UIView()
         view.backgroundColor = .white
-        view.frame.size = contentSize()
+        view.frame.size = viewModel.size(view: currentView)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
     private lazy var scrollView: UIScrollView = {
+        let currentView = view
         let scrollView = UIScrollView()
         scrollView.frame = view.bounds
-        scrollView.contentSize = contentSize()
+        scrollView.contentSize = viewModel.size(view: currentView)
         return scrollView
     }()
     
@@ -249,10 +251,6 @@ class MenuViewController: UIViewController {
             subviewOther.addSubview(subview)
         }
     }
-    
-    private func contentSize() -> CGSize {
-        viewModel.size(view: view)
-    }
     // MARK: - Button activate. Press game type, setting
     @objc private func gameType(sender: UIButton) {
         let tag = sender.tag
@@ -327,11 +325,11 @@ extension MenuViewController: SettingViewControllerDelegate,
                               MenuViewControllerInput {
     func dataToMenu(setting: Setting) {
         navigationController?.popToRootViewController(animated: true)
-        viewModel.mode = setting
+        viewModel.setMode(setting)
     }
     
     func dataToMenuFromGameType(setting: Setting) {
-        viewModel.mode = setting
+        viewModel.setMode(setting)
     }
     
     func dataToMenuFromSetting(setting: Setting) {
@@ -356,8 +354,8 @@ extension MenuViewController {
             stackViewMenu.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             stackViewMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
-        setupSquare(subview: buttonSettings, sizes: 40)
-        setupCenterSubview(subview: imageSettings, on: buttonSettings)
+        viewModel.setSquare(subview: buttonSettings, sizes: 40)
+        viewModel.setCenterSubview(subview: imageSettings, on: buttonSettings)
         
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: stackViewMenu.bottomAnchor, constant: 10),
@@ -366,66 +364,25 @@ extension MenuViewController {
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
-        setConstraintsList(button: buttonQuizOfFlags, image: imageFlag,
-                           label: labelQuizOfFlags, circle: circleQuizOfFlag,
-                           imageGame: imageQuizOfFlags,
-                           layout: scrollView.topAnchor)
-        setConstraintsList(button: buttonQuestionnaire, image: imageCheckmark,
-                           label: labelQuestionnaire, circle: circleQuestionnare,
-                           imageGame: imageQuestionnaire,
-                           layout: buttonQuizOfFlags.bottomAnchor)
-        setConstraintsList(button: buttonQuizOfMaps, image: imageMap,
-                           label: labelQuizOfMaps, circle: circleQuizOfMaps,
-                           imageGame: imageQuizOfMaps,
-                           layout: buttonQuestionnaire.bottomAnchor)
-        setConstraintsList(button: buttonScrabble, image: imageText,
-                           label: labelScrabble, circle: circleScrabble,
-                           imageGame: imageScrabble,
-                           layout: buttonQuizOfMaps.bottomAnchor)
-        setConstraintsList(button: buttonQuizOfCapitals, image: imageHouse,
-                           label: labelQuizOfCapitals, circle: circleQuizOfCapitals,
-                           imageGame: imageQuizOfCapitals,
-                           layout: buttonScrabble.bottomAnchor)
-    }
-    
-    private func setConstraintsList(button: UIButton, image: UIImageView,
-                                    label: UILabel, circle: UIImageView,
-                                    imageGame: UIImageView, layout: NSLayoutYAxisAnchor) {
-        NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: layout, constant: 15),
-            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            button.heightAnchor.constraint(equalToConstant: 120)
-        ])
-        
-        NSLayoutConstraint.activate([
-            image.topAnchor.constraint(equalTo: button.topAnchor, constant: 20),
-            image.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 20),
-            label.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            circle.topAnchor.constraint(equalTo: button.topAnchor),
-            circle.trailingAnchor.constraint(equalTo: button.trailingAnchor)
-        ])
-        setupCenterSubview(subview: imageGame, on: circle)
-    }
-    
-    private func setupSquare(subview: UIView, sizes: CGFloat) {
-        NSLayoutConstraint.activate([
-            subview.widthAnchor.constraint(equalToConstant: sizes),
-            subview.heightAnchor.constraint(equalToConstant: sizes)
-        ])
-    }
-    
-    private func setupCenterSubview(subview: UIView, on subviewOther: UIView) {
-        NSLayoutConstraint.activate([
-            subview.centerXAnchor.constraint(equalTo: subviewOther.centerXAnchor),
-            subview.centerYAnchor.constraint(equalTo: subviewOther.centerYAnchor)
-        ])
+        viewModel.setConstraintsList(button: buttonQuizOfFlags, image: imageFlag,
+                                     label: labelQuizOfFlags, circle: circleQuizOfFlag,
+                                     imageGame: imageQuizOfFlags,
+                                     layout: scrollView.topAnchor, view: view)
+        viewModel.setConstraintsList(button: buttonQuestionnaire, image: imageCheckmark,
+                                     label: labelQuestionnaire, circle: circleQuestionnare,
+                                     imageGame: imageQuestionnaire,
+                                     layout: buttonQuizOfFlags.bottomAnchor, view: view)
+        viewModel.setConstraintsList(button: buttonQuizOfMaps, image: imageMap,
+                                     label: labelQuizOfMaps, circle: circleQuizOfMaps,
+                                     imageGame: imageQuizOfMaps,
+                                     layout: buttonQuestionnaire.bottomAnchor, view: view)
+        viewModel.setConstraintsList(button: buttonScrabble, image: imageText,
+                                     label: labelScrabble, circle: circleScrabble,
+                                     imageGame: imageScrabble,
+                                     layout: buttonQuizOfMaps.bottomAnchor, view: view)
+        viewModel.setConstraintsList(button: buttonQuizOfCapitals, image: imageHouse,
+                                     label: labelQuizOfCapitals, circle: circleQuizOfCapitals,
+                                     imageGame: imageQuizOfCapitals,
+                                     layout: buttonScrabble.bottomAnchor, view: view)
     }
 }

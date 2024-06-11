@@ -8,9 +8,8 @@
 import UIKit
 
 class AlertController: UIAlertController {
-    func action(setting: Setting? = nil, completion: @escaping () -> Void) {
+    func action(setting: Setting, completion: @escaping () -> Void) {
         let yesAction = UIAlertAction(title: "Да", style: .default) { _ in
-            guard let setting = setting else { return }
             guard !setting.allCountries else { return }
             guard setting.countQuestions > 50 else { return }
             completion()

@@ -412,16 +412,16 @@ extension QuizOfFlagsViewController {
 extension QuizOfFlagsViewController {
     private func setupConstraints() {
         if viewModel.isCountdown() {
-            constraintsTimer()
+            viewModel.constraintsTimer(labelTimer, view)
         }
-        setupSquare(subview: buttonback, sizes: 40)
+        viewModel.setSquare(subview: buttonback, sizes: 40)
         
         if viewModel.isFlag() {
-            constraintsFlag()
-            progressView(layout: imageFlag.bottomAnchor, constant: 30)
+            viewModel.constraintsFlag(imageFlag, view)
+            viewModel.progressView(progressView, imageFlag.bottomAnchor, constant: 30, view)
         } else {
-            constraintsLabel()
-            progressView(layout: view.safeAreaLayoutGuide.topAnchor, constant: 140)
+            viewModel.constraintsLabel(labelCountry, view)
+            viewModel.progressView(progressView, view.safeAreaLayoutGuide.topAnchor, constant: 140, view)
         }
         
         NSLayoutConstraint.activate([
@@ -443,114 +443,15 @@ extension QuizOfFlagsViewController {
         ])
         
         let stackView = viewModel.isFlag() ? stackViewFlag : stackViewLabel
+        let width = viewModel.widthButtons(view)
         let height = viewModel.isFlag() ? 215 : viewModel.heightStackView
-        buttons(subview: stackView, width: viewModel.widthButtons(view), height: height)
-    }
-    
-    private func constraintsTimer() {
-        NSLayoutConstraint.activate([
-            labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
-            labelTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-    }
-    
-    private func constraintsFlag() {
-        let flag = viewModel.data.questions[viewModel.currentQuestion].flag
-        viewModel.widthOfFlagFirst = imageFlag.widthAnchor.constraint(equalToConstant: viewModel.checkWidthFlag(flag))
+        viewModel.buttons(stackView, to: labelQuiz, width, height, view)
         
-        viewModel.imageFlagSpring = NSLayoutConstraint(
-            item: imageFlag, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(viewModel.imageFlagSpring)
-        NSLayoutConstraint.activate([
-            imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            viewModel.widthOfFlagFirst,
-            imageFlag.heightAnchor.constraint(equalToConstant: 168)
-        ])
-    }
-    
-    private func constraintsLabel() {
-        viewModel.labelNameSpring = NSLayoutConstraint(
-            item: labelCountry, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(viewModel.labelNameSpring)
-        NSLayoutConstraint.activate([
-            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            labelCountry.widthAnchor.constraint(equalToConstant: viewModel.widthButtons(view))
-        ])
-    }
-    
-    private func progressView(layout: NSLayoutYAxisAnchor, constant: CGFloat) {
-        NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: layout, constant: constant),
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            progressView.heightAnchor.constraint(equalToConstant: viewModel.radius * 2)
-        ])
-    }
-    
-    private func setupSquare(subview: UIView, sizes: CGFloat) {
-        NSLayoutConstraint.activate([
-            subview.widthAnchor.constraint(equalToConstant: sizes),
-            subview.heightAnchor.constraint(equalToConstant: sizes)
-        ])
-    }
-    
-    private func buttons(subview: UIView, width: CGFloat, height: CGFloat) {
-        viewModel.stackViewSpring = NSLayoutConstraint(
-            item: subview, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(viewModel.stackViewSpring)
-        NSLayoutConstraint.activate([
-            subview.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
-            subview.widthAnchor.constraint(equalToConstant: width),
-            subview.heightAnchor.constraint(equalToConstant: height)
-        ])
         guard !viewModel.isFlag() else { return }
-        setupImagesButtons()
-    }
-    
-    private func setupImagesButtons() {
-        setupImageButtonFirst(image: imageFirst, on: buttonFirst,
-                              flag: viewModel.data.buttonFirst[viewModel.currentQuestion].flag)
-        setupImageButtonSecond(image: imageSecond, on: buttonSecond,
-                               flag: viewModel.data.buttonSecond[viewModel.currentQuestion].flag)
-        setupImageButtonThird(image: imageThird, on: buttonThird,
-                              flag: viewModel.data.buttonThird[viewModel.currentQuestion].flag)
-        setupImageButtonFourth(image: imageFourth, on: buttonFourth,
-                               flag: viewModel.data.buttonFourth[viewModel.currentQuestion].flag)
-    }
-    
-    private func setupImageButtonFirst(image: UIImageView, on button: UIButton, flag: String) {
-        viewModel.widthOfFlagFirst = image.widthAnchor.constraint(
-            equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(layout: viewModel.widthOfFlagFirst, image: image, button: button)
-    }
-    
-    private func setupImageButtonSecond(image: UIImageView, on button: UIView, flag: String) {
-        viewModel.widthOfFlagSecond = image.widthAnchor.constraint(
-            equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(layout: viewModel.widthOfFlagSecond, image: image, button: button)
-    }
-    
-    private func setupImageButtonThird(image: UIImageView, on button: UIView, flag: String) {
-        viewModel.widthOfFlagThird = image.widthAnchor.constraint(
-            equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(layout: viewModel.widthOfFlagThird, image: image, button: button)
-    }
-    
-    private func setupImageButtonFourth(image: UIImageView, on button: UIView, flag: String) {
-        viewModel.widthOfFlagFourth = image.widthAnchor.constraint(
-            equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(layout: viewModel.widthOfFlagFourth, image: image, button: button)
-    }
-    
-    private func setImageOnButton(layout: NSLayoutConstraint, image: UIImageView, button: UIView) {
-        NSLayoutConstraint.activate([
-            layout,
-            image.heightAnchor.constraint(equalToConstant: viewModel.setHeight()),
-            image.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-            image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
-        ])
+        viewModel.setImageButtonFirst(imageFirst, on: buttonFirst, view)
+        viewModel.setImageButtonSecond(imageSecond, on: buttonSecond, view)
+        viewModel.setImageButtonThird(imageThird, on: buttonThird, view)
+        viewModel.setImageButtonFourth(imageFourth, on: buttonFourth, view)
     }
 }
 // MARK: - QuizOfFlagsViewControllerInput

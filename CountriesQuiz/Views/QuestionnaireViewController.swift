@@ -538,23 +538,22 @@ extension QuestionnaireViewController {
 // MARK: - Setup constraints
 extension QuestionnaireViewController {
     private func setupConstraints() {
-        setupSquare(subview: buttonExit, sizes: 40)
+        viewModel.setSquare(subview: buttonExit, sizes: 40)
         
         if viewModel.isCountdown() {
-            constraintsTimer()
+            viewModel.constraintsTimer(labelTimer, view)
         }
         
         if viewModel.isFlag() {
-            constraintsQuestionFlag()
-            constraintsProgressView(layout: imageFlag.bottomAnchor, constant: 30)
+            viewModel.constraintsQuestionFlag(imageFlag, view)
+            viewModel.progressView(progressView, imageFlag.bottomAnchor, constant: 30, view)
         } else {
-            constraintsQuestionLabel()
-            constraintsProgressView(layout: view.safeAreaLayoutGuide.topAnchor,
-                                    constant: 140)
+            viewModel.constraintsQuestionLabel(labelCountry, view)
+            viewModel.progressView(progressView, view.safeAreaLayoutGuide.topAnchor, constant: 140, view)
         }
         
-        constraintsButtons(button: buttonBack, constant: -viewModel.setConstant(view))
-        constraintsButtons(button: buttonForward, constant: viewModel.setConstant(view))
+        viewModel.constraintsButton(buttonBack, imageFlag, labelCountry, constant: -viewModel.setConstant(view), view)
+        viewModel.constraintsButton(buttonForward, imageFlag, labelCountry, constant: viewModel.setConstant(view), view)
         
         NSLayoutConstraint.activate([
             labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
@@ -577,71 +576,6 @@ extension QuestionnaireViewController {
         ])
         
         buttons(subview: viewModel.isFlag() ? stackViewFlag : stackViewLabel)
-    }
-    
-    private func constraintsTimer() {
-        NSLayoutConstraint.activate([
-            labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
-            labelTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-    }
-    
-    private func constraintsQuestionFlag() {
-        let flag = viewModel.question.flag
-        viewModel.widthOfFlagFirst = imageFlag.widthAnchor.constraint(equalToConstant: viewModel.checkWidthFlag(flag))
-        
-        viewModel.imageFlagSpring = NSLayoutConstraint(
-            item: imageFlag, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(viewModel.imageFlagSpring)
-        NSLayoutConstraint.activate([
-            imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            viewModel.widthOfFlagFirst,
-            imageFlag.heightAnchor.constraint(equalToConstant: 168)
-        ])
-    }
-    
-    private func constraintsQuestionLabel() {
-        viewModel.labelNameSpring = NSLayoutConstraint(
-            item: labelCountry, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(viewModel.labelNameSpring)
-        NSLayoutConstraint.activate([
-            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            labelCountry.widthAnchor.constraint(equalToConstant: viewModel.widthLabel(view))
-        ])
-    }
-    
-    private func constraintsProgressView(layout: NSLayoutYAxisAnchor, constant: CGFloat) {
-        NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: layout, constant: constant),
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            progressView.heightAnchor.constraint(equalToConstant: viewModel.radius * 2)
-        ])
-    }
-    
-    private func setupSquare(subview: UIView, sizes: CGFloat) {
-        NSLayoutConstraint.activate([
-            subview.widthAnchor.constraint(equalToConstant: sizes),
-            subview.heightAnchor.constraint(equalToConstant: sizes)
-        ])
-    }
-    
-    private func constraintsButtons(button: UIButton, constant: CGFloat) {
-        let layout = layoutConstraint()
-        NSLayoutConstraint.activate([
-            layoutYAxisAnchor(button: button).constraint(equalTo: layout),
-            button.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: constant)
-        ])
-        setupSquare(subview: button, sizes: 40)
-    }
-    
-    private func layoutYAxisAnchor(button: UIButton) -> NSLayoutYAxisAnchor {
-        viewModel.isFlag() ? button.centerYAnchor : button.topAnchor
-    }
-    
-    private func layoutConstraint() -> NSLayoutYAxisAnchor {
-        viewModel.isFlag() ? imageFlag.centerYAnchor : labelCountry.topAnchor
     }
     
     private func buttons(subview: UIStackView) {
@@ -685,7 +619,7 @@ extension QuestionnaireViewController {
             label.centerYAnchor.constraint(equalTo: button.centerYAnchor),
             label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -20)
         ])
-        setupSquare(subview: image, sizes: 30)
+        viewModel.setSquare(subview: image, sizes: 30)
     }
     
     private func imagesOnButtonFirst(checkmark: UIImageView, image: UIImageView,
@@ -730,7 +664,7 @@ extension QuestionnaireViewController {
             image.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: viewModel.setWidthAndCenterFlag(view).1),
             image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
-        setupSquare(subview: checkmark, sizes: 30)
+        viewModel.setSquare(subview: checkmark, sizes: 30)
     }
 }
 // MARK: - QuestionnaireViewControllerInput

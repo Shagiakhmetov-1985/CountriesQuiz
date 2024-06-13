@@ -111,6 +111,12 @@ protocol QuestionnaireViewModelProtocol {
     func stopTimer()
     func setTimeSpent()
     
+    func setSquare(subview: UIView, sizes: CGFloat)
+    func constraintsTimer(_ labelTimer: UILabel,_ view: UIView)
+    func constraintsQuestionFlag(_ imageFlag: UIImageView,_ view: UIView)
+    func constraintsQuestionLabel(_ labelCountry: UILabel,_ view: UIView)
+    func progressView(_ progressView: UIProgressView,_ layout: NSLayoutYAxisAnchor, constant: CGFloat,_ view: UIView)
+    func constraintsButton(_ button: UIButton,_ imageFlag: UIImageView,_ labelCountry: UILabel, constant: CGFloat,_ view: UIView)
     func resultsViewController() -> ResultsViewModelProtocol
 }
 
@@ -593,6 +599,66 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         let time = time
         let timeSpent = circleTimeSpent * CGFloat(time)
         spendTime.append(timeSpent)
+    }
+    // MARK: - Constraints
+    func setSquare(subview: UIView, sizes: CGFloat) {
+        NSLayoutConstraint.activate([
+            subview.widthAnchor.constraint(equalToConstant: sizes),
+            subview.heightAnchor.constraint(equalToConstant: sizes)
+        ])
+    }
+    
+    func constraintsTimer(_ labelTimer: UILabel, _ view: UIView) {
+        NSLayoutConstraint.activate([
+            labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
+            labelTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+    
+    func constraintsQuestionFlag(_ imageFlag: UIImageView, _ view: UIView) {
+        let flag = question.flag
+        widthOfFlagFirst = imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag(flag))
+        
+        imageFlagSpring = NSLayoutConstraint(
+            item: imageFlag, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(imageFlagSpring)
+        NSLayoutConstraint.activate([
+            imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            widthOfFlagFirst,
+            imageFlag.heightAnchor.constraint(equalToConstant: 168)
+        ])
+    }
+    
+    func constraintsQuestionLabel(_ labelCountry: UILabel, _ view: UIView) {
+        labelNameSpring = NSLayoutConstraint(
+            item: labelCountry, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(labelNameSpring)
+        NSLayoutConstraint.activate([
+            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            labelCountry.widthAnchor.constraint(equalToConstant: widthLabel(view))
+        ])
+    }
+    
+    func progressView(_ progressView: UIProgressView, _ layout: NSLayoutYAxisAnchor, 
+                      constant: CGFloat, _ view: UIView) {
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: layout, constant: constant),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            progressView.heightAnchor.constraint(equalToConstant: radius * 2)
+        ])
+    }
+    
+    func constraintsButton(_ button: UIButton, _ imageFlag: UIImageView, 
+                           _ labelCountry: UILabel, constant: CGFloat, _ view: UIView) {
+        let layout = isFlag() ? imageFlag.centerYAnchor : labelCountry.topAnchor
+        let layoutYAxis = isFlag() ? button.centerYAnchor : button.topAnchor
+        NSLayoutConstraint.activate([
+            layoutYAxis.constraint(equalTo: layout),
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: constant)
+        ])
+        setSquare(subview: button, sizes: 40)
     }
     // MARK: - Transition to ResuiltViewController
     func resultsViewController() -> ResultsViewModelProtocol {

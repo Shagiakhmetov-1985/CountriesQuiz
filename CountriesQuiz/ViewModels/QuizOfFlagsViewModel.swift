@@ -93,6 +93,16 @@ protocol QuizOfFlagsViewModelProtocol {
     func resetColorButtons(_ buttons: UIButton...)
     func resetTimer(_ labelTimer: UILabel,_ view: UIView)
     
+    func constraintsTimer(_ labelTimer: UILabel,_ view: UIView)
+    func setSquare(subview: UIView, sizes: CGFloat)
+    func constraintsFlag(_ imageFlag: UIImageView,_ view: UIView)
+    func constraintsLabel(_ labelCountry: UILabel,_ view: UIView)
+    func progressView(_ progressView: UIProgressView,_ layout: NSLayoutYAxisAnchor, constant: CGFloat,_ view: UIView)
+    func buttons(_ subview: UIView, to labelQuiz: UILabel, _ width: CGFloat,_ height: CGFloat,_ view: UIView)
+    func setImageButtonFirst(_ image: UIImageView, on button: UIButton,_ view: UIView)
+    func setImageButtonSecond(_ image: UIImageView, on button: UIButton,_ view: UIView)
+    func setImageButtonThird(_ image: UIImageView, on button: UIButton,_ view: UIView)
+    func setImageButtonFourth(_ image: UIImageView, on button: UIButton,_ view: UIView)
     func resultsViewController() -> ResultsViewModelProtocol
 }
 
@@ -533,6 +543,96 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
             shapeLayer.strokeEnd = 1
         }
     }
+    // MARK: - Constraints
+    func constraintsTimer(_ labelTimer: UILabel, _ view: UIView) {
+        NSLayoutConstraint.activate([
+            labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
+            labelTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+    
+    func setSquare(subview: UIView, sizes: CGFloat) {
+        NSLayoutConstraint.activate([
+            subview.widthAnchor.constraint(equalToConstant: sizes),
+            subview.heightAnchor.constraint(equalToConstant: sizes)
+        ])
+    }
+    
+    func constraintsFlag(_ imageFlag: UIImageView, _ view: UIView) {
+        let flag = data.questions[currentQuestion].flag
+        widthOfFlagFirst = imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag(flag))
+        
+        imageFlagSpring = NSLayoutConstraint(
+            item: imageFlag, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(imageFlagSpring)
+        NSLayoutConstraint.activate([
+            imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            widthOfFlagFirst,
+            imageFlag.heightAnchor.constraint(equalToConstant: 168)
+        ])
+    }
+    
+    func constraintsLabel(_ labelCountry: UILabel, _ view: UIView) {
+        labelNameSpring = NSLayoutConstraint(
+            item: labelCountry, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(labelNameSpring)
+        NSLayoutConstraint.activate([
+            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            labelCountry.widthAnchor.constraint(equalToConstant: widthButtons(view))
+        ])
+    }
+    
+    func progressView(_ progressView: UIProgressView, _ layout: NSLayoutYAxisAnchor,
+                      constant: CGFloat, _ view: UIView) {
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: layout, constant: constant),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            progressView.heightAnchor.constraint(equalToConstant: radius * 2)
+        ])
+    }
+    
+    func buttons(_ subview: UIView, to labelQuiz: UILabel, _ width: CGFloat,
+                 _ height: CGFloat, _ view: UIView) {
+        stackViewSpring = NSLayoutConstraint(
+            item: subview, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(stackViewSpring)
+        NSLayoutConstraint.activate([
+            subview.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
+            subview.widthAnchor.constraint(equalToConstant: width),
+            subview.heightAnchor.constraint(equalToConstant: height)
+        ])
+    }
+    
+    func setImageButtonFirst(_ image: UIImageView, on button: UIButton, _ view: UIView) {
+        let flag = data.buttonFirst[currentQuestion].flag
+        widthOfFlagFirst = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag, view))
+        setImageOnButton(layout: widthOfFlagFirst, image: image, button: button)
+    }
+    
+    func setImageButtonSecond(_ image: UIImageView, on button: UIButton, _ view: UIView) {
+        let flag = data.buttonSecond[currentQuestion].flag
+        widthOfFlagSecond = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag, view))
+        setImageOnButton(layout: widthOfFlagSecond, image: image, button: button)
+    }
+    
+    func setImageButtonThird(_ image: UIImageView, on button: UIButton, _ view: UIView) {
+        let flag = data.buttonThird[currentQuestion].flag
+        widthOfFlagThird = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag, view))
+        setImageOnButton(layout: widthOfFlagThird, image: image, button: button)
+    }
+    
+    func setImageButtonFourth(_ image: UIImageView, on button: UIButton, _ view: UIView) {
+        let flag = data.buttonFourth[currentQuestion].flag
+        widthOfFlagFourth = image.widthAnchor.constraint(
+            equalToConstant: widthFlag(flag, view))
+        setImageOnButton(layout: widthOfFlagFourth, image: image, button: button)
+    }
     // MARK: - Transition to ResultViewController
     func resultsViewController() -> ResultsViewModelProtocol {
         ResultsViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
@@ -843,5 +943,14 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     // MARK: - Time for label, seconds and circle timer
     private func checkCircleCountdown() -> Int {
         isOneQuestion() ? oneQuestionTime() : seconds / 10
+    }
+    // MARK: - Constraints, countinue
+    private func setImageOnButton(layout: NSLayoutConstraint, image: UIImageView, button: UIView) {
+        NSLayoutConstraint.activate([
+            layout,
+            image.heightAnchor.constraint(equalToConstant: setHeight()),
+            image.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
+        ])
     }
 }

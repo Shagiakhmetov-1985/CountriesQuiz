@@ -575,96 +575,19 @@ extension QuestionnaireViewController {
             labelDescription.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
-        buttons(subview: viewModel.isFlag() ? stackViewFlag : stackViewLabel)
-    }
-    
-    private func buttons(subview: UIStackView) {
-        viewModel.stackViewSpring = NSLayoutConstraint(
-            item: subview,
-            attribute: .centerX, relatedBy: .equal, toItem: view,
-            attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(viewModel.stackViewSpring)
-        NSLayoutConstraint.activate([
-            subview.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
-            subview.widthAnchor.constraint(equalToConstant: view.frame.width - 20),
-            subview.heightAnchor.constraint(equalToConstant: viewModel.height)
-        ])
-        constraintsOnButton()
-    }
-    
-    private func constraintsOnButton() {
+        let stackView = viewModel.isFlag() ? stackViewFlag : stackViewLabel
+        viewModel.button(stackView, to: labelQuiz, view)
         if viewModel.isFlag() {
-            constraintsOnButton(image: checkmarkFirst, label: labelFirst, button: buttonFirst)
-            constraintsOnButton(image: checkmarkSecond, label: labelSecond, button: buttonSecond)
-            constraintsOnButton(image: checkmarkThird, label: labelThird, button: buttonThird)
-            constraintsOnButton(image: checkmarkFourth, label: labelFourth, button: buttonFourth)
+            viewModel.constraintsOnButton(checkmarkFirst, and: labelFirst, on: buttonFirst)
+            viewModel.constraintsOnButton(checkmarkSecond, and: labelSecond, on: buttonSecond)
+            viewModel.constraintsOnButton(checkmarkThird, and: labelThird, on: buttonThird)
+            viewModel.constraintsOnButton(checkmarkFourth, and: labelFourth, on: buttonFourth)
         } else {
-            imagesOnButtonFirst(checkmark: checkmarkFirst, image: imageFirst,
-                                button: buttonFirst, flag: viewModel.answerFirst.flag)
-            imagesOnButtonSecond(checkmark: checkmarkSecond, image: imageSecond,
-                                 button: buttonSecond, flag:  viewModel.answerSecond.flag)
-            imagesOnButtonThird(checkmark: checkmarkThird, image: imageThird,
-                                button: buttonThird, flag: viewModel.answerThird.flag)
-            imagesOnButtonFourth(checkmark: checkmarkFourth, image: imageFourth,
-                                 button: buttonFourth, flag:  viewModel.answerFourth.flag)
+            viewModel.imagesOnButton(checkmarkFirst, and: imageFirst, on: buttonFirst, view)
+            viewModel.imagesOnButton(checkmarkSecond, and: imageSecond, on: buttonSecond, view)
+            viewModel.imagesOnButton(checkmarkThird, and: imageThird, on: buttonThird, view)
+            viewModel.imagesOnButton(checkmarkFourth, and: imageFourth, on: buttonFourth, view)
         }
-    }
-    
-    private func constraintsOnButton(image: UIImageView, label: UILabel,
-                                     button: UIButton) {
-        NSLayoutConstraint.activate([
-            image.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-            image.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 10),
-            label.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 10),
-            label.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-            label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -20)
-        ])
-        viewModel.setSquare(subview: image, sizes: 30)
-    }
-    
-    private func imagesOnButtonFirst(checkmark: UIImageView, image: UIImageView,
-                                     button: UIButton, flag: String) {
-        viewModel.widthOfFlagFirst = image.widthAnchor.constraint(
-            equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(checkmark: checkmark, image: image, button: button,
-                         layout: viewModel.widthOfFlagFirst)
-    }
-    
-    private func imagesOnButtonSecond(checkmark: UIImageView, image: UIImageView,
-                                      button: UIButton, flag: String) {
-        viewModel.widthOfFlagSecond = image.widthAnchor.constraint(
-            equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(checkmark: checkmark, image: image, button: button,
-                         layout: viewModel.widthOfFlagSecond)
-    }
-    
-    private func imagesOnButtonThird(checkmark: UIImageView, image: UIImageView,
-                                     button: UIButton, flag: String) {
-        viewModel.widthOfFlagThird = image.widthAnchor.constraint(
-            equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(checkmark: checkmark, image: image, button: button,
-                         layout: viewModel.widthOfFlagThird)
-    }
-    
-    private func imagesOnButtonFourth(checkmark: UIImageView, image: UIImageView,
-                                      button: UIButton, flag: String) {
-        viewModel.widthOfFlagFourth = image.widthAnchor.constraint(
-            equalToConstant: viewModel.widthFlag(flag, view))
-        setImageOnButton(checkmark: checkmark, image: image, button: button,
-                         layout: viewModel.widthOfFlagFourth)
-    }
-    
-    private func setImageOnButton(checkmark: UIImageView, image: UIImageView,
-                                  button: UIButton, layout: NSLayoutConstraint) {
-        NSLayoutConstraint.activate([
-            checkmark.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-            checkmark.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 5),
-            layout,
-            image.heightAnchor.constraint(equalToConstant: viewModel.setHeight()),
-            image.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: viewModel.setWidthAndCenterFlag(view).1),
-            image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
-        ])
-        viewModel.setSquare(subview: checkmark, sizes: 30)
     }
 }
 // MARK: - QuestionnaireViewControllerInput

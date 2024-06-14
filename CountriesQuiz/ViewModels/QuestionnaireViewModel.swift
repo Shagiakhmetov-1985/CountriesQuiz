@@ -117,6 +117,9 @@ protocol QuestionnaireViewModelProtocol {
     func constraintsQuestionLabel(_ labelCountry: UILabel,_ view: UIView)
     func progressView(_ progressView: UIProgressView,_ layout: NSLayoutYAxisAnchor, constant: CGFloat,_ view: UIView)
     func constraintsButton(_ button: UIButton,_ imageFlag: UIImageView,_ labelCountry: UILabel, constant: CGFloat,_ view: UIView)
+    func button(_ subview: UIStackView,to labelQuiz: UILabel,_ view: UIView)
+    func constraintsOnButton(_ image: UIImageView,and label: UILabel,on button: UIButton)
+    func imagesOnButton(_ checkmark: UIImageView, and image: UIImageView,on button: UIButton,_ view: UIView)
     func resultsViewController() -> ResultsViewModelProtocol
 }
 
@@ -660,6 +663,37 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         ])
         setSquare(subview: button, sizes: 40)
     }
+    
+    func button(_ subview: UIStackView, to labelQuiz: UILabel, _ view: UIView) {
+        stackViewSpring = NSLayoutConstraint(
+            item: subview,
+            attribute: .centerX, relatedBy: .equal, toItem: view,
+            attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(stackViewSpring)
+        NSLayoutConstraint.activate([
+            subview.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
+            subview.widthAnchor.constraint(equalToConstant: view.frame.width - 20),
+            subview.heightAnchor.constraint(equalToConstant: height)
+        ])
+    }
+    
+    func constraintsOnButton(_ image: UIImageView, and label: UILabel, on button: UIButton) {
+        NSLayoutConstraint.activate([
+            image.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            image.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 10),
+            label.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 10),
+            label.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -20)
+        ])
+        setSquare(subview: image, sizes: 30)
+    }
+    
+    func imagesOnButton(_ checkmark: UIImageView, and image: UIImageView, 
+                        on button: UIButton, _ view: UIView) {
+        let flag = flag(button)
+        let layout = layoutConstraint(button, image, flag, view)
+        setImageOnButton(checkmark, and: image, on: button, layout, view)
+    }
     // MARK: - Transition to ResuiltViewController
     func resultsViewController() -> ResultsViewModelProtocol {
         ResultsViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
@@ -1118,5 +1152,46 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         case 3: setAppearenceButtons(buttonThird, checkmarkThird, isFlag() ? labelThird : nil)
         default: setAppearenceButtons(buttonFourth, checkmarkFourth, isFlag() ? labelFourth : nil)
         }
+    }
+    // MARK: - Constants, countinue
+    private func layoutConstraint(_ button: UIButton, _ image: UIImageView,
+                                  _ flag: String, _ view: UIView) -> NSLayoutConstraint {
+        switch button.tag {
+        case 1: 
+            widthOfFlagFirst = image.widthAnchor.constraint(equalToConstant: widthFlag(flag, view))
+            return widthOfFlagFirst
+        case 2:
+            widthOfFlagSecond = image.widthAnchor.constraint(equalToConstant: widthFlag(flag, view))
+            return widthOfFlagSecond
+        case 3:
+            widthOfFlagThird = image.widthAnchor.constraint(equalToConstant: widthFlag(flag, view))
+            return widthOfFlagThird
+        default:
+            widthOfFlagFourth = image.widthAnchor.constraint(equalToConstant: widthFlag(flag, view))
+            return widthOfFlagFourth
+        }
+    }
+    
+    private func flag(_ button: UIButton) -> String {
+        switch button.tag {
+        case 1: answerFirst.flag
+        case 2: answerSecond.flag
+        case 3: answerThird.flag
+        default: answerFourth.flag
+        }
+    }
+    // MARK: - Constraints, countinue
+    private func setImageOnButton(_ checkmark: UIImageView, and image: UIImageView,
+                                  on button: UIButton, _ layout: NSLayoutConstraint,
+                                  _ view: UIView) {
+        NSLayoutConstraint.activate([
+            checkmark.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            checkmark.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 5),
+            layout,
+            image.heightAnchor.constraint(equalToConstant: setHeight()),
+            image.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: setWidthAndCenterFlag(view).1),
+            image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
+        ])
+        setSquare(subview: checkmark, sizes: 30)
     }
 }

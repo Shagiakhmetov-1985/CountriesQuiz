@@ -69,6 +69,12 @@ protocol QuizOfCapitalsViewModelProtocol {
     func addIncorrectAnswer(_ tag: Int)
     func updateData(_ labelTimer: UILabel,_ view: UIView)
     
+    func constraintsTimer(_ labelTimer: UILabel,_ view: UIView)
+    func setSquare(button: UIButton, sizes: CGFloat)
+    func constraintsFlag(_ imageFlag: UIImageView,_ view: UIView)
+    func constraintsLabel(_ labelCountry: UILabel,_ view: UIView)
+    func progressView(_ progressView: UIProgressView,_ layout: NSLayoutYAxisAnchor, constant: CGFloat,_ view: UIView)
+    func constraintsButtons(_ stackViewFlag: UIStackView,to labelQuiz: UILabel,_ view: UIView)
     func resultsViewController() -> ResultsViewModelProtocol
 }
 
@@ -361,6 +367,68 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         resetButtons(buttonFirst, buttonSecond, buttonThird, buttonFourth)
         guard isCountdown() else { return }
         resetTimer(labelTimer: labelTimer, view: view)
+    }
+    // MARK: - Constraints
+    func constraintsTimer(_ labelTimer: UILabel, _ view: UIView) {
+        NSLayoutConstraint.activate([
+            labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
+            labelTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+    
+    func setSquare(button: UIButton, sizes: CGFloat) {
+        NSLayoutConstraint.activate([
+            button.heightAnchor.constraint(equalToConstant: sizes),
+            button.widthAnchor.constraint(equalToConstant: sizes)
+        ])
+    }
+    
+    func constraintsFlag(_ imageFlag: UIImageView, _ view: UIView) {
+        let flag = data.questions[currentQuestion].flag
+        widthOfFlag = imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag(flag))
+        
+        imageFlagSpring = NSLayoutConstraint(
+            item: imageFlag, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(imageFlagSpring)
+        NSLayoutConstraint.activate([
+            imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            widthOfFlag,
+            imageFlag.heightAnchor.constraint(equalToConstant: 168)
+        ])
+    }
+    
+    func constraintsLabel(_ labelCountry: UILabel, _ view: UIView) {
+        labelNameSpring = NSLayoutConstraint(
+            item: labelCountry, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(labelNameSpring)
+        NSLayoutConstraint.activate([
+            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            labelCountry.widthAnchor.constraint(equalToConstant: widthLabel(view))
+        ])
+    }
+    
+    func progressView(_ progressView: UIProgressView, _ layout: NSLayoutYAxisAnchor,
+                      constant: CGFloat, _ view: UIView) {
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: layout, constant: constant),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            progressView.heightAnchor.constraint(equalToConstant: radius * 2)
+        ])
+    }
+    
+    func constraintsButtons(_ stackViewFlag: UIStackView, to labelQuiz: UILabel, 
+                            _ view: UIView) {
+        stackViewSpring = NSLayoutConstraint(
+            item: stackViewFlag, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(stackViewSpring)
+        NSLayoutConstraint.activate([
+            stackViewFlag.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
+            stackViewFlag.widthAnchor.constraint(equalToConstant: widthButton(view)),
+            stackViewFlag.heightAnchor.constraint(equalToConstant: 215)
+        ])
     }
     // MARK: - Transition to ResultsViewController
     func resultsViewController() -> ResultsViewModelProtocol {

@@ -318,17 +318,17 @@ extension QuizOfCapitalsViewController {
 extension QuizOfCapitalsViewController {
     private func setupConstraints() {
         if viewModel.isCountdown() {
-            constraintsTimer()
+            viewModel.constraintsTimer(labelTimer, view)
         }
         
-        setupSquare(button: buttonBack, sizes: 40)
+        viewModel.setSquare(button: buttonBack, sizes: 40)
         
         if viewModel.isFlag() {
-            constraintsFlag()
-            constraintsProgressView(layout: imageFlag.bottomAnchor, constant: 30)
+            viewModel.constraintsFlag(imageFlag, view)
+            viewModel.progressView(progressView, imageFlag.bottomAnchor, constant: 30, view)
         } else {
-            constraintsLabel()
-            constraintsProgressView(layout: view.safeAreaLayoutGuide.topAnchor, constant: 140)
+            viewModel.constraintsLabel(labelCountry, view)
+            viewModel.progressView(progressView, view.safeAreaLayoutGuide.topAnchor, constant: 140, view)
         }
         
         NSLayoutConstraint.activate([
@@ -349,67 +349,7 @@ extension QuizOfCapitalsViewController {
             labelDescription.centerYAnchor.constraint(equalTo: labelQuiz.centerYAnchor)
         ])
         
-        constraintsButtons()
-    }
-    
-    private func constraintsTimer() {
-        NSLayoutConstraint.activate([
-            labelTimer.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
-            labelTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-    }
-    
-    private func setupSquare(button: UIButton, sizes: CGFloat) {
-        NSLayoutConstraint.activate([
-            button.heightAnchor.constraint(equalToConstant: sizes),
-            button.widthAnchor.constraint(equalToConstant: sizes)
-        ])
-    }
-    
-    private func constraintsFlag() {
-        let flag = viewModel.data.questions[viewModel.currentQuestion].flag
-        viewModel.widthOfFlag = imageFlag.widthAnchor.constraint(equalToConstant: viewModel.checkWidthFlag(flag))
-        
-        viewModel.imageFlagSpring = NSLayoutConstraint(
-            item: imageFlag, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(viewModel.imageFlagSpring)
-        NSLayoutConstraint.activate([
-            imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            viewModel.widthOfFlag,
-            imageFlag.heightAnchor.constraint(equalToConstant: 168)
-        ])
-    }
-    
-    private func constraintsLabel() {
-        viewModel.labelNameSpring = NSLayoutConstraint(
-            item: labelCountry, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(viewModel.labelNameSpring)
-        NSLayoutConstraint.activate([
-            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            labelCountry.widthAnchor.constraint(equalToConstant: viewModel.widthLabel(view))
-        ])
-    }
-    
-    private func constraintsProgressView(layout: NSLayoutYAxisAnchor, constant: CGFloat) {
-        NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: layout, constant: constant),
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            progressView.heightAnchor.constraint(equalToConstant: viewModel.radius * 2)
-        ])
-    }
-    
-    private func constraintsButtons() {
-        viewModel.stackViewSpring = NSLayoutConstraint(
-            item: stackViewFlag, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(viewModel.stackViewSpring)
-        NSLayoutConstraint.activate([
-            stackViewFlag.topAnchor.constraint(equalTo: labelQuiz.bottomAnchor, constant: 25),
-            stackViewFlag.widthAnchor.constraint(equalToConstant: viewModel.widthButton(view)),
-            stackViewFlag.heightAnchor.constraint(equalToConstant: 215)
-        ])
+        viewModel.constraintsButtons(stackViewFlag, to: labelQuiz, view)
     }
 }
 // MARK: - QuizOfCapitalsViewControllerInput

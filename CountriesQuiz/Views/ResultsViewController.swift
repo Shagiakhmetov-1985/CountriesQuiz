@@ -38,13 +38,14 @@ class ResultsViewController: UIViewController {
         setupStackView(subviewFirst: labelResults, subviewSecond: buttonDetails)
     }()
     
-    private lazy var viewCorrectAnswers: UIView = {
-        setView(
+    private lazy var buttonCorrectAnswers: UIButton = {
+        setButton(
             color: .greenHarlequin,
             labelFirst: labelCorrectCount,
             image: imageCorrectAnswers,
             labelSecond: labelCorrectTitle,
-            radius: 20)
+            radius: 20,
+            tag: 1)
     }()
     
     private lazy var labelCorrectCount: UILabel = {
@@ -69,13 +70,14 @@ class ResultsViewController: UIViewController {
             alignment: .center)
     }()
     
-    private lazy var viewIncorrectAnswers: UIView = {
-        setView(
+    private lazy var buttonIncorrectAnswers: UIButton = {
+        setButton(
             color: .redTangerineTango,
             labelFirst: labelIncorrectCount,
             image: imageIncorrectAnswers,
             labelSecond: labelIncorrectTitle,
-            radius: 20)
+            radius: 20,
+            tag: 2)
     }()
     
     private lazy var labelIncorrectCount: UILabel = {
@@ -271,8 +273,8 @@ class ResultsViewController: UIViewController {
     }
     
     private func setupSubviews() {
-        viewModel.setupSubviews(subviews: stackViewDetails, viewCorrectAnswers,
-                                viewIncorrectAnswers, viewTimeSpend,
+        viewModel.setupSubviews(subviews: stackViewDetails, buttonCorrectAnswers,
+                                buttonIncorrectAnswers, viewTimeSpend,
                                 viewCountQuestions, imageInfinity, stackViews,
                                 buttonComplete,
                                 on: view)
@@ -288,20 +290,18 @@ class ResultsViewController: UIViewController {
     }
     
     @objc private func circleCorrectAnswers() {
-        viewModel.circleCorrectAnswers(view, stackViewCorrect) { [self] delay in
+        viewModel.circleCorrectAnswers(view) { [self] delay in
             viewModel.timer = runTimer(interval: delay, action: #selector(circleIncorrectAnswers))
         }
     }
     
     @objc private func circleIncorrectAnswers() {
-        viewModel.circleIncorrectAnswers(view, stackViewIncorrect) { [self] delay in
-            viewModel.timer = runTimer(interval: delay, action: #selector(circleSpentTime))
-        }
+        viewModel.circleIncorrectAnswers(view)
     }
     
-    @objc private func circleSpentTime() {
-        viewModel.circleSpentTime(view, stackViewTimeSpend)
-    }
+//    @objc private func circleSpentTime() {
+//        viewModel.circleSpentTime(view, stackViewTimeSpend)
+//    }
     // MARK: - Press exit button
     @objc private func exitToMenu() {
         switch viewModel.game.gameType {
@@ -332,6 +332,23 @@ extension ResultsViewController {
             viewModel.setupSubviews(subviews: labelFirst, image, labelSecond, on: view)
         }
         return view
+    }
+}
+// MARK: - Setup button
+extension ResultsViewController {
+    private func setButton(color: UIColor, labelFirst: UILabel, image: UIImageView, 
+                           labelSecond: UILabel, radius: CGFloat, tag: Int) -> UIButton {
+        let button = Button(type: .custom)
+        button.backgroundColor = color
+        button.layer.cornerRadius = radius
+        button.layer.shadowColor = color.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tag = tag
+        button.addTarget(self, action: #selector(showIncorrectAnswers), for: .touchUpInside)
+        viewModel.setupSubviews(subviews: labelFirst, image, labelSecond, on: button)
+        return button
     }
 }
 // MARK: - Setup label
@@ -380,21 +397,21 @@ extension ResultsViewController {
         ])
         setupSquare(subview: buttonDetails, sizes: 40)
         
-        constraintsView(subview: viewCorrectAnswers, layout: view.topAnchor,
+        constraintsView(subview: buttonCorrectAnswers, layout: view.topAnchor,
                         constant: 335, leading: 20, trailing: -viewModel.width(view),
                         height: 110, labelFirst: labelCorrectCount,
                         image: imageCorrectAnswers, labelSecond: labelCorrectTitle)
-        constraintsView(subview: viewIncorrectAnswers, layout: viewCorrectAnswers.bottomAnchor,
-                        constant: 20, leading: 20, trailing: -viewModel.width(view),
+        constraintsView(subview: buttonIncorrectAnswers, layout: view.topAnchor,
+                        constant: 335, leading: viewModel.width(view), trailing: -20,
                         height: 110, labelFirst: labelIncorrectCount,
                         image: imageIncorrectAnswers, labelSecond: labelIncorrectTitle)
-        constraintsView(subview: viewTimeSpend, layout: view.topAnchor,
-                        constant: 335, leading: viewModel.width(view), trailing: -20,
-                        height: 120, labelFirst: labelNumberTimeSpend,
+        constraintsView(subview: viewTimeSpend, layout: buttonCorrectAnswers.bottomAnchor,
+                        constant: 20, leading: 20, trailing: -viewModel.width(view),
+                        height: 110, labelFirst: labelNumberTimeSpend,
                         image: imageTimeSpend, labelSecond: labelTimeSpend)
-        constraintsView(subview: viewCountQuestions, layout: viewTimeSpend.bottomAnchor,
+        constraintsView(subview: viewCountQuestions, layout: buttonIncorrectAnswers.bottomAnchor,
                         constant: 20, leading: viewModel.width(view), trailing: -20,
-                        height: 100, labelFirst: labelCountQuestions,
+                        height: 110, labelFirst: labelCountQuestions,
                         image: imageCountQuestions, labelSecond: labelCountTitle)
         
         setupCenterSubview(subview: imageInfinity, on: labelNumberTimeSpend)

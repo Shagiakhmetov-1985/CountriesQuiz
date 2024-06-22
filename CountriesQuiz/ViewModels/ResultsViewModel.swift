@@ -39,9 +39,9 @@ protocol ResultsViewModelProtocol {
     func percentIncorrectAnswers() -> String
     func percentCheckMode() -> CGFloat
     
-    func circleCorrectAnswers(_ view: UIView,_ stackView: UIStackView, completion: @escaping (CGFloat) -> Void)
-    func circleIncorrectAnswers(_ view: UIView,_ stackView: UIStackView, completion: @escaping (CGFloat) -> Void)
-    func circleSpentTime(_ view: UIView,_ stackView: UIStackView)
+    func circleCorrectAnswers(_ view: UIView, completion: @escaping (CGFloat) -> Void)
+    func circleIncorrectAnswers(_ view: UIView)
+//    func circleSpentTime(_ view: UIView,_ stackView: UIStackView)
     
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol
 }
@@ -131,44 +131,34 @@ class ResultsViewModel: ResultsViewModelProtocol {
         isOneQuestion() ? checkGameType() : timeSpend()
     }
     // MARK: - Set circles
-    func circleCorrectAnswers(_ view: UIView, _ stackView: UIStackView, completion: @escaping (CGFloat) -> Void) {
+    func circleCorrectAnswers(_ view: UIView, completion: @escaping (CGFloat) -> Void) {
         timer.invalidate()
         let delay: CGFloat = 0.75
         let delayTimer = delay + 0.3
-        let correctAnswers = Float(correctAnswers.count)
-        let value = correctAnswers / Float(mode.countQuestions)
-        setCircle(color: .greenHarlequin.withAlphaComponent(0.3), radius: 80,
-                            strokeEnd: 1, value: nil, duration: nil, view: view)
-        setCircle(color: .greenHarlequin, radius: 80, strokeEnd: 0,
-                            value: value, duration: delay, view: view)
-        showAnimate(stackView: stackView)
+        let value = Float(correctAnswers.count) / Float(mode.countQuestions)
+        setCircle(color: .greenHarlequin, strokeEnd: 0, start: 0, value: value,
+                  duration: delay, view: view)
         completion(delayTimer)
     }
     
-    func circleIncorrectAnswers(_ view: UIView, _ stackView: UIStackView, completion: @escaping (CGFloat) -> Void) {
+    func circleIncorrectAnswers(_ view: UIView) {
         timer.invalidate()
-        let delay: CGFloat = 0.75
-        let delayTimer = delay + 0.3
-        let incorrectAnswers = Float(incorrectAnswers.count)
-        let value = incorrectAnswers / Float(mode.countQuestions)
-        setCircle(color: .redTangerineTango.withAlphaComponent(0.3), radius: 61,
-                            strokeEnd: 1, value: nil, duration: nil, view: view)
-        setCircle(color: .redTangerineTango, radius: 61, strokeEnd: 0,
-                            value: value, duration: delay, view: view)
-        showAnimate(stackView: stackView)
-        completion(delayTimer)
+        let start = CGFloat(correctAnswers.count) / CGFloat(mode.countQuestions)
+        setCircle(color: .redTangerineTango, strokeEnd: 0, start: start,
+                  value: 1, duration: 0.75, view: view)
     }
-    
+    /*
     func circleSpentTime(_ view: UIView, _ stackView: UIStackView) {
         timer.invalidate()
         let delay: CGFloat = 0.75
         let value = circleTime / 100
         setCircle(color: .blueMiddlePersian.withAlphaComponent(0.3), radius: 42,
-                            strokeEnd: 1, value: nil, duration: nil, view: view)
+                  strokeEnd: 1, value: nil, duration: nil, view: view)
         setCircle(color: .blueMiddlePersian, radius: 42, strokeEnd: 0,
-                            value: value, duration: delay, view: view)
+                  value: value, duration: delay, view: view)
         showAnimate(stackView: stackView)
     }
+     */
     // MARK: - Transition to IncorrectAnswersViewController
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol {
         IncorrectAnswersViewModel(mode: mode, game: game, results: incorrectAnswers)
@@ -263,14 +253,14 @@ class ResultsViewModel: ResultsViewModelProtocol {
         }
     }
     // MARK: - Set circles
-    private func setCircle(color: UIColor, radius: CGFloat, strokeEnd: CGFloat,
-                   value: Float? = nil, duration: CGFloat? = nil, view: UIView) {
+    private func setCircle(color: UIColor, strokeEnd: CGFloat, start: CGFloat,
+                           value: Float, duration: CGFloat, view: UIView) {
         let center = CGPoint(x: view.frame.width / 3, y: 230)
         let endAngle = CGFloat.pi / 2
-        let startAngle = 2 * CGFloat.pi + endAngle
+        let startAngle = 2 * CGFloat.pi + endAngle + start
         let circularPath = UIBezierPath(
             arcCenter: center,
-            radius: radius,
+            radius: 75,
             startAngle: -startAngle,
             endAngle: -endAngle,
             clockwise: true)
@@ -281,12 +271,10 @@ class ResultsViewModel: ResultsViewModelProtocol {
         trackShape.fillColor = UIColor.clear.cgColor
         trackShape.strokeEnd = strokeEnd
         trackShape.strokeColor = color.cgColor
-        trackShape.lineCap = CAShapeLayerLineCap.round
+        trackShape.lineCap = CAShapeLayerLineCap.butt
         view.layer.addSublayer(trackShape)
         
-        if let value = value, let duration = duration {
-            animateCircle(shape: trackShape, value: value, duration: duration)
-        }
+        animateCircle(shape: trackShape, value: value, duration: duration)
     }
     
     private func animateCircle(shape: CAShapeLayer, value: Float, duration: CGFloat) {

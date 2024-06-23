@@ -16,36 +16,15 @@ class ResultsViewController: UIViewController {
             color: .blueBlackSea)
     }()
     
-    private lazy var buttonDetails: UIButton = {
-        let color: UIColor = viewModel.incorrectAnswers.count > 0 ? .blueBlackSea : .grayStone
-        let size = UIImage.SymbolConfiguration(pointSize: 26)
-        let image = UIImage(systemName: "lightbulb", withConfiguration: size)
-        let button = Button(type: .custom)
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = color
-        button.layer.cornerRadius = 12
-        button.layer.shadowOpacity = 0.4
-        button.layer.shadowColor = color.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 6)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.isEnabled = viewModel.incorrectAnswers.count > 0 ? true : false
-        button.addTarget(self, action: #selector(showIncorrectAnswers), for: .touchUpInside)
-        return button
-    }()
-    
-    private lazy var stackViewDetails: UIStackView = {
-        setupStackView(subviewFirst: labelResults, subviewSecond: buttonDetails)
-    }()
-    
     private lazy var buttonCorrectAnswers: UIButton = {
         setButton(
-            color: .greenHarlequin,
+            color: viewModel.rightAnswers > 0 ? .greenHarlequin : .grayStone,
             labelFirst: labelCorrectCount,
             image: imageCorrectAnswers,
             labelSecond: labelCorrectTitle,
             radius: 20,
-            tag: 1)
+            tag: 1,
+            isEnabled: viewModel.rightAnswers > 0 ? true : false)
     }()
     
     private lazy var labelCorrectCount: UILabel = {
@@ -72,12 +51,13 @@ class ResultsViewController: UIViewController {
     
     private lazy var buttonIncorrectAnswers: UIButton = {
         setButton(
-            color: .redTangerineTango,
+            color: viewModel.wrongAnswers > 0 ? .redTangerineTango : .grayStone,
             labelFirst: labelIncorrectCount,
             image: imageIncorrectAnswers,
             labelSecond: labelIncorrectTitle,
             radius: 20,
-            tag: 2)
+            tag: 2,
+            isEnabled: viewModel.wrongAnswers > 0 ? true : false)
     }()
     
     private lazy var labelIncorrectCount: UILabel = {
@@ -168,75 +148,6 @@ class ResultsViewController: UIViewController {
             alignment: .center)
     }()
     
-    private lazy var viewPercentCorrect: UIView = {
-        setView(color: .greenHarlequin, radius: viewModel.radiusView)
-    }()
-    
-    private lazy var labelPercentCorrect: UILabel = {
-        setLabel(
-            title: viewModel.percentCorrectAnswers(),
-            style: "mr_fontick",
-            size: 26,
-            color: .blueBlackSea)
-    }()
-    
-    private lazy var stackViewCorrect: UIStackView = {
-        setupStackView(
-            subviewFirst: viewPercentCorrect,
-            subviewSecond: labelPercentCorrect,
-            spacing: 12,
-            opacity: 0)
-    }()
-    
-    private lazy var viewPercentIncorrect: UIView = {
-        setView(color: .redTangerineTango, radius: viewModel.radiusView)
-    }()
-    
-    private lazy var labelPercentIncorrect: UILabel = {
-        setLabel(
-            title: viewModel.percentIncorrectAnswers(),
-            style: "mr_fontick",
-            size: 26,
-            color: .blueBlackSea)
-    }()
-    
-    private lazy var stackViewIncorrect: UIStackView = {
-        setupStackView(
-            subviewFirst: viewPercentIncorrect,
-            subviewSecond: labelPercentIncorrect,
-            spacing: 12,
-            opacity: 0)
-    }()
-    
-    private lazy var viewPercentTimeSpend: UIView = {
-        setView(color: .blueMiddlePersian, radius: viewModel.radiusView)
-    }()
-    
-    private lazy var labelPercentTimeSpend: UILabel = {
-        setLabel(
-            title: viewModel.percentTimeSpend,
-            style: "mr_fontick",
-            size: 26,
-            color: .blueBlackSea)
-    }()
-    
-    private lazy var stackViewTimeSpend: UIStackView = {
-        setupStackView(
-            subviewFirst: viewPercentTimeSpend,
-            subviewSecond: labelPercentTimeSpend,
-            spacing: 12,
-            opacity: 0)
-    }()
-    
-    private lazy var stackViews: UIStackView = {
-        let stackView = UIStackView(
-            arrangedSubviews: [stackViewCorrect, stackViewIncorrect, stackViewTimeSpend])
-        stackView.axis = .vertical
-        stackView.spacing = 15
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
     private lazy var buttonComplete: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Завершить", for: .normal)
@@ -273,10 +184,9 @@ class ResultsViewController: UIViewController {
     }
     
     private func setupSubviews() {
-        viewModel.setupSubviews(subviews: stackViewDetails, buttonCorrectAnswers,
+        viewModel.setupSubviews(subviews: labelResults, buttonCorrectAnswers,
                                 buttonIncorrectAnswers, viewTimeSpend,
-                                viewCountQuestions, imageInfinity, stackViews,
-                                buttonComplete,
+                                viewCountQuestions, imageInfinity, buttonComplete,
                                 on: view)
     }
     
@@ -298,10 +208,6 @@ class ResultsViewController: UIViewController {
     @objc private func circleIncorrectAnswers() {
         viewModel.circleIncorrectAnswers(view)
     }
-    
-//    @objc private func circleSpentTime() {
-//        viewModel.circleSpentTime(view, stackViewTimeSpend)
-//    }
     // MARK: - Press exit button
     @objc private func exitToMenu() {
         switch viewModel.game.gameType {
@@ -337,7 +243,8 @@ extension ResultsViewController {
 // MARK: - Setup button
 extension ResultsViewController {
     private func setButton(color: UIColor, labelFirst: UILabel, image: UIImageView, 
-                           labelSecond: UILabel, radius: CGFloat, tag: Int) -> UIButton {
+                           labelSecond: UILabel, radius: CGFloat, tag: Int,
+                           isEnabled: Bool) -> UIButton {
         let button = Button(type: .custom)
         button.backgroundColor = color
         button.layer.cornerRadius = radius
@@ -346,6 +253,7 @@ extension ResultsViewController {
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tag = tag
+        button.isEnabled = isEnabled
         button.addTarget(self, action: #selector(showIncorrectAnswers), for: .touchUpInside)
         viewModel.setupSubviews(subviews: labelFirst, image, labelSecond, on: button)
         return button
@@ -391,18 +299,17 @@ extension ResultsViewController {
 extension ResultsViewController {
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            stackViewDetails.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            stackViewDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            labelResults.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            labelResults.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            labelResults.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
-        setupSquare(subview: buttonDetails, sizes: 40)
         
         constraintsView(subview: buttonCorrectAnswers, layout: view.topAnchor,
-                        constant: 335, leading: 20, trailing: -viewModel.width(view),
+                        constant: 345, leading: 20, trailing: -viewModel.width(view),
                         height: 110, labelFirst: labelCorrectCount,
                         image: imageCorrectAnswers, labelSecond: labelCorrectTitle)
         constraintsView(subview: buttonIncorrectAnswers, layout: view.topAnchor,
-                        constant: 335, leading: viewModel.width(view), trailing: -20,
+                        constant: 345, leading: viewModel.width(view), trailing: -20,
                         height: 110, labelFirst: labelIncorrectCount,
                         image: imageIncorrectAnswers, labelSecond: labelIncorrectTitle)
         constraintsView(subview: viewTimeSpend, layout: buttonCorrectAnswers.bottomAnchor,
@@ -415,15 +322,6 @@ extension ResultsViewController {
                         image: imageCountQuestions, labelSecond: labelCountTitle)
         
         setupCenterSubview(subview: imageInfinity, on: labelNumberTimeSpend)
-        
-        setupSquare(subview: viewPercentCorrect, sizes: viewModel.radiusView * 2)
-        setupSquare(subview: viewPercentIncorrect, sizes: viewModel.radiusView * 2)
-        setupSquare(subview: viewPercentTimeSpend, sizes: viewModel.radiusView * 2)
-        NSLayoutConstraint.activate([
-            stackViews.centerYAnchor.constraint(equalTo: view.topAnchor, constant: 230),
-            stackViews.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width / 1.5),
-            stackViews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
-        ])
         
         NSLayoutConstraint.activate([
             buttonComplete.topAnchor.constraint(equalTo: viewCountQuestions.bottomAnchor, constant: 40),

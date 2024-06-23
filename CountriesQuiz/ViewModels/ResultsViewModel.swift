@@ -13,6 +13,8 @@ protocol ResultsViewModelProtocol {
     var titleTimeSpend: String { get }
     var imageTimeSpend: String { get }
     var numberTimeSpend: String { get }
+    var rightAnswers: Int { get }
+    var wrongAnswers: Int { get }
     
     var mode: Setting { get }
     var game: Games { get }
@@ -41,7 +43,6 @@ protocol ResultsViewModelProtocol {
     
     func circleCorrectAnswers(_ view: UIView, completion: @escaping (CGFloat) -> Void)
     func circleIncorrectAnswers(_ view: UIView)
-//    func circleSpentTime(_ view: UIView,_ stackView: UIStackView)
     
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol
 }
@@ -65,6 +66,12 @@ class ResultsViewModel: ResultsViewModelProtocol {
     }
     var circleTime: Float {
         roundf(Float(percentCheckMode() * 100)) / 100
+    }
+    var rightAnswers: Int {
+        correctAnswers.count
+    }
+    var wrongAnswers: Int {
+        incorrectAnswers.count
     }
     var timer = Timer()
     
@@ -134,31 +141,19 @@ class ResultsViewModel: ResultsViewModelProtocol {
     func circleCorrectAnswers(_ view: UIView, completion: @escaping (CGFloat) -> Void) {
         timer.invalidate()
         let delay: CGFloat = 0.75
-        let delayTimer = delay + 0.3
         let value = Float(correctAnswers.count) / Float(mode.countQuestions)
         setCircle(color: .greenHarlequin, strokeEnd: 0, start: 0, value: value,
                   duration: delay, view: view)
-        completion(delayTimer)
+        completion(delay)
     }
     
     func circleIncorrectAnswers(_ view: UIView) {
         timer.invalidate()
         let start = CGFloat(correctAnswers.count) / CGFloat(mode.countQuestions)
+        guard start != 1 else { return }
         setCircle(color: .redTangerineTango, strokeEnd: 0, start: start,
                   value: 1, duration: 0.75, view: view)
     }
-    /*
-    func circleSpentTime(_ view: UIView, _ stackView: UIStackView) {
-        timer.invalidate()
-        let delay: CGFloat = 0.75
-        let value = circleTime / 100
-        setCircle(color: .blueMiddlePersian.withAlphaComponent(0.3), radius: 42,
-                  strokeEnd: 1, value: nil, duration: nil, view: view)
-        setCircle(color: .blueMiddlePersian, radius: 42, strokeEnd: 0,
-                  value: value, duration: delay, view: view)
-        showAnimate(stackView: stackView)
-    }
-     */
     // MARK: - Transition to IncorrectAnswersViewController
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol {
         IncorrectAnswersViewModel(mode: mode, game: game, results: incorrectAnswers)
@@ -255,9 +250,9 @@ class ResultsViewModel: ResultsViewModelProtocol {
     // MARK: - Set circles
     private func setCircle(color: UIColor, strokeEnd: CGFloat, start: CGFloat,
                            value: Float, duration: CGFloat, view: UIView) {
-        let center = CGPoint(x: view.frame.width / 3, y: 230)
+        let center = CGPoint(x: view.frame.width / 2, y: 240)
         let endAngle = CGFloat.pi / 2
-        let startAngle = 2 * CGFloat.pi + endAngle + start
+        let startAngle = 2 * CGFloat.pi + endAngle - start * 2 * CGFloat.pi
         let circularPath = UIBezierPath(
             arcCenter: center,
             radius: 75,
@@ -267,7 +262,7 @@ class ResultsViewModel: ResultsViewModelProtocol {
         
         let trackShape = CAShapeLayer()
         trackShape.path = circularPath.cgPath
-        trackShape.lineWidth = 16
+        trackShape.lineWidth = 20
         trackShape.fillColor = UIColor.clear.cgColor
         trackShape.strokeEnd = strokeEnd
         trackShape.strokeColor = color.cgColor

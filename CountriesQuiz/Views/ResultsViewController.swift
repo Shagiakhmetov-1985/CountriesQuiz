@@ -16,6 +16,14 @@ class ResultsViewController: UIViewController {
             color: .blueBlackSea)
     }()
     
+    private lazy var imageCircle: UIImageView = {
+        setImage(image: "circle.fill", size: 85, color: .white.withAlphaComponent(0.3))
+    }()
+    
+    private lazy var imageGameType: UIImageView = {
+        setImage(image: viewModel.game.image, size: 48, color: viewModel.game.background)
+    }()
+    
     private lazy var buttonCorrectAnswers: UIButton = {
         setButton(
             color: viewModel.rightAnswers > 0 ? .greenHarlequin : .grayStone,
@@ -149,7 +157,7 @@ class ResultsViewController: UIViewController {
     }()
     
     private lazy var buttonComplete: UIButton = {
-        let button = UIButton(type: .system)
+        let button = Button(type: .system)
         button.setTitle("Завершить", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont(name: "mr_fontick", size: 25)
@@ -184,10 +192,10 @@ class ResultsViewController: UIViewController {
     }
     
     private func setupSubviews() {
-        viewModel.setupSubviews(subviews: labelResults, buttonCorrectAnswers,
-                                buttonIncorrectAnswers, viewTimeSpend,
-                                viewCountQuestions, imageInfinity, buttonComplete,
-                                on: view)
+        viewModel.setupSubviews(subviews: labelResults, imageCircle, imageGameType,
+                                buttonCorrectAnswers, buttonIncorrectAnswers,
+                                viewTimeSpend, viewCountQuestions, imageInfinity,
+                                buttonComplete, on: view)
     }
     
     private func runTimer(interval: CGFloat, action: Selector) -> Timer {
@@ -286,11 +294,11 @@ extension ResultsViewController {
 }
 // MARK: - Setup images
 extension ResultsViewController {
-    private func setImage(image: String, size: CGFloat) -> UIImageView {
+    private func setImage(image: String, size: CGFloat, color: UIColor? = nil) -> UIImageView {
         let size = UIImage.SymbolConfiguration(pointSize: size)
         let image = UIImage(systemName: image, withConfiguration: size)
         let imageView = UIImageView(image: image)
-        imageView.tintColor = .white
+        imageView.tintColor = color ?? .white
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }
@@ -304,74 +312,36 @@ extension ResultsViewController {
             labelResults.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
-        constraintsView(subview: buttonCorrectAnswers, layout: view.topAnchor,
-                        constant: 345, leading: 20, trailing: -viewModel.width(view),
-                        height: 110, labelFirst: labelCorrectCount,
-                        image: imageCorrectAnswers, labelSecond: labelCorrectTitle)
-        constraintsView(subview: buttonIncorrectAnswers, layout: view.topAnchor,
-                        constant: 345, leading: viewModel.width(view), trailing: -20,
-                        height: 110, labelFirst: labelIncorrectCount,
-                        image: imageIncorrectAnswers, labelSecond: labelIncorrectTitle)
-        constraintsView(subview: viewTimeSpend, layout: buttonCorrectAnswers.bottomAnchor,
-                        constant: 20, leading: 20, trailing: -viewModel.width(view),
-                        height: 110, labelFirst: labelNumberTimeSpend,
-                        image: imageTimeSpend, labelSecond: labelTimeSpend)
-        constraintsView(subview: viewCountQuestions, layout: buttonIncorrectAnswers.bottomAnchor,
-                        constant: 20, leading: viewModel.width(view), trailing: -20,
-                        height: 110, labelFirst: labelCountQuestions,
-                        image: imageCountQuestions, labelSecond: labelCountTitle)
+        NSLayoutConstraint.activate([
+            imageCircle.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageCircle.centerYAnchor.constraint(equalTo: view.topAnchor, constant: 240)
+        ])
+        viewModel.setupCenterSubview(imageGameType, on: imageCircle)
         
-        setupCenterSubview(subview: imageInfinity, on: labelNumberTimeSpend)
+        viewModel.constraintsView(subview: buttonCorrectAnswers, layout: view.topAnchor,
+                                  constant: 345, leading: 20, trailing: -viewModel.width(view),
+                                  height: 110, labelFirst: labelCorrectCount,
+                                  image: imageCorrectAnswers, labelSecond: labelCorrectTitle, view)
+        viewModel.constraintsView(subview: buttonIncorrectAnswers, layout: view.topAnchor,
+                                  constant: 345, leading: viewModel.width(view), trailing: -20,
+                                  height: 110, labelFirst: labelIncorrectCount,
+                                  image: imageIncorrectAnswers, labelSecond: labelIncorrectTitle, view)
+        viewModel.constraintsView(subview: viewTimeSpend, layout: buttonCorrectAnswers.bottomAnchor,
+                                  constant: 20, leading: 20, trailing: -viewModel.width(view),
+                                  height: 110, labelFirst: labelNumberTimeSpend,
+                                  image: imageTimeSpend, labelSecond: labelTimeSpend, view)
+        viewModel.constraintsView(subview: viewCountQuestions, layout: buttonIncorrectAnswers.bottomAnchor,
+                                  constant: 20, leading: viewModel.width(view), trailing: -20,
+                                  height: 110, labelFirst: labelCountQuestions,
+                                  image: imageCountQuestions, labelSecond: labelCountTitle, view)
+        
+        viewModel.setupCenterSubview(imageInfinity, on: labelNumberTimeSpend)
         
         NSLayoutConstraint.activate([
             buttonComplete.topAnchor.constraint(equalTo: viewCountQuestions.bottomAnchor, constant: 40),
             buttonComplete.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             buttonComplete.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             buttonComplete.heightAnchor.constraint(equalToConstant: 55)
-        ])
-    }
-    
-    private func constraintsView(subview: UIView, layout: NSLayoutYAxisAnchor,
-                                 constant: CGFloat, leading: CGFloat,
-                                 trailing: CGFloat, height: CGFloat,
-                                 labelFirst: UILabel, image: UIImageView,
-                                 labelSecond: UILabel) {
-        NSLayoutConstraint.activate([
-            subview.topAnchor.constraint(equalTo: layout, constant: constant),
-            subview.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leading),
-            subview.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: trailing),
-            subview.heightAnchor.constraint(equalToConstant: height)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelFirst.topAnchor.constraint(equalTo: subview.topAnchor, constant: 10),
-            labelFirst.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 5),
-            labelFirst.trailingAnchor.constraint(equalTo: image.leadingAnchor, constant: -5)
-        ])
-        
-        NSLayoutConstraint.activate([
-            image.trailingAnchor.constraint(equalTo: subview.trailingAnchor, constant: -20),
-            image.centerYAnchor.constraint(equalTo: labelFirst.centerYAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelSecond.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 10),
-            labelSecond.trailingAnchor.constraint(equalTo: subview.trailingAnchor, constant: -10),
-            labelSecond.bottomAnchor.constraint(equalTo: subview.bottomAnchor, constant: -10)
-        ])
-    }
-    
-    private func setupSquare(subview: UIView, sizes: CGFloat) {
-        NSLayoutConstraint.activate([
-            subview.widthAnchor.constraint(equalToConstant: sizes),
-            subview.heightAnchor.constraint(equalToConstant: sizes)
-        ])
-    }
-    
-    private func setupCenterSubview(subview: UIView, on subviewOther: UIView) {
-        NSLayoutConstraint.activate([
-            subview.centerXAnchor.constraint(equalTo: subviewOther.centerXAnchor),
-            subview.centerYAnchor.constraint(equalTo: subviewOther.centerYAnchor)
         ])
     }
 }

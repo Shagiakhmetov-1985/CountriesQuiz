@@ -44,6 +44,13 @@ protocol ResultsViewModelProtocol {
     func circleCorrectAnswers(_ view: UIView, completion: @escaping (CGFloat) -> Void)
     func circleIncorrectAnswers(_ view: UIView)
     
+    func constraintsView(subview: UIView, layout: NSLayoutYAxisAnchor,
+                         constant: CGFloat, leading: CGFloat,
+                         trailing: CGFloat, height: CGFloat,
+                         labelFirst: UILabel, image: UIImageView,
+                         labelSecond: UILabel,_ view: UIView)
+    func setupCenterSubview(_ subview: UIView, on subviewOther: UIView)
+    
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol
 }
 
@@ -157,6 +164,43 @@ class ResultsViewModel: ResultsViewModelProtocol {
     // MARK: - Transition to IncorrectAnswersViewController
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol {
         IncorrectAnswersViewModel(mode: mode, game: game, results: incorrectAnswers)
+    }
+    // MARK: - Constraints
+    func constraintsView(subview: UIView, layout: NSLayoutYAxisAnchor, 
+                         constant: CGFloat, leading: CGFloat,
+                         trailing: CGFloat, height: CGFloat,
+                         labelFirst: UILabel, image: UIImageView, 
+                         labelSecond: UILabel, _ view: UIView) {
+        NSLayoutConstraint.activate([
+            subview.topAnchor.constraint(equalTo: layout, constant: constant),
+            subview.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leading),
+            subview.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: trailing),
+            subview.heightAnchor.constraint(equalToConstant: height)
+        ])
+        
+        NSLayoutConstraint.activate([
+            labelFirst.topAnchor.constraint(equalTo: subview.topAnchor, constant: 10),
+            labelFirst.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 5),
+            labelFirst.trailingAnchor.constraint(equalTo: image.leadingAnchor, constant: -5)
+        ])
+        
+        NSLayoutConstraint.activate([
+            image.trailingAnchor.constraint(equalTo: subview.trailingAnchor, constant: -20),
+            image.centerYAnchor.constraint(equalTo: labelFirst.centerYAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            labelSecond.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 10),
+            labelSecond.trailingAnchor.constraint(equalTo: subview.trailingAnchor, constant: -10),
+            labelSecond.bottomAnchor.constraint(equalTo: subview.bottomAnchor, constant: -10)
+        ])
+    }
+    
+    func setupCenterSubview(_ subview: UIView, on subviewOther: UIView) {
+        NSLayoutConstraint.activate([
+            subview.centerXAnchor.constraint(equalTo: subviewOther.centerXAnchor),
+            subview.centerYAnchor.constraint(equalTo: subviewOther.centerYAnchor)
+        ])
     }
     // MARK: - Constants, countinue
     private func checkTitleTimeSpend() -> String {

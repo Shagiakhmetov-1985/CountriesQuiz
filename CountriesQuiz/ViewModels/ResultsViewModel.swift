@@ -44,10 +44,7 @@ protocol ResultsViewModelProtocol {
     func circleCorrectAnswers(_ view: UIView, completion: @escaping (CGFloat) -> Void)
     func circleIncorrectAnswers(_ view: UIView)
     
-    func constraintsView(subview: UIView, layout: NSLayoutYAxisAnchor,
-                         constant: CGFloat, leading: CGFloat,
-                         trailing: CGFloat, height: CGFloat,
-                         labelFirst: UILabel, image: UIImageView,
+    func constraintsView(subview: UIView, labelFirst: UILabel, image: UIImageView,
                          labelSecond: UILabel,_ view: UIView)
     func setupCenterSubview(_ subview: UIView, on subviewOther: UIView)
     
@@ -158,26 +155,24 @@ class ResultsViewModel: ResultsViewModelProtocol {
         timer.invalidate()
         let start = CGFloat(correctAnswers.count) / CGFloat(mode.countQuestions)
         guard start != 1 else { return }
-        setCircle(color: .redTangerineTango, strokeEnd: 0, start: start,
-                  value: 1, duration: 0.75, view: view)
+        setCircle(color: .redTangerineTango, strokeEnd: 0, start: start, value: 1,
+                  duration: 0.75, view: view)
     }
     // MARK: - Transition to IncorrectAnswersViewController
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol {
         IncorrectAnswersViewModel(mode: mode, game: game, results: incorrectAnswers)
     }
     // MARK: - Constraints
-    func constraintsView(subview: UIView, layout: NSLayoutYAxisAnchor, 
-                         constant: CGFloat, leading: CGFloat,
-                         trailing: CGFloat, height: CGFloat,
-                         labelFirst: UILabel, image: UIImageView, 
+    func constraintsView(subview: UIView, labelFirst: UILabel, image: UIImageView,
                          labelSecond: UILabel, _ view: UIView) {
+        /*
         NSLayoutConstraint.activate([
             subview.topAnchor.constraint(equalTo: layout, constant: constant),
             subview.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leading),
             subview.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: trailing),
             subview.heightAnchor.constraint(equalToConstant: height)
         ])
-        
+        */
         NSLayoutConstraint.activate([
             labelFirst.topAnchor.constraint(equalTo: subview.topAnchor, constant: 10),
             labelFirst.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 5),
@@ -293,20 +288,20 @@ class ResultsViewModel: ResultsViewModelProtocol {
     }
     // MARK: - Set circles
     private func setCircle(color: UIColor, strokeEnd: CGFloat, start: CGFloat,
-                           value: Float, duration: CGFloat, view: UIView) {
-        let center = CGPoint(x: view.frame.width / 2, y: 240)
+                           value: Float, duration: CGFloat, view: UIView){
+        let center = CGPoint(x: view.frame.width / 4, y: 280)
         let endAngle = CGFloat.pi / 2
         let startAngle = 2 * CGFloat.pi + endAngle - start * 2 * CGFloat.pi
         let circularPath = UIBezierPath(
             arcCenter: center,
-            radius: 75,
+            radius: 60,
             startAngle: -startAngle,
             endAngle: -endAngle,
             clockwise: true)
         
         let trackShape = CAShapeLayer()
         trackShape.path = circularPath.cgPath
-        trackShape.lineWidth = 20
+        trackShape.lineWidth = 11
         trackShape.fillColor = UIColor.clear.cgColor
         trackShape.strokeEnd = strokeEnd
         trackShape.strokeColor = color.cgColor

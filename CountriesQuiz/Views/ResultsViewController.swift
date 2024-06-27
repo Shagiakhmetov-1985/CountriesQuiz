@@ -8,20 +8,28 @@
 import UIKit
 // MARK: - Properties
 class ResultsViewController: UIViewController {
-    private lazy var labelResults: UILabel = {
-        setLabel(
-            title: "Результаты",
-            style: "echorevival",
-            size: 38,
-            color: .blueBlackSea)
+    private lazy var viewResults: UIView = {
+        setView(color: viewModel.game.background, radius: 25, isOnBottomCorners: true)
     }()
     
     private lazy var imageCircle: UIImageView = {
-        setImage(image: "circle.fill", size: 85, color: .white.withAlphaComponent(0.3))
+        setImage(image: "circle.fill", size: 60, color: .white.withAlphaComponent(0.8), imageType: imageGameType)
     }()
     
     private lazy var imageGameType: UIImageView = {
-        setImage(image: viewModel.game.image, size: 48, color: viewModel.game.background)
+        setImage(image: viewModel.game.image, size: 36, color: viewModel.game.background)
+    }()
+    
+    private lazy var labelResults: UILabel = {
+        setLabel(title: "Результаты", style: "echorevival", size: 38, color: .white)
+    }()
+    
+    private lazy var stackViewResults: UIStackView = {
+        setStackView(first: labelResults, second: imageCircle, distribution: .fill)
+    }()
+    
+    private lazy var buttonCircle: UIView = {
+        setButton(color: .white, radius: 20, isEnabled: true, colorBorder: viewModel.game.background)
     }()
     
     private lazy var buttonCorrectAnswers: UIButton = {
@@ -90,6 +98,18 @@ class ResultsViewController: UIViewController {
             alignment: .center)
     }()
     
+    private lazy var stackViewAnswers: UIStackView = {
+        setStackView(
+            first: buttonCorrectAnswers,
+            second: buttonIncorrectAnswers,
+            distribution: .fillEqually,
+            axis: .vertical)
+    }()
+    
+    private lazy var stackViewCircle: UIStackView = {
+        setStackView(first: buttonCircle, second: stackViewAnswers, distribution: .fillEqually)
+    }()
+    
     private lazy var viewTimeSpend: UIView = {
         setView(
             color: .blueMiddlePersian,
@@ -156,16 +176,26 @@ class ResultsViewController: UIViewController {
             alignment: .center)
     }()
     
+    private lazy var stackViewTime: UIStackView = {
+        setStackView(first: viewTimeSpend, second: viewCountQuestions, distribution: .fillEqually)
+    }()
+    
+    private lazy var viewComplete: UIView = {
+        setView(color: viewModel.game.background, radius: 25, isOnTopCorners: true)
+    }()
+    
     private lazy var buttonComplete: UIButton = {
         let button = Button(type: .system)
         button.setTitle("Завершить", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont(name: "mr_fontick", size: 25)
-        button.backgroundColor = .blueBlackSea
+        button.backgroundColor = viewModel.game.background
         button.layer.cornerRadius = 12
-        button.layer.shadowColor = UIColor.blueBlackSea.cgColor
+        button.layer.shadowColor = UIColor.white.cgColor
         button.layer.shadowOpacity = 0.4
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = 2
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(exitToMenu), for: .touchUpInside)
         return button
@@ -186,16 +216,15 @@ class ResultsViewController: UIViewController {
     }
     
     private func setupDesign() {
-        view.backgroundColor = .skyCyanLight
+        view.backgroundColor = .white
         navigationItem.hidesBackButton = true
         imageInfinity.isHidden = viewModel.isTime() ? true : false
     }
     
     private func setupSubviews() {
-        viewModel.setupSubviews(subviews: labelResults, imageCircle, imageGameType,
-                                buttonCorrectAnswers, buttonIncorrectAnswers,
-                                viewTimeSpend, viewCountQuestions, imageInfinity,
-                                buttonComplete, on: view)
+        viewModel.setupSubviews(subviews: viewResults, stackViewResults,
+                                stackViewCircle, stackViewTime, imageInfinity,
+                                viewComplete, buttonComplete, on: view)
     }
     
     private func runTimer(interval: CGFloat, action: Selector) -> Timer {
@@ -237,10 +266,19 @@ class ResultsViewController: UIViewController {
 // MARK: - Setup view
 extension ResultsViewController {
     private func setView(color: UIColor, labelFirst: UILabel? = nil, image: UIImageView? = nil,
-                         labelSecond: UILabel? = nil, radius: CGFloat) -> UIView {
+                         labelSecond: UILabel? = nil, radius: CGFloat,
+                         isOnTopCorners: Bool? = nil,
+                         isOnBottomCorners: Bool? = nil) -> UIView {
         let view = UIView()
         view.backgroundColor = color
         view.layer.cornerRadius = radius
+        view.layer.borderColor = viewModel.game.background.cgColor
+        if isOnBottomCorners ?? false {
+            view.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        }
+        if isOnTopCorners ?? false {
+            view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        }
         view.translatesAutoresizingMaskIntoConstraints = false
         if let labelFirst = labelFirst, let image = image, let labelSecond = labelSecond {
             viewModel.setupSubviews(subviews: labelFirst, image, labelSecond, on: view)
@@ -250,20 +288,26 @@ extension ResultsViewController {
 }
 // MARK: - Setup button
 extension ResultsViewController {
-    private func setButton(color: UIColor, labelFirst: UILabel, image: UIImageView, 
-                           labelSecond: UILabel, radius: CGFloat, tag: Int,
-                           isEnabled: Bool) -> UIButton {
+    private func setButton(color: UIColor, labelFirst: UILabel? = nil, image: UIImageView? = nil,
+                           labelSecond: UILabel? = nil, radius: CGFloat, tag: Int? = nil,
+                           isEnabled: Bool, colorBorder: UIColor? = nil) -> UIButton {
         let button = Button(type: .custom)
         button.backgroundColor = color
         button.layer.cornerRadius = radius
         button.layer.shadowColor = color.cgColor
         button.layer.shadowOpacity = 0.4
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        if let colorBorder = colorBorder {
+            button.layer.borderWidth = 2
+            button.layer.borderColor = colorBorder.cgColor
+        }
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.tag = tag
+        button.tag = tag ?? 0
         button.isEnabled = isEnabled
         button.addTarget(self, action: #selector(showIncorrectAnswers), for: .touchUpInside)
-        viewModel.setupSubviews(subviews: labelFirst, image, labelSecond, on: button)
+        if let labelFirst = labelFirst, let image = image, let labelSecond = labelSecond {
+            viewModel.setupSubviews(subviews: labelFirst, image, labelSecond, on: button)
+        }
         return button
     }
 }
@@ -281,66 +325,87 @@ extension ResultsViewController {
         return label
     }
 }
-// MARK: - Setup stack views
-extension ResultsViewController {
-    private func setupStackView(subviewFirst: UIView, subviewSecond: UIView,
-                                spacing: CGFloat? = nil, opacity: Float? = nil) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [subviewFirst, subviewSecond])
-        stackView.spacing = spacing ?? 0
-        stackView.layer.opacity = opacity ?? 1
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-}
 // MARK: - Setup images
 extension ResultsViewController {
-    private func setImage(image: String, size: CGFloat, color: UIColor? = nil) -> UIImageView {
+    private func setImage(image: String, size: CGFloat, color: UIColor? = nil,
+                          imageType: UIImageView? = nil) -> UIImageView {
         let size = UIImage.SymbolConfiguration(pointSize: size)
         let image = UIImage(systemName: image, withConfiguration: size)
         let imageView = UIImageView(image: image)
         imageView.tintColor = color ?? .white
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        if let imageType = imageType {
+            viewModel.setupSubviews(subviews: imageType, on: imageView)
+        }
         return imageView
+    }
+}
+// MARK: - Setup stack views
+extension ResultsViewController {
+    private func setStackView(first: UIView, second: UIView, 
+                              distribution: UIStackView.Distribution,
+                              axis: NSLayoutConstraint.Axis? = nil) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [first, second])
+        stackView.spacing = 10
+        stackView.distribution = distribution
+        stackView.axis = axis ?? .horizontal
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }
 }
 // MARK: - Setup constraints
 extension ResultsViewController {
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            labelResults.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            labelResults.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            labelResults.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            imageCircle.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageCircle.centerYAnchor.constraint(equalTo: view.topAnchor, constant: 240)
+            viewResults.topAnchor.constraint(equalTo: view.topAnchor),
+            viewResults.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            viewResults.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            viewResults.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50)
         ])
         viewModel.setupCenterSubview(imageGameType, on: imageCircle)
         
-        viewModel.constraintsView(subview: buttonCorrectAnswers, layout: view.topAnchor,
-                                  constant: 345, leading: 20, trailing: -viewModel.width(view),
-                                  height: 110, labelFirst: labelCorrectCount,
+        NSLayoutConstraint.activate([
+            stackViewResults.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackViewResults.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            stackViewResults.bottomAnchor.constraint(equalTo: viewResults.bottomAnchor, constant: -10)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewCircle.topAnchor.constraint(equalTo: viewResults.bottomAnchor, constant: 10),
+            stackViewCircle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            stackViewCircle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            stackViewCircle.heightAnchor.constraint(equalToConstant: 210)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackViewTime.topAnchor.constraint(equalTo: stackViewCircle.bottomAnchor, constant: 10),
+            stackViewTime.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            stackViewTime.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            stackViewTime.heightAnchor.constraint(equalToConstant: 120)
+        ])
+        
+        viewModel.constraintsView(subview: buttonCorrectAnswers, labelFirst: labelCorrectCount,
                                   image: imageCorrectAnswers, labelSecond: labelCorrectTitle, view)
-        viewModel.constraintsView(subview: buttonIncorrectAnswers, layout: view.topAnchor,
-                                  constant: 345, leading: viewModel.width(view), trailing: -20,
-                                  height: 110, labelFirst: labelIncorrectCount,
+        viewModel.constraintsView(subview: buttonIncorrectAnswers, labelFirst: labelIncorrectCount,
                                   image: imageIncorrectAnswers, labelSecond: labelIncorrectTitle, view)
-        viewModel.constraintsView(subview: viewTimeSpend, layout: buttonCorrectAnswers.bottomAnchor,
-                                  constant: 20, leading: 20, trailing: -viewModel.width(view),
-                                  height: 110, labelFirst: labelNumberTimeSpend,
+        viewModel.constraintsView(subview: viewTimeSpend, labelFirst: labelNumberTimeSpend,
                                   image: imageTimeSpend, labelSecond: labelTimeSpend, view)
-        viewModel.constraintsView(subview: viewCountQuestions, layout: buttonIncorrectAnswers.bottomAnchor,
-                                  constant: 20, leading: viewModel.width(view), trailing: -20,
-                                  height: 110, labelFirst: labelCountQuestions,
+        viewModel.constraintsView(subview: viewCountQuestions, labelFirst: labelCountQuestions,
                                   image: imageCountQuestions, labelSecond: labelCountTitle, view)
         
         viewModel.setupCenterSubview(imageInfinity, on: labelNumberTimeSpend)
         
         NSLayoutConstraint.activate([
-            buttonComplete.topAnchor.constraint(equalTo: viewCountQuestions.bottomAnchor, constant: 40),
-            buttonComplete.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonComplete.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            viewComplete.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            viewComplete.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            viewComplete.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            viewComplete.heightAnchor.constraint(equalToConstant: 200)
+        ])
+        
+        NSLayoutConstraint.activate([
+            buttonComplete.topAnchor.constraint(equalTo: viewComplete.topAnchor, constant: 20),
+            buttonComplete.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            buttonComplete.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             buttonComplete.heightAnchor.constraint(equalToConstant: 55)
         ])
     }

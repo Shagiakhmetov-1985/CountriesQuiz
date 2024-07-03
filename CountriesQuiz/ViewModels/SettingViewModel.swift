@@ -652,15 +652,13 @@ class SettingViewModel: SettingViewModelProtocol {
         let titleSelectedColor: UIColor = isOn ? white : lightGray
         segmentedControl.setTitleTextAttributes([
             NSAttributedString.Key
-                .font: font ?? "",
-            .foregroundColor: titleSelectedColor
+                .font: font ?? "", .foregroundColor: titleSelectedColor
         ], for: .selected)
         
         let titleNormalColor: UIColor = isOn ? blue : gray
         segmentedControl.setTitleTextAttributes([
             NSAttributedString.Key
-                .font: font ?? "",
-            .foregroundColor: titleNormalColor
+                .font: font ?? "", .foregroundColor: titleNormalColor
         ], for: .normal)
     }
     

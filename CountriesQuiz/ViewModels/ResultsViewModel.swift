@@ -10,11 +10,17 @@ import UIKit
 protocol ResultsViewModelProtocol {
     var time: Int { get }
     var radiusView: CGFloat { get }
+    var radius: CGFloat { get }
     var titleTimeSpend: String { get }
     var imageTimeSpend: String { get }
     var numberTimeSpend: String { get }
     var rightAnswers: Int { get }
     var wrongAnswers: Int { get }
+    var progressCorrect: Float { get }
+    var progressIncorrect: Float { get }
+    var heading: String { get }
+    var description: String { get }
+    var percent: String { get }
     
     var mode: Setting { get }
     var game: Games { get }
@@ -40,12 +46,11 @@ protocol ResultsViewModelProtocol {
     func percentCorrectAnswers() -> String
     func percentIncorrectAnswers() -> String
     func percentCheckMode() -> CGFloat
+    func getRange(subString: String, fromString: String) -> NSRange
     
-    func circleCorrectAnswers(_ view: UIView, completion: @escaping (CGFloat) -> Void)
-    func circleIncorrectAnswers(_ view: UIView)
-    
-    func constraintsView(subview: UIView, labelFirst: UILabel, image: UIImageView,
-                         labelSecond: UILabel,_ view: UIView)
+    func constraintsView(view: UIView, image: UIImageView, label: UILabel, button: UIButton)
+    func constraintsButton(subview: UIView, labelFirst: UILabel, image: UIImageView,
+                           labelSecond: UILabel)
     func setupCenterSubview(_ subview: UIView, on subviewOther: UIView)
     
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol
@@ -56,6 +61,7 @@ class ResultsViewModel: ResultsViewModelProtocol {
         isOneQuestion() ? oneQuestionTime() : allQuestionsTime()
     }
     var radiusView: CGFloat = 10
+    var radius: CGFloat = 15
     var titleTimeSpend: String {
         isTime() ? "\(checkTitleTimeSpend())" : "Обратный отсчет выключен"
     }
@@ -76,6 +82,22 @@ class ResultsViewModel: ResultsViewModelProtocol {
     }
     var wrongAnswers: Int {
         incorrectAnswers.count
+    }
+    var progressCorrect: Float {
+        Float(rightAnswers) / Float(mode.countQuestions)
+    }
+    var progressIncorrect: Float {
+        Float(wrongAnswers) / Float(mode.countQuestions)
+    }
+    var heading: String = "Соотношение ответов"
+    var description: String {
+        """
+        Соотношение ответов
+        На все вопросы вы смогли ответить правильно точно на \(percentCorrectAnswers()).
+        """
+    }
+    var percent: String {
+        percentCorrectAnswers()
     }
     var timer = Timer()
     
@@ -127,14 +149,12 @@ class ResultsViewModel: ResultsViewModelProtocol {
     }
     // MARK: - Percent titles
     func percentCorrectAnswers() -> String {
-        let correctAnswers = CGFloat(correctAnswers.count)
-        let percent = correctAnswers / CGFloat(mode.countQuestions) * 100
+        let percent = CGFloat(rightAnswers) / CGFloat(mode.countQuestions) * 100
         return stringWithoutNull(count: percent) + "%"
     }
     
     func percentIncorrectAnswers() -> String {
-        let incorrectAnswers = CGFloat(incorrectAnswers.count)
-        let percent = incorrectAnswers / CGFloat(mode.countQuestions) * 100
+        let percent = CGFloat(wrongAnswers) / CGFloat(mode.countQuestions) * 100
         return stringWithoutNull(count: percent) + "%"
     }
     
@@ -142,6 +162,12 @@ class ResultsViewModel: ResultsViewModelProtocol {
         isOneQuestion() ? checkGameType() : timeSpend()
     }
     // MARK: - Set circles
+    /*
+    func setCircleShadow(_ viewFirst: UIView, _ viewSecond: UIView, _ view: UIView) {
+        setCircle(viewFirst, color: .white.withAlphaComponent(0.3), strokeEnd: 1, view: view)
+        setCircle(labelSecond, color: .white.withAlphaComponent(0.3), strokeEnd: 1, view: view)
+    }
+    
     func circleCorrectAnswers(_ view: UIView, completion: @escaping (CGFloat) -> Void) {
         timer.invalidate()
         let delay: CGFloat = 0.75
@@ -158,21 +184,26 @@ class ResultsViewModel: ResultsViewModelProtocol {
         setCircle(color: .redTangerineTango, strokeEnd: 0, start: start, value: 1,
                   duration: 0.75, view: view)
     }
+     */
     // MARK: - Transition to IncorrectAnswersViewController
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol {
         IncorrectAnswersViewModel(mode: mode, game: game, results: incorrectAnswers)
     }
     // MARK: - Constraints
-    func constraintsView(subview: UIView, labelFirst: UILabel, image: UIImageView,
-                         labelSecond: UILabel, _ view: UIView) {
-        /*
+    func constraintsView(view: UIView, image: UIImageView, label: UILabel, button: UIButton) {
         NSLayoutConstraint.activate([
-            subview.topAnchor.constraint(equalTo: layout, constant: constant),
-            subview.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leading),
-            subview.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: trailing),
-            subview.heightAnchor.constraint(equalToConstant: height)
+            image.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            image.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            label.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 5),
+            label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            button.topAnchor.constraint(equalTo: label.bottomAnchor),
+            button.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 5)
         ])
-        */
+    }
+    
+    func constraintsButton(subview: UIView, labelFirst: UILabel, image: UIImageView,
+                           labelSecond: UILabel) {
         NSLayoutConstraint.activate([
             labelFirst.topAnchor.constraint(equalTo: subview.topAnchor, constant: 10),
             labelFirst.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 5),
@@ -196,6 +227,14 @@ class ResultsViewModel: ResultsViewModelProtocol {
             subview.centerXAnchor.constraint(equalTo: subviewOther.centerXAnchor),
             subview.centerYAnchor.constraint(equalTo: subviewOther.centerYAnchor)
         ])
+    }
+    // MARK: - Get word from text description
+    func getRange(subString: String, fromString: String) -> NSRange {
+        let linkRange = fromString.range(of: subString)!
+        let start = fromString.distance(from: fromString.startIndex, to: linkRange.lowerBound)
+        let end = fromString.distance(from: fromString.startIndex, to: linkRange.upperBound)
+        let range = NSMakeRange(start, end - start)
+        return range
     }
     // MARK: - Constants, countinue
     private func checkTitleTimeSpend() -> String {
@@ -287,28 +326,30 @@ class ResultsViewModel: ResultsViewModelProtocol {
         }
     }
     // MARK: - Set circles
-    private func setCircle(color: UIColor, strokeEnd: CGFloat, start: CGFloat,
-                           value: Float, duration: CGFloat, view: UIView){
-        let center = CGPoint(x: view.frame.width / 4, y: 280)
+    private func setCircle(_ subview: UIView, color: UIColor, strokeEnd: CGFloat,
+                           value: Float? = nil, duration: CGFloat? = nil, view: UIView) {
+        let center = CGPoint(x: subview.center.x, y: subview.center.y)
         let endAngle = CGFloat.pi / 2
-        let startAngle = 2 * CGFloat.pi + endAngle - start * 2 * CGFloat.pi
+        let startAngle = 2 * CGFloat.pi + endAngle
         let circularPath = UIBezierPath(
             arcCenter: center,
-            radius: 60,
+            radius: 45,
             startAngle: -startAngle,
             endAngle: -endAngle,
             clockwise: true)
         
         let trackShape = CAShapeLayer()
         trackShape.path = circularPath.cgPath
-        trackShape.lineWidth = 11
+        trackShape.lineWidth = 13
         trackShape.fillColor = UIColor.clear.cgColor
         trackShape.strokeEnd = strokeEnd
         trackShape.strokeColor = color.cgColor
-        trackShape.lineCap = CAShapeLayerLineCap.butt
+        trackShape.lineCap = CAShapeLayerLineCap.round
         view.layer.addSublayer(trackShape)
         
-        animateCircle(shape: trackShape, value: value, duration: duration)
+        if let value = value, let duration = duration {
+            animateCircle(shape: trackShape, value: value, duration: duration)
+        }
     }
     
     private func animateCircle(shape: CAShapeLayer, value: Float, duration: CGFloat) {

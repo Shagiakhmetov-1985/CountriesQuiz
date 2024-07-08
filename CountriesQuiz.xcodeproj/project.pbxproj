@@ -33,6 +33,8 @@
 		C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38C023E2981025C008C2202 /* ResultsViewController.swift */; };
 		C38DF4DB2A8E4BF000550BCC /* IncorrectAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */; };
 		C38DF4DE2A8F4A5B00550BCC /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */; };
+		C392B1882C36861300779A53 /* RatioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C392B1872C36861300779A53 /* RatioViewController.swift */; };
+		C392B18A2C36864900779A53 /* RatioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C392B1892C36864900779A53 /* RatioViewModel.swift */; };
 		C3A6B9D32AF0DB3D00DBE77F /* PopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A6B9D22AF0DB3D00DBE77F /* PopUpView.swift */; };
 		C3B187C82ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */; };
 		C3B35F20293FADC300A8493F /* fontick.otf in Resources */ = {isa = PBXBuildFile; fileRef = C3B35F1F293FADC300A8493F /* fontick.otf */; };
@@ -78,6 +80,8 @@
 		C38C023E2981025C008C2202 /* ResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsViewController.swift; sourceTree = "<group>"; };
 		C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectAnswersViewController.swift; sourceTree = "<group>"; };
 		C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
+		C392B1872C36861300779A53 /* RatioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatioViewController.swift; sourceTree = "<group>"; };
+		C392B1892C36864900779A53 /* RatioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatioViewModel.swift; sourceTree = "<group>"; };
 		C3A6B9D22AF0DB3D00DBE77F /* PopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpView.swift; sourceTree = "<group>"; };
 		C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfCapitalsViewController.swift; sourceTree = "<group>"; };
 		C3B35F1F293FADC300A8493F /* fontick.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontick.otf; sourceTree = "<group>"; };
@@ -126,6 +130,7 @@
 				C3BADD032BC7EF5A0098BDCB /* QuestionnaireViewModel.swift */,
 				C3E853482BD7845500D244F8 /* QuizOfCapitalsViewModel.swift */,
 				C341078D2BBFE4C800D0E993 /* ResultsViewModel.swift */,
+				C392B1892C36864900779A53 /* RatioViewModel.swift */,
 				C359C3082BC1947300473B33 /* IncorrectAnswersViewModel.swift */,
 				C33762AD2BC4386700A417AB /* DetailsViewModel.swift */,
 				C33167C62BF9F7EB00504F47 /* SettingViewModel.swift */,
@@ -233,6 +238,7 @@
 				C36EC9F92B2729D500ECF1EE /* ScrabbleViewController.swift */,
 				C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */,
 				C38C023E2981025C008C2202 /* ResultsViewController.swift */,
+				C392B1872C36861300779A53 /* RatioViewController.swift */,
 				C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */,
 				C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */,
 				C3D292EA293F5F0900786752 /* SettingViewController.swift */,
@@ -360,12 +366,14 @@
 			files = (
 				C333038A2BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift in Sources */,
 				C3BFB8272B04E32F006BB074 /* PopUpViewSetting.swift in Sources */,
+				C392B1882C36861300779A53 /* RatioViewController.swift in Sources */,
 				C33669D62B998F990081C39A /* Game.swift in Sources */,
 				C3BADD042BC7EF5A0098BDCB /* QuestionnaireViewModel.swift in Sources */,
 				C3E2EB342938E7F300AB40AD /* MenuViewController.swift in Sources */,
 				C36773F1296BF9E10096BCC5 /* QuizOfFlagsViewController.swift in Sources */,
 				C38DF4DE2A8F4A5B00550BCC /* CustomCell.swift in Sources */,
 				C3E853492BD7845500D244F8 /* QuizOfCapitalsViewModel.swift in Sources */,
+				C392B18A2C36864900779A53 /* RatioViewModel.swift in Sources */,
 				C3E3C2DA295B602900054A1F /* AlertController.swift in Sources */,
 				C341078E2BBFE4C800D0E993 /* ResultsViewModel.swift in Sources */,
 				C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */,

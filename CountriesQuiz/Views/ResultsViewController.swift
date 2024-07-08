@@ -90,57 +90,8 @@ class ResultsViewController: UIViewController {
         button.setTitleColor(viewModel.game.background, for: .normal)
         button.titleLabel?.font = UIFont(name: "GillSans-SemiBold", size: 21)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(showRatio), for: .touchUpInside)
         return button
-    }()
-    
-    private lazy var imagePercentCorrect: UIImageView = {
-        setImage(image: "checkmark", size: 26)
-    }()
-    
-    private lazy var imagePercentIncorrect: UIImageView = {
-        setImage(image: "multiply", size: 26)
-    }()
-    
-    private lazy var progressCorrect: UIProgressView = {
-        setProgress(progress: viewModel.progressCorrect)
-    }()
-    
-    private lazy var progressIncorrect: UIProgressView = {
-        setProgress(progress: viewModel.progressIncorrect)
-    }()
-    
-    private lazy var labelPercentCorrect: UILabel = {
-        setLabel(
-            title: viewModel.percentCorrectAnswers(),
-            style: "mr_fontick",
-            size: 30,
-            color: .white,
-            alignment: .center)
-    }()
-    
-    private lazy var labelPercentIncorrect: UILabel = {
-        setLabel(
-            title: viewModel.percentIncorrectAnswers(),
-            style: "mr_fontick",
-            size: 30,
-            color: .white,
-            alignment: .center)
-    }()
-    
-    private lazy var stackViewCorrect: UIStackView = {
-        setStackView(first: imagePercentCorrect, second: progressCorrect, third: labelPercentCorrect)
-    }()
-    
-    private lazy var stackViewIncorrect: UIStackView = {
-        setStackView(first: imageIncorrectAnswers, second: progressIncorrect, third: labelPercentIncorrect)
-    }()
-    
-    private lazy var stackView: UIStackView = {
-        setStackView(
-            first: stackViewCorrect,
-            second: stackViewIncorrect,
-            distribution: .fillEqually,
-            axis: .vertical)
     }()
     
     private lazy var buttonCorrectAnswers: UIButton = {
@@ -346,6 +297,14 @@ class ResultsViewController: UIViewController {
         default: delegateQuizOfCapitals.dataToQuizOfCapitals(setting: viewModel.mode)
         }
     }
+    // MARK: - Show ratio
+    @objc private func showRatio() {
+        let ratio = viewModel.ratio()
+        let ratioVC = RatioViewController()
+        ratioVC.viewModel = ratio
+        ratioVC.modalPresentationStyle = .pageSheet
+        present(ratioVC, animated: true)
+    }
     // MARK: - Show incorrect answers
     @objc private func showIncorrectAnswers() {
         let incorrectAnswers = viewModel.incorrectAnswersViewController()
@@ -464,7 +423,7 @@ extension ResultsViewController {
             viewDescription.topAnchor.constraint(equalTo: stackViewImages.bottomAnchor, constant: 20),
             viewDescription.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             viewDescription.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            viewDescription.heightAnchor.constraint(equalToConstant: 155)
+            viewDescription.heightAnchor.constraint(equalToConstant: 150)
         ])
         viewModel.setupCenterSubview(labelPercent, on: imageDescription)
         viewModel.constraintsView(view: viewDescription, image: imageDescription,

@@ -27,8 +27,8 @@ protocol ResultsViewModelProtocol {
     var correctAnswers: [Countries] { get }
     var incorrectAnswers: [Results] { get }
     var spendTime: [CGFloat] { get }
-    var percentTimeSpend: String { get }
-    var circleTime: Float { get }
+//    var percentTimeSpend: String { get }
+//    var circleTime: Float { get }
     var timer: Timer { get set }
     
     init(mode: Setting, game: Games, correctAnswers: [Countries],
@@ -53,6 +53,7 @@ protocol ResultsViewModelProtocol {
                            labelSecond: UILabel)
     func setupCenterSubview(_ subview: UIView, on subviewOther: UIView)
     
+    func ratio() -> RatioViewModelProtocol
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol
 }
 
@@ -70,12 +71,6 @@ class ResultsViewModel: ResultsViewModelProtocol {
     }
     var numberTimeSpend: String {
         isTime() ? "\(checkNumberTimeSpend())" : " "
-    }
-    var percentTimeSpend: String {
-        isTime() ? stringWithoutNull(count: percentCheckMode()) + "%" : " "
-    }
-    var circleTime: Float {
-        roundf(Float(percentCheckMode() * 100)) / 100
     }
     var rightAnswers: Int {
         correctAnswers.count
@@ -185,6 +180,11 @@ class ResultsViewModel: ResultsViewModelProtocol {
                   duration: 0.75, view: view)
     }
      */
+    // MARK: - Transition to RatioViewController
+    func ratio() -> RatioViewModelProtocol {
+        RatioViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
+                       incorrectAnswers: incorrectAnswers, timeSpend: spendTime)
+    }
     // MARK: - Transition to IncorrectAnswersViewController
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol {
         IncorrectAnswersViewModel(mode: mode, game: game, results: incorrectAnswers)
@@ -318,12 +318,6 @@ class ResultsViewModel: ResultsViewModelProtocol {
             seconds = timeSpent / CGFloat(time) * 100
         }
         return seconds
-    }
-    // MARK: - Animations
-    private func showAnimate(stackView: UIStackView) {
-        UIView.animate(withDuration: 1) {
-            self.opacity(subviews: stackView, opacity: 1)
-        }
     }
     // MARK: - Set circles
     private func setCircle(_ subview: UIView, color: UIColor, strokeEnd: CGFloat,

@@ -246,6 +246,7 @@ class QuizOfFlagsViewController: UIViewController {
     @objc private func buttonPress(button: UIButton) {
         viewModel.timer.invalidate()
         viewModel.answerSelect.toggle()
+        viewModel.addAnsweredQuestion()
         
         animationColorButtons(button: button)
         viewModel.showDescription(labelQuiz, labelDescription)

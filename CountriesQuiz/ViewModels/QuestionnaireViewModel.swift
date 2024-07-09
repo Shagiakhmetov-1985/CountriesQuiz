@@ -110,6 +110,7 @@ protocol QuestionnaireViewModelProtocol {
     func setSelectedResponse()
     func stopTimer()
     func setTimeSpent()
+    func addAnsweredQuestion()
     
     func setSquare(subview: UIView, sizes: CGFloat)
     func constraintsTimer(_ labelTimer: UILabel,_ view: UIView)
@@ -210,7 +211,8 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     
     private var correctAnswers: [Countries] = []
     private var incorrectAnswers: [Results] = []
-    private var spendTime: [CGFloat] = []
+    private var timeSpend: [CGFloat] = []
+    private var answeredQuestions = 0
     
     private var buttonFirst: UIButton!
     private var buttonSecond: UIButton!
@@ -601,7 +603,11 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         let circleTimeSpent = 1 - shapeLayer.strokeEnd
         let time = time
         let timeSpent = circleTimeSpent * CGFloat(time)
-        spendTime.append(timeSpent)
+        timeSpend.append(timeSpent)
+    }
+    // MARK: - Calc answered questions
+    func addAnsweredQuestion() {
+        answeredQuestions += 1
     }
     // MARK: - Constraints
     func setSquare(subview: UIView, sizes: CGFloat) {
@@ -697,7 +703,8 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     // MARK: - Transition to ResuiltViewController
     func resultsViewController() -> ResultsViewModelProtocol {
         ResultsViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
-                         incorrectAnswers: incorrectAnswers, spendTime: spendTime)
+                         incorrectAnswers: incorrectAnswers, timeSpend: timeSpend,
+                         answeredQuestions: answeredQuestions)
     }
     // MARK: - Get countries for questions, countinue
     private func getRandomCountries() -> [Countries] {

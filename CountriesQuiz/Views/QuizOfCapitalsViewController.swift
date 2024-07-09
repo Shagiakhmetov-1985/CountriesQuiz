@@ -13,7 +13,17 @@ protocol QuizOfCapitalsViewControllerInput: AnyObject {
 
 class QuizOfCapitalsViewController: UIViewController {
     private lazy var buttonBack: UIButton = {
-        setButton(action: #selector(exitToTypeGame))
+        let size = UIImage.SymbolConfiguration(pointSize: 20)
+        let image = UIImage(systemName: "multiply", withConfiguration: size)
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.layer.cornerRadius = 12
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = 1.5
+        button.translatesAutoresizingMaskIntoConstraints = true
+        button.addTarget(self, action: #selector(exitToTypeGame), for: .touchUpInside)
+        return button
     }()
     
     private lazy var labelTimer: UILabel = {
@@ -45,19 +55,19 @@ class QuizOfCapitalsViewController: UIViewController {
     }()
     
     private lazy var buttonFirst: UIButton = {
-        setButton(title: viewModel.answerFirst, tag: 1, action: #selector(buttonPress))
+        setButton(title: viewModel.answerFirst, tag: 1)
     }()
     
     private lazy var buttonSecond: UIButton = {
-        setButton(title: viewModel.answerSecond, tag: 2, action: #selector(buttonPress))
+        setButton(title: viewModel.answerSecond, tag: 2)
     }()
     
     private lazy var buttonThird: UIButton = {
-        setButton(title: viewModel.answerThird, tag: 3, action: #selector(buttonPress))
+        setButton(title: viewModel.answerThird, tag: 3)
     }()
     
     private lazy var buttonFourth: UIButton = {
-        setButton(title: viewModel.answerFourth, tag: 4, action: #selector(buttonPress))
+        setButton(title: viewModel.answerFourth, tag: 4)
     }()
     
     private lazy var stackViewFlag: UIStackView = {
@@ -181,6 +191,7 @@ class QuizOfCapitalsViewController: UIViewController {
     // MARK: - Button action when user select answer
     @objc private func buttonPress(button: UIButton) {
         viewModel.showDescription(labelQuiz, labelDescription)
+        viewModel.addAnsweredQuestion()
         viewModel.checkAnswer(button: button) {
             self.delay()
         }
@@ -231,21 +242,7 @@ extension QuizOfCapitalsViewController {
 }
 // MARK: - Setup buttons
 extension QuizOfCapitalsViewController {
-    private func setButton(action: Selector) -> UIButton {
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
-        let image = UIImage(systemName: "multiply", withConfiguration: size)
-        let button = UIButton(type: .system)
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.layer.cornerRadius = 12
-        button.layer.borderColor = UIColor.white.cgColor
-        button.layer.borderWidth = 1.5
-        button.translatesAutoresizingMaskIntoConstraints = true
-        button.addTarget(self, action: action, for: .touchUpInside)
-        return button
-    }
-    
-    private func setButton(title: String, tag: Int, action: Selector) -> UIButton {
+    private func setButton(title: String, tag: Int) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
         button.setTitleColor(.blueBlackSea, for: .normal)
@@ -260,7 +257,7 @@ extension QuizOfCapitalsViewController {
         button.isEnabled = false
         button.tag = tag
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: action, for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonPress), for: .touchUpInside)
         return button
     }
 }

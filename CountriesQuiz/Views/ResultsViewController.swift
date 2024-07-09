@@ -200,31 +200,31 @@ class ResultsViewController: UIViewController {
         setImage(image: "infinity", size: 35)
     }()
     
-    private lazy var buttonCountQuestions: UIButton = {
+    private lazy var buttonAnsweredQuestions: UIButton = {
         setButton(
             color: .gummigut,
-            labelFirst: labelCountQuestions,
-            image: imageCountQuestions,
-            labelSecond: labelCountTitle,
+            labelFirst: labelAnsweredQuestions,
+            image: imageAnsweredQuestions,
+            labelSecond: labelAnsweredTitle,
             tag: 4)
     }()
     
-    private lazy var labelCountQuestions: UILabel = {
+    private lazy var labelAnsweredQuestions: UILabel = {
         setLabel(
-            title: "\(viewModel.mode.countQuestions)",
+            title: "\(viewModel.answeredQuestions)",
             style: "mr_fontick",
             size: 35,
             color: .white,
             alignment: .center)
     }()
     
-    private lazy var imageCountQuestions: UIImageView = {
+    private lazy var imageAnsweredQuestions: UIImageView = {
         setImage(image: "questionmark.bubble", size: 26)
     }()
     
-    private lazy var labelCountTitle: UILabel = {
+    private lazy var labelAnsweredTitle: UILabel = {
         setLabel(
-            title: "Количество вопросов",
+            title: "Количество отвеченных вопросов",
             style: "mr_fontick",
             size: 20,
             color: .white,
@@ -232,7 +232,7 @@ class ResultsViewController: UIViewController {
     }()
     
     private lazy var stackViewTime: UIStackView = {
-        setStackView(first: buttonTimeSpend, second: buttonCountQuestions, distribution: .fillEqually)
+        setStackView(first: buttonTimeSpend, second: buttonAnsweredQuestions, distribution: .fillEqually)
     }()
     
     private lazy var buttonComplete: UIButton = {
@@ -273,21 +273,6 @@ class ResultsViewController: UIViewController {
         viewModel.setupSubviews(subviews: stackViewResults, stackViewImages,
                                 viewDescription, stackViewAnswers, stackViewTime,
                                 imageInfinity, buttonComplete, on: view)
-    }
-    
-    private func runTimer(interval: CGFloat, action: Selector) -> Timer {
-        Timer.scheduledTimer(timeInterval: interval, target: self,
-                             selector: action, userInfo: nil, repeats: false)
-    }
-    // MARK: - Set circles animate
-    @objc private func circleCorrectAnswers() {
-//        viewModel.circleCorrectAnswers(view) { [self] delay in
-//            viewModel.timer = runTimer(interval: delay, action: #selector(circleIncorrectAnswers))
-//        }
-    }
-    
-    @objc private func circleIncorrectAnswers() {
-//        viewModel.circleIncorrectAnswers(view)
     }
     // MARK: - Press exit button
     @objc private func exitToMenu() {
@@ -449,8 +434,8 @@ extension ResultsViewController {
                                   image: imageIncorrectAnswers, labelSecond: labelIncorrectTitle)
         viewModel.constraintsButton(subview: buttonTimeSpend, labelFirst: labelNumberTimeSpend,
                                   image: imageTimeSpend, labelSecond: labelTimeSpend)
-        viewModel.constraintsButton(subview: buttonCountQuestions, labelFirst: labelCountQuestions,
-                                  image: imageCountQuestions, labelSecond: labelCountTitle)
+        viewModel.constraintsButton(subview: buttonAnsweredQuestions, labelFirst: labelAnsweredQuestions,
+                                  image: imageAnsweredQuestions, labelSecond: labelAnsweredTitle)
         
         viewModel.setupCenterSubview(imageInfinity, on: labelNumberTimeSpend)
         

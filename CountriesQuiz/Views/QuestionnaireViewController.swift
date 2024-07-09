@@ -362,6 +362,7 @@ class QuestionnaireViewController: UIViewController {
         
         guard viewModel.numberQuestion == viewModel.currentQuestion else { return }
         viewModel.setProgressView(progressView)
+        viewModel.addAnsweredQuestion()
     }
     // MARK: - Run for show next question
     private func setupNextQuestion() {

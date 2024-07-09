@@ -46,6 +46,7 @@ protocol QuizOfCapitalsViewModelProtocol {
     func animationCircleCountdown()
     func stopAnimationCircleTimer()
     func checkTimeSpent()
+    func addAnsweredQuestion()
     
     func isFlag() -> Bool
     func isOneQuestion() -> Bool
@@ -144,7 +145,8 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     
     private var correctAnswers: [Countries] = []
     private var incorrectAnswers: [Results] = []
-    private var spendTime: [CGFloat] = []
+    private var timeSpend: [CGFloat] = []
+    private var answeredQuestions = 0
     
     required init(mode: Setting, game: Games) {
         self.mode = mode
@@ -324,6 +326,10 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
             setTimeSpent()
         }
     }
+    // MARK: - Calc answered questions
+    func addAnsweredQuestion() {
+        answeredQuestions += 1
+    }
     // MARK: - Check answer from select user
     func checkAnswer(button: UIButton, completion: @escaping () -> Void) {
         timer.invalidate()
@@ -433,7 +439,8 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     // MARK: - Transition to ResultsViewController
     func resultsViewController() -> ResultsViewModelProtocol {
         ResultsViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
-                         incorrectAnswers: incorrectAnswers, spendTime: spendTime)
+                         incorrectAnswers: incorrectAnswers, timeSpend: timeSpend,
+                         answeredQuestions: answeredQuestions)
     }
     // MARK: - Get countries for questions, countinue
     private func getRandomCountries() -> [Countries] {
@@ -757,7 +764,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         let circleTimeSpent = 1 - shapeLayer.strokeEnd
         let seconds = time
         let timeSpent = circleTimeSpent * CGFloat(seconds)
-        spendTime.append(timeSpent)
+        timeSpend.append(timeSpent)
     }
     // MARK: - Check answer from select user, countinue
     private func checkButton(tag: Int, button: UIButton) {

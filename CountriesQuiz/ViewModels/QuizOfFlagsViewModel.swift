@@ -17,7 +17,6 @@ protocol QuizOfFlagsViewModelProtocol {
     var radius: CGFloat { get }
     var heightStackView: CGFloat { get }
     var timer: Timer { get set }
-    var spendTime: [CGFloat] { get set }
     var answerSelect: Bool { get set }
     var labelNumberQuiz: String { get }
     
@@ -79,6 +78,7 @@ protocol QuizOfFlagsViewModelProtocol {
     func animationHideQuizShowDescription(_ labelQuiz: UILabel,_ labelDescription: UILabel)
     func setSeconds(_ seconds: Int)
     func checkTimeSpent(_ shapeLayer: CAShapeLayer)
+    func addAnsweredQuestion()
     
     func addCorrectAnswer()
     func addIncorrectAnswer(_ tag: Int)
@@ -131,7 +131,6 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     var radius: CGFloat = 6
     var heightStackView: CGFloat = 235
     var timer = Timer()
-    var spendTime: [CGFloat] = []
     var answerSelect = false
     var labelNumberQuiz: String {
         "\(currentQuestion + 1) / \(countQuestions)"
@@ -150,9 +149,6 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         data.buttonFourth[currentQuestion].name
     }
     
-    var correctAnswers: [Countries] = []
-    var incorrectAnswers: [Results] = []
-    
     let shapeLayer = CAShapeLayer()
     
     var imageFlagSpring: NSLayoutConstraint!
@@ -166,8 +162,14 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     
     let mode: Setting
     let game: Games
+    
+    private var correctAnswers: [Countries] = []
+    private var incorrectAnswers: [Results] = []
+    
+    private var timeSpend: [CGFloat] = []
     private var setSeconds = 0
     private var numberQuestion = 0
+    private var answeredQuestions = 0
     
     required init(mode: Setting, game: Games) {
         self.mode = mode
@@ -633,10 +635,15 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
             equalToConstant: widthFlag(flag, view))
         setImageOnButton(layout: widthOfFlagFourth, image: image, button: button)
     }
+    // MARK: - Calc answered questions
+    func addAnsweredQuestion() {
+        answeredQuestions += 1
+    }
     // MARK: - Transition to ResultViewController
     func resultsViewController() -> ResultsViewModelProtocol {
         ResultsViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
-                         incorrectAnswers: incorrectAnswers, spendTime: spendTime)
+                         incorrectAnswers: incorrectAnswers, timeSpend: timeSpend,
+                         answeredQuestions: answeredQuestions)
     }
     // MARK: - Get countries for questions, countinue
     private func getRandomCountries() -> [Countries] {
@@ -879,7 +886,7 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         let circleTimeSpent = 1 - shapeLayer.strokeEnd
         let seconds = time()
         let timeSpent = circleTimeSpent * CGFloat(seconds)
-        spendTime.append(timeSpent)
+        timeSpend.append(timeSpent)
     }
     // MARK: - Check correct or incorrect answer from select user
     private func checkAnswer(_ tag: Int) -> Bool {

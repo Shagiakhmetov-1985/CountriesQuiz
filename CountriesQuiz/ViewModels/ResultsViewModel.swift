@@ -16,8 +16,7 @@ protocol ResultsViewModelProtocol {
     var numberTimeSpend: String { get }
     var rightAnswers: Int { get }
     var wrongAnswers: Int { get }
-    var progressCorrect: Float { get }
-    var progressIncorrect: Float { get }
+    var answeredQuestions: Int { get }
     var heading: String { get }
     var description: String { get }
     var percent: String { get }
@@ -26,13 +25,9 @@ protocol ResultsViewModelProtocol {
     var game: Games { get }
     var correctAnswers: [Countries] { get }
     var incorrectAnswers: [Results] { get }
-    var spendTime: [CGFloat] { get }
-//    var percentTimeSpend: String { get }
-//    var circleTime: Float { get }
-    var timer: Timer { get set }
     
     init(mode: Setting, game: Games, correctAnswers: [Countries],
-         incorrectAnswers: [Results], spendTime: [CGFloat])
+         incorrectAnswers: [Results], timeSpend: [CGFloat], answeredQuestions: Int)
     
     func isTime() -> Bool
     func isOneQuestion() -> Bool
@@ -45,7 +40,6 @@ protocol ResultsViewModelProtocol {
     
     func percentCorrectAnswers() -> String
     func percentIncorrectAnswers() -> String
-    func percentCheckMode() -> CGFloat
     func getRange(subString: String, fromString: String) -> NSRange
     
     func constraintsView(view: UIView, image: UIImageView, label: UILabel, button: UIButton)
@@ -78,12 +72,7 @@ class ResultsViewModel: ResultsViewModelProtocol {
     var wrongAnswers: Int {
         incorrectAnswers.count
     }
-    var progressCorrect: Float {
-        Float(rightAnswers) / Float(mode.countQuestions)
-    }
-    var progressIncorrect: Float {
-        Float(wrongAnswers) / Float(mode.countQuestions)
-    }
+    var answeredQuestions: Int
     var heading: String = "Соотношение ответов"
     var description: String {
         """
@@ -94,21 +83,22 @@ class ResultsViewModel: ResultsViewModelProtocol {
     var percent: String {
         percentCorrectAnswers()
     }
-    var timer = Timer()
     
     let mode: Setting
     let game: Games
     let correctAnswers: [Countries]
     let incorrectAnswers: [Results]
-    let spendTime: [CGFloat]
+    
+    private let timeSpend: [CGFloat]
     
     required init(mode: Setting, game: Games, correctAnswers: [Countries], 
-                  incorrectAnswers: [Results], spendTime: [CGFloat]) {
+                  incorrectAnswers: [Results], timeSpend: [CGFloat], answeredQuestions: Int) {
         self.mode = mode
         self.game = game
         self.correctAnswers = correctAnswers
         self.incorrectAnswers = incorrectAnswers
-        self.spendTime = spendTime
+        self.timeSpend = timeSpend
+        self.answeredQuestions = answeredQuestions
     }
     // MARK: - Constants
     func isTime() -> Bool {
@@ -152,38 +142,11 @@ class ResultsViewModel: ResultsViewModelProtocol {
         let percent = CGFloat(wrongAnswers) / CGFloat(mode.countQuestions) * 100
         return stringWithoutNull(count: percent) + "%"
     }
-    
-    func percentCheckMode() -> CGFloat {
-        isOneQuestion() ? checkGameType() : timeSpend()
-    }
-    // MARK: - Set circles
-    /*
-    func setCircleShadow(_ viewFirst: UIView, _ viewSecond: UIView, _ view: UIView) {
-        setCircle(viewFirst, color: .white.withAlphaComponent(0.3), strokeEnd: 1, view: view)
-        setCircle(labelSecond, color: .white.withAlphaComponent(0.3), strokeEnd: 1, view: view)
-    }
-    
-    func circleCorrectAnswers(_ view: UIView, completion: @escaping (CGFloat) -> Void) {
-        timer.invalidate()
-        let delay: CGFloat = 0.75
-        let value = Float(correctAnswers.count) / Float(mode.countQuestions)
-        setCircle(color: .greenHarlequin, strokeEnd: 0, start: 0, value: value,
-                  duration: delay, view: view)
-        completion(delay)
-    }
-    
-    func circleIncorrectAnswers(_ view: UIView) {
-        timer.invalidate()
-        let start = CGFloat(correctAnswers.count) / CGFloat(mode.countQuestions)
-        guard start != 1 else { return }
-        setCircle(color: .redTangerineTango, strokeEnd: 0, start: start, value: 1,
-                  duration: 0.75, view: view)
-    }
-     */
     // MARK: - Transition to RatioViewController
     func ratio() -> RatioViewModelProtocol {
         RatioViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
-                       incorrectAnswers: incorrectAnswers, timeSpend: spendTime)
+                       incorrectAnswers: incorrectAnswers, timeSpend: timeSpend, 
+                       answeredQuestions: answeredQuestions)
     }
     // MARK: - Transition to IncorrectAnswersViewController
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol {
@@ -246,7 +209,7 @@ class ResultsViewModel: ResultsViewModelProtocol {
     }
     
     private func titleAllQuestions() -> String {
-        spendTime.isEmpty ? "Вы не успели ответить за это время" :
+        timeSpend.isEmpty ? "Вы не успели ответить за это время" :
         "Потраченное время на все вопросы"
     }
     
@@ -255,13 +218,13 @@ class ResultsViewModel: ResultsViewModelProtocol {
     }
     
     private func imageAllQuestions() -> String {
-        spendTime.isEmpty ? "clock" : "timer"
+        timeSpend.isEmpty ? "clock" : "timer"
     }
     
     private func checkNumberTimeSpend() -> String {
         var text: String
         if isOneQuestion() {
-            let averageTime = spendTime.reduce(0.0, +) / CGFloat(spendTime.count)
+            let averageTime = timeSpend.reduce(0.0, +) / CGFloat(timeSpend.count)
             text = "\(string(seconds: averageTime))"
         } else {
             text = numberCheckAllQuestions()
@@ -271,10 +234,10 @@ class ResultsViewModel: ResultsViewModelProtocol {
     
     private func numberCheckAllQuestions() -> String {
         var text: String
-        if spendTime.isEmpty {
+        if timeSpend.isEmpty {
             text = "-"
         } else {
-            let spendTime = spendTime.first ?? 0
+            let spendTime = timeSpend.first ?? 0
             text = "\(string(seconds: spendTime))"
         }
         return text
@@ -286,38 +249,6 @@ class ResultsViewModel: ResultsViewModelProtocol {
     
     private func stringWithoutNull(count: CGFloat) -> String {
         String(format: "%.0f", count)
-    }
-    // MARK: - Percent titles, countinue
-    private func checkGameType() -> CGFloat {
-        game.gameType == .questionnaire ? questionnaireTime() : averageTime()
-    }
-    
-    private func questionnaireTime() -> CGFloat {
-        var seconds: CGFloat
-        if spendTime.isEmpty {
-            seconds = 0
-        } else {
-            let time = allQuestionsTime()
-            let timeSpent = spendTime.first ?? 0
-            seconds = timeSpent / CGFloat(time) * 100
-        }
-        return seconds
-    }
-    
-    private func averageTime() -> CGFloat {
-        let averageTime = spendTime.reduce(0.0, +) / CGFloat(spendTime.count)
-        return averageTime / CGFloat(time) * 100
-    }
-    
-    private func timeSpend() -> CGFloat {
-        var seconds: CGFloat
-        if spendTime.isEmpty {
-            seconds = 0
-        } else {
-            let timeSpent = spendTime.first ?? 0
-            seconds = timeSpent / CGFloat(time) * 100
-        }
-        return seconds
     }
     // MARK: - Set circles
     private func setCircle(_ subview: UIView, color: UIColor, strokeEnd: CGFloat,

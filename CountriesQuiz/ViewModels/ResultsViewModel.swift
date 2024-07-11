@@ -235,7 +235,7 @@ class ResultsViewModel: ResultsViewModelProtocol {
     private func numberCheckAllQuestions() -> String {
         var text: String
         if timeSpend.isEmpty {
-            text = "-"
+            text = "0"
         } else {
             let spendTime = timeSpend.first ?? 0
             text = "\(string(seconds: spendTime))"

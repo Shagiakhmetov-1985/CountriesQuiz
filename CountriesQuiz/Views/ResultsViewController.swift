@@ -286,9 +286,10 @@ class ResultsViewController: UIViewController {
     @objc private func showRatio() {
         let ratio = viewModel.ratio()
         let ratioVC = RatioViewController()
+        let navigationVC = UINavigationController(rootViewController: ratioVC)
         ratioVC.viewModel = ratio
-        ratioVC.modalPresentationStyle = .pageSheet
-        present(ratioVC, animated: true)
+        navigationVC.modalPresentationStyle = .fullScreen
+        present(navigationVC, animated: true)
     }
     // MARK: - Show incorrect answers
     @objc private func showIncorrectAnswers() {
@@ -429,13 +430,13 @@ extension ResultsViewController {
         ])
         
         viewModel.constraintsButton(subview: buttonCorrectAnswers, labelFirst: labelCorrectCount,
-                                  image: imageCorrectAnswers, labelSecond: labelCorrectTitle)
+                                    image: imageCorrectAnswers, labelSecond: labelCorrectTitle)
         viewModel.constraintsButton(subview: buttonIncorrectAnswers, labelFirst: labelIncorrectCount,
-                                  image: imageIncorrectAnswers, labelSecond: labelIncorrectTitle)
+                                    image: imageIncorrectAnswers, labelSecond: labelIncorrectTitle)
         viewModel.constraintsButton(subview: buttonTimeSpend, labelFirst: labelNumberTimeSpend,
-                                  image: imageTimeSpend, labelSecond: labelTimeSpend)
+                                    image: imageTimeSpend, labelSecond: labelTimeSpend)
         viewModel.constraintsButton(subview: buttonAnsweredQuestions, labelFirst: labelAnsweredQuestions,
-                                  image: imageAnsweredQuestions, labelSecond: labelAnsweredTitle)
+                                    image: imageAnsweredQuestions, labelSecond: labelAnsweredTitle)
         
         viewModel.setupCenterSubview(imageInfinity, on: labelNumberTimeSpend)
         

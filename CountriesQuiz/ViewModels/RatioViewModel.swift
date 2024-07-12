@@ -210,7 +210,7 @@ extension RatioViewModel {
     // MARK: - Set custom circles
     private func setCircle(_ subview: UIView, color: UIColor, radius: CGFloat,
                            strokeEnd: CGFloat? = nil, view: UIView) {
-        let center = CGPoint(x: subview.center.x, y: subview.center.y + 140)
+        let center = CGPoint(x: subview.center.x, y: subview.center.y + 147.5)
         let endAngle = CGFloat.pi / 2
         let startAngle = 2 * CGFloat.pi + endAngle
         let circularPath = UIBezierPath(
@@ -248,7 +248,8 @@ extension RatioViewModel {
         if timeSpend.isEmpty {
             return 0
         } else {
-            return timeSpend.first ?? 0 / CGFloat(allQuestionsTime)
+            let timeSpend = timeSpend.first ?? 0
+            return timeSpend / CGFloat(allQuestionsTime)
         }
     }
     

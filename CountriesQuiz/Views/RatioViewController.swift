@@ -164,25 +164,6 @@ class RatioViewController: UIViewController {
         dismiss(animated: true)
     }
 }
-// MARK: - Set views
-extension RatioViewController {
-    private func setView(radius: CGFloat? = nil, first: UIView? = nil,
-                         second: UIView? = nil, third: UIView? = nil,
-                         fourth: UIView? = nil) -> UIView {
-        let view = UIView()
-        view.backgroundColor = .skyGrayLight.withAlphaComponent(0.6)
-        view.layer.cornerRadius = radius ?? 0
-        view.translatesAutoresizingMaskIntoConstraints = false
-        if let first = first, let second = second, let third = third, let fourth = fourth {
-            viewModel.setupSubviews(subviews: first, second, third, fourth, on: view)
-        } else if let first = first, let second = second {
-            viewModel.setupSubviews(subviews: first, second, on: view)
-        } else if let first = first {
-            viewModel.setupSubviews(subviews: first, on: view)
-        }
-        return view
-    }
-}
 // MARK: - Set labels
 extension RatioViewController {
     private func setLabel(text: String, color: UIColor, size: CGFloat, font: String,

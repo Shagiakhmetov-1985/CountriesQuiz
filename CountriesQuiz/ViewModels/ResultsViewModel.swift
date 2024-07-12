@@ -36,10 +36,8 @@ protocol ResultsViewModelProtocol {
     func width(_ view: UIView) -> CGFloat
     
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
-    func opacity(subviews: UIView..., opacity: Float)
     
     func percentCorrectAnswers() -> String
-    func percentIncorrectAnswers() -> String
     func getRange(subString: String, fromString: String) -> NSRange
     
     func constraintsView(view: UIView, image: UIImageView, label: UILabel, button: UIButton)
@@ -126,20 +124,9 @@ class ResultsViewModel: ResultsViewModelProtocol {
             subviewOther.addSubview(subview)
         }
     }
-    
-    func opacity(subviews: UIView..., opacity: Float) {
-        subviews.forEach { subview in
-            subview.layer.opacity = opacity
-        }
-    }
     // MARK: - Percent titles
     func percentCorrectAnswers() -> String {
         let percent = CGFloat(rightAnswers) / CGFloat(mode.countQuestions) * 100
-        return stringWithoutNull(count: percent) + "%"
-    }
-    
-    func percentIncorrectAnswers() -> String {
-        let percent = CGFloat(wrongAnswers) / CGFloat(mode.countQuestions) * 100
         return stringWithoutNull(count: percent) + "%"
     }
     // MARK: - Transition to RatioViewController

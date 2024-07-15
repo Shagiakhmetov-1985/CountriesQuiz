@@ -30,6 +30,11 @@
 		C376AC072947261D00DE5E86 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C376AC062947261D00DE5E86 /* Setting.swift */; };
 		C376AC0929474EB400DE5E86 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C376AC0829474EB400DE5E86 /* StorageManager.swift */; };
 		C38139EB293C9A890067D374 /* echorevival.otf in Resources */ = {isa = PBXBuildFile; fileRef = C38139EA293C9A890067D374 /* echorevival.otf */; };
+		C384F2992C441B6F00827B9F /* CorrectAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C384F2982C441B6F00827B9F /* CorrectAnswersViewController.swift */; };
+		C384F29B2C441B9200827B9F /* CorrectAnswersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C384F29A2C441B9200827B9F /* CorrectAnswersViewModel.swift */; };
+		C384F29D2C44206900827B9F /* Corrects.swift in Sources */ = {isa = PBXBuildFile; fileRef = C384F29C2C44206900827B9F /* Corrects.swift */; };
+		C384F29F2C453C0400827B9F /* CorrectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C384F29E2C453C0400827B9F /* CorrectViewController.swift */; };
+		C384F2A12C453C8600827B9F /* CorrectViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C384F2A02C453C8600827B9F /* CorrectViewModel.swift */; };
 		C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38C023E2981025C008C2202 /* ResultsViewController.swift */; };
 		C38DF4DB2A8E4BF000550BCC /* IncorrectAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */; };
 		C38DF4DE2A8F4A5B00550BCC /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */; };
@@ -77,6 +82,11 @@
 		C376AC062947261D00DE5E86 /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		C376AC0829474EB400DE5E86 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		C38139EA293C9A890067D374 /* echorevival.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = echorevival.otf; sourceTree = "<group>"; };
+		C384F2982C441B6F00827B9F /* CorrectAnswersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectAnswersViewController.swift; sourceTree = "<group>"; };
+		C384F29A2C441B9200827B9F /* CorrectAnswersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectAnswersViewModel.swift; sourceTree = SOURCE_ROOT; };
+		C384F29C2C44206900827B9F /* Corrects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Corrects.swift; sourceTree = "<group>"; };
+		C384F29E2C453C0400827B9F /* CorrectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectViewController.swift; sourceTree = "<group>"; };
+		C384F2A02C453C8600827B9F /* CorrectViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectViewModel.swift; sourceTree = "<group>"; };
 		C38C023E2981025C008C2202 /* ResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsViewController.swift; sourceTree = "<group>"; };
 		C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectAnswersViewController.swift; sourceTree = "<group>"; };
 		C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
@@ -131,6 +141,8 @@
 				C3E853482BD7845500D244F8 /* QuizOfCapitalsViewModel.swift */,
 				C341078D2BBFE4C800D0E993 /* ResultsViewModel.swift */,
 				C392B1892C36864900779A53 /* RatioViewModel.swift */,
+				C384F29A2C441B9200827B9F /* CorrectAnswersViewModel.swift */,
+				C384F2A02C453C8600827B9F /* CorrectViewModel.swift */,
 				C359C3082BC1947300473B33 /* IncorrectAnswersViewModel.swift */,
 				C33762AD2BC4386700A417AB /* DetailsViewModel.swift */,
 				C33167C62BF9F7EB00504F47 /* SettingViewModel.swift */,
@@ -239,6 +251,8 @@
 				C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */,
 				C38C023E2981025C008C2202 /* ResultsViewController.swift */,
 				C392B1872C36861300779A53 /* RatioViewController.swift */,
+				C384F2982C441B6F00827B9F /* CorrectAnswersViewController.swift */,
+				C384F29E2C453C0400827B9F /* CorrectViewController.swift */,
 				C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */,
 				C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */,
 				C3D292EA293F5F0900786752 /* SettingViewController.swift */,
@@ -268,6 +282,7 @@
 				C3E2EB4A2938EA6800AB40AD /* FlagsOfCountries.swift */,
 				C3E2EB4C2938ED6800AB40AD /* CountriesManager.swift */,
 				C376AC062947261D00DE5E86 /* Setting.swift */,
+				C384F29C2C44206900827B9F /* Corrects.swift */,
 				C34EC06F2986694900300585 /* Results.swift */,
 				C3E7C9952A7C19F80046A883 /* GameType.swift */,
 				C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */,
@@ -366,6 +381,7 @@
 			files = (
 				C333038A2BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift in Sources */,
 				C3BFB8272B04E32F006BB074 /* PopUpViewSetting.swift in Sources */,
+				C384F29B2C441B9200827B9F /* CorrectAnswersViewModel.swift in Sources */,
 				C392B1882C36861300779A53 /* RatioViewController.swift in Sources */,
 				C33669D62B998F990081C39A /* Game.swift in Sources */,
 				C3BADD042BC7EF5A0098BDCB /* QuestionnaireViewModel.swift in Sources */,
@@ -387,8 +403,10 @@
 				C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */,
 				C3342B352ACD9E6600C75C6E /* DetailsViewController.swift in Sources */,
 				C3E2EB4D2938ED6800AB40AD /* CountriesManager.swift in Sources */,
+				C384F29F2C453C0400827B9F /* CorrectViewController.swift in Sources */,
 				C3E2EB4B2938EA6800AB40AD /* FlagsOfCountries.swift in Sources */,
 				C33669D22B98A13D0081C39A /* MenuViewModel.swift in Sources */,
+				C384F2A12C453C8600827B9F /* CorrectViewModel.swift in Sources */,
 				C3E7C9962A7C19F80046A883 /* GameType.swift in Sources */,
 				C3B187C82ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift in Sources */,
 				C33669D42B998DC30081C39A /* GameTypeViewModel.swift in Sources */,
@@ -399,7 +417,9 @@
 				C376AC072947261D00DE5E86 /* Setting.swift in Sources */,
 				C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */,
 				C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */,
+				C384F2992C441B6F00827B9F /* CorrectAnswersViewController.swift in Sources */,
 				C36EC9FA2B2729D500ECF1EE /* ScrabbleViewController.swift in Sources */,
+				C384F29D2C44206900827B9F /* Corrects.swift in Sources */,
 				C376AC0929474EB400DE5E86 /* StorageManager.swift in Sources */,
 				C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */,
 				C333038C2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift in Sources */,

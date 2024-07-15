@@ -209,7 +209,7 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     
     private var seconds = 0
     
-    private var correctAnswers: [Countries] = []
+    private var correctAnswers: [Corrects] = []
     private var incorrectAnswers: [Results] = []
     private var timeSpend: [CGFloat] = []
     private var answeredQuestions = 0
@@ -1021,8 +1021,20 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         }
     }
     
+    private func deleteCorrectAnswer() {
+        guard !correctAnswers.isEmpty else { return }
+        let topics = correctAnswers.map({ $0.question })
+        guard let index = topics.firstIndex(of: question) else { return }
+        correctAnswers.remove(at: index)
+    }
+    
     private func addCorrectAnswer() {
-        correctAnswers.append(question)
+        addCorrectAnswer(numberQuestion: numberQuestion + 1,
+                         question: question,
+                         buttonFirst: answerFirst,
+                         buttonSecond: answerSecond,
+                         buttonThird: answerThird,
+                         buttonFourth: answerFourth)
     }
     
     private func deleteIncorrectAnswer() {
@@ -1033,25 +1045,28 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     }
     
     private func addIncorrectAnswer(tag: Int) {
-        incorrectAnswer(numberQuestion: numberQuestion + 1, tag: tag,
-                        question: question,
-                        buttonFirst: answerFirst,
-                        buttonSecond: answerSecond,
-                        buttonThird: answerThird,
-                        buttonFourth: answerFourth,
-                        timeUp: false)
+        addIncorrectAnswer(numberQuestion: numberQuestion + 1, tag: tag,
+                           question: question,
+                           buttonFirst: answerFirst,
+                           buttonSecond: answerSecond,
+                           buttonThird: answerThird,
+                           buttonFourth: answerFourth,
+                           timeUp: false)
     }
     
-    private func deleteCorrectAnswer() {
-        guard !correctAnswers.isEmpty else { return }
-        guard let index = correctAnswers.firstIndex(of: question) else { return }
-        correctAnswers.remove(at: index)
+    private func addCorrectAnswer(numberQuestion: Int, question: Countries,
+                                  buttonFirst: Countries, buttonSecond: Countries,
+                                  buttonThird: Countries, buttonFourth: Countries) {
+        let answer = Corrects(currentQuestion: numberQuestion, question: question,
+                              buttonFirst: buttonFirst, buttonSecond: buttonSecond,
+                              buttonThird: buttonThird, buttonFourth: buttonFourth)
+        correctAnswers.append(answer)
     }
     
-    private func incorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
-                                 buttonFirst: Countries, buttonSecond: Countries,
-                                 buttonThird: Countries, buttonFourth: Countries,
-                                 timeUp: Bool) {
+    private func addIncorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
+                                    buttonFirst: Countries, buttonSecond: Countries,
+                                    buttonThird: Countries, buttonFourth: Countries,
+                                    timeUp: Bool) {
         let answer = Results(currentQuestion: numberQuestion, tag: tag,
                              question: question, buttonFirst: buttonFirst,
                              buttonSecond: buttonSecond, buttonThird: buttonThird,

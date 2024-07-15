@@ -23,10 +23,10 @@ protocol ResultsViewModelProtocol {
     
     var mode: Setting { get }
     var game: Games { get }
-    var correctAnswers: [Countries] { get }
+    var correctAnswers: [Corrects] { get }
     var incorrectAnswers: [Results] { get }
     
-    init(mode: Setting, game: Games, correctAnswers: [Countries],
+    init(mode: Setting, game: Games, correctAnswers: [Corrects],
          incorrectAnswers: [Results], timeSpend: [CGFloat], answeredQuestions: Int)
     
     func isTime() -> Bool
@@ -46,6 +46,7 @@ protocol ResultsViewModelProtocol {
     func setupCenterSubview(_ subview: UIView, on subviewOther: UIView)
     
     func ratio() -> RatioViewModelProtocol
+    func correctAnswersViewController() -> CorrectAnswersViewModelProtocol
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol
 }
 
@@ -84,12 +85,12 @@ class ResultsViewModel: ResultsViewModelProtocol {
     
     let mode: Setting
     let game: Games
-    let correctAnswers: [Countries]
+    let correctAnswers: [Corrects]
     let incorrectAnswers: [Results]
     
     private let timeSpend: [CGFloat]
     
-    required init(mode: Setting, game: Games, correctAnswers: [Countries], 
+    required init(mode: Setting, game: Games, correctAnswers: [Corrects],
                   incorrectAnswers: [Results], timeSpend: [CGFloat], answeredQuestions: Int) {
         self.mode = mode
         self.game = game
@@ -134,6 +135,10 @@ class ResultsViewModel: ResultsViewModelProtocol {
         RatioViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
                        incorrectAnswers: incorrectAnswers, timeSpend: timeSpend, 
                        answeredQuestions: answeredQuestions)
+    }
+    // MARK: - Transition to CorrectAnswersViewController
+    func correctAnswersViewController() -> CorrectAnswersViewModelProtocol {
+        CorrectAnswersViewModel(mode: mode, game: game, correctAnswers: correctAnswers)
     }
     // MARK: - Transition to IncorrectAnswersViewController
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol {

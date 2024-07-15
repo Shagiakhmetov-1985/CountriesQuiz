@@ -97,6 +97,7 @@ class ResultsViewController: UIViewController {
     private lazy var buttonCorrectAnswers: UIButton = {
         setButton(
             color: viewModel.rightAnswers > 0 ? .greenEmerald : .grayStone,
+            action: #selector(showCorrectAnswers),
             labelFirst: labelCorrectCount,
             image: imageCorrectAnswers,
             labelSecond: labelCorrectTitle,
@@ -129,6 +130,7 @@ class ResultsViewController: UIViewController {
     private lazy var buttonIncorrectAnswers: UIButton = {
         setButton(
             color: viewModel.wrongAnswers > 0 ? .bismarkFuriozo : .grayStone,
+            action: #selector(showIncorrectAnswers),
             labelFirst: labelIncorrectCount,
             image: imageIncorrectAnswers,
             labelSecond: labelIncorrectTitle,
@@ -168,6 +170,7 @@ class ResultsViewController: UIViewController {
     private lazy var buttonTimeSpend: UIButton = {
         setButton(
             color: .blueMiddlePersian,
+            action: #selector(showIncorrectAnswers),
             labelFirst: labelNumberTimeSpend,
             image: imageTimeSpend,
             labelSecond: labelTimeSpend,
@@ -203,6 +206,7 @@ class ResultsViewController: UIViewController {
     private lazy var buttonAnsweredQuestions: UIButton = {
         setButton(
             color: .gummigut,
+            action: #selector(showIncorrectAnswers),
             labelFirst: labelAnsweredQuestions,
             image: imageAnsweredQuestions,
             labelSecond: labelAnsweredTitle,
@@ -291,6 +295,15 @@ class ResultsViewController: UIViewController {
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)
     }
+    // MARK: - Show correct answers
+    @objc private func showCorrectAnswers() {
+        let correctAnswers = viewModel.correctAnswersViewController()
+        let correctAnswersVC = CorrectAnswersViewController()
+        let navigationVC = UINavigationController(rootViewController: correctAnswersVC)
+        correctAnswersVC.viewModel = correctAnswers
+        navigationVC.modalPresentationStyle = .custom
+        present(navigationVC, animated: true)
+    }
     // MARK: - Show incorrect answers
     @objc private func showIncorrectAnswers() {
         let incorrectAnswers = viewModel.incorrectAnswersViewController()
@@ -303,8 +316,9 @@ class ResultsViewController: UIViewController {
 }
 // MARK: - Setup button
 extension ResultsViewController {
-    private func setButton(color: UIColor, labelFirst: UILabel, image: UIImageView,
-                           labelSecond: UILabel, tag: Int, isEnabled: Bool? = nil) -> UIButton {
+    private func setButton(color: UIColor, action: Selector, labelFirst: UILabel,
+                           image: UIImageView, labelSecond: UILabel, tag: Int,
+                           isEnabled: Bool? = nil) -> UIButton {
         let button = Button(type: .custom)
         button.backgroundColor = color
         button.layer.cornerRadius = 22
@@ -314,7 +328,7 @@ extension ResultsViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tag = tag
         button.isEnabled = isEnabled ?? true
-        button.addTarget(self, action: #selector(showIncorrectAnswers), for: .touchUpInside)
+        button.addTarget(self, action: action, for: .touchUpInside)
         viewModel.setupSubviews(subviews: labelFirst, image, labelSecond, on: button)
         return button
     }

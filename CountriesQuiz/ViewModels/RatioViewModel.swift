@@ -25,7 +25,7 @@ protocol RatioViewModelProtocol {
     var progressAnswered: Float { get }
     var isTime: Bool { get }
     
-    init(mode: Setting, game: Games, correctAnswers: [Countries],
+    init(mode: Setting, game: Games, correctAnswers: [Corrects],
          incorrectAnswers: [Results], timeSpend: [CGFloat], answeredQuestions: Int)
     
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
@@ -116,12 +116,12 @@ class RatioViewModel: RatioViewModelProtocol {
     
     private var mode: Setting
     private var game: Games
-    private var correctAnswers: [Countries]
+    private var correctAnswers: [Corrects]
     private var incorrectAnswers: [Results]
     private var timeSpend: [CGFloat]
     private var answeredQuestions: Int
     
-    required init(mode: Setting, game: Games, correctAnswers: [Countries], 
+    required init(mode: Setting, game: Games, correctAnswers: [Corrects], 
                   incorrectAnswers: [Results], timeSpend: [CGFloat], answeredQuestions: Int) {
         self.mode = mode
         self.game = game

@@ -67,7 +67,6 @@ protocol QuizOfCapitalsViewModelProtocol {
     
     func runNextQuestion()
     func checkAnswer(button: UIButton, completion: @escaping () -> Void)
-    func addIncorrectAnswer(_ tag: Int)
     func updateData(_ labelTimer: UILabel,_ view: UIView)
     
     func constraintsTimer(_ labelTimer: UILabel,_ view: UIView)
@@ -143,7 +142,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
     }
     
-    private var correctAnswers: [Countries] = []
+    private var correctAnswers: [Corrects] = []
     private var incorrectAnswers: [Results] = []
     private var timeSpend: [CGFloat] = []
     private var answeredQuestions = 0
@@ -340,17 +339,6 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         completion()
     }
     
-    func addIncorrectAnswer(_ tag: Int) {
-        let setTag = tag == 0 ? 0 : tag
-        let timeUp = tag == 0 ? true : false
-        incorrectAnswer(numberQuestion: currentQuestion + 1, tag: setTag,
-                        question: data.questions[currentQuestion],
-                        buttonFirst: data.buttonFirst[currentQuestion],
-                        buttonSecond: data.buttonSecond[currentQuestion],
-                        buttonThird: data.buttonThird[currentQuestion],
-                        buttonFourth: data.buttonFourth[currentQuestion],
-                        timeUp: timeUp)
-    }
     // MARK: - Time up
     func timeUp(_ labelQuiz: UILabel, _ labelDescription: UILabel) {
         answerSelect.toggle()
@@ -707,10 +695,6 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
             seconds = time
         }
     }
-    // MARK: - Add correct answer after select from user
-    private func addCorrectAnswer() {
-        correctAnswers.append(data.questions[currentQuestion])
-    }
     // MARK: - Set circle timer, countinue
     private func circularShadow(_ labelTimer: UILabel, _ view: UIView) {
         let center = CGPoint(x: labelTimer.center.x, y: labelTimer.center.y)
@@ -780,6 +764,27 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
             addIncorrectAnswer(tag)
         }
     }
+    
+    private func addCorrectAnswer() {
+        addCorrectAnswer(numberQuestion: currentQuestion + 1,
+                         question: data.questions[currentQuestion],
+                         buttonFirst: data.buttonFirst[currentQuestion],
+                         buttonSecond: data.buttonSecond[currentQuestion],
+                         buttonThird: data.buttonThird[currentQuestion],
+                         buttonFourth: data.buttonFourth[currentQuestion])
+    }
+    
+    private func addIncorrectAnswer(_ tag: Int) {
+        let setTag = tag == 0 ? 0 : tag
+        let timeUp = tag == 0 ? true : false
+        addIncorrectAnswer(numberQuestion: currentQuestion + 1, tag: setTag,
+                           question: data.questions[currentQuestion],
+                           buttonFirst: data.buttonFirst[currentQuestion],
+                           buttonSecond: data.buttonSecond[currentQuestion],
+                           buttonThird: data.buttonThird[currentQuestion],
+                           buttonFourth: data.buttonFourth[currentQuestion],
+                           timeUp: timeUp)
+    }
     // MARK: - Check correct or incorrect answer from select user
     private func checkAnswer(tag: Int) -> Bool {
         switch tag {
@@ -808,11 +813,20 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
             }
         }
     }
-    // MARK: - Add incorrect answer select from user
-    private func incorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
-                                 buttonFirst: Countries, buttonSecond: Countries,
-                                 buttonThird: Countries, buttonFourth: Countries,
-                                 timeUp: Bool) {
+    // MARK: - Add correct / incorrect answer after select from user, countinue
+    private func addCorrectAnswer(numberQuestion: Int, question: Countries,
+                                  buttonFirst: Countries, buttonSecond: Countries,
+                                  buttonThird: Countries, buttonFourth: Countries) {
+        let answer = Corrects(currentQuestion: numberQuestion, question: question,
+                              buttonFirst: buttonFirst, buttonSecond: buttonSecond,
+                              buttonThird: buttonThird, buttonFourth: buttonFourth)
+        correctAnswers.append(answer)
+    }
+    
+    private func addIncorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
+                                    buttonFirst: Countries, buttonSecond: Countries,
+                                    buttonThird: Countries, buttonFourth: Countries,
+                                    timeUp: Bool) {
         let answer = Results(currentQuestion: numberQuestion, tag: tag,
                              question: question, buttonFirst: buttonFirst,
                              buttonSecond: buttonSecond, buttonThird: buttonThird,

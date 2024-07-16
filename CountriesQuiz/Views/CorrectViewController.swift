@@ -10,7 +10,7 @@ import UIKit
 class CorrectViewController: UIViewController {
     private lazy var buttonBack: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
-        let image = UIImage(systemName: "multiply", withConfiguration: size)
+        let image = UIImage(systemName: "arrow.left", withConfiguration: size)
         let button = UIButton(type: .system)
         button.setImage(image, for: .normal)
         button.tintColor = .white
@@ -22,11 +22,8 @@ class CorrectViewController: UIViewController {
         return button
     }()
     
-    private lazy var image: UIImageView = {
-        let imageView = UIImageView(image: viewModel.image)
-        imageView.layer.borderWidth = 1
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
+    private lazy var question: UIView = {
+        viewModel.question()
     }()
     
     private lazy var progressView: UIProgressView = {
@@ -41,49 +38,50 @@ class CorrectViewController: UIViewController {
     }()
     
     private lazy var labelNumber: UILabel = {
-        setLabel(text: viewModel.numberQuestion, color: .white)
+        let label = UILabel()
+        label.text = viewModel.numberQuestion
+        label.font = UIFont(name: "mr_fontick", size: 23)
+        label.textColor = .white
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
     private lazy var viewFirst: UIView = {
-        setView(color: viewModel.backgroundColor(viewModel.buttonFirst), addLabel: labelFirst)
+        viewModel.view(button: viewModel.buttonFirst, addSubview: subviewFirst)
     }()
     
-    private lazy var labelFirst: UILabel = {
-        setLabel(text: viewModel.buttonFirst.name, color: viewModel.textColor(viewModel.buttonFirst))
+    private lazy var subviewFirst: UIView = {
+        viewModel.subview(button: viewModel.buttonFirst)
     }()
     
     private lazy var viewSecond: UIView = {
-        setView(color: viewModel.backgroundColor(viewModel.buttonSecond), addLabel: labelSecond)
+        viewModel.view(button: viewModel.buttonSecond, addSubview: subviewSecond)
     }()
     
-    private lazy var labelSecond: UILabel = {
-        setLabel(text: viewModel.buttonSecond.name, color: viewModel.textColor(viewModel.buttonSecond))
+    private lazy var subviewSecond: UIView = {
+        viewModel.subview(button: viewModel.buttonSecond)
     }()
     
     private lazy var viewThird: UIView = {
-        setView(color: viewModel.backgroundColor(viewModel.buttonThird), addLabel: labelThird)
+        viewModel.view(button: viewModel.buttonThird, addSubview: subviewThird)
     }()
     
-    private lazy var labelThird: UILabel = {
-        setLabel(text: viewModel.buttonThird.name, color: viewModel.textColor(viewModel.buttonThird))
+    private lazy var subviewThird: UIView = {
+        viewModel.subview(button: viewModel.buttonThird)
     }()
     
     private lazy var viewFourth: UIView = {
-        setView(color: viewModel.backgroundColor(viewModel.buttonFourth), addLabel: labelFourth)
+        viewModel.view(button: viewModel.buttonFourth, addSubview: subviewFourth)
     }()
     
-    private lazy var labelFourth: UILabel = {
-        setLabel(text: viewModel.buttonFourth.name, color: viewModel.textColor(viewModel.buttonFourth))
+    private lazy var subviewFourth: UIView = {
+        viewModel.subview(button: viewModel.buttonFourth)
     }()
     
     private lazy var stackView: UIStackView = {
-        let stackView = UIStackView(
-            arrangedSubviews: [viewFirst, viewSecond, viewThird, viewFourth])
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        stackView.distribution = .fillEqually
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
+        viewModel.stackView(viewFirst, viewSecond, viewThird, viewFourth)
     }()
     
     var viewModel: CorrectViewModelProtocol!
@@ -105,38 +103,11 @@ class CorrectViewController: UIViewController {
     }
     
     private func setSubviews() {
-        viewModel.setSubviews(subviews: image, progressView, labelNumber, stackView, on: view)
+        viewModel.setSubviews(subviews: question, progressView, labelNumber, stackView, on: view)
     }
     
     @objc private func backToList() {
         navigationController?.popViewController(animated: true)
-    }
-}
-// MARK: - Set views
-extension CorrectViewController {
-    private func setView(color: UIColor, addLabel: UILabel) -> UIView {
-        let view = UIView()
-        view.backgroundColor = color
-        view.layer.cornerRadius = 12
-        view.layer.shadowColor = color.cgColor
-        view.layer.shadowOpacity = 0.4
-        view.layer.shadowOffset = CGSize(width: 0, height: 6)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        viewModel.setSubviews(subviews: addLabel, on: view)
-        return view
-    }
-}
-// MARK: - Set labels
-extension CorrectViewController {
-    private func setLabel(text: String, color: UIColor) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = UIFont(name: "mr_fontick", size: 23)
-        label.textColor = color
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
     }
 }
 // MARK: - Set constraints
@@ -147,15 +118,10 @@ extension CorrectViewController {
             buttonBack.heightAnchor.constraint(equalToConstant: 40)
         ])
         
-        NSLayoutConstraint.activate([
-            image.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            image.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            image.widthAnchor.constraint(equalToConstant: viewModel.width(viewModel.flag)),
-            image.heightAnchor.constraint(equalToConstant: 168)
-        ])
+        viewModel.constraintsQuestion(question, view)
         
         NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: image.bottomAnchor, constant: 30),
+            progressView.topAnchor.constraint(equalTo: question.bottomAnchor, constant: 30),
             progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             progressView.heightAnchor.constraint(equalToConstant: viewModel.radius * 2)
         ])
@@ -171,11 +137,11 @@ extension CorrectViewController {
             stackView.topAnchor.constraint(equalTo: labelNumber.bottomAnchor, constant: 25),
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackView.widthAnchor.constraint(equalToConstant: viewModel.widthFlag(view)),
-            stackView.heightAnchor.constraint(equalToConstant: 215)
+            stackView.heightAnchor.constraint(equalToConstant: viewModel.heightStackView)
         ])
-        viewModel.setConstraints(labelFirst, on: viewFirst)
-        viewModel.setConstraints(labelSecond, on: viewSecond)
-        viewModel.setConstraints(labelThird, on: viewThird)
-        viewModel.setConstraints(labelFourth, on: viewFourth)
+        viewModel.setConstraints(subviewFirst, on: viewFirst, view)
+        viewModel.setConstraints(subviewSecond, on: viewSecond, view)
+        viewModel.setConstraints(subviewThird, on: viewThird, view)
+        viewModel.setConstraints(subviewFourth, on: viewFourth, view)
     }
 }

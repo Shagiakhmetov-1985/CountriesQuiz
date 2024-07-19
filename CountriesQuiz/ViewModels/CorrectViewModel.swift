@@ -28,7 +28,7 @@ protocol CorrectViewModelProtocol {
     func widthFlag(_ view: UIView) -> CGFloat
     
     func question() -> UIView
-    func view(button: Countries, addSubview: UIView) -> UIView
+    func view(_ button: Countries, addSubview: UIView) -> UIView
     func subview(button: Countries) -> UIView
     func stackView(_ first: UIView,_ second: UIView,_ third: UIView,_ fourth: UIView) -> UIStackView
 }
@@ -68,6 +68,9 @@ class CorrectViewModel: CorrectViewModelProtocol {
     }
     private var flag: String {
         correctAnswer.question.flag
+    }
+    private var issue: Countries {
+        correctAnswer.question
     }
     
     required init(mode: Setting, game: Games, correctAnswer: Corrects) {
@@ -110,14 +113,16 @@ class CorrectViewModel: CorrectViewModelProtocol {
     
     func setConstraints(_ subview: UIView, on button: UIView, _ view: UIView) {
         if isFlag {
+            let constant: CGFloat = game.gameType == .questionnaire ? 50 : 20
             NSLayoutConstraint.activate([
                 subview.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-                subview.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 20),
+                subview.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: constant),
                 subview.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -20)
             ])
         } else {
+            let center = game.gameType == .questionnaire ? setCenter(view) : 0
             NSLayoutConstraint.activate([
-                subview.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+                subview.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: center),
                 subview.centerYAnchor.constraint(equalTo: button.centerYAnchor),
                 subview.widthAnchor.constraint(equalToConstant: widthImage(flag, view)),
                 subview.heightAnchor.constraint(equalToConstant: setHeight())
@@ -127,9 +132,9 @@ class CorrectViewModel: CorrectViewModelProtocol {
     // MARK: - Subviews
     func question() -> UIView {
         if isFlag {
-            setImage(image: UIImage(named: correctAnswer.question.flag))
+            setImage(image: UIImage(named: flag))
         } else {
-            setLabel(text: correctAnswer.question.name, size: 32, color: .white)
+            setLabel(text: issue.name, size: 32, color: .white)
         }
     }
     
@@ -141,15 +146,14 @@ class CorrectViewModel: CorrectViewModelProtocol {
         }
     }
     
-    func view(button: Countries, addSubview: UIView) -> UIView {
+    func view(_ button: Countries, addSubview: UIView) -> UIView {
         let view = UIView()
         view.backgroundColor = backgroundColor(button)
+        view.layer.borderColor = UIColor.white.cgColor
+        view.layer.borderWidth = game.gameType == .questionnaire ? 1.5 : 0
         view.layer.cornerRadius = 12
-        view.layer.shadowColor = backgroundColor(button).cgColor
-        view.layer.shadowOpacity = 0.4
-        view.layer.shadowOffset = CGSize(width: 0, height: 6)
         view.translatesAutoresizingMaskIntoConstraints = false
-        setSubviews(subviews: addSubview, on: view)
+        addSubviews(subview: addSubview, on: view, and: button)
         return view
     }
     
@@ -160,18 +164,54 @@ class CorrectViewModel: CorrectViewModelProtocol {
         } else {
             let stackViewOne = setStackView(first, second)
             let stackViewTwo = setStackView(third, fourth)
-            return setStackViews(stackViewOne, stackViewTwo)
+            return setStackView(stackViewOne, stackViewTwo, axis: .vertical)
         }
     }
 }
 // MARK: - Private methods, constants
 extension CorrectViewModel {
     private func textColor(_ button: Countries) -> UIColor {
-        correctAnswer.question == button ? .white : .grayLight
+        issue.flag == button.flag ? correctTextColor() : incorrectTextColor()
+    }
+    
+    private func correctTextColor() -> UIColor {
+        switch game.gameType {
+        case .quizOfFlag: .white
+        default: .greenHarlequin
+        }
+    }
+    
+    private func incorrectTextColor() -> UIColor {
+        switch game.gameType {
+        case .quizOfFlag: .grayLight
+        default: .white
+        }
     }
     
     private func backgroundColor(_ button: Countries) -> UIColor {
-        correctAnswer.question == button ? .greenYellowBrilliant : .white.withAlphaComponent(0.9)
+        issue.flag == button.flag ? correctBackground() : incorrectBackground()
+    }
+    
+    private func correctBackground() -> UIColor {
+        switch game.gameType {
+        case .quizOfFlag: .greenYellowBrilliant
+        default: .white
+        }
+    }
+    
+    private func incorrectBackground() -> UIColor {
+        switch game.gameType {
+        case .quizOfFlag: UIColor.white.withAlphaComponent(0.9)
+        default: .greenHarlequin
+        }
+    }
+    
+    private func checkmark(_ button: Countries) -> String {
+        issue.flag == button.flag ? "checkmark.circle.fill" : "circle"
+    }
+    
+    private func color(_ button: Countries) -> UIColor {
+        issue.flag == button.flag ? .greenHarlequin : .white
     }
     
     private func width(_ image: String) -> CGFloat {
@@ -187,7 +227,11 @@ extension CorrectViewModel {
     
     private func setWidth(_ view: UIView) -> CGFloat {
         let buttonWidth = ((view.frame.width - 20) / 2) - 4
-        return buttonWidth - 10
+        if game.gameType == .questionnaire {
+            return buttonWidth - 45
+        } else {
+            return buttonWidth - 10
+        }
     }
     
     private func setHeight() -> CGFloat {
@@ -199,6 +243,27 @@ extension CorrectViewModel {
         switch flag {
         case "nepal", "vatican city", "switzerland": return setHeight()
         default: return setWidth(view)
+        }
+    }
+    
+    private func setCenter(_ view: UIView) -> CGFloat {
+        let buttonWidth = ((view.frame.width - 20) / 2) - 4
+        let flagWidth = buttonWidth - 45
+        let centerFlag = flagWidth / 2 + 5
+        let center = buttonWidth / 2 - centerFlag
+        return center
+    }
+}
+// MARK: - Add subviews on button
+extension CorrectViewModel {
+    private func addSubviews(subview: UIView, on view: UIView, and button: Countries) {
+        if game.gameType == .questionnaire {
+            let checkmark = setCheckmark(image: checkmark(button),
+                                         color: color(button))
+            setSubviews(subviews: checkmark, subview, on: view)
+            setConstraints(checkmark: checkmark, on: view)
+        } else {
+            setSubviews(subviews: subview, on: view)
         }
     }
 }
@@ -225,6 +290,15 @@ extension CorrectViewModel {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }
+    
+    private func setCheckmark(image: String, color: UIColor) -> UIImageView {
+        let size = UIImage.SymbolConfiguration(pointSize: 26)
+        let image = UIImage(systemName: image, withConfiguration: size)
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = color
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }
 }
 // MARK: - Set stack views
 extension CorrectViewModel {
@@ -239,20 +313,23 @@ extension CorrectViewModel {
         return stackView
     }
     
-    private func setStackView(_ first: UIView, _ second: UIView) -> UIStackView {
+    private func setStackView(_ first: UIView, _ second: UIView,
+                              axis: NSLayoutConstraint.Axis? = nil) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [first, second])
+        stackView.axis = axis ?? .horizontal
         stackView.spacing = 8
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
-    
-    private func setStackViews(_ first: UIView, _ second: UIView) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [first, second])
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        stackView.distribution = .fillEqually
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
+}
+// MARK: - Private methods, constraints
+extension CorrectViewModel {
+    private func setConstraints(checkmark: UIImageView, on view: UIView) {
+        let constant: CGFloat = isFlag ? 10 : 5
+        NSLayoutConstraint.activate([
+            checkmark.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            checkmark.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: constant)
+        ])
     }
 }

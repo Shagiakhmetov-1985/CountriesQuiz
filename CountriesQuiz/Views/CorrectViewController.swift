@@ -49,7 +49,7 @@ class CorrectViewController: UIViewController {
     }()
     
     private lazy var viewFirst: UIView = {
-        viewModel.view(button: viewModel.buttonFirst, addSubview: subviewFirst)
+        viewModel.view(viewModel.buttonFirst, addSubview: subviewFirst)
     }()
     
     private lazy var subviewFirst: UIView = {
@@ -57,7 +57,7 @@ class CorrectViewController: UIViewController {
     }()
     
     private lazy var viewSecond: UIView = {
-        viewModel.view(button: viewModel.buttonSecond, addSubview: subviewSecond)
+        viewModel.view(viewModel.buttonSecond, addSubview: subviewSecond)
     }()
     
     private lazy var subviewSecond: UIView = {
@@ -65,7 +65,7 @@ class CorrectViewController: UIViewController {
     }()
     
     private lazy var viewThird: UIView = {
-        viewModel.view(button: viewModel.buttonThird, addSubview: subviewThird)
+        viewModel.view(viewModel.buttonThird, addSubview: subviewThird)
     }()
     
     private lazy var subviewThird: UIView = {
@@ -73,7 +73,7 @@ class CorrectViewController: UIViewController {
     }()
     
     private lazy var viewFourth: UIView = {
-        viewModel.view(button: viewModel.buttonFourth, addSubview: subviewFourth)
+        viewModel.view(viewModel.buttonFourth, addSubview: subviewFourth)
     }()
     
     private lazy var subviewFourth: UIView = {

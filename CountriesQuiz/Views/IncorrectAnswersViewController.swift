@@ -68,10 +68,10 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let detailsViewModel = viewModel.detailsViewModel(indexPath.row)
-        let detailsVC = DetailsViewController()
-        detailsVC.viewModel = detailsViewModel
-        navigationController?.pushViewController(detailsVC, animated: true)
+        let incorrectViewModel = viewModel.detailsViewModel(indexPath.row)
+        let incorrectVC = IncorrectViewController()
+        incorrectVC.viewModel = incorrectViewModel
+        navigationController?.pushViewController(incorrectVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

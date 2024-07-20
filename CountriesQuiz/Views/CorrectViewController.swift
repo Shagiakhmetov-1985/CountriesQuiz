@@ -136,7 +136,7 @@ extension CorrectViewController {
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: labelNumber.bottomAnchor, constant: 25),
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.widthAnchor.constraint(equalToConstant: viewModel.widthFlag(view)),
+            stackView.widthAnchor.constraint(equalToConstant: viewModel.widthStackView(view)),
             stackView.heightAnchor.constraint(equalToConstant: viewModel.heightStackView)
         ])
         viewModel.setConstraints(subviewFirst, on: viewFirst, view)

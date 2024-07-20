@@ -11,12 +11,12 @@
 		C33167C72BF9F7EB00504F47 /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33167C62BF9F7EB00504F47 /* SettingViewModel.swift */; };
 		C333038A2BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33303892BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift */; };
 		C333038C2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C333038B2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift */; };
-		C3342B352ACD9E6600C75C6E /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */; };
+		C3342B352ACD9E6600C75C6E /* IncorrectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3342B342ACD9E6600C75C6E /* IncorrectViewController.swift */; };
 		C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */; };
 		C33669D22B98A13D0081C39A /* MenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33669D12B98A13D0081C39A /* MenuViewModel.swift */; };
 		C33669D42B998DC30081C39A /* GameTypeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33669D32B998DC30081C39A /* GameTypeViewModel.swift */; };
 		C33669D62B998F990081C39A /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33669D52B998F990081C39A /* Game.swift */; };
-		C33762AE2BC4386700A417AB /* DetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33762AD2BC4386700A417AB /* DetailsViewModel.swift */; };
+		C33762AE2BC4386700A417AB /* IncorrectViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33762AD2BC4386700A417AB /* IncorrectViewModel.swift */; };
 		C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */; };
 		C341078E2BBFE4C800D0E993 /* ResultsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C341078D2BBFE4C800D0E993 /* ResultsViewModel.swift */; };
 		C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */; };
@@ -63,12 +63,12 @@
 		C33167C62BF9F7EB00504F47 /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
 		C33303892BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameTypeViewController + UIKit.swift"; sourceTree = "<group>"; };
 		C333038B2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfFlagsViewModel.swift; sourceTree = "<group>"; };
-		C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
+		C3342B342ACD9E6600C75C6E /* IncorrectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectViewController.swift; sourceTree = "<group>"; };
 		C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabelCell.swift; sourceTree = "<group>"; };
 		C33669D12B98A13D0081C39A /* MenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewModel.swift; sourceTree = "<group>"; };
 		C33669D32B998DC30081C39A /* GameTypeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeViewModel.swift; sourceTree = "<group>"; };
 		C33669D52B998F990081C39A /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
-		C33762AD2BC4386700A417AB /* DetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewModel.swift; sourceTree = "<group>"; };
+		C33762AD2BC4386700A417AB /* IncorrectViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectViewModel.swift; sourceTree = "<group>"; };
 		C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorManager.swift; sourceTree = "<group>"; };
 		C341078D2BBFE4C800D0E993 /* ResultsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsViewModel.swift; sourceTree = "<group>"; };
 		C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireViewController.swift; sourceTree = "<group>"; };
@@ -144,7 +144,7 @@
 				C384F29A2C441B9200827B9F /* CorrectAnswersViewModel.swift */,
 				C384F2A02C453C8600827B9F /* CorrectViewModel.swift */,
 				C359C3082BC1947300473B33 /* IncorrectAnswersViewModel.swift */,
-				C33762AD2BC4386700A417AB /* DetailsViewModel.swift */,
+				C33762AD2BC4386700A417AB /* IncorrectViewModel.swift */,
 				C33167C62BF9F7EB00504F47 /* SettingViewModel.swift */,
 			);
 			path = ViewModels;
@@ -254,7 +254,7 @@
 				C384F2982C441B6F00827B9F /* CorrectAnswersViewController.swift */,
 				C384F29E2C453C0400827B9F /* CorrectViewController.swift */,
 				C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */,
-				C3342B342ACD9E6600C75C6E /* DetailsViewController.swift */,
+				C3342B342ACD9E6600C75C6E /* IncorrectViewController.swift */,
 				C3D292EA293F5F0900786752 /* SettingViewController.swift */,
 			);
 			path = Views;
@@ -401,7 +401,7 @@
 				C33167C72BF9F7EB00504F47 /* SettingViewModel.swift in Sources */,
 				C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */,
 				C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */,
-				C3342B352ACD9E6600C75C6E /* DetailsViewController.swift in Sources */,
+				C3342B352ACD9E6600C75C6E /* IncorrectViewController.swift in Sources */,
 				C3E2EB4D2938ED6800AB40AD /* CountriesManager.swift in Sources */,
 				C384F29F2C453C0400827B9F /* CorrectViewController.swift in Sources */,
 				C3E2EB4B2938EA6800AB40AD /* FlagsOfCountries.swift in Sources */,
@@ -424,7 +424,7 @@
 				C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */,
 				C333038C2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift in Sources */,
 				C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */,
-				C33762AE2BC4386700A417AB /* DetailsViewModel.swift in Sources */,
+				C33762AE2BC4386700A417AB /* IncorrectViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

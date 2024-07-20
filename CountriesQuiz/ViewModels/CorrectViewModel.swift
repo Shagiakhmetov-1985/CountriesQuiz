@@ -25,7 +25,7 @@ protocol CorrectViewModelProtocol {
     func constraintsQuestion(_ subview: UIView,_ view: UIView)
     func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView)
     
-    func widthFlag(_ view: UIView) -> CGFloat
+    func widthStackView(_ view: UIView) -> CGFloat
     
     func question() -> UIView
     func view(_ button: Countries, addSubview: UIView) -> UIView
@@ -37,7 +37,7 @@ class CorrectViewModel: CorrectViewModelProtocol {
     var background: UIColor {
         game.background
     }
-    var radius: CGFloat = 6
+    let radius: CGFloat = 6
     var progress: Float {
         Float(correctAnswer.currentQuestion) / Float(mode.countQuestions)
     }
@@ -90,7 +90,7 @@ class CorrectViewModel: CorrectViewModelProtocol {
         }
     }
     // MARK: - Constants
-    func widthFlag(_ view: UIView) -> CGFloat {
+    func widthStackView(_ view: UIView) -> CGFloat {
         isFlag ? view.bounds.width - 40 : view.bounds.width - 20
     }
     // MARK: - Set constraints
@@ -138,14 +138,6 @@ class CorrectViewModel: CorrectViewModelProtocol {
         }
     }
     
-    func subview(button: Countries) -> UIView {
-        if isFlag {
-            setLabel(text: button.name, size: 23, color: textColor(button))
-        } else {
-            setImage(image: UIImage(named: button.flag))
-        }
-    }
-    
     func view(_ button: Countries, addSubview: UIView) -> UIView {
         let view = UIView()
         view.backgroundColor = backgroundColor(button)
@@ -155,6 +147,14 @@ class CorrectViewModel: CorrectViewModelProtocol {
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubviews(subview: addSubview, on: view, and: button)
         return view
+    }
+    
+    func subview(button: Countries) -> UIView {
+        if isFlag {
+            setLabel(text: text(button), size: 23, color: textColor(button))
+        } else {
+            setImage(image: UIImage(named: button.flag))
+        }
     }
     
     func stackView(_ first: UIView, _ second: UIView, 
@@ -176,14 +176,14 @@ extension CorrectViewModel {
     
     private func correctTextColor() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag: .white
+        case .quizOfFlag, .quizOfCapitals: .white
         default: .greenHarlequin
         }
     }
     
     private func incorrectTextColor() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag: .grayLight
+        case .quizOfFlag, .quizOfCapitals: .grayLight
         default: .white
         }
     }
@@ -194,14 +194,14 @@ extension CorrectViewModel {
     
     private func correctBackground() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag: .greenYellowBrilliant
+        case .quizOfFlag, .quizOfCapitals: .greenYellowBrilliant
         default: .white
         }
     }
     
     private func incorrectBackground() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag: UIColor.white.withAlphaComponent(0.9)
+        case .quizOfFlag, .quizOfCapitals: UIColor.white.withAlphaComponent(0.9)
         default: .greenHarlequin
         }
     }
@@ -252,6 +252,10 @@ extension CorrectViewModel {
         let centerFlag = flagWidth / 2 + 5
         let center = buttonWidth / 2 - centerFlag
         return center
+    }
+    
+    private func text(_ button: Countries) -> String {
+        game.gameType == .quizOfCapitals ? button.capitals : button.name
     }
 }
 // MARK: - Add subviews on button

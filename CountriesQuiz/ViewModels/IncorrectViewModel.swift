@@ -29,22 +29,9 @@ protocol IncorrectViewModelProtocol {
     func stackView(_ first: UIView,_ second: UIView,_ third: UIView,_ fourth: UIView) -> UIStackView
     
     func widthStackView(_ view: UIView) -> CGFloat
-//    func width(_ image: String) -> CGFloat
-//    func widthStackViewFlag(_ view: UIView) -> CGFloat
-//    func widthLabel(_ view: UIView) -> CGFloat
-//    func height() -> CGFloat
-//    func widthImage(_ image: String,_ view: UIView) -> CGFloat
-//    func heightImage() -> CGFloat
-//    func widthOrCenter(_ view: UIView) -> (CGFloat, CGFloat, CGFloat)
     
     func constraintsQuestion(_ subview: UIView, _ view: UIView)
-    func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView)
-//    func setTitle(title: Countries) -> String
-//    func setBackgroundColor(question: Countries, answer: Countries, tag: Int, select: Int) -> UIColor
-//    func setTitleColor(question: Countries, answer: Countries, tag: Int, select: Int) -> UIColor
-//    func setButtonColor(question: Countries, answer: Countries, tag: Int, select: Int) -> UIColor
-//    func setColor(question: Countries, answer: Countries, tag: Int, select: Int) -> UIColor
-//    func setCheckmark(question: Countries, answer: Countries, tag: Int, select: Int) -> String
+    func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView,_ flag: String)
 }
 
 class IncorrectViewModel: IncorrectViewModelProtocol {
@@ -107,32 +94,6 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     func widthStackView(_ view: UIView) -> CGFloat {
         isFlag ? view.bounds.width - 40 : view.bounds.width - 20
     }
-    /*
-    func height() -> CGFloat {
-        game.gameType == .questionnaire ? 235 : 215
-    }
-    
-    func widthImage(_ image: String, _ view: UIView) -> CGFloat {
-        switch image {
-        case "nepal", "vatican city", "switzerland": heightImage()
-        default: game.gameType == .questionnaire ? widthOrCenter(view).1 : widthOrCenter(view).0
-        }
-    }
-    
-    func heightImage() -> CGFloat {
-        let buttonHeight = height() / 2 - 4
-        return buttonHeight - 10
-    }
-    
-    func widthOrCenter(_ view: UIView) -> (CGFloat, CGFloat, CGFloat) {
-        let buttonWidth = ((view.frame.width - 20) / 2) - 4
-        let flagWidth = buttonWidth - 10
-        let flagWidthQuestionnaire = buttonWidth - 45
-        let centerFlag = flagWidthQuestionnaire / 2 + 5
-        let constant = buttonWidth / 2 - centerFlag
-        return (flagWidth, flagWidthQuestionnaire, constant)
-    }
-     */
     // MARK: - Subviews
     func question() -> UIView {
         if isFlag {
@@ -149,7 +110,7 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
         view.layer.borderWidth = game.gameType == .questionnaire ? 1.5 : 0
         view.layer.cornerRadius = 12
         view.translatesAutoresizingMaskIntoConstraints = false
-        addSubviews(subview: addSubview, on: view, and: button)
+        addSubviews(subview: addSubview, on: view, and: button, tag: tag)
         return view
     }
     
@@ -184,12 +145,13 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
             NSLayoutConstraint.activate([
                 subview.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
                 subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                subview.widthAnchor.constraint(equalToConstant: widthLabel(view))
+                subview.widthAnchor.constraint(equalToConstant: widthStackView(view))
             ])
         }
     }
     
-    func setConstraints(_ subview: UIView, on button: UIView, _ view: UIView) {
+    func setConstraints(_ subview: UIView, on button: UIView, _ view: UIView,
+                        _ flag: String) {
         if isFlag {
             let constant: CGFloat = game.gameType == .questionnaire ? 50 : 20
             NSLayoutConstraint.activate([
@@ -198,79 +160,14 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
                 subview.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -20)
             ])
         } else {
-            let center = game.gameType == .questionnaire ? setCenter(view) : 0
             NSLayoutConstraint.activate([
-                subview.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: center),
+                layoutConstraint(subview: subview, on: button, view),
                 subview.centerYAnchor.constraint(equalTo: button.centerYAnchor),
                 subview.widthAnchor.constraint(equalToConstant: widthImage(flag, view)),
                 subview.heightAnchor.constraint(equalToConstant: setHeight())
             ])
         }
     }
-    /*
-    // MARK: - Set title
-    func setTitle(title: Countries) -> String {
-        switch game.gameType {
-        case .quizOfFlag, .questionnaire: title.name
-        default: title.capitals
-        }
-    }
-    // MARK: - Set colors
-    func setBackgroundColor(question: Countries, answer: Countries, tag: Int, select: Int) -> UIColor {
-        switch true {
-        case question == answer && (tag == select || !(tag == select)):
-            return .greenYellowBrilliant
-        case !(question == answer) && tag == select:
-            return game.gameType == .quizOfFlag ? .redTangerineTango : .bismarkFuriozo
-        default:
-            return isFlag ? .white.withAlphaComponent(0.9) : checkColor()
-        }
-    }
-    
-    func setTitleColor(question: Countries, answer: Countries, tag: Int, select: Int) -> UIColor {
-        switch true {
-        case question == answer || tag == select:
-            return .white
-        default:
-            return .grayLight
-        }
-    }
-    
-    func setButtonColor(question: Countries, answer: Countries, tag: Int, select: Int) -> UIColor {
-        switch true {
-        case question == answer || tag == select:
-            return .white
-        default:
-            return .clear
-        }
-    }
-    
-    func setColor(question: Countries, answer: Countries, tag: Int, select: Int) -> UIColor {
-        switch true {
-        case question == answer && (tag == select || !(tag == select)):
-            return .greenHarlequin
-        case !(question == answer) && tag == select:
-            return .redTangerineTango
-        default:
-            return .white
-        }
-    }
-    // MARK: - Set checkmarks
-    func setCheckmark(question: Countries, answer: Countries, tag: Int, select: Int) -> String {
-        switch true {
-        case question == answer && (tag == select || !(tag == select)):
-            return "checkmark.circle.fill"
-        case !(question == answer) && tag == select:
-            return "xmark.circle.fill"
-        default:
-            return "circle"
-        }
-    }
-    // MARK: - Set colors, countinue
-    private func checkColor() -> UIColor {
-        game.gameType == .quizOfFlag ? .skyGrayLight : .white.withAlphaComponent(0.9)
-    }
-     */
 }
 // MARK: - Private methods, constants
 extension IncorrectViewModel {
@@ -279,21 +176,19 @@ extension IncorrectViewModel {
     }
     
     private func correctTextColor() -> UIColor {
-        switch game.gameType {
-        case .quizOfFlag, .quizOfCapitals: .white
-        default: .greenHarlequin
-        }
+        game.gameType == .questionnaire ? .greenHarlequin : .white
     }
     
     private func incorrectTextColor(_ tag: Int) -> UIColor {
-        switch game.gameType {
-        case .quizOfFlag, .quizOfCapitals: textColor(tag)
-        default: .white
-        }
+        result.tag == tag ? checkSelectText() : checkNotSelectText()
     }
     
-    private func textColor(_ tag: Int) -> UIColor {
-        result.tag == tag ? .white : .grayLight
+    private func checkSelectText() -> UIColor {
+        game.gameType == .questionnaire ? .redTangerineTango : .white
+    }
+    
+    private func checkNotSelectText() -> UIColor {
+        game.gameType == .questionnaire ? .white : .grayLight
     }
     
     private func backgroundColor(_ button: Countries, _ tag: Int) -> UIColor {
@@ -301,33 +196,39 @@ extension IncorrectViewModel {
     }
     
     private func correctBackground() -> UIColor {
-        switch game.gameType {
-        case .quizOfFlag, .quizOfCapitals: .greenYellowBrilliant
-        default: .white
-        }
+        game.gameType == .questionnaire ? .white : .greenYellowBrilliant
     }
     
     private func incorrectBackground(_ tag: Int) -> UIColor {
+        result.tag == tag ? checkSelect() : checkNotSelect()
+    }
+    
+    private func checkSelect() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag, .quizOfCapitals: background(tag)
-        default: .greenHarlequin
+        case .quizOfFlag: .redTangerineTango
+        case .questionnaire: .white
+        default: .bismarkFuriozo
         }
     }
     
-    private func background(_ tag: Int) -> UIColor {
-        result.tag == tag ? checkBackground() : UIColor.white.withAlphaComponent(0.9)
+    private func checkNotSelect() -> UIColor {
+        game.gameType == .questionnaire ? .greenHarlequin : .whiteAlpha
     }
     
-    private func checkBackground() -> UIColor {
-        game.gameType == .quizOfFlag ? .redTangerineTango : .bismarkFuriozo
+    private func checkmark(_ button: Countries, _ tag: Int) -> String {
+        issue.flag == button.flag ? "checkmark.circle.fill" : incorrectCheckmark(tag)
     }
     
-    private func checkmark(_ button: Countries) -> String {
-        issue.flag == button.flag ? "checkmark.circle.fill" : "circle"
+    private func incorrectCheckmark(_ tag: Int) -> String {
+        result.tag == tag ? "xmark.circle.fill" : "circle"
     }
     
-    private func color(_ button: Countries) -> UIColor {
-        issue.flag == button.flag ? .greenHarlequin : .white
+    private func color(_ button: Countries, _ tag: Int) -> UIColor {
+        issue.flag == button.flag ? .greenHarlequin : incorrectColor(tag)
+    }
+    
+    private func incorrectColor(_ tag: Int) -> UIColor {
+        result.tag == tag ? .redTangerineTango : .white
     }
     
     private func text(_ button: Countries) -> String {
@@ -339,10 +240,6 @@ extension IncorrectViewModel {
         case "nepal", "vatican city", "switzerland": return 168
         default: return 280
         }
-    }
-    
-    private func widthLabel(_ view: UIView) -> CGFloat {
-        view.bounds.width - 20
     }
     
     private func setCenter(_ view: UIView) -> CGFloat {
@@ -376,10 +273,11 @@ extension IncorrectViewModel {
 }
 // MARK: - Add subviews on button
 extension IncorrectViewModel {
-    private func addSubviews(subview: UIView, on view: UIView, and button: Countries) {
+    private func addSubviews(subview: UIView, on view: UIView,
+                             and button: Countries, tag: Int) {
         if game.gameType == .questionnaire {
-            let checkmark = setCheckmark(image: checkmark(button),
-                                         color: color(button))
+            let checkmark = setCheckmark(image: checkmark(button, tag),
+                                         color: color(button, tag))
             setSubviews(subviews: checkmark, subview, on: view)
             setConstraints(checkmark: checkmark, on: view)
         } else {
@@ -451,5 +349,15 @@ extension IncorrectViewModel {
             checkmark.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             checkmark.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: constant)
         ])
+    }
+    
+    private func layoutConstraint(subview: UIView, on button: UIView,
+                                  _ view: UIView) -> NSLayoutConstraint {
+        if game.gameType == .questionnaire {
+            let center = setCenter(view)
+            return subview.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: center)
+        } else {
+            return subview.centerXAnchor.constraint(equalTo: button.centerXAnchor)
+        }
     }
 }

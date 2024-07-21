@@ -23,7 +23,7 @@ protocol CorrectViewModelProtocol {
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func setSubviews(subviews: UIView..., on otherSubview: UIView)
     func constraintsQuestion(_ subview: UIView,_ view: UIView)
-    func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView)
+    func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView,_ flag: String)
     
     func widthStackView(_ view: UIView) -> CGFloat
     
@@ -111,7 +111,8 @@ class CorrectViewModel: CorrectViewModelProtocol {
         }
     }
     
-    func setConstraints(_ subview: UIView, on button: UIView, _ view: UIView) {
+    func setConstraints(_ subview: UIView, on button: UIView, _ view: UIView,
+                        _ flag: String) {
         if isFlag {
             let constant: CGFloat = game.gameType == .questionnaire ? 50 : 20
             NSLayoutConstraint.activate([
@@ -120,9 +121,8 @@ class CorrectViewModel: CorrectViewModelProtocol {
                 subview.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -20)
             ])
         } else {
-            let center = game.gameType == .questionnaire ? setCenter(view) : 0
             NSLayoutConstraint.activate([
-                subview.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: center),
+                layoutConstraint(subview: subview, on: button, view),
                 subview.centerYAnchor.constraint(equalTo: button.centerYAnchor),
                 subview.widthAnchor.constraint(equalToConstant: widthImage(flag, view)),
                 subview.heightAnchor.constraint(equalToConstant: setHeight())
@@ -201,7 +201,7 @@ extension CorrectViewModel {
     
     private func incorrectBackground() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag, .quizOfCapitals: UIColor.white.withAlphaComponent(0.9)
+        case .quizOfFlag, .quizOfCapitals: .whiteAlpha
         default: .greenHarlequin
         }
     }
@@ -335,5 +335,15 @@ extension CorrectViewModel {
             checkmark.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             checkmark.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: constant)
         ])
+    }
+    
+    private func layoutConstraint(subview: UIView, on button: UIView,
+                                  _ view: UIView) -> NSLayoutConstraint {
+        if game.gameType == .questionnaire {
+            let center = setCenter(view)
+            return subview.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: center)
+        } else {
+            return subview.centerXAnchor.constraint(equalTo: button.centerXAnchor)
+        }
     }
 }

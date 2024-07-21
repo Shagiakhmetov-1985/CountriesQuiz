@@ -100,6 +100,10 @@ extension UIColor {
     static var grayStone: UIColor {
         #colorLiteral(red: 0.5411764706, green: 0.5411764706, blue: 0.5411764706, alpha: 1)
     }
+    
+    static var whiteAlpha: UIColor {
+        .white.withAlphaComponent(0.9)
+    }
     // MARK: - For buttons done
     static var skyCyanLight: UIColor {
         #colorLiteral(red: 0.7522551417, green: 0.8996843696, blue: 0.9869558215, alpha: 1)

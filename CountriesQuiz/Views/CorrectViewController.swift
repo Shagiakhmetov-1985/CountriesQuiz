@@ -139,9 +139,9 @@ extension CorrectViewController {
             stackView.widthAnchor.constraint(equalToConstant: viewModel.widthStackView(view)),
             stackView.heightAnchor.constraint(equalToConstant: viewModel.heightStackView)
         ])
-        viewModel.setConstraints(subviewFirst, on: viewFirst, view)
-        viewModel.setConstraints(subviewSecond, on: viewSecond, view)
-        viewModel.setConstraints(subviewThird, on: viewThird, view)
-        viewModel.setConstraints(subviewFourth, on: viewFourth, view)
+        viewModel.setConstraints(subviewFirst, on: viewFirst, view, viewModel.buttonFirst.flag)
+        viewModel.setConstraints(subviewSecond, on: viewSecond, view, viewModel.buttonSecond.flag)
+        viewModel.setConstraints(subviewThird, on: viewThird, view, viewModel.buttonThird.flag)
+        viewModel.setConstraints(subviewFourth, on: viewFourth, view, viewModel.buttonFourth.flag)
     }
 }

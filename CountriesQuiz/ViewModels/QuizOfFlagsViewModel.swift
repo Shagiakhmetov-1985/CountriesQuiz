@@ -8,25 +8,21 @@
 import UIKit
 
 protocol QuizOfFlagsViewModelProtocol {
-    var setting: Setting { get }
-    var games: Games { get }
     var countQuestions: Int { get }
     var currentQuestion: Int { get }
-    var seconds: Int { get }
     var background: UIColor { get }
     var radius: CGFloat { get }
     var heightStackView: CGFloat { get }
     var timer: Timer { get set }
     var answerSelect: Bool { get set }
-    var labelNumberQuiz: String { get }
+    var labelNumber: String { get }
+    var isFlag: Bool { get }
+    var isCountdown: Bool { get }
     
-    var data: (questions: [Countries], buttonFirst: [Countries],
-               buttonSecond: [Countries], buttonThird: [Countries],
-               buttonFourth: [Countries]) { get }
-    var buttonFirst: String { get }
-    var buttonSecond: String { get }
-    var buttonThird: String { get }
-    var buttonFourth: String { get }
+    var buttonFirst: Countries { get }
+    var buttonSecond: Countries { get }
+    var buttonThird: Countries { get }
+    var buttonFourth: Countries { get }
     
     var shapeLayer: CAShapeLayer { get }
     
@@ -48,6 +44,9 @@ protocol QuizOfFlagsViewModelProtocol {
     func setEnabled(controls: UIControl..., isEnabled: Bool)
     func setTitleTime()
     func setTitleTimer(_ labelTimer: UILabel, completion: @escaping () -> Void)
+    func question() -> UIView
+    func button(_ answer: Countries, action: Selector, and tag: Int) -> UIButton
+    func stackView(_ first: UIButton,_ second: UIButton,_ third: UIButton,_ fourth: UIButton) -> UIStackView
     
     func setCircleTimer(_ labelTimer: UILabel,_ view: UIView)
     func circularShadow(_ labelTimer: UILabel,_ view: UIView)
@@ -57,8 +56,6 @@ protocol QuizOfFlagsViewModelProtocol {
     func stopAnimationCircleTimer()
     func checkSetCircularStrokeEnd()
     
-    func isFlag() -> Bool
-    func isCountdown() -> Bool
     func oneQuestionTime() -> Int
     func allQuestionsTime() -> Int
     func isOneQuestion() -> Bool
@@ -107,46 +104,38 @@ protocol QuizOfFlagsViewModelProtocol {
 }
 
 class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
-    var setting: Setting {
-        mode
-    }
-    var games: Games {
-        game
-    }
     var countQuestions: Int {
         mode.countQuestions
     }
-    var currentQuestion: Int {
-        numberQuestion
-    }
-    var seconds: Int {
-        setSeconds
-    }
+    var currentQuestion = 0
     var background: UIColor {
         game.background
     }
-    var data: (questions: [Countries], buttonFirst: [Countries],
-               buttonSecond: [Countries], buttonThird: [Countries],
-               buttonFourth: [Countries]) = ([], [], [], [], [])
     var radius: CGFloat = 6
     var heightStackView: CGFloat = 235
     var timer = Timer()
     var answerSelect = false
-    var labelNumberQuiz: String {
+    var labelNumber: String {
         "\(currentQuestion + 1) / \(countQuestions)"
     }
+    var isFlag: Bool {
+        mode.flag ? true : false
+    }
+    var isCountdown: Bool {
+        mode.timeElapsed.timeElapsed ? true : false
+    }
     
-    var buttonFirst: String {
-        data.buttonFirst[currentQuestion].name
+    var buttonFirst: Countries {
+        data.buttonFirst[currentQuestion]
     }
-    var buttonSecond: String {
-        data.buttonSecond[currentQuestion].name
+    var buttonSecond: Countries {
+        data.buttonSecond[currentQuestion]
     }
-    var buttonThird: String {
-        data.buttonThird[currentQuestion].name
+    var buttonThird: Countries {
+        data.buttonThird[currentQuestion]
     }
-    var buttonFourth: String {
-        data.buttonFourth[currentQuestion].name
+    var buttonFourth: Countries {
+        data.buttonFourth[currentQuestion]
     }
     
     let shapeLayer = CAShapeLayer()
@@ -160,16 +149,21 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     var widthOfFlagThird: NSLayoutConstraint!
     var widthOfFlagFourth: NSLayoutConstraint!
     
-    let mode: Setting
-    let game: Games
+    private let mode: Setting
+    private let game: Games
     
     private var correctAnswers: [Corrects] = []
     private var incorrectAnswers: [Results] = []
     
+    private var data: (questions: [Countries], buttonFirst: [Countries],
+                       buttonSecond: [Countries], buttonThird: [Countries],
+                       buttonFourth: [Countries]) = ([], [], [], [], [])
     private var timeSpend: [CGFloat] = []
-    private var setSeconds = 0
-    private var numberQuestion = 0
+    private var seconds = 0
     private var answeredQuestions = 0
+    private var issue: String {
+        isFlag ? data.questions[currentQuestion].flag : data.questions[currentQuestion].name
+    }
     
     required init(mode: Setting, game: Games) {
         self.mode = mode
@@ -185,6 +179,30 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     func setBarButton(_ button: UIButton, _ navigationItem: UINavigationItem) {
         let leftBarButton = UIBarButtonItem(customView: button)
         navigationItem.leftBarButtonItem = leftBarButton
+    }
+    
+    func question() -> UIView {
+        isFlag ? setImage(image: issue) : setLabel(title: issue)
+    }
+    
+    func button(_ answer: Countries, action: Selector, and tag: Int) -> UIButton {
+        if isFlag {
+            return setButton(title: answer.name, tag: tag, action: action)
+        } else {
+            let image = setImage(image: answer.flag)
+            return setButton(addImage: image, tag: tag, action: action, and: answer)
+        }
+    }
+    
+    func stackView(_ first: UIButton, _ second: UIButton, _ third: UIButton, 
+                   _ fourth: UIButton) -> UIStackView {
+        if isFlag {
+            return setStackView(first, second, third, fourth)
+        } else {
+            let stackViewOne = setStackView(first, second)
+            let stackViewTwo = setStackView(third, fourth)
+            return setStackView(stackViewOne, stackViewTwo, axis: .vertical)
+        }
     }
     // MARK: - Set opacity and enable subviews
     func setOpacity(labels: UILabel..., opacity: Float) {
@@ -220,28 +238,20 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     // MARK: - Set next current question
     func setNextCurrentQuestion(_ number: Int) {
         if number == 1 {
-            numberQuestion += number
+            currentQuestion += number
         } else {
-            numberQuestion = number
+            currentQuestion = number
         }
     }
     // MARK: - Set seconds
-    func setSeconds(_ seconds: Int) {
-        if seconds == 1 {
-            setSeconds -= seconds
+    func setSeconds(_ time: Int) {
+        if time == 1 {
+            seconds -= time
         } else {
-            setSeconds = seconds
+            seconds = time
         }
     }
     // MARK: - Constants
-    func isFlag() -> Bool {
-        mode.flag ? true : false
-    }
-    
-    func isCountdown() -> Bool {
-        mode.timeElapsed.timeElapsed ? true : false
-    }
-    
     func oneQuestionTime() -> Int {
         mode.timeElapsed.questionSelect.questionTime.oneQuestionTime
     }
@@ -283,7 +293,7 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     }
     
     func widthButtons(_ view: UIView) -> CGFloat {
-        isFlag() ? view.bounds.width - 40 : view.bounds.width - 20
+        isFlag ? view.bounds.width - 40 : view.bounds.width - 20
     }
     // MARK: - Get countries for questions
     func getQuestions() {
@@ -296,7 +306,7 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     // MARK: - Move image / label and buttons
     func runMoveSubviews(_ view: UIView) {
         let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
-        if isFlag() {
+        if isFlag {
             imageFlagSpring.constant += view.bounds.width * pointX
         } else {
             labelNameSpring.constant += view.bounds.width * pointX
@@ -306,7 +316,7 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     // MARK: - Animation move subviews
     func animationSubviews(_ duration: CGFloat, _ view: UIView) {
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut) { [self] in
-            if isFlag() {
+            if isFlag {
                 imageFlagSpring.constant -= view.bounds.width
             } else {
                 labelNameSpring.constant -= view.bounds.width
@@ -467,7 +477,7 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         let white = UIColor.white
         let blue = UIColor.blueBlackSea
         buttons.forEach { button in
-            isFlag() ? setButtonColor(button, white, blue) : setButtonColor(button, white)
+            isFlag ? setButtonColor(button, white, blue) : setButtonColor(button, white)
         }
     }
     // MARK: - Set circle timer
@@ -544,9 +554,9 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     }
     
     func checkSetCircularStrokeEnd() {
-        if isOneQuestion() && isCountdown() {
+        if isOneQuestion() && isCountdown {
             shapeLayer.strokeEnd = 1
-        } else if !isOneQuestion() && isCountdown() && currentQuestion < 1 {
+        } else if !isOneQuestion() && isCountdown && currentQuestion < 1 {
             shapeLayer.strokeEnd = 1
         }
     }
@@ -927,10 +937,10 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         var counter = 0
         buttons.forEach { button in
             switch counter {
-            case 0: button.setTitle(buttonFirst, for: .normal)
-            case 1: button.setTitle(buttonSecond, for: .normal)
-            case 2: button.setTitle(buttonThird, for: .normal)
-            default: button.setTitle(buttonFourth, for: .normal)
+            case 0: button.setTitle(buttonFirst.name, for: .normal)
+            case 1: button.setTitle(buttonSecond.name, for: .normal)
+            case 2: button.setTitle(buttonThird.name, for: .normal)
+            default: button.setTitle(buttonFourth.name, for: .normal)
             }
             counter += 1
         }
@@ -940,10 +950,10 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         var counter = 0
         images.forEach { image in
             switch counter {
-            case 0: image.image = UIImage(named: data.buttonFirst[currentQuestion].flag)
-            case 1: image.image = UIImage(named: data.buttonSecond[currentQuestion].flag)
-            case 2: image.image = UIImage(named: data.buttonThird[currentQuestion].flag)
-            default: image.image = UIImage(named: data.buttonFourth[currentQuestion].flag)
+            case 0: image.image = UIImage(named: buttonFirst.flag)
+            case 1: image.image = UIImage(named: buttonSecond.flag)
+            case 2: image.image = UIImage(named: buttonThird.flag)
+            default: image.image = UIImage(named: buttonFourth.flag)
             }
             counter += 1
         }
@@ -953,10 +963,10 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         var counter = 0
         widthFlags.forEach { width in
             switch counter {
-            case 0: width.constant = widthFlag(data.buttonFirst[currentQuestion].flag, view)
-            case 1: width.constant = widthFlag(data.buttonSecond[currentQuestion].flag, view)
-            case 2: width.constant = widthFlag(data.buttonThird[currentQuestion].flag, view)
-            default: width.constant = widthFlag(data.buttonFourth[currentQuestion].flag, view)
+            case 0: width.constant = widthFlag(buttonFirst.flag, view)
+            case 1: width.constant = widthFlag(buttonSecond.flag, view)
+            case 2: width.constant = widthFlag(buttonThird.flag, view)
+            default: width.constant = widthFlag(buttonFourth.flag, view)
             }
             counter += 1
         }
@@ -966,6 +976,22 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         isOneQuestion() ? oneQuestionTime() : seconds / 10
     }
     // MARK: - Constraints, countinue
+    private func setConstraints(image: UIImageView, on button: UIButton,
+                                and answer: Countries) {
+        NSLayoutConstraint.activate([
+            image.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            image.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            image.heightAnchor.constraint(equalToConstant: setHeight()),
+            image.widthAnchor.constraint(equalToConstant: <#T##CGFloat#>)
+        ])
+    }
+    /*
+    private func layoutConstraint(_ answer: Countries, image: UIImageView) -> NSLayoutConstraint {
+        switch answer {
+        case answer == buttonFirst: widthOfFlagFirst = image.widthAnchor.constraint(equalToConstant: widthFlag(flag, view))
+        }
+    }
+    */
     private func setImageOnButton(layout: NSLayoutConstraint, image: UIImageView, button: UIView) {
         NSLayoutConstraint.activate([
             layout,
@@ -973,5 +999,85 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
             image.centerXAnchor.constraint(equalTo: button.centerXAnchor),
             image.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
+    }
+}
+// MARK: - Private methods, set subviews
+extension QuizOfFlagsViewModel {
+    private func setImage(image: String) -> UIImageView {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: image)
+        imageView.layer.borderWidth = 1
+        imageView.layer.cornerRadius = isFlag ? 0 : 8
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }
+    
+    private func setLabel(title: String) -> UILabel {
+        let label = UILabel()
+        label.text = title
+        label.font = UIFont(name: "mr_fontick", size: 32)
+        label.textColor = .white
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+    
+    private func setButton(title: String, tag: Int, action: Selector) -> UIButton {
+        let button = Button(type: .system)
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(.blueBlackSea, for: .normal)
+        button.titleLabel?.numberOfLines = 0
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.font = UIFont(name: "mr_fontick", size: 23)
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 12
+        button.layer.shadowColor = UIColor.white.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.isEnabled = false
+        button.tag = tag
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
+    }
+    
+    private func setButton(addImage: UIImageView, tag: Int, action: Selector,
+                           and answer: Countries) -> UIButton {
+        let button = Button(type: .custom)
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 12
+        button.layer.shadowColor = UIColor.white.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.isEnabled = false
+        button.tag = tag
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
+        setSubviews(subviews: addImage, on: button)
+        setConstraints(image: addImage, on: button, and: answer)
+        return button
+    }
+    
+    private func setStackView(_ first: UIView, _ second: UIView,
+                              _ third: UIView, _ fourth: UIView) -> UIStackView {
+        let stackView = UIStackView(
+            arrangedSubviews: [first, second, third, fourth])
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    private func setStackView(_ first: UIView, _ second: UIView,
+                              axis: NSLayoutConstraint.Axis? = nil) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [first, second])
+        stackView.axis = axis ?? .horizontal
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }
 }

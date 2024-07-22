@@ -31,12 +31,8 @@ class QuizOfFlagsViewController: UIViewController {
         setLabel(title: "\(viewModel.time())", size: 35)
     }()
     
-    private lazy var imageFlag: UIImageView = {
-        setImage(image: viewModel.data.questions[viewModel.currentQuestion].flag)
-    }()
-    
-    private lazy var labelCountry: UILabel = {
-        setLabel(title: "\(viewModel.data.questions[viewModel.currentQuestion].name)", size: 32)
+    private lazy var question: UIView = {
+        viewModel.question()
     }()
     
     private lazy var progressView: UIProgressView = {
@@ -50,7 +46,7 @@ class QuizOfFlagsViewController: UIViewController {
         return progressView
     }()
     
-    private lazy var labelNumberQuiz: UILabel = {
+    private lazy var labelNumber: UILabel = {
         setLabel(title: "0 / \(viewModel.countQuestions)", size: 23)
     }()
     
@@ -63,62 +59,23 @@ class QuizOfFlagsViewController: UIViewController {
     }()
     
     private lazy var buttonFirst: UIButton = {
-        viewModel.isFlag() ? setButton(title: viewModel.buttonFirst, tag: 1) : setButton(addImage: imageFirst, tag: 1)
-    }()
-    
-    private lazy var imageFirst: UIImageView = {
-        setImage(image: viewModel.data.buttonFirst[viewModel.currentQuestion].flag, radius: 8)
+        viewModel.button(viewModel.buttonFirst, action: #selector(buttonPress), and: 1)
     }()
     
     private lazy var buttonSecond: UIButton = {
-        viewModel.isFlag() ? setButton(title: viewModel.buttonSecond, tag: 2) : setButton(addImage: imageSecond, tag: 2)
-    }()
-    
-    private lazy var imageSecond: UIImageView = {
-        setImage(image: viewModel.data.buttonSecond[viewModel.currentQuestion].flag, radius: 8)
+        viewModel.button(viewModel.buttonSecond, action: #selector(buttonPress), and: 2)
     }()
     
     private lazy var buttonThird: UIButton = {
-        viewModel.isFlag() ? setButton(title: viewModel.buttonThird, tag: 3) : setButton(addImage: imageThird, tag: 3)
-    }()
-    
-    private lazy var imageThird: UIImageView = {
-        setImage(image: viewModel.data.buttonThird[viewModel.currentQuestion].flag, radius: 8)
+        viewModel.button(viewModel.buttonThird, action: #selector(buttonPress), and: 3)
     }()
     
     private lazy var buttonFourth: UIButton = {
-        viewModel.isFlag() ? setButton(title: viewModel.buttonFourth, tag: 4) : setButton(addImage: imageFourth, tag: 4)
+        viewModel.button(viewModel.buttonFourth, action: #selector(buttonPress), and: 4)
     }()
     
-    private lazy var imageFourth: UIImageView = {
-        setImage(image: viewModel.data.buttonFourth[viewModel.currentQuestion].flag, radius: 8)
-    }()
-    
-    private lazy var stackViewFlag: UIStackView = {
-        let stackView = UIStackView(
-            arrangedSubviews: [buttonFirst, buttonSecond, buttonThird, buttonFourth])
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        stackView.distribution = .fillEqually
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
-    private lazy var stackViewTop: UIStackView = {
-        setStackView(buttonFirst: buttonFirst, buttonSecond: buttonSecond)
-    }()
-    
-    private lazy var stackViewBottom: UIStackView = {
-        setStackView(buttonFirst: buttonThird, buttonSecond: buttonFourth)
-    }()
-    
-    private lazy var stackViewLabel: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [stackViewTop, stackViewBottom])
-        stackView.spacing = 8
-        stackView.axis = .vertical
-        stackView.distribution = .fillEqually
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
+    private lazy var stackView: UIStackView = {
+        viewModel.stackView(buttonFirst, buttonSecond, buttonThird, buttonFourth)
     }()
     
     var viewModel: QuizOfFlagsViewModelProtocol!
@@ -137,7 +94,7 @@ class QuizOfFlagsViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        guard viewModel.isCountdown() else { return }
+        guard viewModel.isCountdown else { return }
         viewModel.setCircleTimer(labelTimer, view)
     }
     // MARK: - General methods
@@ -151,33 +108,18 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func setupSubviews() {
-        if viewModel.isCountdown() {
-            viewModel.isFlag() ? subviewsWithTimerFlag() : subviewsWithTimerLabel()
-        } else {
-            viewModel.isFlag() ? subviewsWithoutTimerFlag() : subviewsWithoutTimerLabel()
-        }
+        viewModel.isCountdown ? subviewsWithTimer() : subviewsWithoutTimer()
     }
     
-    private func subviewsWithTimerFlag() {
-        viewModel.setSubviews(subviews: labelTimer, imageFlag, progressView,
-                              labelNumberQuiz, labelQuiz, labelDescription,
-                              stackViewFlag, on: view)
+    private func subviewsWithTimer() {
+        viewModel.setSubviews(subviews: labelTimer, question, progressView,
+                              labelNumber, labelQuiz, labelDescription,
+                              stackView, on: view)
     }
     
-    private func subviewsWithTimerLabel() {
-        viewModel.setSubviews(subviews: labelTimer, labelCountry, progressView,
-                              labelNumberQuiz, labelQuiz, labelDescription,
-                              stackViewLabel, on: view)
-    }
-    
-    private func subviewsWithoutTimerFlag() {
-        viewModel.setSubviews(subviews: imageFlag, progressView, labelNumberQuiz,
-                              labelQuiz, labelDescription, stackViewFlag, on: view)
-    }
-    
-    private func subviewsWithoutTimerLabel() {
-        viewModel.setSubviews(subviews: labelCountry, progressView, labelNumberQuiz,
-                              labelQuiz, labelDescription, stackViewLabel, on: view)
+    private func subviewsWithoutTimer() {
+        viewModel.setSubviews(subviews: question, progressView, labelNumber,
+                              labelQuiz, labelDescription, stackView, on: view)
     }
     
     private func setupBarButton() {
@@ -207,9 +149,9 @@ class QuizOfFlagsViewController: UIViewController {
         viewModel.timer.invalidate()
         viewModel.setEnabled(controls: buttonFirst, buttonSecond, buttonThird, buttonFourth, isEnabled: true)
         viewModel.updateProgressView(progressView)
-        labelNumberQuiz.text = viewModel.labelNumberQuiz
+        labelNumber.text = viewModel.labelNumber
         
-        guard viewModel.isCountdown() else { return }
+        guard viewModel.isCountdown else { return }
         viewModel.setTitleTime()
         viewModel.animationCircleCountdown()
         runTimer()
@@ -251,13 +193,13 @@ class QuizOfFlagsViewController: UIViewController {
         animationColorButtons(button: button)
         viewModel.showDescription(labelQuiz, labelDescription)
         
-        guard viewModel.isCountdown() else { return }
+        guard viewModel.isCountdown else { return }
         viewModel.stopAnimationCircleTimer()
         viewModel.checkTimeSpent(viewModel.shapeLayer)
     }
     
     private func animationColorDisableButton() {
-        if viewModel.isFlag() {
+        if viewModel.isFlag {
             viewModel.disableButtonFlag(0, buttonFirst, buttonSecond, buttonThird, buttonFourth) {
                 self.delay()
             }
@@ -269,7 +211,7 @@ class QuizOfFlagsViewController: UIViewController {
     }
     
     private func animationColorButtons(button: UIButton) {
-        if viewModel.isFlag() {
+        if viewModel.isFlag {
             viewModel.checkAnswerFlag(button.tag, button)
             viewModel.disableButtonFlag(button.tag, buttonFirst, buttonSecond, buttonThird, buttonFourth) {
                 self.delay()
@@ -306,7 +248,7 @@ class QuizOfFlagsViewController: UIViewController {
     }
     // MARK: - Refresh data for next question
     private func updateData() {
-        if viewModel.isFlag() {
+        if viewModel.isFlag {
             viewModel.updateDataFlag(imageFlag, viewModel.widthOfFlagFirst, buttonFirst,
                                      buttonSecond, buttonThird, buttonFourth)
         } else {
@@ -315,7 +257,7 @@ class QuizOfFlagsViewController: UIViewController {
                                       and: viewModel.widthOfFlagFirst, viewModel.widthOfFlagSecond,
                                       viewModel.widthOfFlagThird, viewModel.widthOfFlagFourth)
         }
-        guard viewModel.isCountdown() else { return }
+        guard viewModel.isCountdown else { return }
         viewModel.resetTimer(labelTimer, view)
     }
 }
@@ -412,12 +354,12 @@ extension QuizOfFlagsViewController {
 // MARK: - Setup constraints
 extension QuizOfFlagsViewController {
     private func setupConstraints() {
-        if viewModel.isCountdown() {
+        if viewModel.isCountdown {
             viewModel.constraintsTimer(labelTimer, view)
         }
         viewModel.setSquare(subview: buttonback, sizes: 40)
         
-        if viewModel.isFlag() {
+        if viewModel.isFlag {
             viewModel.constraintsFlag(imageFlag, view)
             viewModel.progressView(progressView, imageFlag.bottomAnchor, constant: 30, view)
         } else {
@@ -426,10 +368,10 @@ extension QuizOfFlagsViewController {
         }
         
         NSLayoutConstraint.activate([
-            labelNumberQuiz.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
-            labelNumberQuiz.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 20),
-            labelNumberQuiz.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            labelNumberQuiz.widthAnchor.constraint(equalToConstant: 85)
+            labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
+            labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 20),
+            labelNumber.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            labelNumber.widthAnchor.constraint(equalToConstant: 85)
         ])
         
         NSLayoutConstraint.activate([
@@ -443,16 +385,17 @@ extension QuizOfFlagsViewController {
             labelDescription.centerYAnchor.constraint(equalTo: labelQuiz.centerYAnchor)
         ])
         
-        let stackView = viewModel.isFlag() ? stackViewFlag : stackViewLabel
+//        let stackView = viewModel.isFlag ? stackViewFlag : stackViewLabel
         let width = viewModel.widthButtons(view)
-        let height = viewModel.isFlag() ? 215 : viewModel.heightStackView
+        let height = viewModel.isFlag ? 215 : viewModel.heightStackView
         viewModel.buttons(stackView, to: labelQuiz, width, height, view)
-        
-        guard !viewModel.isFlag() else { return }
+        /*
+        guard !viewModel.isFlag else { return }
         viewModel.setImageButtonFirst(imageFirst, on: buttonFirst, view)
         viewModel.setImageButtonSecond(imageSecond, on: buttonSecond, view)
         viewModel.setImageButtonThird(imageThird, on: buttonThird, view)
         viewModel.setImageButtonFourth(imageFourth, on: buttonFourth, view)
+         */
     }
 }
 // MARK: - QuizOfFlagsViewControllerInput

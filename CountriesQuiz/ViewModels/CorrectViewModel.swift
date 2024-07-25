@@ -106,7 +106,7 @@ class CorrectViewModel: CorrectViewModelProtocol {
             NSLayoutConstraint.activate([
                 subview.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
                 subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                subview.widthAnchor.constraint(equalToConstant: widthLabel(view))
+                subview.widthAnchor.constraint(equalToConstant: widthStackView(view))
             ])
         }
     }
@@ -171,7 +171,7 @@ class CorrectViewModel: CorrectViewModelProtocol {
 // MARK: - Private methods, constants
 extension CorrectViewModel {
     private func textColor(_ button: Countries) -> UIColor {
-        issue.flag == button.flag ? correctTextColor() : incorrectTextColor()
+        issue.flag == button.flag ? correctTextColor() : notSelectTextColor()
     }
     
     private func correctTextColor() -> UIColor {
@@ -181,7 +181,7 @@ extension CorrectViewModel {
         }
     }
     
-    private func incorrectTextColor() -> UIColor {
+    private func notSelectTextColor() -> UIColor {
         switch game.gameType {
         case .quizOfFlag, .quizOfCapitals: .grayLight
         default: .white
@@ -189,7 +189,7 @@ extension CorrectViewModel {
     }
     
     private func backgroundColor(_ button: Countries) -> UIColor {
-        issue.flag == button.flag ? correctBackground() : incorrectBackground()
+        issue.flag == button.flag ? correctBackground() : notSelectBackground()
     }
     
     private func correctBackground() -> UIColor {
@@ -199,10 +199,11 @@ extension CorrectViewModel {
         }
     }
     
-    private func incorrectBackground() -> UIColor {
+    private func notSelectBackground() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag, .quizOfCapitals: .whiteAlpha
-        default: .greenHarlequin
+        case .quizOfFlag: isFlag ? .whiteAlpha : .skyGrayLight
+        case .questionnaire: .greenHarlequin
+        default: .skyGrayLight
         }
     }
     
@@ -219,10 +220,6 @@ extension CorrectViewModel {
         case "nepal", "vatican city", "switzerland": return 168
         default: return 280
         }
-    }
-    
-    private func widthLabel(_ view: UIView) -> CGFloat {
-        view.bounds.width - 20
     }
     
     private func setWidth(_ view: UIView) -> CGFloat {

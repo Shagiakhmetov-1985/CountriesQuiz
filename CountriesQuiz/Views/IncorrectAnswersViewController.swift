@@ -24,7 +24,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     
     private lazy var labelTitle: UILabel = {
         let label = UILabel()
-        label.text = "Неправильные ответы"
+        label.text = viewModel.title
         label.font = UIFont(name: "mr_fontick", size: 28)
         label.textColor = .white
         label.numberOfLines = 0
@@ -34,10 +34,10 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(viewModel.checkCell(), forCellReuseIdentifier: "cell")
+        tableView.register(viewModel.cell, forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = viewModel.game.background
+        tableView.backgroundColor = viewModel.background
         tableView.separatorColor = .white
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
@@ -76,7 +76,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     private func setupDesign() {
-        view.backgroundColor = viewModel.game.background
+        view.backgroundColor = viewModel.background
     }
     
     private func setupSubviews() {
@@ -84,8 +84,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     private func setupBarButton() {
-        let barButton = UIBarButtonItem(customView: buttonBack)
-        navigationItem.leftBarButtonItem = barButton
+        viewModel.setBarButton(buttonBack, navigationItem)
     }
     
     @objc private func exitToResults() {

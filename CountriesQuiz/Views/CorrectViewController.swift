@@ -93,7 +93,7 @@ class CorrectViewController: UIViewController {
         setSubviews()
         setConstraints()
     }
-    
+    // MARK: - General methods
     private func setDesign() {
         view.backgroundColor = viewModel.background
     }

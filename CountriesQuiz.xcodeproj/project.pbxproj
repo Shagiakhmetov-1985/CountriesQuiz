@@ -12,7 +12,7 @@
 		C333038A2BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33303892BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift */; };
 		C333038C2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C333038B2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift */; };
 		C3342B352ACD9E6600C75C6E /* IncorrectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3342B342ACD9E6600C75C6E /* IncorrectViewController.swift */; };
-		C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */; };
+		C33653282A94CFF7008CF2C6 /* NameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33653272A94CFF7008CF2C6 /* NameCell.swift */; };
 		C33669D22B98A13D0081C39A /* MenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33669D12B98A13D0081C39A /* MenuViewModel.swift */; };
 		C33669D42B998DC30081C39A /* GameTypeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33669D32B998DC30081C39A /* GameTypeViewModel.swift */; };
 		C33669D62B998F990081C39A /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33669D52B998F990081C39A /* Game.swift */; };
@@ -37,7 +37,7 @@
 		C384F2A12C453C8600827B9F /* CorrectViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C384F2A02C453C8600827B9F /* CorrectViewModel.swift */; };
 		C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38C023E2981025C008C2202 /* ResultsViewController.swift */; };
 		C38DF4DB2A8E4BF000550BCC /* IncorrectAnswersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */; };
-		C38DF4DE2A8F4A5B00550BCC /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */; };
+		C38DF4DE2A8F4A5B00550BCC /* FlagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DF4DD2A8F4A5B00550BCC /* FlagCell.swift */; };
 		C392B1882C36861300779A53 /* RatioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C392B1872C36861300779A53 /* RatioViewController.swift */; };
 		C392B18A2C36864900779A53 /* RatioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C392B1892C36864900779A53 /* RatioViewModel.swift */; };
 		C3A6B9D32AF0DB3D00DBE77F /* PopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A6B9D22AF0DB3D00DBE77F /* PopUpView.swift */; };
@@ -64,7 +64,7 @@
 		C33303892BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameTypeViewController + UIKit.swift"; sourceTree = "<group>"; };
 		C333038B2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfFlagsViewModel.swift; sourceTree = "<group>"; };
 		C3342B342ACD9E6600C75C6E /* IncorrectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectViewController.swift; sourceTree = "<group>"; };
-		C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabelCell.swift; sourceTree = "<group>"; };
+		C33653272A94CFF7008CF2C6 /* NameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameCell.swift; sourceTree = "<group>"; };
 		C33669D12B98A13D0081C39A /* MenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewModel.swift; sourceTree = "<group>"; };
 		C33669D32B998DC30081C39A /* GameTypeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeViewModel.swift; sourceTree = "<group>"; };
 		C33669D52B998F990081C39A /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
@@ -89,7 +89,7 @@
 		C384F2A02C453C8600827B9F /* CorrectViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectViewModel.swift; sourceTree = "<group>"; };
 		C38C023E2981025C008C2202 /* ResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsViewController.swift; sourceTree = "<group>"; };
 		C38DF4DA2A8E4BF000550BCC /* IncorrectAnswersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectAnswersViewController.swift; sourceTree = "<group>"; };
-		C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
+		C38DF4DD2A8F4A5B00550BCC /* FlagCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagCell.swift; sourceTree = "<group>"; };
 		C392B1872C36861300779A53 /* RatioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatioViewController.swift; sourceTree = "<group>"; };
 		C392B1892C36864900779A53 /* RatioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatioViewModel.swift; sourceTree = "<group>"; };
 		C3A6B9D22AF0DB3D00DBE77F /* PopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpView.swift; sourceTree = "<group>"; };
@@ -179,8 +179,8 @@
 		C38DF4DC2A8F4A3D00550BCC /* UITableViewCell */ = {
 			isa = PBXGroup;
 			children = (
-				C38DF4DD2A8F4A5B00550BCC /* CustomCell.swift */,
-				C33653272A94CFF7008CF2C6 /* CustomLabelCell.swift */,
+				C38DF4DD2A8F4A5B00550BCC /* FlagCell.swift */,
+				C33653272A94CFF7008CF2C6 /* NameCell.swift */,
 			);
 			path = UITableViewCell;
 			sourceTree = "<group>";
@@ -387,7 +387,7 @@
 				C3BADD042BC7EF5A0098BDCB /* QuestionnaireViewModel.swift in Sources */,
 				C3E2EB342938E7F300AB40AD /* MenuViewController.swift in Sources */,
 				C36773F1296BF9E10096BCC5 /* QuizOfFlagsViewController.swift in Sources */,
-				C38DF4DE2A8F4A5B00550BCC /* CustomCell.swift in Sources */,
+				C38DF4DE2A8F4A5B00550BCC /* FlagCell.swift in Sources */,
 				C3E853492BD7845500D244F8 /* QuizOfCapitalsViewModel.swift in Sources */,
 				C392B18A2C36864900779A53 /* RatioViewModel.swift in Sources */,
 				C3E3C2DA295B602900054A1F /* AlertController.swift in Sources */,
@@ -415,7 +415,7 @@
 				C3A6B9D32AF0DB3D00DBE77F /* PopUpView.swift in Sources */,
 				C34EC0702986694900300585 /* Results.swift in Sources */,
 				C376AC072947261D00DE5E86 /* Setting.swift in Sources */,
-				C33653282A94CFF7008CF2C6 /* CustomLabelCell.swift in Sources */,
+				C33653282A94CFF7008CF2C6 /* NameCell.swift in Sources */,
 				C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */,
 				C384F2992C441B6F00827B9F /* CorrectAnswersViewController.swift in Sources */,
 				C36EC9FA2B2729D500ECF1EE /* ScrabbleViewController.swift in Sources */,

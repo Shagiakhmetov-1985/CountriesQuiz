@@ -36,7 +36,7 @@ class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITab
         tableView.register(viewModel.cell, forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = viewModel.game.background
+        tableView.backgroundColor = viewModel.background
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -74,7 +74,7 @@ class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     private func setDesign() {
-        view.backgroundColor = viewModel.game.background
+        view.backgroundColor = viewModel.background
     }
     
     private func setBarButton() {

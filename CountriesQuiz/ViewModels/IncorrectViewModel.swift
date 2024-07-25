@@ -212,7 +212,11 @@ extension IncorrectViewModel {
     }
     
     private func checkNotSelect() -> UIColor {
-        game.gameType == .questionnaire ? .greenHarlequin : .whiteAlpha
+        switch game.gameType {
+        case .quizOfFlag: isFlag ? .whiteAlpha : .skyGrayLight
+        case .questionnaire: .greenHarlequin
+        default: .skyGrayLight
+        }
     }
     
     private func checkmark(_ button: Countries, _ tag: Int) -> String {

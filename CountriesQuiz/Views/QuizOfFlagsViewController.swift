@@ -265,17 +265,6 @@ class QuizOfFlagsViewController: UIViewController {
     // MARK: - Refresh data for next question
     private func updateData() {
         viewModel.updateData(question, view, buttonFirst, buttonSecond, buttonThird, buttonFourth)
-        /*
-        if viewModel.isFlag {
-            viewModel.updateDataFlag(imageFlag, viewModel.widthOfFlagFirst, buttonFirst,
-                                     buttonSecond, buttonThird, buttonFourth)
-        } else {
-            viewModel.updateDataLabel(labelCountry, view,
-                                      imageFirst, imageSecond, imageThird, imageFourth,
-                                      and: viewModel.widthOfFlagFirst, viewModel.widthOfFlagSecond,
-                                      viewModel.widthOfFlagThird, viewModel.widthOfFlagFourth)
-        }
-         */
         guard viewModel.isCountdown else { return }
         viewModel.resetTimer(labelTimer, view)
     }
@@ -346,15 +335,7 @@ extension QuizOfFlagsViewController {
         }
         viewModel.constraintsIssue(question, view)
         viewModel.progressView(progressView, on: question, view)
-        /*
-        if viewModel.isFlag {
-            viewModel.constraintsFlag(imageFlag, view)
-            viewModel.progressView(progressView, imageFlag.bottomAnchor, constant: 30, view)
-        } else {
-            viewModel.constraintsLabel(labelCountry, view)
-            viewModel.progressView(progressView, view.safeAreaLayoutGuide.topAnchor, constant: 140, view)
-        }
-        */
+        
         NSLayoutConstraint.activate([
             labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
             labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 20),
@@ -374,13 +355,6 @@ extension QuizOfFlagsViewController {
         ])
         
         viewModel.buttons(stackView, to: labelQuiz, view)
-        /*
-        guard !viewModel.isFlag else { return }
-        viewModel.setImageButtonFirst(imageFirst, on: buttonFirst, view)
-        viewModel.setImageButtonSecond(imageSecond, on: buttonSecond, view)
-        viewModel.setImageButtonThird(imageThird, on: buttonThird, view)
-        viewModel.setImageButtonFourth(imageFourth, on: buttonFourth, view)
-         */
     }
 }
 // MARK: - QuizOfFlagsViewControllerInput

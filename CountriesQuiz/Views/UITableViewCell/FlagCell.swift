@@ -1,14 +1,14 @@
 //
-//  CustomLabelCell.swift
+//  FlagCell.swift
 //  CountriesQuiz
 //
-//  Created by Marat Shagiakhmetov on 22.08.2023.
+//  Created by Marat Shagiakhmetov on 18.08.2023.
 //
 
 import UIKit
 
-class CustomLabelCell: UITableViewCell {
-    let labelCountry = UILabel()
+class FlagCell: UITableViewCell {
+    let image = UIImageView()
     let progressView = UIProgressView()
     let labelNumber = UILabel()
     let imageArrow = UIImageView()
@@ -20,8 +20,8 @@ class CustomLabelCell: UITableViewCell {
     }
     
     private func setupSubviews() {
-        addSubviews(subviews: labelCountry, progressView, labelNumber,
-                    imageArrow, on: contentView)
+        addSubviews(subviews: image, progressView, labelNumber, imageArrow,
+                    on: contentView)
     }
     
     private func addSubviews(subviews: UIView..., on otherSubview: UIView) {
@@ -32,16 +32,30 @@ class CustomLabelCell: UITableViewCell {
     }
     
     private func configure() {
-        setupLabel(label: labelCountry, size: 26)
+        setupImage(image: image)
         setupProgressView(subview: progressView)
-        setupLabel(label: labelNumber, size: 23)
+        setupLabel(label: labelNumber)
         setupImageArrow(image: imageArrow)
         
         setupConstraints()
     }
 }
+// MARK: - Setup image
+extension FlagCell {
+    private func setupImage(image: UIImageView) {
+        image.layer.borderWidth = 1
+        image.layer.cornerRadius = radius()
+        image.clipsToBounds = true
+    }
+    
+    private func setupImageArrow(image: UIImageView) {
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
+        image.image = UIImage(systemName: "chevron.right", withConfiguration: size)
+        image.tintColor = .white
+    }
+}
 // MARK: - Setup progress view
-extension CustomLabelCell {
+extension FlagCell {
     private func setupProgressView(subview: UIProgressView) {
         subview.progressTintColor = .white
         subview.trackTintColor = .white.withAlphaComponent(0.3)
@@ -50,46 +64,42 @@ extension CustomLabelCell {
     }
 }
 // MARK: - Setup properties of labels
-extension CustomLabelCell {
-    private func setupLabel(label: UILabel, size: CGFloat) {
-        label.font = UIFont(name: "mr_fontick", size: size)
+extension FlagCell {
+    private func setupLabel(label: UILabel) {
+        label.font = UIFont(name: "mr_fontick", size: 23)
         label.textColor = .white
-        label.numberOfLines = 0
         label.textAlignment = .center
     }
 }
-// MARK: - Setup images
-extension CustomLabelCell {
-    private func setupImageArrow(image: UIImageView) {
-        let size = UIImage.SymbolConfiguration(pointSize: 25)
-        image.image = UIImage(systemName: "chevron.right", withConfiguration: size)
-        image.tintColor = .white
-    }
-}
 // MARK: - Setup constraints
-extension CustomLabelCell {
+extension FlagCell {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            labelCountry.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -15),
-            labelCountry.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            labelCountry.trailingAnchor.constraint(equalTo: imageArrow.trailingAnchor, constant: -10)
+            image.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            image.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            image.widthAnchor.constraint(equalToConstant: radius() * 2),
+            image.heightAnchor.constraint(equalToConstant: radius() * 2)
         ])
         
         NSLayoutConstraint.activate([
-            progressView.centerYAnchor.constraint(equalTo: labelNumber.centerYAnchor),
-            progressView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            progressView.centerYAnchor.constraint(equalTo: image.centerYAnchor),
+            progressView.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 10),
             progressView.heightAnchor.constraint(equalToConstant: 8)
         ])
         
         NSLayoutConstraint.activate([
-            labelNumber.topAnchor.constraint(equalTo: labelCountry.bottomAnchor, constant: 5),
+            labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
             labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 10),
             labelNumber.trailingAnchor.constraint(equalTo: imageArrow.leadingAnchor, constant: -10)
         ])
         
         NSLayoutConstraint.activate([
-            imageArrow.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            imageArrow.centerYAnchor.constraint(equalTo: labelNumber.centerYAnchor),
             imageArrow.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
         ])
+    }
+    
+    private func radius() -> CGFloat {
+        27.5
     }
 }

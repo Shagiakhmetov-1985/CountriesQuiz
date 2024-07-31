@@ -1002,7 +1002,6 @@ extension QuizOfFlagsViewModel {
         let imageView = UIImageView()
         imageView.image = UIImage(named: image)
         imageView.layer.borderWidth = 1
-        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }

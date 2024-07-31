@@ -247,8 +247,7 @@ extension CorrectViewModel {
         let buttonWidth = ((view.frame.width - 20) / 2) - 4
         let flagWidth = buttonWidth - 45
         let centerFlag = flagWidth / 2 + 5
-        let center = buttonWidth / 2 - centerFlag
-        return center
+        return buttonWidth / 2 - centerFlag
     }
     
     private func text(_ button: Countries) -> String {

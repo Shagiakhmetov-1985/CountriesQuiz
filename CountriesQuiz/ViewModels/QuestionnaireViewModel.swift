@@ -1180,7 +1180,7 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
         }
     }
 }
-// MARK: - Private methods, onstants
+// MARK: - Private methods, constants
 extension QuestionnaireViewModel {
     private func checkWidthFlag(_ flag: String) -> CGFloat {
         switch flag {
@@ -1243,7 +1243,7 @@ extension QuestionnaireViewModel {
             toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
         view.addConstraint(issueSpring)
         NSLayoutConstraint.activate([
-            question.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            question.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 65),
             widthOfFlagFirst,
             question.heightAnchor.constraint(equalToConstant: 168)
         ])
@@ -1255,7 +1255,7 @@ extension QuestionnaireViewModel {
             toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
         view.addConstraint(issueSpring)
         NSLayoutConstraint.activate([
-            question.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            question.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 65),
             question.widthAnchor.constraint(equalToConstant: widthLabel(view))
         ])
     }

@@ -10,34 +10,33 @@ import UIKit
 protocol QuizOfCapitalsViewModelProtocol {
     var countQuestions: Int { get }
     var currentQuestion: Int { get }
-    var question: String { get }
-    var answerFirst: String { get }
-    var answerSecond: String { get }
-    var answerThird: String { get }
-    var answerFourth: String { get }
+    var answerFirst: Countries { get }
+    var answerSecond: Countries { get }
+    var answerThird: Countries { get }
+    var answerFourth: Countries { get }
     var background: UIColor { get }
-    var data: (questions: [Countries], buttonFirst: [Countries],
-               buttonSecond: [Countries], buttonThird: [Countries],
-               buttonFourth: [Countries]) { get }
+    var isFlag: Bool { get }
+    var isOneQuestion: Bool { get }
+    var isCountdown: Bool { get }
     var time: Int { get }
     var radius: CGFloat { get }
     var circleTimeElapsed: Int { get }
     var timer: Timer { get set }
-    var labelNumberQuiz: String { get }
+    var titleNumberNil: String { get }
+    var titleNumber: String { get }
+    var titleQuiz: String { get }
+    var titleDescription: String { get }
     var answerSelect: Bool { get }
-    
-    var imageFlagSpring: NSLayoutConstraint! { get set }
-    var labelNameSpring: NSLayoutConstraint! { get set }
-    var stackViewSpring: NSLayoutConstraint! { get set }
-    var widthOfFlag: NSLayoutConstraint! { get set }
     
     init(mode: Setting, game: Games)
     
-    func setSubviews(_ buttonOne: UIButton,_ buttonTwo: UIButton,
-                     _ buttonThree: UIButton,_ buttonFour: UIButton,
-                     _ image: UIImageView,_ label: UILabel)
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
+    func question() -> UIView
+    func setLabel(_ title: String, size: CGFloat, color: UIColor, and opacity: Float) -> UILabel
+    func setStackView(_ first: UIButton,_ second: UIButton,_ third: UIButton,_ fourth: UIButton) -> UIStackView
+    func setButton(_ button: UIButton, tag: Int)
+    
     func setEnabled(controls: UIControl..., isEnabled: Bool)
     func setTitleTimer(_ labelTimer: UILabel, completion: @escaping () -> Void)
     func setNextCurrentQuestion(_ number: Int)
@@ -47,13 +46,6 @@ protocol QuizOfCapitalsViewModelProtocol {
     func stopAnimationCircleTimer()
     func checkTimeSpent()
     func addAnsweredQuestion()
-    
-    func isFlag() -> Bool
-    func isOneQuestion() -> Bool
-    func isCountdown() -> Bool
-    func checkWidthFlag(_ flag: String) -> CGFloat
-    func widthButton(_ view: UIView) -> CGFloat
-    func widthLabel(_ view: UIView) -> CGFloat
     
     func getQuestions()
     func setTime()
@@ -67,13 +59,12 @@ protocol QuizOfCapitalsViewModelProtocol {
     
     func runNextQuestion()
     func checkAnswer(button: UIButton, completion: @escaping () -> Void)
-    func updateData(_ labelTimer: UILabel,_ view: UIView)
+    func updateData(_ question: UIView,_ labelTimer: UILabel,_ view: UIView)
     
     func constraintsTimer(_ labelTimer: UILabel,_ view: UIView)
     func setSquare(button: UIButton, sizes: CGFloat)
-    func constraintsFlag(_ imageFlag: UIImageView,_ view: UIView)
-    func constraintsLabel(_ labelCountry: UILabel,_ view: UIView)
-    func progressView(_ progressView: UIProgressView,_ layout: NSLayoutYAxisAnchor, constant: CGFloat,_ view: UIView)
+    func constraintsIssue(_ question: UIView,_ view: UIView)
+    func progressView(_ progressView: UIProgressView, on issue: UIView,_ view: UIView)
     func constraintsButtons(_ stackViewFlag: UIStackView,to labelQuiz: UILabel,_ view: UIView)
     func resultsViewController() -> ResultsViewModelProtocol
 }
@@ -83,54 +74,59 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         mode.countQuestions
     }
     var currentQuestion = 0
-    var question: String {
-        isFlag() ? data.questions[currentQuestion].flag : data.questions[currentQuestion].name
+    var answerFirst: Countries {
+        data.buttonFirst[currentQuestion]
     }
-    var answerFirst: String {
-        data.buttonFirst[currentQuestion].capitals
+    var answerSecond: Countries {
+        data.buttonSecond[currentQuestion]
     }
-    var answerSecond: String {
-        data.buttonSecond[currentQuestion].capitals
+    var answerThird: Countries {
+        data.buttonThird[currentQuestion]
     }
-    var answerThird: String {
-        data.buttonThird[currentQuestion].capitals
-    }
-    var answerFourth: String {
-        data.buttonFourth[currentQuestion].capitals
+    var answerFourth: Countries {
+        data.buttonFourth[currentQuestion]
     }
     var background: UIColor {
         game.background
     }
-    var data: (questions: [Countries], buttonFirst: [Countries],
-               buttonSecond: [Countries], buttonThird: [Countries],
-               buttonFourth: [Countries]) = ([], [], [], [], [])
+    var isFlag: Bool {
+        mode.flag ? true : false
+    }
     var time: Int {
-        isOneQuestion() ? oneQuestionTime : allQuestionsTime
+        isOneQuestion ? oneQuestionTime : allQuestionsTime
+    }
+    var isOneQuestion: Bool {
+        mode.timeElapsed.questionSelect.oneQuestion ? true : false
+    }
+    var isCountdown: Bool {
+        mode.timeElapsed.timeElapsed ? true : false
     }
     var radius: CGFloat = 6
     var circleTimeElapsed: Int {
-        isOneQuestion() ? oneQuestionTime : seconds / 10
+        isOneQuestion ? oneQuestionTime : seconds / 10
     }
     var timer = Timer()
-    var labelNumberQuiz: String {
+    var titleNumberNil: String {
+        "0 / \(countQuestions)"
+    }
+    var titleNumber: String {
         "\(currentQuestion + 1) / \(countQuestions)"
     }
+    var titleQuiz = "Выберите правильный ответ"
+    var titleDescription = "Коснитесь экрана, чтобы продолжить"
     var answerSelect = false
     
-    var imageFlagSpring: NSLayoutConstraint!
-    var labelNameSpring: NSLayoutConstraint!
-    var stackViewSpring: NSLayoutConstraint!
-    var widthOfFlag: NSLayoutConstraint!
+    private var issueSpring: NSLayoutConstraint!
+    private var stackViewSpring: NSLayoutConstraint!
+    private var widthOfFlag: NSLayoutConstraint!
     
-    let mode: Setting
-    let game: Games
+    private let mode: Setting
+    private let game: Games
     
     private var buttonFirst: UIButton!
     private var buttonSecond: UIButton!
     private var buttonThird: UIButton!
     private var buttonFourth: UIButton!
-    private var imageFlag: UIImageView!
-    private var labelCountry: UILabel!
     
     private let shapeLayer = CAShapeLayer()
     private var seconds = 0
@@ -141,7 +137,16 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     private var allQuestionsTime: Int {
         mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
     }
+    private var item: Countries {
+        data.questions[currentQuestion]
+    }
+    private var issue: String {
+        isFlag ? item.flag : item.name
+    }
     
+    private var data: (questions: [Countries], buttonFirst: [Countries],
+                       buttonSecond: [Countries], buttonThird: [Countries],
+                       buttonFourth: [Countries]) = ([], [], [], [], [])
     private var correctAnswers: [Corrects] = []
     private var incorrectAnswers: [Results] = []
     private var timeSpend: [CGFloat] = []
@@ -152,17 +157,6 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         self.game = game
     }
     // MARK: - Set subviews
-    func setSubviews(_ buttonOne: UIButton, _ buttonTwo: UIButton, 
-                    _ buttonThree: UIButton, _ buttonFour: UIButton, 
-                    _ image: UIImageView, _ label: UILabel) {
-        buttonFirst = buttonOne
-        buttonSecond = buttonTwo
-        buttonThird = buttonThree
-        buttonFourth = buttonFour
-        imageFlag = image
-        labelCountry = label
-    }
-    
     func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
         subviews.forEach { subview in
             subviewOther.addSubview(subview)
@@ -177,6 +171,47 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     func setEnabled(controls: UIControl..., isEnabled: Bool) {
         controls.forEach { control in
             control.isEnabled = isEnabled
+        }
+    }
+    
+    func question() -> UIView {
+        if isFlag {
+            setImage(image: issue)
+        } else {
+            setLabel(issue, size: 32, color: .white, and: 1)
+        }
+    }
+    
+    func setLabel(_ title: String, size: CGFloat, color: UIColor, 
+                  and opacity: Float) -> UILabel {
+        let label = UILabel()
+        label.text = title
+        label.font = UIFont(name: "mr_fontick", size: size)
+        label.textColor = color
+        label.textAlignment = .center
+        label.layer.opacity = opacity
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+    
+    func setStackView(_ first: UIButton, _ second: UIButton, 
+                      _ third: UIButton, _ fourth: UIButton) -> UIStackView {
+        let stackView = UIStackView(
+            arrangedSubviews: [first, second, third, fourth])
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    func setButton(_ button: UIButton, tag: Int) {
+        switch tag {
+        case 1: buttonFirst = button
+        case 2: buttonSecond = button
+        case 3: buttonThird = button
+        default: buttonFourth = button
         }
     }
     // MARK: - Set title from run timer
@@ -198,46 +233,16 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
             currentQuestion = number
         }
     }
-    // MARK: - Constants
-    func isFlag() -> Bool {
-        mode.flag ? true : false
-    }
-    func isOneQuestion() -> Bool {
-        mode.timeElapsed.questionSelect.oneQuestion ? true : false
-    }
-    func isCountdown() -> Bool {
-        mode.timeElapsed.timeElapsed ? true : false
-    }
-    func checkWidthFlag(_ flag: String) -> CGFloat {
-        switch flag {
-        case "nepal", "vatican city", "switzerland": return 168
-        default: return 280
-        }
-    }
-    func widthButton(_ view: UIView) -> CGFloat {
-        view.bounds.width - 40
-    }
-    func widthLabel(_ view: UIView) -> CGFloat {
-        view.bounds.width - 20
-    }
     // MARK: - Move subviews
     func runMoveSubviews(_ view: UIView) {
         let pointX: CGFloat = currentQuestion > 0 ? 2 : 1
-        if isFlag() {
-            imageFlagSpring.constant += view.bounds.width * pointX
-        } else {
-            labelNameSpring.constant += view.bounds.width * pointX
-        }
+        issueSpring.constant += view.bounds.width * pointX
         stackViewSpring.constant += view.bounds.width * pointX
     }
     // MARK: - Animation move subviews
     func animationSubviews(duration: CGFloat, _ view: UIView) {
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut) { [self] in
-            if isFlag() {
-                imageFlagSpring.constant -= view.bounds.width
-            } else {
-                labelNameSpring.constant -= view.bounds.width
-            }
+            issueSpring.constant -= view.bounds.width
             stackViewSpring.constant -= view.bounds.width
             view.layoutIfNeeded()
         }
@@ -262,9 +267,9 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     }
     // MARK: - Set time
     func setTime() {
-        if !isOneQuestion(), currentQuestion < 1 {
+        if !isOneQuestion, currentQuestion < 1 {
             setCountdownSeconds(time * 10)
-        } else if isOneQuestion() {
+        } else if isOneQuestion {
             setCountdownSeconds(time * 10)
         }
     }
@@ -293,9 +298,9 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     }
     
     func checkSetCircularStrokeEnd() {
-        if isOneQuestion(), isCountdown() {
+        if isOneQuestion, isCountdown {
             shapeLayer.strokeEnd = 1
-        } else if !isOneQuestion(), isCountdown(), currentQuestion < 1 {
+        } else if !isOneQuestion, isCountdown, currentQuestion < 1 {
             shapeLayer.strokeEnd = 1
         }
     }
@@ -319,9 +324,9 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     }
     
     func checkTimeSpent() {
-        if isOneQuestion() {
+        if isOneQuestion {
             setTimeSpent()
-        } else if !isOneQuestion(), currentQuestion + 1 == countQuestions {
+        } else if !isOneQuestion, currentQuestion + 1 == countQuestions {
             setTimeSpent()
         }
     }
@@ -346,7 +351,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         showDescription(labelQuiz, labelDescription)
         disableButton(buttons: buttonFirst, buttonSecond, buttonThird, buttonFourth, tag: 0)
         setEnabled(controls: buttonFirst, buttonSecond, buttonThird, buttonFourth, isEnabled: false)
-        guard !isOneQuestion() else { return }
+        guard !isOneQuestion else { return }
         currentQuestion = countQuestions
     }
     // MARK: - Run next question
@@ -355,11 +360,11 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         answerSelect.toggle()
     }
     // MARK: - Update data for next question
-    func updateData(_ labelTimer: UILabel,_ view: UIView) {
-        isFlag() ? updateImageFlag() : updateLabelCountry()
+    func updateData(_ question: UIView, _ labelTimer: UILabel, _ view: UIView) {
+        isFlag ? updateFlag(image(question)) : updateName(label(question))
         updateTitleButtons()
         resetButtons(buttonFirst, buttonSecond, buttonThird, buttonFourth)
-        guard isCountdown() else { return }
+        guard isCountdown else { return }
         resetTimer(labelTimer: labelTimer, view: view)
     }
     // MARK: - Constraints
@@ -377,34 +382,17 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         ])
     }
     
-    func constraintsFlag(_ imageFlag: UIImageView, _ view: UIView) {
-        let flag = data.questions[currentQuestion].flag
-        widthOfFlag = imageFlag.widthAnchor.constraint(equalToConstant: checkWidthFlag(flag))
-        
-        imageFlagSpring = NSLayoutConstraint(
-            item: imageFlag, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(imageFlagSpring)
-        NSLayoutConstraint.activate([
-            imageFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            widthOfFlag,
-            imageFlag.heightAnchor.constraint(equalToConstant: 168)
-        ])
+    func constraintsIssue(_ question: UIView, _ view: UIView) {
+        if isFlag {
+            constraintsFlag(question as! UIImageView, view)
+        } else {
+            constraintsLabel(question as! UILabel, view)
+        }
     }
     
-    func constraintsLabel(_ labelCountry: UILabel, _ view: UIView) {
-        labelNameSpring = NSLayoutConstraint(
-            item: labelCountry, attribute: .centerX, relatedBy: .equal,
-            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-        view.addConstraint(labelNameSpring)
-        NSLayoutConstraint.activate([
-            labelCountry.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            labelCountry.widthAnchor.constraint(equalToConstant: widthLabel(view))
-        ])
-    }
-    
-    func progressView(_ progressView: UIProgressView, _ layout: NSLayoutYAxisAnchor,
-                      constant: CGFloat, _ view: UIView) {
+    func progressView(_ progressView: UIProgressView, on issue: UIView, _ view: UIView) {
+        let layout = isFlag ? issue.bottomAnchor : view.safeAreaLayoutGuide.topAnchor
+        let constant: CGFloat = isFlag ? 30 : 140
         NSLayoutConstraint.activate([
             progressView.topAnchor.constraint(equalTo: layout, constant: constant),
             progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -788,10 +776,10 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     // MARK: - Check correct or incorrect answer from select user
     private func checkAnswer(tag: Int) -> Bool {
         switch tag {
-        case 1: return data.questions[currentQuestion] == data.buttonFirst[currentQuestion] ? true : false
-        case 2: return data.questions[currentQuestion] == data.buttonSecond[currentQuestion] ? true : false
-        case 3: return data.questions[currentQuestion] == data.buttonThird[currentQuestion] ? true : false
-        default: return data.questions[currentQuestion] == data.buttonFourth[currentQuestion] ? true : false
+        case 1: return item == answerFirst ? true : false
+        case 2: return item == answerSecond ? true : false
+        case 3: return item == answerThird ? true : false
+        default: return item == answerFourth ? true : false
         }
     }
     // MARK: - Button animation from select user
@@ -805,7 +793,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     
     private func disableButton(buttons: UIButton..., tag: Int) {
         let gray = UIColor.grayLight
-        let white = UIColor.white.withAlphaComponent(0.9)
+        let white = UIColor.whiteAlpha
         
         buttons.forEach { button in
             if !(button.tag == tag) {
@@ -834,26 +822,34 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         incorrectAnswers.append(answer)
     }
     // MARK: - Update data for next question, countinue
-    private func updateImageFlag() {
-        imageFlag.image = UIImage(named: question)
-        widthOfFlag.constant = checkWidthFlag(question)
+    private func image(_ question: UIView) -> UIImageView {
+        question as! UIImageView
     }
     
-    private func updateLabelCountry() {
-        labelCountry.text = question
+    private func label(_ question: UIView) -> UILabel {
+        question as! UILabel
+    }
+    
+    private func updateFlag(_ image: UIImageView) {
+        image.image = UIImage(named: issue)
+        widthOfFlag.constant = checkWidthFlag(issue)
+    }
+    
+    private func updateName(_ label: UILabel) {
+        label.text = issue
     }
     
     private func updateTitleButtons() {
-        buttonFirst.setTitle(answerFirst, for: .normal)
-        buttonSecond.setTitle(answerSecond, for: .normal)
-        buttonThird.setTitle(answerThird, for: .normal)
-        buttonFourth.setTitle(answerFourth, for: .normal)
+        buttonFirst.setTitle(answerFirst.capitals, for: .normal)
+        buttonSecond.setTitle(answerSecond.capitals, for: .normal)
+        buttonThird.setTitle(answerThird.capitals, for: .normal)
+        buttonFourth.setTitle(answerFourth.capitals, for: .normal)
     }
     // MARK: - Reset title timer and color buttons
     private func resetTimer(labelTimer: UILabel, view: UIView) {
-        if isOneQuestion(), seconds > 0 {
+        if isOneQuestion, seconds > 0 {
             resetTitleAndCircleTimer(labelTimer: labelTimer)
-        } else if isOneQuestion(), seconds == 0 {
+        } else if isOneQuestion, seconds == 0 {
             circular(strokeEnd: 0, labelTimer, view)
             resetTitleAndCircleTimer(labelTimer: labelTimer)
         }
@@ -870,5 +866,58 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         buttons.forEach { button in
             setButtonColor(button: button, color: white, titleColor: blue)
         }
+    }
+}
+// MARK: - Private methods, constants
+extension QuizOfCapitalsViewModel {
+    private func checkWidthFlag(_ flag: String) -> CGFloat {
+        switch flag {
+        case "nepal", "vatican city", "switzerland": return 168
+        default: return 280
+        }
+    }
+    
+    private func widthButton(_ view: UIView) -> CGFloat {
+        view.bounds.width - 40
+    }
+    
+    private func widthLabel(_ view: UIView) -> CGFloat {
+        view.bounds.width - 20
+    }
+}
+// MARK: - Private methods, constraints
+extension QuizOfCapitalsViewModel {
+    func constraintsFlag(_ image: UIImageView, _ view: UIView) {
+        widthOfFlag = image.widthAnchor.constraint(equalToConstant: checkWidthFlag(issue))
+        issueSpring = NSLayoutConstraint(
+            item: image, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(issueSpring)
+        NSLayoutConstraint.activate([
+            image.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 65),
+            widthOfFlag,
+            image.heightAnchor.constraint(equalToConstant: 168)
+        ])
+    }
+    
+    func constraintsLabel(_ label: UILabel, _ view: UIView) {
+        issueSpring = NSLayoutConstraint(
+            item: label, attribute: .centerX, relatedBy: .equal,
+            toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(issueSpring)
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 65),
+            label.widthAnchor.constraint(equalToConstant: widthLabel(view))
+        ])
+    }
+}
+// MARK: - Private methods, subviews
+extension QuizOfCapitalsViewModel {
+    private func setImage(image: String) -> UIImageView {
+        let image = UIImage(named: image)
+        let imageView = UIImageView(image: image)
+        imageView.layer.borderWidth = 1
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }
 }

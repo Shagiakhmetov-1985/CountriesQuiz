@@ -118,18 +118,16 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
         if isFlag {
             setLabel(text: text(button), size: 23, color: textColor(button, tag))
         } else {
-            setImage(image: UIImage(named: button.flag))
+            setSubview(button: button, tag: tag)
         }
     }
     
     func stackView(_ first: UIView, _ second: UIView, 
                    _ third: UIView, _ fourth: UIView) -> UIStackView {
         if isFlag {
-            return setStackView(first, second, third, fourth)
+            setStackView(first, second, third, fourth)
         } else {
-            let stackViewOne = setStackView(first, second)
-            let stackViewTwo = setStackView(third, fourth)
-            return setStackView(stackViewOne, stackViewTwo, axis: .vertical)
+            checkGameType(first, second, third, fourth)
         }
     }
     // MARK: - Set constraints
@@ -215,7 +213,7 @@ extension IncorrectViewModel {
         switch game.gameType {
         case .quizOfFlag: isFlag ? .whiteAlpha : .skyGrayLight
         case .questionnaire: .greenHarlequin
-        default: .skyGrayLight
+        default: .whiteAlpha
         }
     }
     
@@ -288,6 +286,16 @@ extension IncorrectViewModel {
         }
     }
 }
+// MARK: - Set subviews
+extension IncorrectViewModel {
+    private func setSubview(button: Countries, tag: Int) -> UIView {
+        if game.gameType == .quizOfCapitals {
+            setLabel(text: button.capitals, size: 23, color: textColor(button, tag))
+        } else {
+            setImage(image: UIImage(named: button.flag))
+        }
+    }
+}
 // MARK: - Set images
 extension IncorrectViewModel {
     private func setImage(image: UIImage?) -> UIImageView {
@@ -342,6 +350,17 @@ extension IncorrectViewModel {
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
+    }
+    
+    private func checkGameType(_ first: UIView, _ second: UIView,
+                               _ third: UIView, _ fourth: UIView) -> UIStackView {
+        if game.gameType == .quizOfCapitals {
+            return setStackView(first, second, third, fourth)
+        } else {
+            let stackViewOne = setStackView(first, second)
+            let stackViewTwo = setStackView(third, fourth)
+            return setStackView(stackViewOne, stackViewTwo, axis: .vertical)
+        }
     }
 }
 // MARK: - Private methods, constraints

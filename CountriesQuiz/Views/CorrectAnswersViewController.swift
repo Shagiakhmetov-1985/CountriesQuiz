@@ -37,6 +37,7 @@ class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITab
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = viewModel.background
+        tableView.separatorColor = .white
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()

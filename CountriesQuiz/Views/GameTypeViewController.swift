@@ -54,7 +54,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var imageFirstSwap: UIImageView = {
-        setupImage(image: viewModel.imageFirstTitle(), color: viewModel.colorTitle(), size: 25)
+        setupImage(image: viewModel.imageFirst(), color: viewModel.colorTitle(), size: 25)
     }()
     
     private lazy var viewFirstSwap: UIView = {
@@ -64,7 +64,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelFirstSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: viewModel.labelFirstTitle(),
+            title: viewModel.titleFirst(),
             size: 24,
             style: "Gill Sans",
             alignment: .left)
@@ -73,7 +73,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelFirstDescriptionSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: viewModel.labelTitleFirstDescription(),
+            title: viewModel.descriptionFirst(),
             size: 19,
             style: "Gill Sans",
             alignment: .left)
@@ -88,7 +88,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var imageSecondSwap: UIImageView = {
-        setupImage(image: viewModel.imageSecondTitle(), color: .white, size: 25)
+        setupImage(image: viewModel.imageSecond(), color: .white, size: 25)
     }()
     
     private lazy var viewSecondSwap: UIView = {
@@ -98,7 +98,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelSecondSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: viewModel.labelSecondTitle(),
+            title: viewModel.titleSecond(),
             size: 24,
             style: "Gill Sans",
             alignment: .left)
@@ -107,7 +107,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var labelSecondDescriptionSwap: UILabel = {
         setupLabel(
             color: .white,
-            title: viewModel.labelTitleSecondDescription(),
+            title: viewModel.descriptionSecond(),
             size: 19,
             style: "Gill Sans",
             alignment: .left)
@@ -827,14 +827,14 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
 // MARK: - Setup constraints
 extension GameTypeViewController {
     private func setupConstraints() {
-        setupSquare(subviews: buttonBack, buttonHelp, sizes: 40)
+        viewModel.setSquare(subviews: buttonBack, buttonHelp, sizes: 40)
         
         NSLayoutConstraint.activate([
             viewGameType.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -30),
             viewGameType.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
-        setupSquare(subviews: viewGameType, sizes: viewModel.diameter)
-        setupCenterSubview(subview: imageGameType, on: viewGameType)
+        viewModel.setSquare(subviews: viewGameType, sizes: viewModel.diameter)
+        viewModel.setCenterSubview(subview: imageGameType, on: viewGameType)
         
         NSLayoutConstraint.activate([
             labelGameName.topAnchor.constraint(equalTo: viewGameType.bottomAnchor, constant: 10),
@@ -845,31 +845,28 @@ extension GameTypeViewController {
             stackViewButtons.topAnchor.constraint(equalTo: labelGameName.bottomAnchor, constant: 15),
             stackViewButtons.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
-        setupSize(subview: stackViewButtons, width: 160, height: 40)
+        viewModel.setSize(subview: stackViewButtons, width: 160, height: 40)
         
-        setupConstraintsButton(button: buttonCountQuestions,
-                               layout: stackViewButtons.bottomAnchor,
-                               leading: 20, trailing: -viewModel.width(view), height: 160)
-        setupConstraintsLabel(label: labelCountQuestion, button: buttonCountQuestions, constant: -30)
-        setupConstraintsLabel(label: labelCount, button: buttonCountQuestions, constant: 35)
+        viewModel.setConstraints(buttonCountQuestions, layout: stackViewButtons.bottomAnchor,
+                                 leading: 20, trailing: -viewModel.width(view), height: 160, view)
+        viewModel.setConstraints(labelCountQuestion, on: buttonCountQuestions, constant: -30)
+        viewModel.setConstraints(labelCount, on: buttonCountQuestions, constant: 35)
         
-        setupConstraintsButton(button: buttonContinents,
-                               layout: stackViewButtons.bottomAnchor,
-                               leading: viewModel.width(view), trailing: -20, height: 190)
-        setupConstraintsLabel(label: labelContinents, button: buttonContinents, constant: -15)
-        setupConstraintsLabel(label: labelContinentsDescription, button: buttonContinents, constant: 75)
+        viewModel.setConstraints(buttonContinents, layout: stackViewButtons.bottomAnchor,
+                                 leading: viewModel.width(view), trailing: -20, height: 190, view)
+        viewModel.setConstraints(labelContinents, on: buttonContinents, constant: -15)
+        viewModel.setConstraints(labelContinentsDescription, on: buttonContinents, constant: 75)
         
-        setupConstraintsButton(button: buttonCountdown,
-                               layout: buttonCountQuestions.bottomAnchor,
-                               leading: 20, trailing: -viewModel.width(view), height: 150)
-        setupConstraintsLabel(label: labelCountdown, button: buttonCountdown, constant: -25)
-        setupConstraintsLabel(label: labelCountdownDesription, button: buttonCountdown, constant: 35)
+        viewModel.setConstraints(buttonCountdown, layout: buttonCountQuestions.bottomAnchor,
+                                 leading: 20, trailing: -viewModel.width(view), height: 150, view)
+        viewModel.setConstraints(labelCountdown, on: buttonCountdown, constant: -25)
+        viewModel.setConstraints(labelCountdownDesription, on: buttonCountdown, constant: 35)
         
-        setupConstraintsButton(button: buttonTime,
-                               layout: buttonContinents.bottomAnchor,
-                               leading: viewModel.width(view), trailing: -20, height: 120)
-        setupConstraintsLabel(label: labelTime, button: buttonTime, constant: -25)
-        setupConstraintsLabel(label: labelTimeDesription, button: buttonTime, constant: 30)
+        viewModel.setConstraints(buttonTime, layout: buttonContinents.bottomAnchor,
+                                 leading: viewModel.width(view), trailing: -20, height: 120, view)
+        viewModel.setConstraints(labelTime, on: buttonTime, constant: -25)
+        viewModel.setConstraints(labelTimeDesription, on: buttonTime, constant: 30)
+        
         NSLayoutConstraint.activate([
             imageInfinity.centerXAnchor.constraint(equalTo: buttonTime.centerXAnchor),
             imageInfinity.centerYAnchor.constraint(equalTo: buttonTime.centerYAnchor, constant: -25)
@@ -880,26 +877,6 @@ extension GameTypeViewController {
             visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             visualEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-    }
-    
-    private func setupConstraintsButton(button: UIButton, layout: NSLayoutYAxisAnchor,
-                                        leading: CGFloat, trailing: CGFloat,
-                                        height: CGFloat) {
-        NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: layout, constant: 20),
-            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leading),
-            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: trailing),
-            button.heightAnchor.constraint(equalToConstant: height)
-        ])
-    }
-    
-    private func setupConstraintsLabel(label: UILabel, button: UIButton, constant: CGFloat) {
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: constant),
-            label.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 10),
-            label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -10)
         ])
     }
     
@@ -978,8 +955,8 @@ extension GameTypeViewController {
     
     private func setViewsImagesSwap(image: UIImageView, view: UIView, 
                                     subview: UIView, to otherSubview: UIView) {
-        setupCenterSubview(subview: image, on: view)
-        setupSquare(subviews: view, sizes: 40)
+        viewModel.setCenterSubview(subview: image, on: view)
+        viewModel.setSquare(subviews: view, sizes: 40)
         
         NSLayoutConstraint.activate([
             subview.topAnchor.constraint(equalTo: otherSubview.bottomAnchor),
@@ -1004,9 +981,9 @@ extension GameTypeViewController {
     private func setupConstraintsSettingCountdown() {
         setupConstraintsViewsAndLabel(constant: 165)
         setupConstraintsSubviews(subview: stackViewCheckmark, to: viewSettingDescription, height: 60)
-        setupSquare(subviews: viewCheckmark, sizes: 60)
-        setupCenterSubview(subview: buttonCheckmark, on: viewCheckmark)
-        setupSquare(subviews: buttonCheckmark, sizes: 50)
+        viewModel.setSquare(subviews: viewCheckmark, sizes: 60)
+        viewModel.setCenterSubview(subview: buttonCheckmark, on: viewCheckmark)
+        viewModel.setSquare(subviews: buttonCheckmark, sizes: 50)
         setupConstraintsDoneCancel()
     }
     
@@ -1077,30 +1054,8 @@ extension GameTypeViewController {
             stackView.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
-    
-    private func setupSquare(subviews: UIView..., sizes: CGFloat) {
-        subviews.forEach { subview in
-            NSLayoutConstraint.activate([
-                subview.widthAnchor.constraint(equalToConstant: sizes),
-                subview.heightAnchor.constraint(equalToConstant: sizes)
-            ])
-        }
-    }
-    
-    private func setupSize(subview: UIView, width: CGFloat, height: CGFloat) {
-        NSLayoutConstraint.activate([
-            subview.widthAnchor.constraint(equalToConstant: width),
-            subview.heightAnchor.constraint(equalToConstant: height)
-        ])
-    }
-    
-    private func setupCenterSubview(subview: UIView, on subviewOther: UIView) {
-        NSLayoutConstraint.activate([
-            subview.centerXAnchor.constraint(equalTo: subviewOther.centerXAnchor),
-            subview.centerYAnchor.constraint(equalTo: subviewOther.centerYAnchor)
-        ])
-    }
 }
+
 // MARK: - PopUpViewHelpDelegate
 extension GameTypeViewController: PopUpViewDelegate {
     func closeView() {

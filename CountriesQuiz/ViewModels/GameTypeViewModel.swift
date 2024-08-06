@@ -83,13 +83,13 @@ protocol GameTypeViewModelProtocol {
     func bulletsListGameType() -> [String]
     
     func titleSetting(tag: Int) -> String
-    func imageFirstTitle() -> String
+    func imageFirst() -> String
     func colorTitle() -> UIColor
-    func labelFirstTitle() -> String
-    func labelTitleFirstDescription() -> String
-    func imageSecondTitle() -> String
-    func labelSecondTitle() -> String
-    func labelTitleSecondDescription() -> String
+    func titleFirst() -> String
+    func descriptionFirst() -> String
+    func imageSecond() -> String
+    func titleSecond() -> String
+    func descriptionSecond() -> String
     
     func comma() -> String
     func countdownOnOff() -> String
@@ -110,6 +110,7 @@ protocol GameTypeViewModelProtocol {
     func segmentSelect(_ segment: UISegmentedControl,_ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView,_ label: UILabel)
     func counterContinents()
     func setSubviewsTag(subviews: UIView..., tag: Int)
+    func viewHelp() -> UIView
     
     func buttonAllCountries(_ buttonAllCountries: UIButton,_ labelAllCountries: UILabel,
                             _ labelCountCountries: UILabel,_ colorButton: UIColor,_ colorLabel: UIColor)
@@ -125,6 +126,13 @@ protocol GameTypeViewModelProtocol {
                       _ labelTime: UILabel,_ buttonTime: UIButton, completion: @escaping () -> Void)
     func setTime(_ segment: UISegmentedControl,_ labelTime: UILabel,_ labelDescription: UILabel,
                  _ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView, completion: @escaping () -> Void)
+    
+    func setSquare(subviews: UIView..., sizes: CGFloat)
+    func setCenterSubview(subview: UIView, on subviewOther: UIView)
+    func setSize(subview: UIView, width: CGFloat, height: CGFloat)
+    func setConstraints(_ button: UIButton, layout: NSLayoutYAxisAnchor, leading: CGFloat,
+                        trailing: CGFloat, height: CGFloat,_ view: UIView)
+    func setConstraints(_ label: UILabel, on button: UIButton, constant: CGFloat)
     
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol
     func questionnaireViewModel() -> QuestionnaireViewModelProtocol
@@ -149,7 +157,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     var countRows: Int {
         mode.countRows
     }
-    var countRowsDefault: Int = DefaultSetting.countRows.rawValue
+    var countRowsDefault = DefaultSetting.countRows.rawValue
     var countContinents = 0
     var allCountries: Bool {
         mode.allCountries
@@ -208,6 +216,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     private var mode: Setting
     private let game: Games
     private let tag: Int
+    private var popUpView: UIView!
     
     required init(mode: Setting, game: Games, tag: Int) {
         self.mode = mode
@@ -226,12 +235,23 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
             subview.removeFromSuperview()
         }
     }
-    // MARK: - Setup bar button
+    
     func setupBarButtons(_ buttonBack: UIButton, _ buttonHelp: UIButton, _ navigationItem: UINavigationItem) {
         let leftBarButton = UIBarButtonItem(customView: buttonBack)
         let rightBarButton = UIBarButtonItem(customView: buttonHelp)
         navigationItem.leftBarButtonItem = leftBarButton
         navigationItem.rightBarButtonItem = rightBarButton
+    }
+    
+    func viewHelp() -> UIView {
+        let title = setLabel(title: "Тип игры", size: 25)
+        let description = setLabel(title: game.description, size: 19, alignment: .left)
+        let list = setting(bulletsList(list: bulletsListGameType()), size: 19)
+        let stackView = UIStackView()
+        let view = PopUpView()
+        view.backgroundColor = game.swap
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }
     // MARK: - PickerView
     func numberOfComponents() -> Int {
@@ -293,7 +313,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         default: GameTypeSecond(button: button)
         }
     }
-    // MARK: - Setup design
+    // MARK: - Setup constants
     func isCountdown() -> Bool {
         mode.timeElapsed.timeElapsed ? true : false
     }
@@ -314,7 +334,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         isOn ? "checkmark.circle.fill" : "circle"
     }
     
-    func imageFirstTitle() -> String {
+    func imageFirst() -> String {
         tag == 2 ? "globe.europe.africa" : "flag"
     }
     
@@ -322,11 +342,11 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         tag == 2 ? .white.withAlphaComponent(0.4) : .white
     }
     
-    func labelFirstTitle() -> String {
+    func titleFirst() -> String {
         tag == 2 ? "Режим карты" : "Режим флага"
     }
     
-    func labelTitleFirstDescription() -> String {
+    func descriptionFirst() -> String {
         switch tag {
         case 0, 1: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования страны."
         case 2: "В качестве вопроса задается географическая карта страны и пользователь должен выбрать ответ наименования страны. (Кнопка неактивна)"
@@ -335,11 +355,11 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         }
     }
     
-    func imageSecondTitle() -> String {
+    func imageSecond() -> String {
         tag == 3 ? "globe.europe.africa" : "building"
     }
     
-    func labelSecondTitle() -> String {
+    func titleSecond() -> String {
         switch tag {
         case 0, 1: "Режим наименования"
         case 4: "Режим столицы"
@@ -347,12 +367,16 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         }
     }
     
-    func labelTitleSecondDescription() -> String {
+    func descriptionSecond() -> String {
         switch tag {
         case 0, 1: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ флага страны."
         case 4: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ наименования столицы."
         default: "В качестве вопроса задается географическая карта страны и пользователь должен составить слово из букв наименования страны."
         }
+    }
+    
+    func descriptionThird() -> String {
+        "В качестве вопроса задается наименование столицы и пользователь должен составить слово из букв наименования страны."
     }
     
     func isSelect(isOn: Bool) -> UIColor {
@@ -615,6 +639,51 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     func quizOfCapitalsViewModel() -> QuizOfCapitalsViewModelProtocol {
         QuizOfCapitalsViewModel(mode: mode, game: game)
     }
+    // MARK: - Constraints
+    func setSquare(subviews: UIView..., sizes: CGFloat) {
+        subviews.forEach { subview in
+            NSLayoutConstraint.activate([
+                subview.widthAnchor.constraint(equalToConstant: sizes),
+                subview.heightAnchor.constraint(equalToConstant: sizes)
+            ])
+        }
+    }
+    
+    func setCenterSubview(subview: UIView, on subviewOther: UIView) {
+        NSLayoutConstraint.activate([
+            subview.centerXAnchor.constraint(equalTo: subviewOther.centerXAnchor),
+            subview.centerYAnchor.constraint(equalTo: subviewOther.centerYAnchor)
+        ])
+    }
+    
+    func setSize(subview: UIView, width: CGFloat, height: CGFloat) {
+        NSLayoutConstraint.activate([
+            subview.widthAnchor.constraint(equalToConstant: width),
+            subview.heightAnchor.constraint(equalToConstant: height)
+        ])
+    }
+    
+    func setConstraints(_ button: UIButton, layout: NSLayoutYAxisAnchor, leading: CGFloat,
+                        trailing: CGFloat, height: CGFloat, _ view: UIView) {
+        NSLayoutConstraint.activate([
+            button.topAnchor.constraint(equalTo: layout, constant: 20),
+            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leading),
+            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: trailing),
+            button.heightAnchor.constraint(equalToConstant: height)
+        ])
+    }
+    
+    func setConstraints(_ label: UILabel, on button: UIButton, constant: CGFloat) {
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: constant),
+            label.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 10),
+            label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -10)
+        ])
+    }
+}
+// MARK: - Private methods
+extension GameTypeViewModel {
     // MARK: - Set bullet list
     private func bullets(list: [String]) -> [ParagraphData] {
         var paragraphData: [ParagraphData] = []
@@ -657,6 +726,43 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         paragraphStyle.firstLineHeadIndent = 0
         paragraphStyle.headIndent = headIndent
         return paragraphStyle
+    }
+    // MARK: - Set stack views for view help
+    private func setView() {
+        let view = UIView()
+        switch tag {
+        case 0, 1, 4:
+            let stackView = topic(image: imageFirst(), color: colorTitle(),
+                                  title: titleFirst(), description: descriptionFirst())
+            setupSubviews(subviews: stackView, on: view)
+        case 2:
+            let stackViewOne = topic(image: imageFirst(), color: .white,
+                                     title: titleFirst(), description: descriptionFirst())
+            let stackViewTwo = topic(image: imageSecond(), color: .white,
+                                     title: titleSecond(), description: descriptionSecond())
+            setupSubviews(subviews: stackViewOne, stackViewTwo, on: view)
+        default:
+            let stackViewOne = topic(image: imageFirst(), color: .white,
+                                     title: titleFirst(), description: descriptionFirst())
+            let stackViewTwo = topic(image: imageSecond(), color: .white,
+                                     title: titleSecond(), description: descriptionSecond())
+            let stackViewThree = topic(image: "building.2", color: .white,
+                                       title: "Режим столицы", description: descriptionThird())
+            setupSubviews(subviews: stackViewOne, stackViewTwo, stackViewThree, on: view)
+        }
+    }
+    
+    private func topic(image: String, color: UIColor, title: String, 
+                       description: String) -> UIStackView {
+        let image = setImage(image: image, color: color)
+        let view = setView(color: game.swap, addImage: image)
+        let title = setLabel(title: title, size: 24, alignment: .left)
+        let description = setLabel(title: description, size: 19, alignment: .left)
+        let stackViewOne = setStackView(title, description)
+        let stackViewTwo = setStackView(view, stackViewOne)
+        setCenterSubview(subview: image, on: view)
+        setSquare(subviews: view, sizes: 40)
+        return stackViewTwo
     }
     // MARK: - Button titles
     private func comma(continents: Bool...) -> String {
@@ -806,7 +912,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     }
     
     private func checkQuestionnaire(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView) {
-        tag == 1 ? pickerViewThirdOn(pickerViewOneTime, pickerViewAllTime) : 
+        tag == 1 ? pickerViewThirdOn(pickerViewOneTime, pickerViewAllTime) :
         pickerViewSecondOn(pickerViewOneTime, pickerViewAllTime)
     }
     
@@ -955,5 +1061,60 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
             let row = pickerViewAll.selectedRow(inComponent: 0)
             setTimeAllQuestions(time: row + 4 * countQuestions)
         }
+    }
+}
+// MARK: - Set subviews for popup view help
+extension GameTypeViewModel {
+    private func setLabel(title: String, size: CGFloat,
+                          alignment: NSTextAlignment? = nil) -> UILabel {
+        let label = UILabel()
+        label.text = title
+        label.textColor = .white
+        label.font = UIFont(name: "GillSans", size: size)
+        label.textAlignment = alignment ?? .center
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+    
+    private func setting(_ label: UILabel, size: CGFloat) -> UILabel {
+        label.textColor = .white
+        label.font = UIFont(name: "Gill Sans", size: size)
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+    
+    private func setImage(image: String, color: UIColor) -> UIImageView {
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
+        let image = UIImage(systemName: image, withConfiguration: size)
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = color
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }
+    
+    private func setView(color: UIColor, addImage: UIImageView) -> UIView {
+        let view = UIView()
+        view.backgroundColor = color
+        view.layer.cornerRadius = 12
+        view.translatesAutoresizingMaskIntoConstraints = false
+        setupSubviews(subviews: addImage, on: view)
+        return view
+    }
+    
+    private func setStackView(_ top: UIView, _ bottom: UIView) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [top, bottom])
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    private func setStackView(_ view: UIView, _ stackView: UIStackView) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [view, stackView])
+        stackView.spacing = 10
+        stackView.alignment = .top
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }
 }

@@ -37,151 +37,14 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var buttonHelp: UIButton = {
-        setupButton(image: "questionmark", action: #selector(showDescription))
-    }()
-    
-    private lazy var labelDescription: UILabel = {
-        setupLabel(
-            color: .white,
-            title: "\(viewModel.description)",
-            size: 19,
-            style: "Gill Sans",
-            alignment: .left)
-    }()
-    
-    private lazy var labelBulletsList: UILabel = {
-        viewModel.bulletsList(list: viewModel.bulletsListGameType())
-    }()
-    
-    private lazy var imageFirstSwap: UIImageView = {
-        setupImage(image: viewModel.imageFirst(), color: viewModel.colorTitle(), size: 25)
-    }()
-    
-    private lazy var viewFirstSwap: UIView = {
-        setupView(color: viewModel.colorSwap, radius: 12, addSubview: imageFirstSwap)
-    }()
-    
-    private lazy var labelFirstSwap: UILabel = {
-        setupLabel(
-            color: .white,
-            title: viewModel.titleFirst(),
-            size: 24,
-            style: "Gill Sans",
-            alignment: .left)
-    }()
-    
-    private lazy var labelFirstDescriptionSwap: UILabel = {
-        setupLabel(
-            color: .white,
-            title: viewModel.descriptionFirst(),
-            size: 19,
-            style: "Gill Sans",
-            alignment: .left)
-    }()
-    
-    private lazy var stackViewFirst: UIStackView = {
-        setupStackView(labelTop: labelFirstSwap, labelBottom: labelFirstDescriptionSwap)
-    }()
-    
-    private lazy var stackViewFirstSwap: UIStackView = {
-        setupStackView(view: viewFirstSwap, stackView: stackViewFirst)
-    }()
-    
-    private lazy var imageSecondSwap: UIImageView = {
-        setupImage(image: viewModel.imageSecond(), color: .white, size: 25)
-    }()
-    
-    private lazy var viewSecondSwap: UIView = {
-        setupView(color: viewModel.colorSwap, radius: 12, addSubview: imageSecondSwap)
-    }()
-    
-    private lazy var labelSecondSwap: UILabel = {
-        setupLabel(
-            color: .white,
-            title: viewModel.titleSecond(),
-            size: 24,
-            style: "Gill Sans",
-            alignment: .left)
-    }()
-    
-    private lazy var labelSecondDescriptionSwap: UILabel = {
-        setupLabel(
-            color: .white,
-            title: viewModel.descriptionSecond(),
-            size: 19,
-            style: "Gill Sans",
-            alignment: .left)
-    }()
-    
-    private lazy var stackViewSecond: UIStackView = {
-        setupStackView(labelTop: labelSecondSwap, labelBottom: labelSecondDescriptionSwap)
-    }()
-    
-    private lazy var stackViewSecondSwap: UIStackView = {
-        setupStackView(view: viewSecondSwap, stackView: stackViewSecond)
-    }()
-    
-    private lazy var imageThirdSwap: UIImageView = {
-        setupImage(image: "building.2", color: .white, size: 25)
-    }()
-    
-    private lazy var viewThirdSwap: UIView = {
-        setupView(color: viewModel.colorSwap, radius: 12, addSubview: imageThirdSwap)
-    }()
-    
-    private lazy var labelThirdSwap: UILabel = {
-        setupLabel(
-            color: .white,
-            title: "Режим столицы",
-            size: 24,
-            style: "Gill Sans",
-            alignment: .left)
-    }()
-    
-    private lazy var labelThirdDescriptionSwap: UILabel = {
-        setupLabel(
-            color: .white,
-            title: "В качестве вопроса задается наименование столицы и пользователь должен составить слово из букв наименования страны.",
-            size: 19,
-            style: "Gill Sans",
-            alignment: .left)
-    }()
-    
-    private lazy var stackViewThird: UIStackView = {
-        setupStackView(labelTop: labelThirdSwap, labelBottom: labelThirdDescriptionSwap)
-    }()
-    
-    private lazy var stackViewThirdSwap: UIStackView = {
-        setupStackView(view: viewThirdSwap, stackView: stackViewThird)
-    }()
-    
-    private lazy var viewDescription: UIView = {
-        let view = setupView(color: .clear)
-        addSubviewsDescription(view: view)
-        settingLabel(label: labelBulletsList, size: 19)
-        return view
-    }()
-    
-    private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.backgroundColor = viewModel.background
-        scrollView.layer.cornerRadius = 15
-        scrollView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        viewModel.setupSubviews(subviews: viewDescription, on: scrollView)
-        return scrollView
-    }()
-    
-    private lazy var labelName: UILabel = {
-        setupLabel(color: .white, title: "Тип игры", size: 25, style: "Gill Sans")
+        setupButton(image: "questionmark", action: #selector(showViewHelp))
     }()
     
     private lazy var viewHelp: UIView = {
-        let view = PopUpView()
-        view.backgroundColor = viewModel.colorSwap
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.delegate = self
-        viewModel.setupSubviews(subviews: labelName, scrollView, on: view)
+        let button = setupButton(image: "multiply", action: #selector(closeView))
+        let view = viewModel.viewHelp(view)
+        view.addSubview(button)
+        viewModel.setConstraints(button, view)
         return view
     }()
     
@@ -627,9 +490,9 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         navigationController?.popViewController(animated: true)
     }
     
-    @objc private func showDescription() {
+    @objc private func showViewHelp() {
         viewModel.setupSubviews(subviews: viewHelp, on: view)
-        setupConstraintsViewHelp()
+        viewModel.setConstraints(viewHelp, view)
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
         
         viewHelp.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
@@ -640,29 +503,16 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             viewHelp.transform = .identity
         }
     }
-    // MARK: - Subviews for PopUp view
-    private func addSubviewsDescription(view: UIView) {
-        switch viewModel.setTag {
-        case 0, 1, 4: addSubviewsTwo(view: view)
-        case 2: addSubviewsOne(view: view)
-        default: addSubviewsThree(view: view)
+    
+    @objc private func closeView() {
+        viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: true)
+        UIView.animate(withDuration: 0.5) { [self] in
+            visualEffectView.alpha = 0
+            viewHelp.alpha = 0
+            viewHelp.transform = CGAffineTransform.init(scaleX: 0.6, y: 0.6)
+        } completion: { [self] _ in
+            viewHelp.removeFromSuperview()
         }
-    }
-    
-    private func addSubviewsOne(view: UIView) {
-        viewModel.setupSubviews(subviews: labelDescription, labelBulletsList,
-                                stackViewFirstSwap, on: view)
-    }
-    
-    private func addSubviewsTwo(view: UIView) {
-        viewModel.setupSubviews(subviews: labelDescription, labelBulletsList,
-                                stackViewFirstSwap, stackViewSecondSwap, on: view)
-    }
-    
-    private func addSubviewsThree(view: UIView) {
-        viewModel.setupSubviews(subviews: labelDescription, labelBulletsList,
-                                stackViewFirstSwap, stackViewSecondSwap,
-                                stackViewThirdSwap, on: view)
     }
     // MARK: - Methods for popup view controllers
     private func addSubviews(tag: Int) {
@@ -880,91 +730,6 @@ extension GameTypeViewController {
         ])
     }
     
-    private func setupConstraintsViewHelp() {
-        NSLayoutConstraint.activate([
-            viewHelp.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            viewHelp.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            viewHelp.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
-            viewHelp.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelName.centerXAnchor.constraint(equalTo: viewHelp.centerXAnchor, constant: 20),
-            labelName.centerYAnchor.constraint(equalTo: viewHelp.topAnchor, constant: 31.875)
-        ])
-        
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: viewHelp.topAnchor, constant: 63.75),
-            scrollView.leadingAnchor.constraint(equalTo: viewHelp.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: viewHelp.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: viewHelp.bottomAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            viewDescription.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            viewDescription.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            viewDescription.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            viewDescription.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            viewDescription.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            viewDescription.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: viewModel.size())
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelDescription.topAnchor.constraint(equalTo: viewDescription.topAnchor, constant: 15),
-            labelDescription.leadingAnchor.constraint(equalTo: viewDescription.leadingAnchor, constant: 15),
-            labelDescription.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelBulletsList.topAnchor.constraint(equalTo: labelDescription.bottomAnchor, constant: 19),
-            labelBulletsList.leadingAnchor.constraint(equalTo: viewDescription.leadingAnchor, constant: 15),
-            labelBulletsList.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
-        ])
-        
-        setupGameTypeDescription()
-    }
-    
-    private func setupGameTypeDescription() {
-        switch viewModel.setTag {
-        case 0, 1, 4: gameTypeSecond()
-        case 3: gameTypeThird()
-        default: gameTypeFirst()
-        }
-    }
-    
-    private func gameTypeFirst() {
-        setViewsImagesSwap(image: imageFirstSwap, view: viewFirstSwap,
-                           subview: stackViewFirstSwap, to: labelBulletsList)
-    }
-    
-    private func gameTypeSecond() {
-        setViewsImagesSwap(image: imageFirstSwap, view: viewFirstSwap,
-                           subview: stackViewFirstSwap, to: labelBulletsList)
-        setViewsImagesSwap(image: imageSecondSwap, view: viewSecondSwap,
-                           subview: stackViewSecondSwap, to: stackViewFirstSwap)
-    }
-    
-    private func gameTypeThird() {
-        setViewsImagesSwap(image: imageFirstSwap, view: viewFirstSwap,
-                           subview: stackViewFirstSwap, to: labelBulletsList)
-        setViewsImagesSwap(image: imageSecondSwap, view: viewSecondSwap,
-                           subview: stackViewSecondSwap, to: stackViewFirstSwap)
-        setViewsImagesSwap(image: imageThirdSwap, view: viewThirdSwap,
-                           subview: stackViewThirdSwap, to: stackViewSecondSwap)
-    }
-    
-    private func setViewsImagesSwap(image: UIImageView, view: UIView, 
-                                    subview: UIView, to otherSubview: UIView) {
-        viewModel.setCenterSubview(subview: image, on: view)
-        viewModel.setSquare(subviews: view, sizes: 40)
-        
-        NSLayoutConstraint.activate([
-            subview.topAnchor.constraint(equalTo: otherSubview.bottomAnchor),
-            subview.leadingAnchor.constraint(equalTo: viewDescription.leadingAnchor, constant: 15),
-            subview.trailingAnchor.constraint(equalTo: viewDescription.trailingAnchor, constant: -15)
-        ])
-    }
-    
     private func setupConstraintsSettingCountQuestions() {
         setupConstraintsViewsAndLabel(constant: 100)
         setupConstraintsSubviews(subview: pickerViewQuestions, to: viewSettingDescription, height: 110)
@@ -1053,20 +818,6 @@ extension GameTypeViewController {
             stackView.trailingAnchor.constraint(equalTo: viewSettingDescription.trailingAnchor, constant: -20),
             stackView.heightAnchor.constraint(equalToConstant: 50)
         ])
-    }
-}
-
-// MARK: - PopUpViewHelpDelegate
-extension GameTypeViewController: PopUpViewDelegate {
-    func closeView() {
-        viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: true)
-        UIView.animate(withDuration: 0.5) { [self] in
-            visualEffectView.alpha = 0
-            viewHelp.alpha = 0
-            viewHelp.transform = CGAffineTransform.init(scaleX: 0.6, y: 0.6)
-        } completion: { [self] _ in
-            viewHelp.removeFromSuperview()
-        }
     }
 }
 // MARK: - PopUpViewSettingDelegate

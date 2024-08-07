@@ -30,7 +30,6 @@ protocol GameTypeViewModelProtocol {
     var colorDone: UIColor { get }
     var image: String { get }
     var name: String { get }
-    var description: String { get }
     var gameType: TypeOfGame { get }
     
     var diameter: CGFloat { get }
@@ -50,6 +49,7 @@ protocol GameTypeViewModelProtocol {
     func titles(_ pickerView: UIPickerView,_ row: Int, and segmented: UISegmentedControl) -> UIView
     func swap(_ button: UIButton)
     
+    func titleSetting(tag: Int) -> String
     func isCountdown() -> Bool
     func isOneQuestion() -> Bool
     func oneQuestionTime() -> Int
@@ -82,15 +82,6 @@ protocol GameTypeViewModelProtocol {
     func bulletsList(list: [String]) -> UILabel
     func bulletsListGameType() -> [String]
     
-    func titleSetting(tag: Int) -> String
-    func imageFirst() -> String
-    func colorTitle() -> UIColor
-    func titleFirst() -> String
-    func descriptionFirst() -> String
-    func imageSecond() -> String
-    func titleSecond() -> String
-    func descriptionSecond() -> String
-    
     func comma() -> String
     func countdownOnOff() -> String
     func checkTimeDescription() -> String
@@ -110,7 +101,7 @@ protocol GameTypeViewModelProtocol {
     func segmentSelect(_ segment: UISegmentedControl,_ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView,_ label: UILabel)
     func counterContinents()
     func setSubviewsTag(subviews: UIView..., tag: Int)
-    func viewHelp() -> UIView
+    func viewHelp(_ view: UIView) -> UIView
     
     func buttonAllCountries(_ buttonAllCountries: UIButton,_ labelAllCountries: UILabel,
                             _ labelCountCountries: UILabel,_ colorButton: UIColor,_ colorLabel: UIColor)
@@ -133,6 +124,8 @@ protocol GameTypeViewModelProtocol {
     func setConstraints(_ button: UIButton, layout: NSLayoutYAxisAnchor, leading: CGFloat,
                         trailing: CGFloat, height: CGFloat,_ view: UIView)
     func setConstraints(_ label: UILabel, on button: UIButton, constant: CGFloat)
+    func setConstraints(_ button: UIButton,_ view: UIView)
+    func setConstraints(_ viewHelp: UIView,_ view: UIView)
     
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol
     func questionnaireViewModel() -> QuestionnaireViewModelProtocol
@@ -199,9 +192,6 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     var name: String {
         game.name
     }
-    var description: String {
-        game.description
-    }
     var gameType: TypeOfGame {
         game.gameType
     }
@@ -216,7 +206,12 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     private var mode: Setting
     private let game: Games
     private let tag: Int
-    private var popUpView: UIView!
+    
+    private var title: UILabel!
+    private var description: UILabel!
+    private var list: UILabel!
+    private var contentView: UIView!
+    private var scrollView: UIScrollView!
     
     required init(mode: Setting, game: Games, tag: Int) {
         self.mode = mode
@@ -243,15 +238,15 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         navigationItem.rightBarButtonItem = rightBarButton
     }
     
-    func viewHelp() -> UIView {
-        let title = setLabel(title: "Тип игры", size: 25)
-        let description = setLabel(title: game.description, size: 19, alignment: .left)
-        let list = setting(bulletsList(list: bulletsListGameType()), size: 19)
-        let stackView = UIStackView()
-        let view = PopUpView()
-        view.backgroundColor = game.swap
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
+    func viewHelp(_ view: UIView) -> UIView {
+        let popUpView = UIView()
+        popUpView.backgroundColor = game.swap
+        popUpView.translatesAutoresizingMaskIntoConstraints = false
+        popUpView.layer.cornerRadius = 15
+        addSubviewsForPopUpView()
+        setupSubviews(subviews: title, scrollView, on: popUpView)
+        setConstraints(popUpView, and: view)
+        return popUpView
     }
     // MARK: - PickerView
     func numberOfComponents() -> Int {
@@ -288,7 +283,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         label.attributedText = attributed
         return label
     }
-    // MARK: - Image for button of setting
+    // MARK: - Constants
     func imageMode() -> String {
         switch tag {
         case 0, 1, 4: return mode.flag ? "flag" : "building"
@@ -296,24 +291,11 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         default: return scrabbleType()
         }
     }
-    // MARK: - Enable or disable button of setting
+    
     func isEnabled() -> Bool {
         tag == 2 ? false : true
     }
-    // MARK: - Show / hide bar buttons
-    func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool) {
-        let opacity: Float = bool ? 1 : 0
-        isEnabled(buttons: buttonBack, buttonHelp, bool: bool)
-        setupOpacityButtons(buttons: buttonBack, buttonHelp, opacity: opacity)
-    }
-    // MARK: - Press swap button of setting
-    func swap(_ button: UIButton) {
-        switch tag {
-        case 0, 1, 4: GameTypeFirst(button: button)
-        default: GameTypeSecond(button: button)
-        }
-    }
-    // MARK: - Setup constants
+    
     func isCountdown() -> Bool {
         mode.timeElapsed.timeElapsed ? true : false
     }
@@ -334,51 +316,6 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         isOn ? "checkmark.circle.fill" : "circle"
     }
     
-    func imageFirst() -> String {
-        tag == 2 ? "globe.europe.africa" : "flag"
-    }
-    
-    func colorTitle() -> UIColor {
-        tag == 2 ? .white.withAlphaComponent(0.4) : .white
-    }
-    
-    func titleFirst() -> String {
-        tag == 2 ? "Режим карты" : "Режим флага"
-    }
-    
-    func descriptionFirst() -> String {
-        switch tag {
-        case 0, 1: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования страны."
-        case 2: "В качестве вопроса задается географическая карта страны и пользователь должен выбрать ответ наименования страны. (Кнопка неактивна)"
-        case 3: "В качестве вопроса задается флаг страны и пользователь должен составить слово из букв наименования страны."
-        default: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования столицы."
-        }
-    }
-    
-    func imageSecond() -> String {
-        tag == 3 ? "globe.europe.africa" : "building"
-    }
-    
-    func titleSecond() -> String {
-        switch tag {
-        case 0, 1: "Режим наименования"
-        case 4: "Режим столицы"
-        default: "Режим карты"
-        }
-    }
-    
-    func descriptionSecond() -> String {
-        switch tag {
-        case 0, 1: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ флага страны."
-        case 4: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ наименования столицы."
-        default: "В качестве вопроса задается географическая карта страны и пользователь должен составить слово из букв наименования страны."
-        }
-    }
-    
-    func descriptionThird() -> String {
-        "В качестве вопроса задается наименование столицы и пользователь должен составить слово из букв наименования страны."
-    }
-    
     func isSelect(isOn: Bool) -> UIColor {
         isOn ? background : .white
     }
@@ -395,7 +332,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         default: return checkTimeDescription()
         }
     }
-    // MARK: - Button titles
+    
     func comma() -> String {
         comma(continents: allCountries, americaContinent, europeContinent,
               africaContinent, asiaContinent, oceaniaContinent)
@@ -407,6 +344,19 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     
     func checkTimeDescription() -> String {
         isOneQuestion() ? "\(checkTitleGameType())" : "Время всех вопросов"
+    }
+    // MARK: - Show / hide bar buttons
+    func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool) {
+        let opacity: Float = bool ? 1 : 0
+        isEnabled(buttons: buttonBack, buttonHelp, bool: bool)
+        setupOpacityButtons(buttons: buttonBack, buttonHelp, opacity: opacity)
+    }
+    // MARK: - Press swap button of setting
+    func swap(_ button: UIButton) {
+        switch tag {
+        case 0, 1, 4: GameTypeFirst(button: button)
+        default: GameTypeSecond(button: button)
+        }
     }
     // MARK: - Bullets
     func bulletsList(list: [String]) -> UILabel {
@@ -681,6 +631,23 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
             label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -10)
         ])
     }
+    
+    func setConstraints(_ button: UIButton, _ view: UIView) {
+        setSquare(subviews: button, sizes: 40)
+        NSLayoutConstraint.activate([
+            button.topAnchor.constraint(equalTo: view.topAnchor, constant: 12.5),
+            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12.5)
+        ])
+    }
+    
+    func setConstraints(_ viewHelp: UIView, _ view: UIView) {
+        NSLayoutConstraint.activate([
+            viewHelp.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            viewHelp.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            viewHelp.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
+            viewHelp.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
+        ])
+    }
 }
 // MARK: - Private methods
 extension GameTypeViewModel {
@@ -727,29 +694,35 @@ extension GameTypeViewModel {
         paragraphStyle.headIndent = headIndent
         return paragraphStyle
     }
-    // MARK: - Set stack views for view help
-    private func setView() {
+    // MARK: - Set subviews for view help
+    private func addSubviewsForPopUpView() {
+        title = setLabel(title: "Тип игры", size: 25)
+        description = setLabel(title: game.description, size: 19, alignment: .left)
+        list = setting(bulletsList(list: bulletsListGameType()), size: 19)
+        contentView = setContentView(description, list)
+        scrollView = setScrollView(contentView)
+    }
+    
+    private func setContentView(_ description: UILabel, _ list: UILabel) -> UIView {
         let view = UIView()
+        view.backgroundColor = .clear
+        view.translatesAutoresizingMaskIntoConstraints = false
+        setupSubviews(subviews: description, list, on: view)
         switch tag {
         case 0, 1, 4:
-            let stackView = topic(image: imageFirst(), color: colorTitle(),
-                                  title: titleFirst(), description: descriptionFirst())
-            setupSubviews(subviews: stackView, on: view)
+            let stackViews = gameTypeFirst()
+            setupSubviews(subviews: stackViews.0, stackViews.1, on: view)
+            setConstraintsFirst(stackViews.0, stackViews.1, view)
         case 2:
-            let stackViewOne = topic(image: imageFirst(), color: .white,
-                                     title: titleFirst(), description: descriptionFirst())
-            let stackViewTwo = topic(image: imageSecond(), color: .white,
-                                     title: titleSecond(), description: descriptionSecond())
-            setupSubviews(subviews: stackViewOne, stackViewTwo, on: view)
+            let stackView = gameTypeSecond()
+            setupSubviews(subviews: stackView, on: view)
+            setConstraintSecond(stackView, view)
         default:
-            let stackViewOne = topic(image: imageFirst(), color: .white,
-                                     title: titleFirst(), description: descriptionFirst())
-            let stackViewTwo = topic(image: imageSecond(), color: .white,
-                                     title: titleSecond(), description: descriptionSecond())
-            let stackViewThree = topic(image: "building.2", color: .white,
-                                       title: "Режим столицы", description: descriptionThird())
-            setupSubviews(subviews: stackViewOne, stackViewTwo, stackViewThree, on: view)
+            let stackViews = gameTypeThird()
+            setupSubviews(subviews: stackViews.0, stackViews.1, stackViews.2, on: view)
+            setConstraintsThird(stackViews.0, stackViews.1, stackViews.2, view)
         }
+        return view
     }
     
     private func topic(image: String, color: UIColor, title: String, 
@@ -764,42 +737,54 @@ extension GameTypeViewModel {
         setSquare(subviews: view, sizes: 40)
         return stackViewTwo
     }
-    // MARK: - Button titles
-    private func comma(continents: Bool...) -> String {
-        var text = ""
-        var number = 0
-        continents.forEach { continent in
-            number += 1
-            if continent {
-                text += text == "" ? checkContinent(continent: number) : ", " + checkContinent(continent: number)
-            }
-        }
-        return text
+    
+    private func gameTypeFirst() -> (UIStackView, UIStackView) {
+        let stackViewOne = topic(image: imageFirst(), color: .white,
+                                 title: titleFirst(), description: descriptionFirst())
+        let stackViewTwo = topic(image: imageSecond(), color: .white,
+                                 title: titleSecond(), description: descriptionSecond())
+        return (stackViewOne, stackViewTwo)
     }
     
-    private func checkContinent(continent: Int) -> String {
-        var text = ""
-        switch continent {
-        case 1: text = "Все страны"
-        case 2: text = "Америка"
-        case 3: text = "Европа"
-        case 4: text = "Африка"
-        case 5: text = "Азия"
-        default: text = "Океания"
-        }
-        return text
+    private func gameTypeSecond() -> UIStackView {
+        topic(image: imageFirst(), color: .white.withAlphaComponent(0.4),
+              title: titleFirst(), description: descriptionFirst())
     }
     
-    private func checkCountdownType() -> String {
-        isOneQuestion() ? "\(checkTimeGameType())" : "\(allQuestionsTime())"
+    private func gameTypeThird() -> (UIStackView, UIStackView, UIStackView) {
+        let stackViewOne = topic(image: imageFirst(), color: .white,
+                                 title: titleFirst(), description: descriptionFirst())
+        let stackViewTwo = topic(image: imageSecond(), color: .white,
+                                 title: titleSecond(), description: descriptionSecond())
+        let stackViewThree = topic(image: "building.2", color: .white,
+                                   title: "Режим столицы", description: descriptionThird())
+        return (stackViewOne, stackViewTwo, stackViewThree)
     }
     
-    private func checkTimeGameType() -> String {
-        gameType == .questionnaire ? "\(allQuestionsTime())" : "\(oneQuestionTime())"
+    private func setConstraintsFirst(_ first: UIView, _ second: UIView, _ view: UIView) {
+        setConstraints(subview: first, to: list, view)
+        setConstraints(subview: second, to: first, view)
     }
     
-    private func checkTitleGameType() -> String {
-        gameType == .questionnaire ? "Время всех вопросов" : "Время одного вопроса"
+    private func setConstraintSecond(_ first: UIView, _ view: UIView) {
+        setConstraints(subview: first, to: list, view)
+    }
+    
+    private func setConstraintsThird(_ first: UIView, _ second: UIView, 
+                                     _ third: UIView, _ view: UIView) {
+        setConstraints(subview: first, to: list, view)
+        setConstraints(subview: second, to: first, view)
+        setConstraints(subview: third, to: second, view)
+    }
+    
+    private func setScrollView(_ contentView: UIView) -> UIScrollView {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = game.background
+        scrollView.layer.cornerRadius = 15
+        scrollView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(contentView)
+        return scrollView
     }
     // MARK: - Button change type game mode
     private func GameTypeFirst(button: UIButton) {
@@ -841,14 +826,6 @@ extension GameTypeViewModel {
             return tag == 2 ? game.favourite : .grayLight
         default:
             return tag == 2 ? .grayLight : game.favourite
-        }
-    }
-    // MARK: - Image
-    private func scrabbleType() -> String {
-        switch mode.scrabbleType {
-        case 0: return "flag"
-        case 1: return "globe.europe.africa"
-        default: return "building.2"
         }
     }
     // MARK: - Show / hide bar buttons
@@ -1063,6 +1040,94 @@ extension GameTypeViewModel {
         }
     }
 }
+// MARK: - Private methods, constants
+extension GameTypeViewModel {
+    private func comma(continents: Bool...) -> String {
+        var text = ""
+        var number = 0
+        continents.forEach { continent in
+            number += 1
+            if continent {
+                text += text == "" ? checkContinent(continent: number) : ", " + checkContinent(continent: number)
+            }
+        }
+        return text
+    }
+    
+    private func checkContinent(continent: Int) -> String {
+        var text = ""
+        switch continent {
+        case 1: text = "Все страны"
+        case 2: text = "Америка"
+        case 3: text = "Европа"
+        case 4: text = "Африка"
+        case 5: text = "Азия"
+        default: text = "Океания"
+        }
+        return text
+    }
+    
+    private func checkCountdownType() -> String {
+        isOneQuestion() ? "\(checkTimeGameType())" : "\(allQuestionsTime())"
+    }
+    
+    private func checkTimeGameType() -> String {
+        gameType == .questionnaire ? "\(allQuestionsTime())" : "\(oneQuestionTime())"
+    }
+    
+    private func checkTitleGameType() -> String {
+        gameType == .questionnaire ? "Время всех вопросов" : "Время одного вопроса"
+    }
+    
+    private func scrabbleType() -> String {
+        switch mode.scrabbleType {
+        case 0: return "flag"
+        case 1: return "globe.europe.africa"
+        default: return "building.2"
+        }
+    }
+    
+    private func imageFirst() -> String {
+        tag == 2 ? "globe.europe.africa" : "flag"
+    }
+    
+    private func titleFirst() -> String {
+        tag == 2 ? "Режим карты" : "Режим флага"
+    }
+    
+    private func descriptionFirst() -> String {
+        switch tag {
+        case 0, 1: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования страны."
+        case 2: "В качестве вопроса задается географическая карта страны и пользователь должен выбрать ответ наименования страны. (Кнопка неактивна)"
+        case 3: "В качестве вопроса задается флаг страны и пользователь должен составить слово из букв наименования страны."
+        default: "В качестве вопроса задается флаг страны и пользователь должен выбрать ответ наименования столицы."
+        }
+    }
+    
+    private func imageSecond() -> String {
+        tag == 3 ? "globe.europe.africa" : "building"
+    }
+    
+    private func titleSecond() -> String {
+        switch tag {
+        case 0, 1: "Режим наименования"
+        case 4: "Режим столицы"
+        default: "Режим карты"
+        }
+    }
+    
+    private func descriptionSecond() -> String {
+        switch tag {
+        case 0, 1: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ флага страны."
+        case 4: "В качестве вопроса задается наименование страны и пользователь должен выбрать ответ наименования столицы."
+        default: "В качестве вопроса задается географическая карта страны и пользователь должен составить слово из букв наименования страны."
+        }
+    }
+    
+    private func descriptionThird() -> String {
+        "В качестве вопроса задается наименование столицы и пользователь должен составить слово из букв наименования страны."
+    }
+}
 // MARK: - Set subviews for popup view help
 extension GameTypeViewModel {
     private func setLabel(title: String, size: CGFloat,
@@ -1116,5 +1181,50 @@ extension GameTypeViewModel {
         stackView.alignment = .top
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
+    }
+}
+// MARK: - Private methods, constraints
+extension GameTypeViewModel {
+    private func setConstraints(subview: UIView, to otherSubview: UIView, _ view: UIView) {
+        NSLayoutConstraint.activate([
+            subview.topAnchor.constraint(equalTo: otherSubview.bottomAnchor),
+            subview.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            subview.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
+        ])
+    }
+    
+    private func setConstraints(_ popUpView: UIView, and view: UIView) {
+        NSLayoutConstraint.activate([
+            title.centerXAnchor.constraint(equalTo: popUpView.centerXAnchor, constant: 20),
+            title.centerYAnchor.constraint(equalTo: popUpView.topAnchor, constant: 31.875)
+        ])
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: popUpView.topAnchor, constant: 63.75),
+            scrollView.leadingAnchor.constraint(equalTo: popUpView.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: popUpView.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: popUpView.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: size())
+        ])
+        
+        NSLayoutConstraint.activate([
+            description.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
+            description.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            description.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
+        ])
+        
+        NSLayoutConstraint.activate([
+            list.topAnchor.constraint(equalTo: description.bottomAnchor, constant: 19),
+            list.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            list.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
+        ])
     }
 }

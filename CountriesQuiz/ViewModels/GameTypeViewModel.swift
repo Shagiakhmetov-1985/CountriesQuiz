@@ -9,7 +9,6 @@ import UIKit
 
 protocol GameTypeViewModelProtocol {
     var setting: Setting { get }
-    var games: Games { get }
     var setTag: Int { get }
     var countQuestions: Int { get }
     var countRows: Int { get }
@@ -60,27 +59,10 @@ protocol GameTypeViewModelProtocol {
     func imageMode() -> String
     func isEnabled() -> Bool
     
-    func countdownOnOff(isOn: Bool)
-    func oneQuestionOnOff(isOn: Bool)
-    func setTimeOneQuestion(time: Int)
-    func setTimeAllQuestions(time: Int)
     func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool)
-    
-    func setCountQuestions(_ countQuestions: Int)
-    func setCountRows(_ countRows: Int)
-    
-    func setAllCountries(_ bool: Bool)
-    func setAmericaContinent(_ bool: Bool)
-    func setEuropeContinent(_ bool: Bool)
-    func setAfricaContinent(_ bool: Bool)
-    func setAsiaContinent(_ bool: Bool)
-    func setOceaniaContinent(_ bool: Bool)
     
     func width(_ view: UIView) -> CGFloat
     func size() -> CGFloat
-    
-    func bulletsList(list: [String]) -> UILabel
-    func bulletsListGameType() -> [String]
     
     func comma() -> String
     func countdownOnOff() -> String
@@ -102,6 +84,8 @@ protocol GameTypeViewModelProtocol {
     func counterContinents()
     func setSubviewsTag(subviews: UIView..., tag: Int)
     func viewHelp(_ view: UIView) -> UIView
+    func viewSetting() -> UIView
+    func addSubviewsForViewSetting(_ tag: Int)
     
     func buttonAllCountries(_ buttonAllCountries: UIButton,_ labelAllCountries: UILabel,
                             _ labelCountCountries: UILabel,_ colorButton: UIColor,_ colorLabel: UIColor)
@@ -137,9 +121,6 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     
     var setting: Setting {
         mode
-    }
-    var games: Games {
-        game
     }
     var setTag: Int {
         tag
@@ -239,14 +220,19 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     }
     
     func viewHelp(_ view: UIView) -> UIView {
-        let popUpView = UIView()
-        popUpView.backgroundColor = game.swap
-        popUpView.translatesAutoresizingMaskIntoConstraints = false
-        popUpView.layer.cornerRadius = 15
+        let popUpView = setView()
         addSubviewsForPopUpView()
         setupSubviews(subviews: title, scrollView, on: popUpView)
         setConstraints(popUpView, and: view)
         return popUpView
+    }
+    
+    func viewSetting() -> UIView {
+        setView()
+    }
+    
+    func addSubviewsForViewSetting(_ tag: Int) {
+        <#code#>
     }
     // MARK: - PickerView
     func numberOfComponents() -> Int {
@@ -345,56 +331,6 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     func checkTimeDescription() -> String {
         isOneQuestion() ? "\(checkTitleGameType())" : "Время всех вопросов"
     }
-    // MARK: - Show / hide bar buttons
-    func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool) {
-        let opacity: Float = bool ? 1 : 0
-        isEnabled(buttons: buttonBack, buttonHelp, bool: bool)
-        setupOpacityButtons(buttons: buttonBack, buttonHelp, opacity: opacity)
-    }
-    // MARK: - Press swap button of setting
-    func swap(_ button: UIButton) {
-        switch tag {
-        case 0, 1, 4: GameTypeFirst(button: button)
-        default: GameTypeSecond(button: button)
-        }
-    }
-    // MARK: - Bullets
-    func bulletsList(list: [String]) -> UILabel {
-        let label = UILabel()
-        let paragraphDataPairs: [ParagraphData] = bullets(list: list)
-        let stringAttributes: [NSAttributedString.Key: Any] = [.font: label.font!]
-        let bulletedAttributedString = makeBulletedAttributedString(
-            paragraphDataPairs: paragraphDataPairs,
-            attributes: stringAttributes)
-        label.attributedText = bulletedAttributedString
-        return label
-    }
-    
-    func bulletsListGameType() -> [String] {
-        switch tag {
-        case 0: return GameType.shared.bulletsQuizOfFlags
-        case 1: return GameType.shared.bulletsQuestionnaire
-        case 2: return GameType.shared.bulletsQuizOfMaps
-        case 3: return GameType.shared.bulletsScrabble
-        default: return GameType.shared.bulletsQuizOfCapitals
-        }
-    }
-    // MARK: - Set change setting
-    func countdownOnOff(isOn: Bool) {
-        mode.timeElapsed.timeElapsed = isOn
-    }
-    
-    func oneQuestionOnOff(isOn: Bool) {
-        mode.timeElapsed.questionSelect.oneQuestion = isOn
-    }
-    
-    func setTimeOneQuestion(time: Int) {
-        mode.timeElapsed.questionSelect.questionTime.oneQuestionTime = time
-    }
-    
-    func setTimeAllQuestions(time: Int) {
-        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = time
-    }
     
     func width(_ view: UIView) -> CGFloat {
         view.frame.width / 2 + 10
@@ -408,39 +344,20 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         default: 1.65
         }
     }
-    
-    func setCountQuestions(_ countQuestions: Int) {
-        mode.countQuestions = countQuestions
+    // MARK: - Show / hide bar buttons
+    func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool) {
+        let opacity: Float = bool ? 1 : 0
+        isEnabled(buttons: buttonBack, buttonHelp, bool: bool)
+        setupOpacityButtons(buttons: buttonBack, buttonHelp, opacity: opacity)
     }
-    
-    func setCountRows(_ countRows: Int) {
-        mode.countRows = countRows
+    // MARK: - Press swap button of setting
+    func swap(_ button: UIButton) {
+        switch tag {
+        case 0, 1, 4: GameTypeFirst(button: button)
+        default: GameTypeSecond(button: button)
+        }
     }
-    
-    func setAllCountries(_ bool: Bool) {
-        mode.allCountries = bool
-    }
-    
-    func setAmericaContinent(_ bool: Bool) {
-        mode.americaContinent = bool
-    }
-    
-    func setEuropeContinent(_ bool: Bool) {
-        mode.europeContinent = bool
-    }
-    
-    func setAfricaContinent(_ bool: Bool) {
-        mode.africaContinent = bool
-    }
-    
-    func setAsiaContinent(_ bool: Bool) {
-        mode.asiaContinent = bool
-    }
-    
-    func setOceaniaContinent(_ bool: Bool) {
-        mode.oceaniaContinent = bool
-    }
-    
+    // MARK: - Set change setting
     func setCountContinents(_ count: Int) {
         if count == 0 {
             countContinents = 0
@@ -577,15 +494,15 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         setTitlesTime(labelTime, labelDescription)
         completion()
     }
-    // MARK: - Transition to QuizOfFlagsViewController
+    // MARK: - Transitions to other view controller
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol {
         QuizOfFlagsViewModel(mode: mode, game: game)
     }
-    // MARK: - Transition to QuestionnaireViewController
+    
     func questionnaireViewModel() -> QuestionnaireViewModelProtocol {
         QuestionnaireViewModel(mode: mode, game: game)
     }
-    // MARK: - Transition to QuizOfCapitalsViewController
+    
     func quizOfCapitalsViewModel() -> QuizOfCapitalsViewModelProtocol {
         QuizOfCapitalsViewModel(mode: mode, game: game)
     }
@@ -649,9 +566,29 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         ])
     }
 }
-// MARK: - Private methods
+// MARK: - Private methods, set bullet list
 extension GameTypeViewModel {
-    // MARK: - Set bullet list
+    private func bulletsList(list: [String]) -> UILabel {
+        let label = UILabel()
+        let paragraphDataPairs: [ParagraphData] = bullets(list: list)
+        let stringAttributes: [NSAttributedString.Key: Any] = [.font: label.font!]
+        let bulletedAttributedString = makeBulletedAttributedString(
+            paragraphDataPairs: paragraphDataPairs,
+            attributes: stringAttributes)
+        label.attributedText = bulletedAttributedString
+        return label
+    }
+    
+    private func bulletsListGameType() -> [String] {
+        switch tag {
+        case 0: return GameType.shared.bulletsQuizOfFlags
+        case 1: return GameType.shared.bulletsQuestionnaire
+        case 2: return GameType.shared.bulletsQuizOfMaps
+        case 3: return GameType.shared.bulletsScrabble
+        default: return GameType.shared.bulletsQuizOfCapitals
+        }
+    }
+    
     private func bullets(list: [String]) -> [ParagraphData] {
         var paragraphData: [ParagraphData] = []
         list.forEach { text in
@@ -1040,7 +977,57 @@ extension GameTypeViewModel {
         }
     }
 }
-// MARK: - Private methods, constants
+// MARK: - Set change data
+extension GameTypeViewModel {
+    private func setCountQuestions(_ countQuestions: Int) {
+        mode.countQuestions = countQuestions
+    }
+    
+    private func setCountRows(_ countRows: Int) {
+        mode.countRows = countRows
+    }
+    
+    private func setAllCountries(_ bool: Bool) {
+        mode.allCountries = bool
+    }
+    
+    private func setAmericaContinent(_ bool: Bool) {
+        mode.americaContinent = bool
+    }
+    
+    private func setEuropeContinent(_ bool: Bool) {
+        mode.europeContinent = bool
+    }
+    
+    private func setAfricaContinent(_ bool: Bool) {
+        mode.africaContinent = bool
+    }
+    
+    private func setAsiaContinent(_ bool: Bool) {
+        mode.asiaContinent = bool
+    }
+    
+    private func setOceaniaContinent(_ bool: Bool) {
+        mode.oceaniaContinent = bool
+    }
+    
+    private func countdownOnOff(isOn: Bool) {
+        mode.timeElapsed.timeElapsed = isOn
+    }
+    
+    private func oneQuestionOnOff(isOn: Bool) {
+        mode.timeElapsed.questionSelect.oneQuestion = isOn
+    }
+    
+    private func setTimeOneQuestion(time: Int) {
+        mode.timeElapsed.questionSelect.questionTime.oneQuestionTime = time
+    }
+    
+    private func setTimeAllQuestions(time: Int) {
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = time
+    }
+}
+// MARK: - Constants
 extension GameTypeViewModel {
     private func comma(continents: Bool...) -> String {
         var text = ""
@@ -1157,6 +1144,14 @@ extension GameTypeViewModel {
         imageView.tintColor = color
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
+    }
+    
+    private func setView() -> UIView {
+        let view = UIView()
+        view.backgroundColor = game.swap
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 15
+        return view
     }
     
     private func setView(color: UIColor, addImage: UIImageView) -> UIView {

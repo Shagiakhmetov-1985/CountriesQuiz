@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol PopUpViewDelegate {
-    func closeView()
-}
-
 protocol PopUpViewSettingDelegate {
     func closeViewSetting()
 }
@@ -411,6 +407,12 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var viewSetting: UIView = {
+        let button = setupButton(image: "multiply", action: #selector(closeViewSetting))
+        let view = viewModel.viewSetting()
+        view.addSubview(button)
+        viewModel.setConstraints(button, view)
+        return view
+        /*
         let view = PopUpViewSetting()
         view.backgroundColor = viewModel.colorSwap
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -418,6 +420,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         viewModel.setupSubviews(subviews: labelSetting, viewSettingDescription,
                                 stackView, on: view)
         return view
+         */
     }()
     
     var viewModel: GameTypeViewModelProtocol!
@@ -579,10 +582,13 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     private func scrabbleViewController() {
+        print("Scrabble view controller will be create.")
+        /*
         let startGameVC = ScrabbleViewController()
         startGameVC.mode = viewModel.setting
         startGameVC.game = viewModel.games
         navigationController?.pushViewController(startGameVC, animated: true)
+         */
     }
     
     private func quizOfCapitalsViewController() {

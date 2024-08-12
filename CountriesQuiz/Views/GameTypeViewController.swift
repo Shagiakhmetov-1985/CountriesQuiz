@@ -37,11 +37,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var viewHelp: UIView = {
-        let button = setupButton(image: "multiply", action: #selector(closeView))
-        let view = viewModel.viewHelp(view)
-        view.addSubview(button)
-        viewModel.setConstraints(button, view)
-        return view
+        setView(action: #selector(closeView), view: viewModel.viewHelp())
     }()
     
     private lazy var visualEffectView: UIVisualEffectView = {
@@ -173,7 +169,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var pickerViewQuestions: UIPickerView = {
-        setupPickerView(color: .white, tag: 1)
+        setPickerView(color: .white, tag: 1)
     }()
     
     private lazy var labelAllCountries: UILabel = {
@@ -353,11 +349,11 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var pickerViewOneTime: UIPickerView = {
-        setupPickerView(tag: 2)
+        setPickerView(tag: 2)
     }()
     
     private lazy var pickerViewAllTime: UIPickerView = {
-        setupPickerView(tag: 3)
+        setPickerView(tag: 3)
     }()
     
     private lazy var stackViewPickerViews: UIStackView = {
@@ -406,12 +402,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         setupStackView(buttonFirst: buttonDone, buttonSecond: buttonCancel, spacing: 15)
     }()
     
-    private lazy var viewSetting: UIView = {
-        let button = setupButton(image: "multiply", action: #selector(closeViewSetting))
-        let view = viewModel.viewSetting()
-        view.addSubview(button)
-        viewModel.setConstraints(button, view)
-        return view
+    lazy var viewSetting: UIView = {
+        setView(action: #selector(closeViewSetting), view: viewModel.viewSetting())
         /*
         let view = PopUpViewSetting()
         view.backgroundColor = viewModel.colorSwap
@@ -447,9 +439,9 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         viewModel.titles(pickerView, row, and: segmentedControl)
     }
     // MARK: - Press button count questions / continents / countdown / time
-    @objc func changeSetting(sender: UIButton) {
-        viewModel.setupSubviews(subviews: viewSetting, on: view)
-        setting(tag: sender.tag)
+    @objc func showSetting(sender: UIButton) {
+        addMainSubviews(tag: sender.tag)
+        addSecondarySubviews(tag: sender.tag)
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
         
         viewSetting.transform = CGAffineTransform(translationX: 0, y: view.frame.height)
@@ -470,6 +462,30 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     // MARK: - Button press checkmark, change setting countdown
     @objc func countdown() {
         viewModel.checkmarkOnOff(buttonCheckmark)
+    }
+    // MARK: - Press done button for change setting
+    @objc func done(sender: UIButton) {
+        switch sender.tag {
+            
+        case 1: viewModel.setQuestions(pickerViewQuestions, labelCountQuestion, labelTime) {
+            self.closeViewSetting()
+        }
+        case 2: viewModel.setContinents(
+            labelContinents, labelCountQuestion, pickerViewQuestions, buttonAllCountries,
+            buttonAmericaContinent, buttonEuropeContinent, buttonAfricaContinent,
+            buttonAsiaContinent, buttonOceanContinent) {
+                self.closeViewSetting()
+            }
+        case 3: viewModel.setCountdown(buttonCheckmark, labelCountdown, imageInfinity,
+                                       labelTime, buttonTime) {
+            self.closeViewSetting()
+        }
+        default: viewModel.setTime(segmentedControl, labelTime, labelTimeDesription,
+                                   pickerViewOneTime, pickerViewAllTime) {
+            self.closeViewSetting()
+        }
+            
+        }
     }
     // MARK: - General methods
     private func setupDesign() {
@@ -507,7 +523,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         }
     }
     
-    @objc private func closeView() {
+    @objc func closeView() {
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: true)
         UIView.animate(withDuration: 0.5) { [self] in
             visualEffectView.alpha = 0
@@ -654,30 +670,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     // MARK: - Segmented control press, change setting time for one question or for all questions
     @objc private func segmentSelect() {
         viewModel.segmentSelect(segmentedControl, pickerViewOneTime, pickerViewAllTime, labelSetting)
-    }
-    // MARK: - Press done button for change setting
-    @objc private func done(sender: UIButton) {
-        switch sender.tag {
-            
-        case 1: viewModel.setQuestions(pickerViewQuestions, labelCountQuestion, labelTime) {
-            self.closeViewSetting()
-        }
-        case 2: viewModel.setContinents(
-            labelContinents, labelCountQuestion, pickerViewQuestions, buttonAllCountries,
-            buttonAmericaContinent, buttonEuropeContinent, buttonAfricaContinent,
-            buttonAsiaContinent, buttonOceanContinent) {
-                self.closeViewSetting()
-            }
-        case 3: viewModel.setCountdown(buttonCheckmark, labelCountdown, imageInfinity,
-                                       labelTime, buttonTime) {
-            self.closeViewSetting()
-        }
-        default: viewModel.setTime(segmentedControl, labelTime, labelTimeDesription,
-                                   pickerViewOneTime, pickerViewAllTime) {
-            self.closeViewSetting()
-        }
-            
-        }
     }
 }
 // MARK: - Setup constraints

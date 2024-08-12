@@ -25,6 +25,13 @@ extension GameTypeViewController {
         }
         return view
     }
+    
+    func setView(action: Selector, view: UIView) -> UIView {
+        let button = setupButton(image: "multiply", action: action)
+        view.addSubview(button)
+        viewModel.setConstraints(button, view)
+        return view
+    }
 }
 // MARK: - Setup images
 extension GameTypeViewController {
@@ -40,7 +47,7 @@ extension GameTypeViewController {
 // MARK: - Setup labels
 extension GameTypeViewController {
     func setupLabel(color: UIColor, title: String, size: CGFloat, style: String,
-                            alignment: NSTextAlignment? = nil) -> UILabel {
+                    alignment: NSTextAlignment? = nil) -> UILabel {
         let label = UILabel()
         label.text = title
         label.textColor = color
@@ -75,7 +82,7 @@ extension GameTypeViewController {
     }
     
     func setupButton(image: String, color: UIColor, action: Selector,
-                             isEnabled: Bool? = nil) -> UIButton {
+                     isEnabled: Bool? = nil) -> UIButton {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: image, withConfiguration: size)
         let button = Button(type: .system)
@@ -93,8 +100,8 @@ extension GameTypeViewController {
     }
     
     func setupButton(color: UIColor, labelFirst: UILabel,
-                             labelSecond: UILabel, image: UIImageView? = nil,
-                             tag: Int, isEnabled: Bool? = nil) -> UIButton {
+                     labelSecond: UILabel, image: UIImageView? = nil,
+                     tag: Int, isEnabled: Bool? = nil) -> UIButton {
         let button = Button(type: .custom)
         button.backgroundColor = color
         button.layer.cornerRadius = 20
@@ -102,7 +109,7 @@ extension GameTypeViewController {
         button.layer.shadowOpacity = 0.4
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(changeSetting), for: .touchUpInside)
+        button.addTarget(self, action: #selector(showSetting), for: .touchUpInside)
         button.tag = tag
         button.isEnabled = isEnabled ?? true
         if let image = image {
@@ -129,7 +136,7 @@ extension GameTypeViewController {
     }
     
     func setupButton(color: UIColor, addLabelFirst: UILabel,
-                             addLabelSecond: UILabel, tag: Int? = nil) -> UIButton {
+                     addLabelSecond: UILabel, tag: Int? = nil) -> UIButton {
         let button = UIButton(type: .custom)
         button.backgroundColor = color
         button.layer.borderColor = UIColor.white.cgColor
@@ -159,8 +166,8 @@ extension GameTypeViewController {
 // MARK: - Setup stack views
 extension GameTypeViewController {
     func setupStackView(buttonFirst: UIButton, buttonSecond: UIButton,
-                                buttonThird: UIButton? = nil,
-                                spacing: CGFloat? = nil) -> UIStackView {
+                        buttonThird: UIButton? = nil,
+                        spacing: CGFloat? = nil) -> UIStackView {
         var arrangedSubviews: [UIView] = []
         if let buttonThird = buttonThird {
             arrangedSubviews = [buttonFirst, buttonSecond, buttonThird]
@@ -195,10 +202,16 @@ extension GameTypeViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
+    
+    func setStackView(_ tag: Int) -> UIStackView {
+        let done = viewModel.setButton(title: "ОК", color: viewModel.colorDone, action: #selector(done), tag)
+        let cancel = viewModel.setButton(title: "Отмена", color: .white, action: #selector(closeViewSetting), 0)
+        return viewModel.setStackView(done, cancel)
+    }
 }
 // MARK: - Setup picker views
 extension GameTypeViewController {
-    func setupPickerView(color: UIColor? = nil, tag: Int) -> UIPickerView {
+    func setPickerView(color: UIColor? = nil, tag: Int) -> UIPickerView {
         let pickerView = UIPickerView()
         pickerView.backgroundColor = color
         pickerView.layer.cornerRadius = 13
@@ -207,5 +220,43 @@ extension GameTypeViewController {
         pickerView.delegate = self
         pickerView.dataSource = self
         return pickerView
+    }
+}
+// MARK: - Add subviews for view setting
+extension GameTypeViewController {
+    func addMainSubviews(tag: Int) {
+        let title = viewModel.titleSetting(tag: tag)
+        let label = viewModel.setLabel(title: title, size: 22, alignment: .center)
+        let stackView = setStackView(tag)
+        viewModel.setupSubviews(subviews: label, stackView, on: viewSetting)
+        view.addSubview(viewSetting)
+        viewModel.setConstraints(label, stackView, viewSetting)
+    }
+    
+    func addSecondarySubviews(tag: Int) {
+        switch tag {
+        case 1: getCountQuestions(tag)
+        case 2: getContinents(tag)
+        case 3: getCountdown(tag)
+        default: getTime(tag)
+        }
+    }
+    
+    private func getCountQuestions(_ tag: Int) {
+        let pickerView = setPickerView(color: .white, tag: 1)
+        viewSetting.addSubview(pickerView)
+        viewModel.setConstraints(view, pickerView, on: viewSetting, constant: 100, height: 110)
+    }
+    
+    private func getContinents(_ tag: Int) {
+        
+    }
+    
+    private func getCountdown(_ tag: Int) {
+        
+    }
+    
+    private func getTime(_ tag: Int) {
+        
     }
 }

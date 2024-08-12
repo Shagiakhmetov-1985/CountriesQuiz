@@ -83,9 +83,13 @@ protocol GameTypeViewModelProtocol {
     func segmentSelect(_ segment: UISegmentedControl,_ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView,_ label: UILabel)
     func counterContinents()
     func setSubviewsTag(subviews: UIView..., tag: Int)
-    func viewHelp(_ view: UIView) -> UIView
+    func viewHelp() -> UIView
     func viewSetting() -> UIView
-    func addSubviewsForViewSetting(_ tag: Int)
+    func addSubviewsForViewSetting(stackView: UIStackView, _ tag: Int)
+    func setButton(title: String, color: UIColor, action: Selector,_ tag: Int) -> UIButton
+    func setStackView(_ first: UIButton,_ second: UIButton) -> UIStackView
+    func setLabel(title: String, size: CGFloat, alignment: NSTextAlignment?) -> UILabel
+    func setView(color: UIColor) -> UIView
     
     func buttonAllCountries(_ buttonAllCountries: UIButton,_ labelAllCountries: UILabel,
                             _ labelCountCountries: UILabel,_ colorButton: UIColor,_ colorLabel: UIColor)
@@ -108,7 +112,9 @@ protocol GameTypeViewModelProtocol {
     func setConstraints(_ button: UIButton, layout: NSLayoutYAxisAnchor, leading: CGFloat,
                         trailing: CGFloat, height: CGFloat,_ view: UIView)
     func setConstraints(_ label: UILabel, on button: UIButton, constant: CGFloat)
+    func setConstraints(_ label: UILabel,_ stackView: UIStackView,_ viewSetting: UIView)
     func setConstraints(_ button: UIButton,_ view: UIView)
+    func setConstraints(_ view: UIView,_ subview: UIView, on viewSetting: UIView, constant: CGFloat, height: CGFloat)
     func setConstraints(_ viewHelp: UIView,_ view: UIView)
     
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol
@@ -193,6 +199,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     private var list: UILabel!
     private var contentView: UIView!
     private var scrollView: UIScrollView!
+    private var secondaryView: UIView!
     
     required init(mode: Setting, game: Games, tag: Int) {
         self.mode = mode
@@ -219,20 +226,69 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         navigationItem.rightBarButtonItem = rightBarButton
     }
     
-    func viewHelp(_ view: UIView) -> UIView {
-        let popUpView = setView()
+    func viewHelp() -> UIView {
+        let popUpView = setView(color: game.swap)
         addSubviewsForPopUpView()
         setupSubviews(subviews: title, scrollView, on: popUpView)
-        setConstraints(popUpView, and: view)
+        setConstraints(popUpView)
         return popUpView
     }
     
-    func viewSetting() -> UIView {
-        setView()
+    func setButton(title: String, color: UIColor, action: Selector, _ tag: Int) -> UIButton {
+        let button = Button(type: .system)
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(game.favourite, for: .normal)
+        button.titleLabel?.font = UIFont(name: "mr_fontick", size: 25)
+        button.backgroundColor = color
+        button.layer.cornerRadius = 12
+        button.layer.shadowColor = color.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tag = tag
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
     }
     
-    func addSubviewsForViewSetting(_ tag: Int) {
-        <#code#>
+    func setStackView(_ first: UIButton, _ second: UIButton) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [first, second])
+        stackView.spacing = 15
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    func setLabel(title: String, size: CGFloat,
+                  alignment: NSTextAlignment? = nil) -> UILabel {
+        let label = UILabel()
+        label.text = title
+        label.textColor = .white
+        label.font = UIFont(name: "GillSans", size: size)
+        label.textAlignment = alignment ?? .center
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+    
+    func setView(color: UIColor) -> UIView {
+        let view = UIView()
+        view.backgroundColor = color
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 15
+        return view
+    }
+    
+    func viewSetting() -> UIView {
+        let popUpView = setView(color: game.swap)
+        secondaryView = setView(color: game.background)
+        secondaryView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        popUpView.addSubview(secondaryView)
+        setConstraints(popUpView: popUpView)
+        return popUpView
+    }
+    
+    func addSubviewsForViewSetting(stackView: UIStackView, _ tag: Int) {
+        
     }
     // MARK: - PickerView
     func numberOfComponents() -> Int {
@@ -554,6 +610,37 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         NSLayoutConstraint.activate([
             button.topAnchor.constraint(equalTo: view.topAnchor, constant: 12.5),
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12.5)
+        ])
+    }
+    
+    func setConstraints(_ label: UILabel, _ stackView: UIStackView, _ viewSetting: UIView) {
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: viewSetting.centerXAnchor, constant: 20),
+            label.centerYAnchor.constraint(equalTo: viewSetting.topAnchor, constant: 31.875)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackView.bottomAnchor.constraint(equalTo: viewSetting.bottomAnchor, constant: -20),
+            stackView.leadingAnchor.constraint(equalTo: viewSetting.leadingAnchor, constant: 20),
+            stackView.trailingAnchor.constraint(equalTo: viewSetting.trailingAnchor, constant: -20),
+            stackView.heightAnchor.constraint(equalToConstant: 50)
+        ])
+    }
+    
+    func setConstraints(_ view: UIView, _ subview: UIView, on viewSetting: UIView,
+                        constant: CGFloat, height: CGFloat) {
+        NSLayoutConstraint.activate([
+            viewSetting.topAnchor.constraint(equalTo: view.centerYAnchor, constant: constant),
+            viewSetting.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            viewSetting.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+            viewSetting.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25)
+        ])
+        
+        NSLayoutConstraint.activate([
+            subview.topAnchor.constraint(equalTo: viewSetting.topAnchor, constant: 20),
+            subview.leadingAnchor.constraint(equalTo: viewSetting.leadingAnchor, constant: 20),
+            subview.trailingAnchor.constraint(equalTo: viewSetting.trailingAnchor, constant: -20),
+            subview.heightAnchor.constraint(equalToConstant: height)
         ])
     }
     
@@ -1117,18 +1204,6 @@ extension GameTypeViewModel {
 }
 // MARK: - Set subviews for popup view help
 extension GameTypeViewModel {
-    private func setLabel(title: String, size: CGFloat,
-                          alignment: NSTextAlignment? = nil) -> UILabel {
-        let label = UILabel()
-        label.text = title
-        label.textColor = .white
-        label.font = UIFont(name: "GillSans", size: size)
-        label.textAlignment = alignment ?? .center
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }
-    
     private func setting(_ label: UILabel, size: CGFloat) -> UILabel {
         label.textColor = .white
         label.font = UIFont(name: "Gill Sans", size: size)
@@ -1144,14 +1219,6 @@ extension GameTypeViewModel {
         imageView.tintColor = color
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
-    }
-    
-    private func setView() -> UIView {
-        let view = UIView()
-        view.backgroundColor = game.swap
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 15
-        return view
     }
     
     private func setView(color: UIColor, addImage: UIImageView) -> UIView {
@@ -1178,6 +1245,12 @@ extension GameTypeViewModel {
         return stackView
     }
 }
+// MARK: - Set subviews for view setting
+extension GameTypeViewModel {
+    private func addSubviews(tag: Int) {
+        
+    }
+}
 // MARK: - Private methods, constraints
 extension GameTypeViewModel {
     private func setConstraints(subview: UIView, to otherSubview: UIView, _ view: UIView) {
@@ -1188,7 +1261,7 @@ extension GameTypeViewModel {
         ])
     }
     
-    private func setConstraints(_ popUpView: UIView, and view: UIView) {
+    private func setConstraints(_ popUpView: UIView) {
         NSLayoutConstraint.activate([
             title.centerXAnchor.constraint(equalTo: popUpView.centerXAnchor, constant: 20),
             title.centerYAnchor.constraint(equalTo: popUpView.topAnchor, constant: 31.875)
@@ -1220,6 +1293,15 @@ extension GameTypeViewModel {
             list.topAnchor.constraint(equalTo: description.bottomAnchor, constant: 19),
             list.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
             list.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
+        ])
+    }
+    
+    private func setConstraints(popUpView: UIView) {
+        NSLayoutConstraint.activate([
+            secondaryView.topAnchor.constraint(equalTo: popUpView.topAnchor, constant: 63.75),
+            secondaryView.leadingAnchor.constraint(equalTo: popUpView.leadingAnchor),
+            secondaryView.trailingAnchor.constraint(equalTo: popUpView.trailingAnchor),
+            secondaryView.bottomAnchor.constraint(equalTo: popUpView.bottomAnchor)
         ])
     }
 }

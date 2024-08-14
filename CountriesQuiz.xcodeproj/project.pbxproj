@@ -43,7 +43,6 @@
 		C3B187C82ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */; };
 		C3B35F20293FADC300A8493F /* fontick.otf in Resources */ = {isa = PBXBuildFile; fileRef = C3B35F1F293FADC300A8493F /* fontick.otf */; };
 		C3BADD042BC7EF5A0098BDCB /* QuestionnaireViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BADD032BC7EF5A0098BDCB /* QuestionnaireViewModel.swift */; };
-		C3BFB8272B04E32F006BB074 /* PopUpViewSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BFB8262B04E32F006BB074 /* PopUpViewSetting.swift */; };
 		C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D292EA293F5F0900786752 /* SettingViewController.swift */; };
 		C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */; };
 		C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E2EB312938E7F300AB40AD /* SceneDelegate.swift */; };
@@ -94,7 +93,6 @@
 		C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfCapitalsViewController.swift; sourceTree = "<group>"; };
 		C3B35F1F293FADC300A8493F /* fontick.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontick.otf; sourceTree = "<group>"; };
 		C3BADD032BC7EF5A0098BDCB /* QuestionnaireViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireViewModel.swift; sourceTree = "<group>"; };
-		C3BFB8262B04E32F006BB074 /* PopUpViewSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpViewSetting.swift; sourceTree = "<group>"; };
 		C3D292EA293F5F0900786752 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		C3E2EB2C2938E7F300AB40AD /* CountriesQuiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CountriesQuiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3E2EB2F2938E7F300AB40AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -191,14 +189,6 @@
 			path = "Alert controller";
 			sourceTree = "<group>";
 		};
-		C3A6B9CF2AF0D9C800DBE77F /* PopupViews */ = {
-			isa = PBXGroup;
-			children = (
-				C3BFB8262B04E32F006BB074 /* PopUpViewSetting.swift */,
-			);
-			path = PopupViews;
-			sourceTree = "<group>";
-		};
 		C3E2EB232938E7F300AB40AD = {
 			isa = PBXGroup;
 			children = (
@@ -237,7 +227,6 @@
 		C3E2EB442938E88100AB40AD /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				C3A6B9CF2AF0D9C800DBE77F /* PopupViews */,
 				C38DF4DC2A8F4A3D00550BCC /* UITableViewCell */,
 				C3E2EB332938E7F300AB40AD /* MenuViewController.swift */,
 				C3E7C9932A7B68AA0046A883 /* GameTypeViewController.swift */,
@@ -377,7 +366,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C333038A2BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift in Sources */,
-				C3BFB8272B04E32F006BB074 /* PopUpViewSetting.swift in Sources */,
 				C384F29B2C441B9200827B9F /* CorrectAnswersViewModel.swift in Sources */,
 				C392B1882C36861300779A53 /* RatioViewController.swift in Sources */,
 				C33669D62B998F990081C39A /* Game.swift in Sources */,

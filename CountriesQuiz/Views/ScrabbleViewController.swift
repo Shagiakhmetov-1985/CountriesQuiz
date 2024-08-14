@@ -8,7 +8,6 @@
 import UIKit
 
 class ScrabbleViewController: UIViewController {
-    // MARK: - Subviews
     private lazy var buttonback: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: "multiply", withConfiguration: size)
@@ -84,14 +83,14 @@ class ScrabbleViewController: UIViewController {
         setupConstraints()
     }
     // MARK: - General methods
-    private func setupData() {
-        questions = Countries.getQuestions(mode: mode)
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         circularShadow()
         circular(strokeEnd: 0)
         animationCircleTimeReset()
+    }
+    
+    private func setupData() {
+        questions = Countries.getQuestions(mode: mode)
     }
     
     private func setupDesign() {

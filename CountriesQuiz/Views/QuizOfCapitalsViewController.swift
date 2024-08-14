@@ -11,7 +11,7 @@ protocol QuizOfCapitalsViewControllerInput: AnyObject {
     func dataToQuizOfCapitals(setting: Setting)
 }
 
-class QuizOfCapitalsViewController: UIViewController {
+class QuizOfCapitalsViewController: UIViewController, QuizOfCapitalsViewControllerInput {
     private lazy var buttonBack: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: "multiply", withConfiguration: size)
@@ -95,6 +95,26 @@ class QuizOfCapitalsViewController: UIViewController {
         super.viewDidAppear(animated)
         guard viewModel.isCountdown else { return }
         viewModel.setCircleTime(labelTimer, view)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        
+        if viewModel.answerSelect {
+            if viewModel.currentQuestion + 1 < viewModel.countQuestions {
+                hideSubviews()
+            } else {
+                let resultsViewModel = viewModel.resultsViewController()
+                let resultsVC = ResultsViewController()
+                resultsVC.viewModel = resultsViewModel
+                resultsVC.delegateQuizOfCapitals = self
+                navigationController?.pushViewController(resultsVC, animated: true)
+            }
+        }
+    }
+    // MARK: - QuizOfCapitalsViewControllerInput
+    func dataToQuizOfCapitals(setting: Setting) {
+        delegateInput.dataToGameType(setting: setting)
     }
     // MARK: - General methods
     private func setupData() {
@@ -207,24 +227,6 @@ class QuizOfCapitalsViewController: UIViewController {
         startGame()
     }
 }
-// MARK: - Touch on the screen
-extension QuizOfCapitalsViewController {
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        
-        if viewModel.answerSelect {
-            if viewModel.currentQuestion + 1 < viewModel.countQuestions {
-                hideSubviews()
-            } else {
-                let resultsViewModel = viewModel.resultsViewController()
-                let resultsVC = ResultsViewController()
-                resultsVC.viewModel = resultsViewModel
-                resultsVC.delegateQuizOfCapitals = self
-                navigationController?.pushViewController(resultsVC, animated: true)
-            }
-        }
-    }
-}
 // MARK: - Setup buttons
 extension QuizOfCapitalsViewController {
     private func setButton(title: Countries, tag: Int) -> UIButton {
@@ -278,11 +280,5 @@ extension QuizOfCapitalsViewController {
         ])
         
         viewModel.constraintsButtons(stackView, to: labelQuiz, view)
-    }
-}
-// MARK: - QuizOfCapitalsViewControllerInput
-extension QuizOfCapitalsViewController: QuizOfCapitalsViewControllerInput {
-    func dataToQuizOfCapitals(setting: Setting) {
-        delegateInput.dataToGameType(setting: setting)
     }
 }

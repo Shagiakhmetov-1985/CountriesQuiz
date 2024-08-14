@@ -259,7 +259,7 @@ class ResultsViewController: UIViewController {
     weak var delegateQuizOfFlag: QuizOfFlagsViewControllerInput!
     weak var delegateQuestionnaire: QuestionnaireViewControllerInput!
     weak var delegateQuizOfCapitals: QuizOfCapitalsViewControllerInput!
-    // MARK: - Methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDesign()
@@ -314,7 +314,7 @@ class ResultsViewController: UIViewController {
         present(navigationVC, animated: true)
     }
 }
-// MARK: - Setup button
+// MARK: - Setup subviews
 extension ResultsViewController {
     private func setButton(color: UIColor, action: Selector, labelFirst: UILabel,
                            image: UIImageView, labelSecond: UILabel, tag: Int,
@@ -332,9 +332,7 @@ extension ResultsViewController {
         viewModel.setupSubviews(subviews: labelFirst, image, labelSecond, on: button)
         return button
     }
-}
-// MARK: - Setup label
-extension ResultsViewController {
+    
     private func setLabel(title: String, style: String, size: CGFloat,
                           color: UIColor, alignment: NSTextAlignment? = nil) -> UILabel {
         let label = UILabel()
@@ -346,9 +344,7 @@ extension ResultsViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
-}
-// MARK: - Setup images
-extension ResultsViewController {
+    
     private func setImage(image: String, size: CGFloat, color: UIColor? = nil,
                           addView: UIView? = nil) -> UIImageView {
         let size = UIImage.SymbolConfiguration(pointSize: size)
@@ -361,10 +357,8 @@ extension ResultsViewController {
         }
         return imageView
     }
-}
-// MARK: - Setup stack views
-extension ResultsViewController {
-    private func setStackView(first: UIView, second: UIView, 
+    
+    private func setStackView(first: UIView, second: UIView,
                               distribution: UIStackView.Distribution,
                               axis: NSLayoutConstraint.Axis? = nil) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [first, second])
@@ -389,9 +383,7 @@ extension ResultsViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
-}
-// MARK: - Setup constraints
-extension ResultsViewController {
+    
     private func setProgress(progress: Float) -> UIProgressView {
         let progressView = UIProgressView()
         progressView.layer.cornerRadius = viewModel.radius

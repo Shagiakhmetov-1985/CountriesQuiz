@@ -11,7 +11,7 @@ protocol QuestionnaireViewControllerInput: AnyObject {
     func dataToQuestionnaire(setting: Setting)
 }
 
-class QuestionnaireViewController: UIViewController {
+class QuestionnaireViewController: UIViewController, QuestionnaireViewControllerInput {
     private lazy var buttonExit: UIButton = {
         setButton(image: "multiply", action: #selector(exitToGameType))
     }()
@@ -120,6 +120,18 @@ class QuestionnaireViewController: UIViewController {
         super.viewDidAppear(animated)
         guard viewModel.isCountdown else { return }
         viewModel.setCircleTimer(labelTimer, view)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        guard viewModel.lastQuestion, viewModel.numberQuestion == viewModel.currentQuestion else { return }
+        viewModel.stopTimer()
+        viewModel.setTimeSpent()
+        resultsVC()
+    }
+    // MARK: - QuestionnaireViewControllerInput
+    func dataToQuestionnaire(setting: Setting) {
+        delegateInput.dataToGameType(setting: setting)
     }
     // MARK: - General methods
     private func setupData() {
@@ -289,14 +301,6 @@ class QuestionnaireViewController: UIViewController {
 }
 // MARK: - Touches began
 extension QuestionnaireViewController {
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        guard viewModel.lastQuestion, viewModel.numberQuestion == viewModel.currentQuestion else { return }
-        viewModel.stopTimer()
-        viewModel.setTimeSpent()
-        resultsVC()
-    }
-    
     private func resultsVC() {
         let resultsViewModel = viewModel.resultsViewController()
         let resultsVC = ResultsViewController()
@@ -404,11 +408,5 @@ extension QuestionnaireViewController {
         ])
         
         viewModel.button(stackView, to: labelQuiz, view)
-    }
-}
-// MARK: - QuestionnaireViewControllerInput
-extension QuestionnaireViewController: QuestionnaireViewControllerInput {
-    func dataToQuestionnaire(setting: Setting) {
-        delegateInput.dataToGameType(setting: setting)
     }
 }

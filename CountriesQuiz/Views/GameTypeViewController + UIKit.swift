@@ -7,10 +7,9 @@
 
 import UIKit
 
-// MARK: - Setup views
 extension GameTypeViewController {
-    func setupView(color: UIColor, radius: CGFloat? = nil, addSubview: UIView? = nil,
-                   addButton: UIButton? = nil) -> UIView {
+    func setView(color: UIColor, radius: CGFloat? = nil, addSubview: UIView? = nil,
+                 addButton: UIButton? = nil) -> UIView {
         let view = UIView()
         view.backgroundColor = color
         view.layer.cornerRadius = radius ?? 0
@@ -27,15 +26,13 @@ extension GameTypeViewController {
     }
     
     func setView(action: Selector, view: UIView) -> UIView {
-        let button = setupButton(image: "multiply", action: action)
+        let button = setButton(image: "multiply", action: action)
         view.addSubview(button)
         viewModel.setConstraints(button, view)
         return view
     }
-}
-// MARK: - Setup images
-extension GameTypeViewController {
-    func setupImage(image: String, color: UIColor, size: CGFloat) -> UIImageView {
+    
+    func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView {
         let size = UIImage.SymbolConfiguration(pointSize: size)
         let image = UIImage(systemName: image, withConfiguration: size)
         let imageView = UIImageView(image: image)
@@ -43,11 +40,9 @@ extension GameTypeViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }
-}
-// MARK: - Setup labels
-extension GameTypeViewController {
-    func setupLabel(color: UIColor, title: String, size: CGFloat, style: String,
-                    alignment: NSTextAlignment? = nil) -> UILabel {
+    
+    func setLabel(color: UIColor, title: String, size: CGFloat, style: String,
+                  alignment: NSTextAlignment? = nil) -> UILabel {
         let label = UILabel()
         label.text = title
         label.textColor = color
@@ -64,10 +59,8 @@ extension GameTypeViewController {
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
     }
-}
-// MARK: - Setup buttons
-extension GameTypeViewController {
-    func setupButton(image: String, action: Selector) -> UIButton {
+    
+    func setButton(image: String, action: Selector) -> UIButton {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: image, withConfiguration: size)
         let button = UIButton(type: .system)
@@ -81,8 +74,8 @@ extension GameTypeViewController {
         return button
     }
     
-    func setupButton(image: String, color: UIColor, action: Selector,
-                     isEnabled: Bool? = nil) -> UIButton {
+    func setButton(image: String, color: UIColor, action: Selector,
+                   isEnabled: Bool? = nil) -> UIButton {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: image, withConfiguration: size)
         let button = Button(type: .system)
@@ -99,9 +92,9 @@ extension GameTypeViewController {
         return button
     }
     
-    func setupButton(color: UIColor, labelFirst: UILabel,
-                     labelSecond: UILabel, image: UIImageView? = nil,
-                     tag: Int, isEnabled: Bool? = nil) -> UIButton {
+    func setButton(color: UIColor, labelFirst: UILabel,
+                   labelSecond: UILabel, image: UIImageView? = nil,
+                   tag: Int, isEnabled: Bool? = nil) -> UIButton {
         let button = Button(type: .custom)
         button.backgroundColor = color
         button.layer.cornerRadius = 20
@@ -113,14 +106,14 @@ extension GameTypeViewController {
         button.tag = tag
         button.isEnabled = isEnabled ?? true
         if let image = image {
-            viewModel.setupSubviews(subviews: labelFirst, labelSecond, image, on: button)
+            viewModel.setSubviews(subviews: labelFirst, labelSecond, image, on: button)
         } else {
-            viewModel.setupSubviews(subviews: labelFirst, labelSecond, on: button)
+            viewModel.setSubviews(subviews: labelFirst, labelSecond, on: button)
         }
         return button
     }
     
-    func setupButton(title: String, color: UIColor, action: Selector) -> UIButton {
+    func setButton(title: String, color: UIColor, action: Selector) -> UIButton {
         let button = Button(type: .system)
         button.setTitle(title, for: .normal)
         button.setTitleColor(viewModel.colorFavourite, for: .normal)
@@ -135,8 +128,8 @@ extension GameTypeViewController {
         return button
     }
     
-    func setupButton(color: UIColor, addLabelFirst: UILabel,
-                     addLabelSecond: UILabel, tag: Int? = nil) -> UIButton {
+    func setButton(color: UIColor, labelFirst: UILabel,
+                   labelSecond: UILabel, tag: Int? = nil) -> UIButton {
         let button = UIButton(type: .custom)
         button.backgroundColor = color
         button.layer.borderColor = UIColor.white.cgColor
@@ -148,7 +141,7 @@ extension GameTypeViewController {
         button.tag = tag ?? 0
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(continents), for: .touchUpInside)
-        viewModel.setupSubviews(subviews: addLabelFirst, addLabelSecond, on: button)
+        viewModel.setSubviews(subviews: labelFirst, labelSecond, on: button)
         return button
     }
     
@@ -162,12 +155,10 @@ extension GameTypeViewController {
         button.addTarget(self, action: #selector(countdown), for: .touchUpInside)
         return button
     }
-}
-// MARK: - Setup stack views
-extension GameTypeViewController {
-    func setupStackView(buttonFirst: UIButton, buttonSecond: UIButton,
-                        buttonThird: UIButton? = nil,
-                        spacing: CGFloat? = nil) -> UIStackView {
+    
+    func setStackView(buttonFirst: UIButton, buttonSecond: UIButton,
+                      buttonThird: UIButton? = nil,
+                      spacing: CGFloat? = nil) -> UIStackView {
         var arrangedSubviews: [UIView] = []
         if let buttonThird = buttonThird {
             arrangedSubviews = [buttonFirst, buttonSecond, buttonThird]
@@ -181,36 +172,13 @@ extension GameTypeViewController {
         return stackView
     }
     
-    func setupStackView(labelTop: UILabel, labelBottom: UILabel) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [labelTop, labelBottom])
-        stackView.axis = .vertical
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-    
-    func setupStackView(view: UIView, stackView: UIStackView) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [view, stackView])
-        stackView.spacing = 10
-        stackView.alignment = .top
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }
-    
-    func setupStackView(view: UIView, label: UILabel) -> UIStackView {
+    func setStackView(view: UIView, label: UILabel) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [view, label])
         stackView.spacing = 10
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
     
-    func setStackView(_ tag: Int) -> UIStackView {
-        let done = viewModel.setButton(title: "ОК", color: viewModel.colorDone, action: #selector(done), tag)
-        let cancel = viewModel.setButton(title: "Отмена", color: .white, action: #selector(closeViewSetting), 0)
-        return viewModel.setStackView(done, cancel)
-    }
-}
-// MARK: - Setup picker views
-extension GameTypeViewController {
     func setPickerView(color: UIColor? = nil, tag: Int) -> UIPickerView {
         let pickerView = UIPickerView()
         pickerView.backgroundColor = color
@@ -220,43 +188,5 @@ extension GameTypeViewController {
         pickerView.delegate = self
         pickerView.dataSource = self
         return pickerView
-    }
-}
-// MARK: - Add subviews for view setting
-extension GameTypeViewController {
-    func addMainSubviews(tag: Int) {
-        let title = viewModel.titleSetting(tag: tag)
-        let label = viewModel.setLabel(title: title, size: 22, alignment: .center)
-        let stackView = setStackView(tag)
-        viewModel.setupSubviews(subviews: label, stackView, on: viewSetting)
-        view.addSubview(viewSetting)
-        viewModel.setConstraints(label, stackView, viewSetting)
-    }
-    
-    func addSecondarySubviews(tag: Int) {
-        switch tag {
-        case 1: getCountQuestions(tag)
-        case 2: getContinents(tag)
-        case 3: getCountdown(tag)
-        default: getTime(tag)
-        }
-    }
-    
-    private func getCountQuestions(_ tag: Int) {
-        let pickerView = setPickerView(color: .white, tag: 1)
-        viewSetting.addSubview(pickerView)
-        viewModel.setConstraints(view, pickerView, on: viewSetting, constant: 100, height: 110)
-    }
-    
-    private func getContinents(_ tag: Int) {
-        
-    }
-    
-    private func getCountdown(_ tag: Int) {
-        
-    }
-    
-    private func getTime(_ tag: Int) {
-        
     }
 }

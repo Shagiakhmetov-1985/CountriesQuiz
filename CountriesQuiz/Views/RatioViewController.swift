@@ -164,7 +164,7 @@ class RatioViewController: UIViewController {
         dismiss(animated: true)
     }
 }
-// MARK: - Set labels
+// MARK: - Set subviews
 extension RatioViewController {
     private func setLabel(text: String, color: UIColor, size: CGFloat, font: String,
                           alignment: NSTextAlignment? = nil) -> UILabel {
@@ -177,9 +177,7 @@ extension RatioViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
-}
-// MARK: - Set images
-extension RatioViewController {
+    
     private func setImage(image: String, size: CGFloat, color: UIColor,
                           addImage: UIImageView? = nil) -> UIImageView {
         let size = UIImage.SymbolConfiguration(pointSize: size)
@@ -192,9 +190,7 @@ extension RatioViewController {
         }
         return imageView
     }
-}
-// MARK: - Set progress views
-extension RatioViewController {
+    
     private func setProgressView(color: UIColor, value: Float) -> UIProgressView {
         let progressView = UIProgressView()
         progressView.progressTintColor = color

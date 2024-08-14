@@ -9,6 +9,7 @@ import UIKit
 
 protocol MenuViewModelProtocol {
     var mode: Setting? { get set }
+    func setSubviews(subviews: UIView..., on subviewOther: UIView)
     func fetchData()
     func size(view: UIView?) -> CGSize
     func forPresented(_ button: UIButton) -> Transition
@@ -29,6 +30,12 @@ class MenuViewModel: MenuViewModelProtocol {
     var mode: Setting?
     private var games: [Games] = []
     private let transition = Transition()
+    
+    func setSubviews(subviews: UIView..., on subviewOther: UIView) {
+        subviews.forEach { subview in
+            subviewOther.addSubview(subview)
+        }
+    }
     
     func fetchData() {
         mode = StorageManager.shared.fetchSetting()

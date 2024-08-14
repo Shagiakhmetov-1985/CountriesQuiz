@@ -7,17 +7,16 @@
 
 import UIKit
 
-class SettingViewController: UIViewController {
-    // MARK: - Subviews
+class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     private lazy var buttonBack: UIButton = {
-        setupButton(
+        setButton(
             image: "multiply",
             color: .white,
             action: #selector(backToMenu))
     }()
     
     private lazy var buttonDefault: UIButton = {
-        setupButton(
+        setButton(
             image: "arrow.counterclockwise",
             color: viewModel.isMoreFiftyQuestions() ? .white : .grayStone,
             isEnabled: viewModel.isMoreFiftyQuestions() ? true : false,
@@ -300,6 +299,26 @@ class SettingViewController: UIViewController {
         setupSubviewsOnScrollView()
         setupConstraints()
     }
+    // MARK: - Picker view
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        viewModel.numberOfComponents()
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        viewModel.numberOfRows(pickerView)
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        viewModel.titles(pickerView, row)
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        switch pickerView.tag {
+        case 1: viewModel.didSelectRowCount(row, buttonDefault)
+        case 2: viewModel.didSelectRowOneQuestion(row)
+        default: viewModel.didSelectRowAllQuestions(row)
+        }
+    }
     // MARK: - General methods
     private func setupDesign() {
         view.backgroundColor = .blueMiddlePersian
@@ -370,7 +389,7 @@ class SettingViewController: UIViewController {
         viewModel.segmentAction()
     }
 }
-// MARK: - Setup view
+// MARK: - Setup subviews
 extension SettingViewController {
     private func setView(color: UIColor? = nil, radiusCorner: CGFloat? = nil,
                          addButton: UIButton? = nil) -> UIView {
@@ -388,11 +407,9 @@ extension SettingViewController {
         }
         return view
     }
-}
-// MARK: - Setup button
-extension SettingViewController {
-    private func setupButton(image: String, color: UIColor, isEnabled: Bool? = nil,
-                             action: Selector) -> UIButton {
+    
+    private func setButton(image: String, color: UIColor, isEnabled: Bool? = nil,
+                           action: Selector) -> UIButton {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: image, withConfiguration: size)
         let button = UIButton(type: .system)
@@ -438,9 +455,7 @@ extension SettingViewController {
         viewModel.setupSubviews(subviews: addLabelFirst, addLabelSecond, on: button)
         return button
     }
-}
-// MARK: - Setup label
-extension SettingViewController {
+    
     private func setLabel(title: String, size: CGFloat, color: UIColor? = nil,
                           textAlignment: NSTextAlignment? = nil,
                           numberOfLines: Int? = nil) -> UILabel {
@@ -452,28 +467,6 @@ extension SettingViewController {
         label.numberOfLines = numberOfLines ?? 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-    }
-}
-// MARK: - Setup picker view
-extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        viewModel.numberOfComponents()
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        viewModel.numberOfRows(pickerView)
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        viewModel.titles(pickerView, row)
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        switch pickerView.tag {
-        case 1: viewModel.didSelectRowCount(row, buttonDefault)
-        case 2: viewModel.didSelectRowOneQuestion(row)
-        default: viewModel.didSelectRowAllQuestions(row)
-        }
     }
     
     private func setPickerView(backgroundColor: UIColor, tag: Int,
@@ -488,9 +481,7 @@ extension SettingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         pickerView.delegate = self
         return pickerView
     }
-}
-// MARK: - Setup stack view
-extension SettingViewController {
+    
     private func setStackView(buttonFirst: UIButton, buttonSecond: UIButton) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [buttonFirst, buttonSecond])
         stackView.distribution = .equalSpacing

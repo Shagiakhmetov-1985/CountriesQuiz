@@ -11,8 +11,7 @@ protocol QuizOfFlagsViewControllerInput: AnyObject {
     func dataToQuizOfFlag(setting: Setting)
 }
 
-class QuizOfFlagsViewController: UIViewController {
-    // MARK: - Setup subviews
+class QuizOfFlagsViewController: UIViewController, QuizOfFlagsViewControllerInput {
     private lazy var buttonback: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: "multiply", withConfiguration: size)
@@ -113,6 +112,26 @@ class QuizOfFlagsViewController: UIViewController {
         guard viewModel.isCountdown else { return }
         viewModel.setCircleTimer(labelTimer, view)
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        
+        if viewModel.answerSelect {
+            if viewModel.currentQuestion + 1 < viewModel.countQuestions {
+                hideSubviews()
+            } else {
+                let resultsViewModel = viewModel.resultsViewController()
+                let resultsVC = ResultsViewController()
+                resultsVC.viewModel = resultsViewModel
+                resultsVC.delegateQuizOfFlag = self
+                navigationController?.pushViewController(resultsVC, animated: true)
+            }
+        }
+    }
+    // MARK: - QuizOfFlagsViewControllerInput
+    func dataToQuizOfFlag(setting: Setting) {
+        delegateInput.dataToGameType(setting: setting)
+    }
     // MARK: - General methods
     private func setupData() {
         viewModel.getQuestions()
@@ -141,8 +160,8 @@ class QuizOfFlagsViewController: UIViewController {
     private func setupBarButton() {
         viewModel.setBarButton(buttonback, navigationItem)
     }
-    // MARK: - Timer
-    func runTimer(time: CGFloat, action: Selector, repeats: Bool) -> Timer {
+    
+    private func runTimer(time: CGFloat, action: Selector, repeats: Bool) -> Timer {
         Timer.scheduledTimer(timeInterval: time, target: self, selector: action,
                              userInfo: nil, repeats: repeats)
     }
@@ -269,24 +288,6 @@ class QuizOfFlagsViewController: UIViewController {
         viewModel.resetTimer(labelTimer, view)
     }
 }
-// MARK: - Touch on the screen
-extension QuizOfFlagsViewController {
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        
-        if viewModel.answerSelect {
-            if viewModel.currentQuestion + 1 < viewModel.countQuestions {
-                hideSubviews()
-            } else {
-                let resultsViewModel = viewModel.resultsViewController()
-                let resultsVC = ResultsViewController()
-                resultsVC.viewModel = resultsViewModel
-                resultsVC.delegateQuizOfFlag = self
-                navigationController?.pushViewController(resultsVC, animated: true)
-            }
-        }
-    }
-}
 // MARK: - Setup button
 extension QuizOfFlagsViewController {
     private func setButton(title: Countries, tag: Int) -> UIButton {
@@ -355,11 +356,5 @@ extension QuizOfFlagsViewController {
         ])
         
         viewModel.buttons(stackView, to: labelQuiz, view)
-    }
-}
-// MARK: - QuizOfFlagsViewControllerInput
-extension QuizOfFlagsViewController: QuizOfFlagsViewControllerInput {
-    func dataToQuizOfFlag(setting: Setting) {
-        delegateInput.dataToGameType(setting: setting)
     }
 }

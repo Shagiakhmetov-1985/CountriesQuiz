@@ -72,7 +72,7 @@ class ScrabbleViewController: UIViewController {
                             buttonFourth: [Countries])!
     
     private var correctAnswers: [Countries] = []
-    private var incorrectAnswers: [Results] = []
+    private var incorrectAnswers: [Incorrects] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()

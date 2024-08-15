@@ -133,7 +133,7 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     private let game: Games
     
     private var correctAnswers: [Corrects] = []
-    private var incorrectAnswers: [Results] = []
+    private var incorrectAnswers: [Incorrects] = []
     
     private var data: (questions: [Countries], buttonFirst: [Countries],
                        buttonSecond: [Countries], buttonThird: [Countries],
@@ -335,24 +335,21 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     }
     // MARK: - Add correct answer after select from user
     func addCorrectAnswer() {
-        addCorrectAnswer(numberQuestion: currentQuestion + 1,
-                         question: item,
-                         buttonFirst: buttonFirst,
-                         buttonSecond: buttonSecond,
-                         buttonThird: buttonThird,
-                         buttonFourth: buttonFourth)
+        let answer = Corrects(currentQuestion: currentQuestion + 1, question: item,
+                              buttonFirst: buttonFirst, buttonSecond: buttonSecond,
+                              buttonThird: buttonThird, buttonFourth: buttonFourth)
+        correctAnswers.append(answer)
     }
     // MARK: - Add incorrect answer after select from user
     func addIncorrectAnswer(_ tag: Int) {
         let setTag = tag == 0 ? 0 : tag
         let timeUp = tag == 0 ? true : false
-        addIncorrectAnswer(numberQuestion: currentQuestion + 1, tag: setTag,
-                           question: item,
-                           buttonFirst: buttonFirst,
-                           buttonSecond: buttonSecond,
-                           buttonThird: buttonThird,
-                           buttonFourth: buttonFourth,
-                           timeUp: timeUp)
+        let answer = Incorrects(currentQuestion: currentQuestion + 1, tag: setTag,
+                                question: item, buttonFirst: buttonFirst,
+                                buttonSecond: buttonSecond, buttonThird: buttonThird,
+                                buttonFourth: buttonFourth, isFlag: isFlag,
+                                timeUp: timeUp)
+        incorrectAnswers.append(answer)
     }
     // MARK: - Set color for buttons after select from user
     func setButtonColor(_ button: UIButton, _ color: UIColor, _ titleColor: UIColor? = nil) {
@@ -838,26 +835,6 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
         case 3: return item == buttonThird ? true : false
         default: return item == buttonFourth ? true : false
         }
-    }
-    // MARK: - Add correct answer after select from user, countinue
-    private func addCorrectAnswer(numberQuestion: Int, question: Countries, 
-                               buttonFirst: Countries, buttonSecond: Countries, 
-                               buttonThird: Countries, buttonFourth: Countries) {
-        let answer = Corrects(currentQuestion: numberQuestion, question: question,
-                              buttonFirst: buttonFirst, buttonSecond: buttonSecond,
-                              buttonThird: buttonThird, buttonFourth: buttonFourth)
-        correctAnswers.append(answer)
-    }
-    // MARK: - Add incorrect answer after select from user, countinue
-    private func addIncorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
-                                 buttonFirst: Countries, buttonSecond: Countries,
-                                 buttonThird: Countries, buttonFourth: Countries,
-                                 timeUp: Bool) {
-        let answer = Results(currentQuestion: numberQuestion, tag: tag,
-                             question: question, buttonFirst: buttonFirst,
-                             buttonSecond: buttonSecond, buttonThird: buttonThird,
-                             buttonFourth: buttonFourth, timeUp: timeUp)
-        incorrectAnswers.append(answer)
     }
     // MARK: - Refresh data for next question, countinue
     private func updateDataFlag(_ question: UIImageView, _ buttons: [UIButton]) {

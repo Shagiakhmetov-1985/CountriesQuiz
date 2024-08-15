@@ -14,7 +14,7 @@ protocol IncorrectAnswersViewModelProtocol {
     var numberOfRows: Int { get }
     var heightForRow: CGFloat { get }
     
-    init(mode: Setting, game: Games, results: [Results])
+    init(mode: Setting, game: Games, results: [Incorrects])
     
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
@@ -40,12 +40,12 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
     
     private let mode: Setting
     private let game: Games
-    private let results: [Results]
+    private let results: [Incorrects]
     private var isFlag: Bool {
         mode.flag ? true : false
     }
     
-    required init(mode: Setting, game: Games, results: [Results]) {
+    required init(mode: Setting, game: Games, results: [Incorrects]) {
         self.mode = mode
         self.game = game
         self.results = results
@@ -71,7 +71,7 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
     }
     
     func detailsViewModel(_ indexPath: Int) -> IncorrectViewModelProtocol {
-        IncorrectViewModel(mode: mode, game: game, result: results[indexPath])
+        IncorrectViewModel(mode: mode, game: game, incorrect: results[indexPath])
     }
     // MARK: - Constants
     private func setProgress(value: Int) -> Float {

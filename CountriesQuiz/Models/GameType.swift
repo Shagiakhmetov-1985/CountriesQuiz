@@ -10,8 +10,8 @@ import UIKit
 class GameType {
     static let shared = GameType()
     
-    let gameType: [TypeOfGame] = [.quizOfFlag, .questionnaire, .quizOfMap,
-                                .scrabble, .quizOfCapitals]
+    let gameType: [TypeOfGame] = [.quizOfFlags, .questionnaire, .quizOfMaps,
+                                  .scrabble, .quizOfCapitals]
     
     let names = ["Викторина флагов", "Опрос", "Викторина карт", "Эрудит",
                  "Викторина столиц"]
@@ -85,9 +85,9 @@ class GameType {
 }
 
 enum TypeOfGame {
-    case quizOfFlag
+    case quizOfFlags
     case questionnaire
-    case quizOfMap
+    case quizOfMaps
     case scrabble
     case quizOfCapitals
 }

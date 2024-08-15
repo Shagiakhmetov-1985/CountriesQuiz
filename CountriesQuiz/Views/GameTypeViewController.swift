@@ -48,7 +48,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         setButton(image: "play", color: viewModel.colorPlay, action: #selector(startGame))
     }()
     
-    private lazy var buttonFavoutites: UIButton = {
+    private lazy var buttonFavourites: UIButton = {
         setButton(image: "star", color: viewModel.colorFavourite, action: #selector(favourites))
     }()
     
@@ -63,7 +63,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var stackViewButtons: UIStackView = {
         setStackView(
             buttonFirst: buttonStart,
-            buttonSecond: buttonFavoutites,
+            buttonSecond: buttonFavourites,
             buttonThird: buttonSwap)
     }()
     
@@ -187,8 +187,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var buttonAllCountries: UIButton = {
         setButton(
             color: viewModel.isSelect(isOn: !viewModel.allCountries),
-            labelFirst: labelAllCountries,
-            labelSecond: labelCountAllCountries)
+            labelName: labelAllCountries,
+            labelCount: labelCountAllCountries)
     }()
     
     private lazy var labelAmericaContinent: UILabel = {
@@ -210,8 +210,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var buttonAmericaContinent: UIButton = {
         setButton(
             color: viewModel.isSelect(isOn: !viewModel.americaContinent),
-            labelFirst: labelAmericaContinent,
-            labelSecond: labelCountAmericaContinent,
+            labelName: labelAmericaContinent,
+            labelCount: labelCountAmericaContinent,
             tag: 1)
     }()
     
@@ -234,8 +234,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var buttonEuropeContinent: UIButton = {
         setButton(
             color: viewModel.isSelect(isOn: !viewModel.europeContinent),
-            labelFirst: labelEuropeContinent,
-            labelSecond: labelCountEuropeContinent,
+            labelName: labelEuropeContinent,
+            labelCount: labelCountEuropeContinent,
             tag: 2)
     }()
     
@@ -258,8 +258,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var buttonAfricaContinent: UIButton = {
         setButton(
             color: viewModel.isSelect(isOn: !viewModel.africaContinent),
-            labelFirst: labelAfricaContinent,
-            labelSecond: labelCountAfricaContinent,
+            labelName: labelAfricaContinent,
+            labelCount: labelCountAfricaContinent,
             tag: 3)
     }()
     
@@ -282,8 +282,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var buttonAsiaContinent: UIButton = {
         setButton(
             color: viewModel.isSelect(isOn: !viewModel.asiaContinent),
-            labelFirst: labelAsiaContinent,
-            labelSecond: labelCountAsiaContinent,
+            labelName: labelAsiaContinent,
+            labelCount: labelCountAsiaContinent,
             tag: 4)
     }()
     
@@ -306,8 +306,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var buttonOceanContinent: UIButton = {
         setButton(
             color: viewModel.isSelect(isOn: !viewModel.oceaniaContinent),
-            labelFirst: labelOceanContinent,
-            labelSecond: labelCountOceanContinent,
+            labelName: labelOceanContinent,
+            labelCount: labelCountOceanContinent,
             tag: 5)
     }()
     
@@ -403,7 +403,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         view.backgroundColor = viewModel.colorSwap
         view.translatesAutoresizingMaskIntoConstraints = false
         viewModel.setSubviews(subviews: labelSetting, viewSecondary, stackView,
-                                on: view)
+                              on: view)
         return view
     }()
     

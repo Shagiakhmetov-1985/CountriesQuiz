@@ -26,7 +26,7 @@ protocol RatioViewModelProtocol {
     var isTime: Bool { get }
     
     init(mode: Setting, game: Games, correctAnswers: [Corrects],
-         incorrectAnswers: [Results], timeSpend: [CGFloat], answeredQuestions: Int)
+         incorrectAnswers: [Incorrects], timeSpend: [CGFloat], answeredQuestions: Int)
     
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
@@ -117,12 +117,12 @@ class RatioViewModel: RatioViewModelProtocol {
     private var mode: Setting
     private var game: Games
     private var correctAnswers: [Corrects]
-    private var incorrectAnswers: [Results]
+    private var incorrectAnswers: [Incorrects]
     private var timeSpend: [CGFloat]
     private var answeredQuestions: Int
     
     required init(mode: Setting, game: Games, correctAnswers: [Corrects], 
-                  incorrectAnswers: [Results], timeSpend: [CGFloat], answeredQuestions: Int) {
+                  incorrectAnswers: [Incorrects], timeSpend: [CGFloat], answeredQuestions: Int) {
         self.mode = mode
         self.game = game
         self.correctAnswers = correctAnswers
@@ -229,16 +229,6 @@ extension RatioViewModel {
         trackShape.lineCap = CAShapeLayerLineCap.round
         view.layer.addSublayer(trackShape)
     }
-    /*
-    private func animateCircle(shape: CAShapeLayer, value: Float) {
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.toValue = value
-        animation.duration = CFTimeInterval(0.75)
-        animation.fillMode = CAMediaTimingFillMode.forwards
-        animation.isRemovedOnCompletion = false
-        shape.add(animation, forKey: "animation")
-    }
-     */
     // MARK: - Set value time
     private func checkGameType() -> CGFloat {
         game.gameType == .questionnaire ? setTimeSpend() : averageTime()

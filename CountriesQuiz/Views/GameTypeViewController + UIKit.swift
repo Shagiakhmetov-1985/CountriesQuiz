@@ -128,8 +128,8 @@ extension GameTypeViewController {
         return button
     }
     
-    func setButton(color: UIColor, labelFirst: UILabel,
-                   labelSecond: UILabel, tag: Int? = nil) -> UIButton {
+    func setButton(color: UIColor, labelName: UILabel, labelCount: UILabel,
+                   tag: Int? = nil) -> UIButton {
         let button = UIButton(type: .custom)
         button.backgroundColor = color
         button.layer.borderColor = UIColor.white.cgColor
@@ -141,7 +141,7 @@ extension GameTypeViewController {
         button.tag = tag ?? 0
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(continents), for: .touchUpInside)
-        viewModel.setSubviews(subviews: labelFirst, labelSecond, on: button)
+        viewModel.setSubviews(subviews: labelName, labelCount, on: button)
         return button
     }
     

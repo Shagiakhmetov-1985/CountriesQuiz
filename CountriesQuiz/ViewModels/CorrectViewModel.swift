@@ -174,14 +174,14 @@ extension CorrectViewModel {
     
     private func correctTextColor() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag, .quizOfCapitals: .white
+        case .quizOfFlags, .quizOfCapitals: .white
         default: .greenHarlequin
         }
     }
     
     private func notSelectTextColor() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag, .quizOfCapitals: .grayLight
+        case .quizOfFlags, .quizOfCapitals: .grayLight
         default: .white
         }
     }
@@ -192,14 +192,14 @@ extension CorrectViewModel {
     
     private func correctBackground() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag, .quizOfCapitals: .greenYellowBrilliant
+        case .quizOfFlags, .quizOfCapitals: .greenYellowBrilliant
         default: .white
         }
     }
     
     private func notSelectBackground() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag: isFlag ? .whiteAlpha : .skyGrayLight
+        case .quizOfFlags: isFlag ? .whiteAlpha : .skyGrayLight
         case .questionnaire: .greenHarlequin
         default: .whiteAlpha
         }

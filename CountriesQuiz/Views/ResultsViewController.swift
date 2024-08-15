@@ -281,7 +281,7 @@ class ResultsViewController: UIViewController {
     // MARK: - Press exit button
     @objc private func exitToMenu() {
         switch viewModel.game.gameType {
-        case .quizOfFlag: delegateQuizOfFlag.dataToQuizOfFlag(setting: viewModel.mode)
+        case .quizOfFlags: delegateQuizOfFlag.dataToQuizOfFlag(setting: viewModel.mode)
         case .questionnaire: delegateQuestionnaire.dataToQuestionnaire(setting: viewModel.mode)
         default: delegateQuizOfCapitals.dataToQuizOfCapitals(setting: viewModel.mode)
         }

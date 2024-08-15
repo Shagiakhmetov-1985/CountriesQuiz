@@ -24,10 +24,10 @@ protocol ResultsViewModelProtocol {
     var mode: Setting { get }
     var game: Games { get }
     var correctAnswers: [Corrects] { get }
-    var incorrectAnswers: [Results] { get }
+    var incorrectAnswers: [Incorrects] { get }
     
     init(mode: Setting, game: Games, correctAnswers: [Corrects],
-         incorrectAnswers: [Results], timeSpend: [CGFloat], answeredQuestions: Int)
+         incorrectAnswers: [Incorrects], timeSpend: [CGFloat], answeredQuestions: Int)
     
     func isTime() -> Bool
     func isOneQuestion() -> Bool
@@ -86,12 +86,12 @@ class ResultsViewModel: ResultsViewModelProtocol {
     let mode: Setting
     let game: Games
     let correctAnswers: [Corrects]
-    let incorrectAnswers: [Results]
+    let incorrectAnswers: [Incorrects]
     
     private let timeSpend: [CGFloat]
     
     required init(mode: Setting, game: Games, correctAnswers: [Corrects],
-                  incorrectAnswers: [Results], timeSpend: [CGFloat], answeredQuestions: Int) {
+                  incorrectAnswers: [Incorrects], timeSpend: [CGFloat], answeredQuestions: Int) {
         self.mode = mode
         self.game = game
         self.correctAnswers = correctAnswers

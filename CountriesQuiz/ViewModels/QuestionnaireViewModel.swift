@@ -158,7 +158,7 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     private var seconds = 0
     
     private var correctAnswers: [Corrects] = []
-    private var incorrectAnswers: [Results] = []
+    private var incorrectAnswers: [Incorrects] = []
     private var timeSpend: [CGFloat] = []
     private var answeredQuestions = 0
     private var item: Countries {
@@ -945,12 +945,10 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     }
     
     private func addCorrectAnswer() {
-        addCorrectAnswer(numberQuestion: numberQuestion + 1,
-                         question: item,
-                         buttonFirst: answerFirst,
-                         buttonSecond: answerSecond,
-                         buttonThird: answerThird,
-                         buttonFourth: answerFourth)
+        let answer = Corrects(currentQuestion: numberQuestion + 1, question: item,
+                              buttonFirst: answerFirst, buttonSecond: answerSecond,
+                              buttonThird: answerThird, buttonFourth: answerFourth)
+        correctAnswers.append(answer)
     }
     
     private func deleteIncorrectAnswer() {
@@ -961,32 +959,10 @@ class QuestionnaireViewModel: QuestionnaireViewModelProtocol {
     }
     
     private func addIncorrectAnswer(tag: Int) {
-        addIncorrectAnswer(numberQuestion: numberQuestion + 1, tag: tag,
-                           question: item,
-                           buttonFirst: answerFirst,
-                           buttonSecond: answerSecond,
-                           buttonThird: answerThird,
-                           buttonFourth: answerFourth,
-                           timeUp: false)
-    }
-    
-    private func addCorrectAnswer(numberQuestion: Int, question: Countries,
-                                  buttonFirst: Countries, buttonSecond: Countries,
-                                  buttonThird: Countries, buttonFourth: Countries) {
-        let answer = Corrects(currentQuestion: numberQuestion, question: question,
-                              buttonFirst: buttonFirst, buttonSecond: buttonSecond,
-                              buttonThird: buttonThird, buttonFourth: buttonFourth)
-        correctAnswers.append(answer)
-    }
-    
-    private func addIncorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
-                                    buttonFirst: Countries, buttonSecond: Countries,
-                                    buttonThird: Countries, buttonFourth: Countries,
-                                    timeUp: Bool) {
-        let answer = Results(currentQuestion: numberQuestion, tag: tag,
-                             question: question, buttonFirst: buttonFirst,
-                             buttonSecond: buttonSecond, buttonThird: buttonThird,
-                             buttonFourth: buttonFourth, timeUp: timeUp)
+        let answer = Incorrects(currentQuestion: numberQuestion, tag: tag,
+                                question: item, buttonFirst: answerFirst,
+                                buttonSecond: answerSecond, buttonThird: answerThird,
+                                buttonFourth: answerFourth, isFlag: isFlag, timeUp: false)
         incorrectAnswers.append(answer)
     }
     // MARK: - Set color buttons, images and labels when user press button of answer, countinue

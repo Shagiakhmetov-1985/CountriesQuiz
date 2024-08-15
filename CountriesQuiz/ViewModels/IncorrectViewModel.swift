@@ -18,10 +18,10 @@ protocol IncorrectViewModelProtocol {
     var buttonFourth: Countries { get }
     var heightStackView: CGFloat { get }
     
-    init(mode: Setting, game: Games, result: Results)
+    init(mode: Setting, game: Games, incorrect: Incorrects)
     
     func setSubviews(subviews: UIView..., on otherSubview: UIView)
-    func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
+    func setBarButton(_ buttonBack: UIButton,_ buttonFavourites: UIButton,_ navigationItem: UINavigationItem)
     
     func question() -> UIView
     func view(_ button: Countries, addSubview: UIView, and tag: Int) -> UIView
@@ -32,6 +32,8 @@ protocol IncorrectViewModelProtocol {
     
     func constraintsQuestion(_ subview: UIView, _ view: UIView)
     func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView,_ flag: String)
+    func setSquare(_ buttons: UIButton..., sizes: CGFloat)
+    func addFavourites()
 }
 
 class IncorrectViewModel: IncorrectViewModelProtocol {
@@ -40,22 +42,22 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     }
     let radius: CGFloat = 6
     var numberQuestion: String {
-        "\(result.currentQuestion) / \(mode.countQuestions)"
+        "\(incorrect.currentQuestion) / \(mode.countQuestions)"
     }
     var progress: Float {
-        Float(result.currentQuestion) / Float(mode.countQuestions)
+        Float(incorrect.currentQuestion) / Float(mode.countQuestions)
     }
     var buttonFirst: Countries {
-        result.buttonFirst
+        incorrect.buttonFirst
     }
     var buttonSecond: Countries {
-        result.buttonSecond
+        incorrect.buttonSecond
     }
     var buttonThird: Countries {
-        result.buttonThird
+        incorrect.buttonThird
     }
     var buttonFourth: Countries {
-        result.buttonFourth
+        incorrect.buttonFourth
     }
     var heightStackView: CGFloat {
         isFlag ? 215 : 235
@@ -63,21 +65,24 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     
     private let mode: Setting
     private let game: Games
-    private let result: Results
+    private let incorrect: Incorrects
+    private var favourites = Favourites(quizOfFlags: [], questionnaire: [], 
+                                        quizOfMaps: [], scrabble: [],
+                                        quizOfCapitals: [])
     private var isFlag: Bool {
         mode.flag ? true : false
     }
     private var issue: Countries {
-        result.question
+        incorrect.question
     }
     private var flag: String {
-        result.question.flag
+        incorrect.question.flag
     }
     
-    required init(mode: Setting, game: Games, result: Results) {
+    required init(mode: Setting, game: Games, incorrect: Incorrects) {
         self.mode = mode
         self.game = game
-        self.result = result
+        self.incorrect = incorrect
     }
     // MARK: - Set subviews
     func setSubviews(subviews: UIView..., on otherSubview: UIView) {
@@ -86,9 +91,12 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
         }
     }
     
-    func setBarButton(_ button: UIButton, _ navigationItem: UINavigationItem) {
-        let barButton = UIBarButtonItem(customView: button)
-        navigationItem.leftBarButtonItem = barButton
+    func setBarButton(_ buttonBack: UIButton, _ buttonFavourites: UIButton,
+                      _ navigationItem: UINavigationItem) {
+        let leftBarButton = UIBarButtonItem(customView: buttonBack)
+        let rightBarButton = UIBarButtonItem(customView: buttonFavourites)
+        navigationItem.leftBarButtonItem = leftBarButton
+        navigationItem.rightBarButtonItem = rightBarButton
     }
     // MARK: - Constants
     func widthStackView(_ view: UIView) -> CGFloat {
@@ -166,6 +174,25 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
             ])
         }
     }
+    
+    func setSquare(_ buttons: UIButton..., sizes: CGFloat) {
+        buttons.forEach { button in
+            NSLayoutConstraint.activate([
+                button.widthAnchor.constraint(equalToConstant: sizes),
+                button.heightAnchor.constraint(equalToConstant: sizes)
+            ])
+        }
+    }
+    
+    func addFavourites() {
+        switch game.gameType {
+        case .quizOfFlags: favourites.quizOfFlags.append(incorrect)
+        case .questionnaire: favourites.questionnaire.append(incorrect)
+        case .quizOfMaps: favourites.quizOfMaps.append(incorrect)
+        case .scrabble: favourites.scrabble.append(incorrect)
+        case .quizOfCapitals: favourites.quizOfCapitals.append(incorrect)
+        }
+    }
 }
 // MARK: - Private methods, constants
 extension IncorrectViewModel {
@@ -178,7 +205,7 @@ extension IncorrectViewModel {
     }
     
     private func incorrectTextColor(_ tag: Int) -> UIColor {
-        result.tag == tag ? checkSelectText() : checkNotSelectText()
+        incorrect.tag == tag ? checkSelectText() : checkNotSelectText()
     }
     
     private func checkSelectText() -> UIColor {
@@ -198,12 +225,12 @@ extension IncorrectViewModel {
     }
     
     private func incorrectBackground(_ tag: Int) -> UIColor {
-        result.tag == tag ? checkSelect() : checkNotSelect()
+        incorrect.tag == tag ? checkSelect() : checkNotSelect()
     }
     
     private func checkSelect() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag: .redTangerineTango
+        case .quizOfFlags: .redTangerineTango
         case .questionnaire: .white
         default: .bismarkFuriozo
         }
@@ -211,7 +238,7 @@ extension IncorrectViewModel {
     
     private func checkNotSelect() -> UIColor {
         switch game.gameType {
-        case .quizOfFlag: isFlag ? .whiteAlpha : .skyGrayLight
+        case .quizOfFlags: isFlag ? .whiteAlpha : .skyGrayLight
         case .questionnaire: .greenHarlequin
         default: .whiteAlpha
         }
@@ -222,7 +249,7 @@ extension IncorrectViewModel {
     }
     
     private func incorrectCheckmark(_ tag: Int) -> String {
-        result.tag == tag ? "xmark.circle.fill" : "circle"
+        incorrect.tag == tag ? "xmark.circle.fill" : "circle"
     }
     
     private func color(_ button: Countries, _ tag: Int) -> UIColor {
@@ -230,7 +257,7 @@ extension IncorrectViewModel {
     }
     
     private func incorrectColor(_ tag: Int) -> UIColor {
-        result.tag == tag ? .redTangerineTango : .white
+        incorrect.tag == tag ? .redTangerineTango : .white
     }
     
     private func text(_ button: Countries) -> String {

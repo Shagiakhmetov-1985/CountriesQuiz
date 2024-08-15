@@ -9,17 +9,11 @@ import UIKit
 
 class IncorrectViewController: UIViewController {
     private lazy var buttonBack: UIButton = {
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
-        let image = UIImage(systemName: "arrow.left", withConfiguration: size)
-        let button = UIButton(type: .system)
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.layer.cornerRadius = 12
-        button.layer.borderColor = UIColor.white.cgColor
-        button.layer.borderWidth = 1.5
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(backToList), for: .touchUpInside)
-        return button
+        setButton(image: "arrow.left", action: #selector(backToList))
+    }()
+    
+    private lazy var buttonFavourites: UIButton = {
+        setButton(image: "star", action: #selector(favourites))
     }()
     
     private lazy var question: UIView = {
@@ -100,7 +94,7 @@ class IncorrectViewController: UIViewController {
     }
     
     private func setBarButton() {
-        viewModel.setBarButton(buttonBack, navigationItem)
+        viewModel.setBarButton(buttonBack, buttonFavourites, navigationItem)
     }
     
     private func setSubviews() {
@@ -110,14 +104,31 @@ class IncorrectViewController: UIViewController {
     @objc private func backToList() {
         navigationController?.popViewController(animated: true)
     }
+    
+    @objc private func favourites() {
+        viewModel.addFavourites()
+    }
+}
+// MARK: - Set button
+extension IncorrectViewController {
+    func setButton(image: String, action: Selector) -> UIButton {
+        let size = UIImage.SymbolConfiguration(pointSize: 20)
+        let image = UIImage(systemName: image, withConfiguration: size)
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.layer.cornerRadius = 12
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = 1.5
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
+    }
 }
 // MARK: - Setup constraints
 extension IncorrectViewController {
     private func setConstraints() {
-        NSLayoutConstraint.activate([
-            buttonBack.widthAnchor.constraint(equalToConstant: 40),
-            buttonBack.heightAnchor.constraint(equalToConstant: 40)
-        ])
+        viewModel.setSquare(buttonBack, buttonFavourites, sizes: 40)
         
         viewModel.constraintsQuestion(question, view)
         

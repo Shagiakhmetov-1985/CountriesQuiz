@@ -148,7 +148,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
                        buttonSecond: [Countries], buttonThird: [Countries],
                        buttonFourth: [Countries]) = ([], [], [], [], [])
     private var correctAnswers: [Corrects] = []
-    private var incorrectAnswers: [Results] = []
+    private var incorrectAnswers: [Incorrects] = []
     private var timeSpend: [CGFloat] = []
     private var answeredQuestions = 0
     
@@ -754,24 +754,20 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     }
     
     private func addCorrectAnswer() {
-        addCorrectAnswer(numberQuestion: currentQuestion + 1,
-                         question: data.questions[currentQuestion],
-                         buttonFirst: data.buttonFirst[currentQuestion],
-                         buttonSecond: data.buttonSecond[currentQuestion],
-                         buttonThird: data.buttonThird[currentQuestion],
-                         buttonFourth: data.buttonFourth[currentQuestion])
+        let answer = Corrects(currentQuestion: currentQuestion + 1, question: item,
+                              buttonFirst: answerFirst, buttonSecond: answerSecond,
+                              buttonThird: answerThird, buttonFourth: answerFourth)
+        correctAnswers.append(answer)
     }
     
     private func addIncorrectAnswer(_ tag: Int) {
         let setTag = tag == 0 ? 0 : tag
         let timeUp = tag == 0 ? true : false
-        addIncorrectAnswer(numberQuestion: currentQuestion + 1, tag: setTag,
-                           question: data.questions[currentQuestion],
-                           buttonFirst: data.buttonFirst[currentQuestion],
-                           buttonSecond: data.buttonSecond[currentQuestion],
-                           buttonThird: data.buttonThird[currentQuestion],
-                           buttonFourth: data.buttonFourth[currentQuestion],
-                           timeUp: timeUp)
+        let answer = Incorrects(currentQuestion: currentQuestion + 1, tag: setTag,
+                                question: item, buttonFirst: answerFirst,
+                                buttonSecond: answerSecond, buttonThird: answerThird,
+                                buttonFourth: answerFourth, isFlag: isFlag, timeUp: timeUp)
+        incorrectAnswers.append(answer)
     }
     // MARK: - Check correct or incorrect answer from select user
     private func checkAnswer(tag: Int) -> Bool {
@@ -802,25 +798,14 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
         }
     }
     // MARK: - Add correct / incorrect answer after select from user, countinue
-    private func addCorrectAnswer(numberQuestion: Int, question: Countries,
-                                  buttonFirst: Countries, buttonSecond: Countries,
-                                  buttonThird: Countries, buttonFourth: Countries) {
-        let answer = Corrects(currentQuestion: numberQuestion, question: question,
-                              buttonFirst: buttonFirst, buttonSecond: buttonSecond,
-                              buttonThird: buttonThird, buttonFourth: buttonFourth)
-        correctAnswers.append(answer)
-    }
-    
-    private func addIncorrectAnswer(numberQuestion: Int, tag: Int, question: Countries,
-                                    buttonFirst: Countries, buttonSecond: Countries,
-                                    buttonThird: Countries, buttonFourth: Countries,
-                                    timeUp: Bool) {
-        let answer = Results(currentQuestion: numberQuestion, tag: tag,
-                             question: question, buttonFirst: buttonFirst,
-                             buttonSecond: buttonSecond, buttonThird: buttonThird,
-                             buttonFourth: buttonFourth, timeUp: timeUp)
-        incorrectAnswers.append(answer)
-    }
+//    private func addCorrectAnswer(numberQuestion: Int, question: Countries,
+//                                  buttonFirst: Countries, buttonSecond: Countries,
+//                                  buttonThird: Countries, buttonFourth: Countries) {
+//        let answer = Corrects(currentQuestion: numberQuestion, question: question,
+//                              buttonFirst: buttonFirst, buttonSecond: buttonSecond,
+//                              buttonThird: buttonThird, buttonFourth: buttonFourth)
+//        correctAnswers.append(answer)
+//    }
     // MARK: - Update data for next question, countinue
     private func image(_ question: UIView) -> UIImageView {
         question as! UIImageView

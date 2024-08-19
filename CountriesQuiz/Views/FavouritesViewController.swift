@@ -57,7 +57,13 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        <#code#>
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        viewModel.customCell(cell: cell as! FavouritesCell, indexPath: indexPath)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        viewModel.heightOfRow
     }
     
     private func setDesign() {
@@ -80,6 +86,22 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
 
 extension FavouritesViewController {
     private func setConstraints() {
+        NSLayoutConstraint.activate([
+            buttonClose.widthAnchor.constraint(equalToConstant: 40),
+            buttonClose.heightAnchor.constraint(equalToConstant: 40)
+        ])
         
+        NSLayoutConstraint.activate([
+            labelTitle.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
+            labelTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            labelTitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: labelTitle.bottomAnchor, constant: 20),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 }

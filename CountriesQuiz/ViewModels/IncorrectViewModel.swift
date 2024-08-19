@@ -66,9 +66,6 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     private let mode: Setting
     private let game: Games
     private let incorrect: Incorrects
-    private var favourites = Favourites(quizOfFlags: [], questionnaire: [], 
-                                        quizOfMaps: [], scrabble: [],
-                                        quizOfCapitals: [])
     private var isFlag: Bool {
         mode.flag ? true : false
     }
@@ -185,13 +182,7 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     }
     
     func addFavourites() {
-        switch game.gameType {
-        case .quizOfFlags: favourites.quizOfFlags.append(incorrect)
-        case .questionnaire: favourites.questionnaire.append(incorrect)
-        case .quizOfMaps: favourites.quizOfMaps.append(incorrect)
-        case .scrabble: favourites.scrabble.append(incorrect)
-        case .quizOfCapitals: favourites.quizOfCapitals.append(incorrect)
-        }
+        
     }
 }
 // MARK: - Private methods, constants

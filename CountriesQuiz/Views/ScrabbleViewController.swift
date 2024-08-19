@@ -90,7 +90,7 @@ class ScrabbleViewController: UIViewController {
     }
     
     private func setupData() {
-        questions = Countries.getQuestions(mode: mode)
+//        questions = Countries.getQuestions(mode: mode)
     }
     
     private func setupDesign() {

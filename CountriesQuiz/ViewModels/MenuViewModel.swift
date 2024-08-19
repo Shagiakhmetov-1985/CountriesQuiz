@@ -29,6 +29,7 @@ protocol MenuViewModelProtocol {
 class MenuViewModel: MenuViewModelProtocol {
     var mode: Setting?
     private var games: [Games] = []
+    private var favourites: [Favourites] = []
     private let transition = Transition()
     
     func setSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -40,6 +41,7 @@ class MenuViewModel: MenuViewModelProtocol {
     func fetchData() {
         mode = StorageManager.shared.fetchSetting()
         games = getGames()
+        favourites = StorageManager.shared.fetchFavourites()
     }
     
     func size(view: UIView?) -> CGSize {
@@ -51,39 +53,6 @@ class MenuViewModel: MenuViewModelProtocol {
         let mode = mode ?? Setting.getSettingDefault()
         let game = games[tag]
         return GameTypeViewModel(mode: mode, game: game, tag: tag)
-    }
-    
-    private func getGames() -> [Games] {
-        var games: [Games] = []
-        
-        let gameType = GameType.shared.gameType
-        let names = GameType.shared.names
-        let images = GameType.shared.images
-        let descriptions = GameType.shared.descriptions
-        let backgrounds = GameType.shared.backgrounds
-        let plays = GameType.shared.buttonsPlay
-        let favourites = GameType.shared.buttonsFavourite
-        let swaps = GameType.shared.buttonsSwap
-        let dones = GameType.shared.buttonsDone
-        let iterrationCount = min(names.count, images.count, descriptions.count,
-                                  backgrounds.count, plays.count,
-                                  favourites.count, swaps.count)
-        
-        for index in 0..<iterrationCount {
-            let information = Games(
-                gameType: gameType[index],
-                name: names[index],
-                image: images[index],
-                description: descriptions[index],
-                background: backgrounds[index],
-                play: plays[index],
-                favourite: favourites[index],
-                swap: swaps[index],
-                done: dones[index])
-            games.append(information)
-        }
-        
-        return games
     }
     
     func forPresented(_ button: UIButton) -> Transition {
@@ -146,5 +115,40 @@ class MenuViewModel: MenuViewModelProtocol {
             circle.trailingAnchor.constraint(equalTo: button.trailingAnchor)
         ])
         setCenterSubview(subview: imageGame, on: circle)
+    }
+}
+
+extension MenuViewModel {
+    private func getGames() -> [Games] {
+        var games: [Games] = []
+        
+        let gameType = GameType.shared.gameType
+        let names = GameType.shared.names
+        let images = GameType.shared.images
+        let descriptions = GameType.shared.descriptions
+        let backgrounds = GameType.shared.backgrounds
+        let plays = GameType.shared.buttonsPlay
+        let favourites = GameType.shared.buttonsFavourite
+        let swaps = GameType.shared.buttonsSwap
+        let dones = GameType.shared.buttonsDone
+        let iterrationCount = min(names.count, images.count, descriptions.count,
+                                  backgrounds.count, plays.count,
+                                  favourites.count, swaps.count)
+        
+        for index in 0..<iterrationCount {
+            let information = Games(
+                gameType: gameType[index],
+                name: names[index],
+                image: images[index],
+                description: descriptions[index],
+                background: backgrounds[index],
+                play: plays[index],
+                favourite: favourites[index],
+                swap: swaps[index],
+                done: dones[index])
+            games.append(information)
+        }
+        
+        return games
     }
 }

@@ -18,8 +18,7 @@ protocol IncorrectViewModelProtocol {
     var buttonFourth: Countries { get }
     var heightStackView: CGFloat { get }
     
-    init(mode: Setting, game: Games, incorrect: Incorrects)
-    
+    init(mode: Setting, game: Games, incorrect: Incorrects, favourites: [Favourites])
     func setSubviews(subviews: UIView..., on otherSubview: UIView)
     func setBarButton(_ buttonBack: UIButton,_ buttonFavourites: UIButton,_ navigationItem: UINavigationItem)
     
@@ -29,11 +28,12 @@ protocol IncorrectViewModelProtocol {
     func stackView(_ first: UIView,_ second: UIView,_ third: UIView,_ fourth: UIView) -> UIStackView
     
     func widthStackView(_ view: UIView) -> CGFloat
+    func imageFavourites() -> String
     
     func constraintsQuestion(_ subview: UIView, _ view: UIView)
     func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView,_ flag: String)
     func setSquare(_ buttons: UIButton..., sizes: CGFloat)
-    func addFavourites()
+    func addOrDeleteFavourite(_ button: UIButton)
 }
 
 class IncorrectViewModel: IncorrectViewModelProtocol {
@@ -66,20 +66,35 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     private let mode: Setting
     private let game: Games
     private let incorrect: Incorrects
+    private var favourites: [Favourites]
     private var isFlag: Bool {
         mode.flag ? true : false
-    }
-    private var issue: Countries {
-        incorrect.question
     }
     private var flag: String {
         incorrect.question.flag
     }
+    private var name: String {
+        incorrect.question.name
+    }
+    private var answerFirst: String {
+        isFlag ? incorrect.buttonFirst.flag : incorrect.buttonFirst.name
+    }
+    private var answerSecond: String {
+        isFlag ? incorrect.buttonSecond.flag : incorrect.buttonSecond.name
+    }
+    private var answerThird: String {
+        isFlag ? incorrect.buttonThird.flag : incorrect.buttonThird.name
+    }
+    private var answerFourth: String {
+        isFlag ? incorrect.buttonFourth.flag : incorrect.buttonFourth.name
+    }
     
-    required init(mode: Setting, game: Games, incorrect: Incorrects) {
+    required init(mode: Setting, game: Games, incorrect: Incorrects,
+                  favourites: [Favourites]) {
         self.mode = mode
         self.game = game
         self.incorrect = incorrect
+        self.favourites = favourites
     }
     // MARK: - Set subviews
     func setSubviews(subviews: UIView..., on otherSubview: UIView) {
@@ -99,12 +114,20 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     func widthStackView(_ view: UIView) -> CGFloat {
         isFlag ? view.bounds.width - 40 : view.bounds.width - 20
     }
+    
+    func imageFavourites() -> String {
+        if let _ = favourites.first(where: { $0.flag == flag }) {
+            "star.fill"
+        } else {
+            "star"
+        }
+    }
     // MARK: - Subviews
     func question() -> UIView {
         if isFlag {
             setImage(image: UIImage(named: flag))
         } else {
-            setLabel(text: issue.name, size: 32, color: .white)
+            setLabel(text: name, size: 32, color: .white)
         }
     }
     
@@ -181,14 +204,17 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
         }
     }
     
-    func addFavourites() {
+    func addOrDeleteFavourite(_ button: UIButton) {
+        let currentImage = button.currentImage
+        let image = UIImage(systemName: "star")
+        setButton(button, currentImage: currentImage, and: image)
         
     }
 }
 // MARK: - Private methods, constants
 extension IncorrectViewModel {
     private func textColor(_ button: Countries, _ tag: Int) -> UIColor {
-        issue.flag == button.flag ? correctTextColor() : incorrectTextColor(tag)
+        flag == button.flag ? correctTextColor() : incorrectTextColor(tag)
     }
     
     private func correctTextColor() -> UIColor {
@@ -208,7 +234,7 @@ extension IncorrectViewModel {
     }
     
     private func backgroundColor(_ button: Countries, _ tag: Int) -> UIColor {
-        issue.flag == button.flag ? correctBackground() : incorrectBackground(tag)
+        flag == button.flag ? correctBackground() : incorrectBackground(tag)
     }
     
     private func correctBackground() -> UIColor {
@@ -236,7 +262,7 @@ extension IncorrectViewModel {
     }
     
     private func checkmark(_ button: Countries, _ tag: Int) -> String {
-        issue.flag == button.flag ? "checkmark.circle.fill" : incorrectCheckmark(tag)
+        flag == button.flag ? "checkmark.circle.fill" : incorrectCheckmark(tag)
     }
     
     private func incorrectCheckmark(_ tag: Int) -> String {
@@ -244,7 +270,7 @@ extension IncorrectViewModel {
     }
     
     private func color(_ button: Countries, _ tag: Int) -> UIColor {
-        issue.flag == button.flag ? .greenHarlequin : incorrectColor(tag)
+        flag == button.flag ? .greenHarlequin : incorrectColor(tag)
     }
     
     private func incorrectColor(_ tag: Int) -> UIColor {
@@ -290,7 +316,7 @@ extension IncorrectViewModel {
         }
     }
 }
-// MARK: - Add subviews on button
+// MARK: - Set subviews
 extension IncorrectViewModel {
     private func addSubviews(subview: UIView, on view: UIView,
                              and button: Countries, tag: Int) {
@@ -303,9 +329,7 @@ extension IncorrectViewModel {
             setSubviews(subviews: subview, on: view)
         }
     }
-}
-// MARK: - Set subviews
-extension IncorrectViewModel {
+    
     private func setSubview(button: Countries, tag: Int) -> UIView {
         if game.gameType == .quizOfCapitals {
             setLabel(text: button.capitals, size: 23, color: textColor(button, tag))
@@ -313,9 +337,7 @@ extension IncorrectViewModel {
             setImage(image: UIImage(named: button.flag))
         }
     }
-}
-// MARK: - Set images
-extension IncorrectViewModel {
+    
     private func setImage(image: UIImage?) -> UIImageView {
         let imageView = UIImageView(image: image)
         imageView.layer.borderWidth = 1
@@ -333,9 +355,7 @@ extension IncorrectViewModel {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }
-}
-// MARK: - Set labels
-extension IncorrectViewModel {
+
     private func setLabel(text: String, size: CGFloat, color: UIColor) -> UILabel {
         let label = UILabel()
         label.text = text
@@ -346,9 +366,7 @@ extension IncorrectViewModel {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
-}
-// MARK: - Set stack views
-extension IncorrectViewModel {
+    
     private func setStackView(_ first: UIView, _ second: UIView,
                               _ third: UIView, _ fourth: UIView) -> UIStackView {
         let stackView = UIStackView(
@@ -398,6 +416,29 @@ extension IncorrectViewModel {
             return subview.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: center)
         } else {
             return subview.centerXAnchor.constraint(equalTo: button.centerXAnchor)
+        }
+    }
+}
+// MARK: - Add or delete favourites
+extension IncorrectViewModel {
+    private func setButton(_ button: UIButton, currentImage: UIImage?, and image: UIImage?) {
+        let systemName = currentImage == image ? "star.fill" : "star"
+        let size = UIImage.SymbolConfiguration(pointSize: 20)
+        let setImage = UIImage(systemName: systemName, withConfiguration: size)
+        button.setImage(setImage, for: .normal)
+    }
+    
+    private func setFavourites(currentImage: UIImage?, and image: UIImage?) {
+        if currentImage == image {
+            let favourite = Favourites(flag: flag, name: name,
+                                       buttonFirst: answerFirst, buttonSecond: answerSecond,
+                                       buttonThird: answerThird, buttonFourth: answerFourth,
+                                       currectQuestion: incorrect.currentQuestion,
+                                       tag: incorrect.tag, isFlag: isFlag,
+                                       isTimeUp: incorrect.timeUp)
+            favourites.append(favourite)
+        } else {
+            
         }
     }
 }

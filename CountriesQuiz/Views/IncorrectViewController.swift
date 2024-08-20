@@ -13,7 +13,7 @@ class IncorrectViewController: UIViewController {
     }()
     
     private lazy var buttonFavourites: UIButton = {
-        setButton(image: "star", action: #selector(favourites))
+        setButton(image: viewModel.imageFavourites(), action: #selector(favourites))
     }()
     
     private lazy var question: UIView = {
@@ -106,7 +106,7 @@ class IncorrectViewController: UIViewController {
     }
     
     @objc private func favourites() {
-        viewModel.addFavourites()
+        viewModel.addOrDeleteFavourite(buttonFavourites)
     }
 }
 // MARK: - Set button

@@ -41,7 +41,6 @@ class MenuViewModel: MenuViewModelProtocol {
     func fetchData() {
         mode = StorageManager.shared.fetchSetting()
         games = getGames()
-        favourites = StorageManager.shared.fetchFavourites()
     }
     
     func size(view: UIView?) -> CGSize {
@@ -52,7 +51,8 @@ class MenuViewModel: MenuViewModelProtocol {
     func gameTypeViewModel(tag: Int) -> GameTypeViewModelProtocol {
         let mode = mode ?? Setting.getSettingDefault()
         let game = games[tag]
-        return GameTypeViewModel(mode: mode, game: game, tag: tag)
+        favourites = StorageManager.shared.fetchFavourites(key: game.keys)
+        return GameTypeViewModel(mode: mode, game: game, tag: tag, favourites: favourites)
     }
     
     func forPresented(_ button: UIButton) -> Transition {
@@ -127,6 +127,7 @@ extension MenuViewModel {
         let images = GameType.shared.images
         let descriptions = GameType.shared.descriptions
         let backgrounds = GameType.shared.backgrounds
+        let keys = GameType.shared.keys
         let plays = GameType.shared.buttonsPlay
         let favourites = GameType.shared.buttonsFavourite
         let swaps = GameType.shared.buttonsSwap
@@ -141,7 +142,8 @@ extension MenuViewModel {
                 name: names[index],
                 image: images[index],
                 description: descriptions[index],
-                background: backgrounds[index],
+                background: backgrounds[index], 
+                keys: keys[index],
                 play: plays[index],
                 favourite: favourites[index],
                 swap: swaps[index],

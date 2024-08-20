@@ -13,6 +13,7 @@ struct Games {
     let image: String
     let description: String
     let background: UIColor
+    let keys: String
     let play: UIColor
     let favourite: UIColor
     let swap: UIColor

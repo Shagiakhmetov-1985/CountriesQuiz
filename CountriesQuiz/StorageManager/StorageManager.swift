@@ -12,7 +12,6 @@ class StorageManager {
     
     private let userDefaults = UserDefaults.standard
     private let settingKey = "setting"
-    private let favouritesKey = "favourites"
     
     private init() {}
     
@@ -27,22 +26,22 @@ class StorageManager {
         return setting
     }
     
-    func addFavourite(favourite: Favourites) {
-        var favourites = fetchFavourites()
+    func addFavourite(favourite: Favourites, key: String) {
+        var favourites = fetchFavourites(key: key)
         favourites.append(favourite)
         guard let data = try? JSONEncoder().encode(favourites) else { return }
-        userDefaults.set(data, forKey: favouritesKey)
+        userDefaults.set(data, forKey: key)
     }
     
-    func deleteFavourite(favourite: Int) {
-        var favourites = fetchFavourites()
+    func deleteFavourite(favourite: Int, key: String) {
+        var favourites = fetchFavourites(key: key)
         favourites.remove(at: favourite)
         guard let data = try? JSONEncoder().encode(favourites) else { return }
-        userDefaults.set(data, forKey: favouritesKey)
+        userDefaults.set(data, forKey: key)
     }
     
-    func fetchFavourites() -> [Favourites] {
-        guard let data = userDefaults.object(forKey: favouritesKey) as? Data else { return [] }
+    func fetchFavourites(key: String) -> [Favourites] {
+        guard let data = userDefaults.object(forKey: key) as? Data else { return [] }
         guard let favourites = try? JSONDecoder().decode([Favourites].self, from: data) else { return [] }
         return favourites
     }

@@ -36,7 +36,7 @@ protocol GameTypeViewModelProtocol {
     var countCountriesOfAsia: Int { get }
     var countCountriesOfOceania: Int { get }
     
-    init(mode: Setting, game: Games, tag: Int)
+    init(mode: Setting, game: Games, tag: Int, favourites: [Favourites])
     
     func numberOfComponents() -> Int
     func numberOfRows(_ pickerView: UIPickerView) -> Int
@@ -53,6 +53,7 @@ protocol GameTypeViewModelProtocol {
     func isCheckmark(isOn: Bool) -> String
     func imageMode() -> String
     func isEnabled() -> Bool
+    func haveFavourites() -> Bool
     
     func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool)
     
@@ -175,6 +176,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     private var mode: Setting
     private let game: Games
     private let tag: Int
+    private let favourites: [Favourites]
     
     private var countRowsDefault = DefaultSetting.countRows.rawValue
     
@@ -185,10 +187,11 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     private var scrollView: UIScrollView!
     private var secondaryView: UIView!
     
-    required init(mode: Setting, game: Games, tag: Int) {
+    required init(mode: Setting, game: Games, tag: Int, favourites: [Favourites]) {
         self.mode = mode
         self.game = game
         self.tag = tag
+        self.favourites = favourites
     }
     // MARK: - Set subviews
     func setSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -272,6 +275,10 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     
     func isEnabled() -> Bool {
         tag == 2 ? false : true
+    }
+    
+    func haveFavourites() -> Bool {
+        favourites.isEmpty ? false : true
     }
     
     func isCountdown() -> Bool {
@@ -484,15 +491,15 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     }
     // MARK: - Transitions to other view controller
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol {
-        QuizOfFlagsViewModel(mode: mode, game: game)
+        QuizOfFlagsViewModel(mode: mode, game: game, favourites: favourites)
     }
     
     func questionnaireViewModel() -> QuestionnaireViewModelProtocol {
-        QuestionnaireViewModel(mode: mode, game: game)
+        QuestionnaireViewModel(mode: mode, game: game, favourites: favourites)
     }
     
     func quizOfCapitalsViewModel() -> QuizOfCapitalsViewModelProtocol {
-        QuizOfCapitalsViewModel(mode: mode, game: game)
+        QuizOfCapitalsViewModel(mode: mode, game: game, favourites: favourites)
     }
     // MARK: - Constraints
     func setSquare(subviews: UIView..., sizes: CGFloat) {
@@ -717,6 +724,7 @@ extension GameTypeViewModel {
         mode.flag.toggle()
         StorageManager.shared.saveSetting(setting: mode)
     }
+    
     private func imageSwap(_ image: String, _ button: UIButton) {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: image, withConfiguration: size)

@@ -27,7 +27,8 @@ protocol ResultsViewModelProtocol {
     var incorrectAnswers: [Incorrects] { get }
     
     init(mode: Setting, game: Games, correctAnswers: [Corrects],
-         incorrectAnswers: [Incorrects], timeSpend: [CGFloat], answeredQuestions: Int)
+         incorrectAnswers: [Incorrects], timeSpend: [CGFloat],
+         answeredQuestions: Int, favourites: [Favourites])
     
     func isTime() -> Bool
     func isOneQuestion() -> Bool
@@ -89,15 +90,18 @@ class ResultsViewModel: ResultsViewModelProtocol {
     let incorrectAnswers: [Incorrects]
     
     private let timeSpend: [CGFloat]
+    private let favourites: [Favourites]
     
     required init(mode: Setting, game: Games, correctAnswers: [Corrects],
-                  incorrectAnswers: [Incorrects], timeSpend: [CGFloat], answeredQuestions: Int) {
+                  incorrectAnswers: [Incorrects], timeSpend: [CGFloat],
+                  answeredQuestions: Int, favourites: [Favourites]) {
         self.mode = mode
         self.game = game
         self.correctAnswers = correctAnswers
         self.incorrectAnswers = incorrectAnswers
         self.timeSpend = timeSpend
         self.answeredQuestions = answeredQuestions
+        self.favourites = favourites
     }
     // MARK: - Constants
     func isTime() -> Bool {
@@ -142,7 +146,8 @@ class ResultsViewModel: ResultsViewModelProtocol {
     }
     // MARK: - Transition to IncorrectAnswersViewController
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol {
-        IncorrectAnswersViewModel(mode: mode, game: game, results: incorrectAnswers)
+        IncorrectAnswersViewModel(mode: mode, game: game, results: incorrectAnswers,
+                                  favourites: favourites)
     }
     // MARK: - Constraints
     func constraintsView(view: UIView, image: UIImageView, label: UILabel, button: UIButton) {

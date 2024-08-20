@@ -49,7 +49,11 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var buttonFavourites: UIButton = {
-        setButton(image: "star", color: viewModel.colorFavourite, action: #selector(favourites))
+        setButton(
+            image: "star",
+            color: viewModel.colorFavourite,
+            action: #selector(favourites),
+            isEnabled: viewModel.haveFavourites())
     }()
     
     private lazy var buttonSwap: UIButton = {

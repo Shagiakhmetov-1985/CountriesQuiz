@@ -28,7 +28,7 @@ protocol QuizOfCapitalsViewModelProtocol {
     var titleDescription: String { get }
     var answerSelect: Bool { get }
     
-    init(mode: Setting, game: Games)
+    init(mode: Setting, game: Games, favourites: [Favourites])
     
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
@@ -122,6 +122,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     
     private let mode: Setting
     private let game: Games
+    private let favourites: [Favourites]
     
     private var buttonFirst: UIButton!
     private var buttonSecond: UIButton!
@@ -152,9 +153,10 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     private var timeSpend: [CGFloat] = []
     private var answeredQuestions = 0
     
-    required init(mode: Setting, game: Games) {
+    required init(mode: Setting, game: Games, favourites: [Favourites]) {
         self.mode = mode
         self.game = game
+        self.favourites = favourites
     }
     // MARK: - Set subviews
     func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -416,7 +418,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     func resultsViewController() -> ResultsViewModelProtocol {
         ResultsViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
                          incorrectAnswers: incorrectAnswers, timeSpend: timeSpend,
-                         answeredQuestions: answeredQuestions)
+                         answeredQuestions: answeredQuestions, favourites: favourites)
     }
     // MARK: - Get countries for questions, countinue
     private func getRandomCountries() -> [Countries] {

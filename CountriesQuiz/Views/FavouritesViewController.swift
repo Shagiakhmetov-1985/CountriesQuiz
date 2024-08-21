@@ -66,6 +66,10 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
         viewModel.heightOfRow
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
     private func setDesign() {
         view.backgroundColor = viewModel.background
         navigationItem.hidesBackButton = true
@@ -80,7 +84,7 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @objc private func close() {
-        
+        dismiss(animated: true)
     }
 }
 

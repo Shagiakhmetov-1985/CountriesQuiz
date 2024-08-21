@@ -8,7 +8,7 @@
 import UIKit
 
 protocol GameTypeViewControllerInput: AnyObject {
-    func dataToGameType(setting: Setting)
+    func dataToMenu(setting: Setting, favourites: [Favourites])
 }
 
 class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, GameTypeViewControllerInput {
@@ -412,8 +412,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     var viewModel: GameTypeViewModelProtocol!
-    var delegate: GameTypeViewControllerDelegate!
-    weak var delegateInput: MenuViewControllerInput!
+    weak var delegate: MenuViewControllerInput!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -500,8 +499,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         }
     }
     // MARK: - GameTypeViewControllerInput
-    func dataToGameType(setting: Setting) {
-        delegateInput.dataToMenu(setting: setting)
+    func dataToMenu(setting: Setting, favourites: [Favourites]) {
+        delegate.dataToMenu(setting: setting, favourites: favourites)
     }
     // MARK: - General methods
     private func setupDesign() {
@@ -521,7 +520,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     // MARK: - Bar buttons activate
     @objc private func backToMenu() {
-        delegate.dataToMenuFromGameType(setting: viewModel.setting)
+        delegate.modeToMenu(setting: viewModel.mode)
         navigationController?.popViewController(animated: true)
     }
     
@@ -589,7 +588,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     // MARK: - Start game, favourites and swap
     @objc private func startGame() {
-        switch viewModel.setTag {
+        switch viewModel.tag {
         case 0: quizOfFlagsViewController()
         case 1: questionnaireViewController()
         case 3: scrabbleViewController()
@@ -601,7 +600,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let quizOfFlagsViewModel = viewModel.quizOfFlagsViewModel()
         let quizOfFlagsVC = QuizOfFlagsViewController()
         quizOfFlagsVC.viewModel = quizOfFlagsViewModel
-        quizOfFlagsVC.delegateInput = self
+        quizOfFlagsVC.delegate = self
         navigationController?.pushViewController(quizOfFlagsVC, animated: true)
     }
     
@@ -609,7 +608,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let questionnaireViewModel = viewModel.questionnaireViewModel()
         let questionnaireVC = QuestionnaireViewController()
         questionnaireVC.viewModel = questionnaireViewModel
-        questionnaireVC.delegateInput = self
+        questionnaireVC.delegate = self
         navigationController?.pushViewController(questionnaireVC, animated: true)
     }
     
@@ -627,12 +626,17 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let quizOfCapitalsViewModel = viewModel.quizOfCapitalsViewModel()
         let startGameVC = QuizOfCapitalsViewController()
         startGameVC.viewModel = quizOfCapitalsViewModel
-        startGameVC.delegateInput = self
+        startGameVC.delegate = self
         navigationController?.pushViewController(startGameVC, animated: true)
     }
     
     @objc private func favourites() {
-        
+        let favourites = viewModel.favouritesViewModel()
+        let favouritesVC = FavouritesViewController()
+        let navigationVC = UINavigationController(rootViewController: favouritesVC)
+        favouritesVC.viewModel = favourites
+        navigationVC.modalPresentationStyle = .custom
+        present(navigationVC, animated: true)
     }
     
     @objc private func swap() {

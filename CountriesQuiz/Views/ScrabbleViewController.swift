@@ -76,7 +76,6 @@ class ScrabbleViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupData()
         setupDesign()
         setupSubviews()
         setupBarButton()
@@ -87,10 +86,6 @@ class ScrabbleViewController: UIViewController {
         circularShadow()
         circular(strokeEnd: 0)
         animationCircleTimeReset()
-    }
-    
-    private func setupData() {
-        
     }
     
     private func setupDesign() {

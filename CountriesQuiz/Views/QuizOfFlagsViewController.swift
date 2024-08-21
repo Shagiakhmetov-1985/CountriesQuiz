@@ -8,7 +8,7 @@
 import UIKit
 
 protocol QuizOfFlagsViewControllerInput: AnyObject {
-    func dataToQuizOfFlag(setting: Setting)
+    func dataToMenu(setting: Setting, favourites: [Favourites])
 }
 
 class QuizOfFlagsViewController: UIViewController, QuizOfFlagsViewControllerInput {
@@ -94,7 +94,7 @@ class QuizOfFlagsViewController: UIViewController, QuizOfFlagsViewControllerInpu
     }()
     
     var viewModel: QuizOfFlagsViewModelProtocol!
-    weak var delegateInput: GameTypeViewControllerInput!
+    weak var delegate: GameTypeViewControllerInput!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -123,14 +123,14 @@ class QuizOfFlagsViewController: UIViewController, QuizOfFlagsViewControllerInpu
                 let resultsViewModel = viewModel.resultsViewController()
                 let resultsVC = ResultsViewController()
                 resultsVC.viewModel = resultsViewModel
-                resultsVC.delegateQuizOfFlag = self
+                resultsVC.delegate = self
                 navigationController?.pushViewController(resultsVC, animated: true)
             }
         }
     }
     // MARK: - QuizOfFlagsViewControllerInput
-    func dataToQuizOfFlag(setting: Setting) {
-        delegateInput.dataToGameType(setting: setting)
+    func dataToMenu(setting: Setting, favourites: [Favourites]) {
+        delegate.dataToMenu(setting: setting, favourites: favourites)
     }
     // MARK: - General methods
     private func setupData() {

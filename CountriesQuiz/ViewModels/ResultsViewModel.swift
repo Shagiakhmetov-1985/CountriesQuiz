@@ -20,6 +20,7 @@ protocol ResultsViewModelProtocol {
     var heading: String { get }
     var description: String { get }
     var percent: String { get }
+    var favourites: [Favourites] { get }
     
     var mode: Setting { get }
     var game: Games { get }
@@ -40,6 +41,7 @@ protocol ResultsViewModelProtocol {
     
     func percentCorrectAnswers() -> String
     func getRange(subString: String, fromString: String) -> NSRange
+    func setFavourites(newFavourites: [Favourites])
     
     func constraintsView(view: UIView, image: UIImageView, label: UILabel, button: UIButton)
     func constraintsButton(subview: UIView, labelFirst: UILabel, image: UIImageView,
@@ -72,7 +74,6 @@ class ResultsViewModel: ResultsViewModelProtocol {
     var wrongAnswers: Int {
         incorrectAnswers.count
     }
-    var answeredQuestions: Int
     var heading: String = "Соотношение ответов"
     var description: String {
         """
@@ -88,9 +89,9 @@ class ResultsViewModel: ResultsViewModelProtocol {
     let game: Games
     let correctAnswers: [Corrects]
     let incorrectAnswers: [Incorrects]
-    
+    var answeredQuestions: Int
+    var favourites: [Favourites]
     private let timeSpend: [CGFloat]
-    private let favourites: [Favourites]
     
     required init(mode: Setting, game: Games, correctAnswers: [Corrects],
                   incorrectAnswers: [Incorrects], timeSpend: [CGFloat],
@@ -196,6 +197,11 @@ class ResultsViewModel: ResultsViewModelProtocol {
         let range = NSMakeRange(start, end - start)
         return range
     }
+    
+    func setFavourites(newFavourites: [Favourites]) {
+        favourites = newFavourites
+    }
+    
     // MARK: - Constants, countinue
     private func checkTitleTimeSpend() -> String {
         isOneQuestion() ? isQuestionnaire() : titleAllQuestions()

@@ -6,8 +6,12 @@
 //
 
 import UIKit
-// MARK: - Properties
-class ResultsViewController: UIViewController {
+
+protocol ResultsViewControllerDelegate {
+    func dataToResults(favourites: [Favourites])
+}
+
+class ResultsViewController: UIViewController, ResultsViewControllerDelegate {
     private lazy var imageColor: UIImageView = {
         setImage(image: "circle.fill", size: 60, color: viewModel.game.background, addView: imageCircle)
     }()
@@ -255,16 +259,17 @@ class ResultsViewController: UIViewController {
     }()
     
     var viewModel: ResultsViewModelProtocol!
-    
-    weak var delegateQuizOfFlag: QuizOfFlagsViewControllerInput!
-    weak var delegateQuestionnaire: QuestionnaireViewControllerInput!
-    weak var delegateQuizOfCapitals: QuizOfCapitalsViewControllerInput!
+    weak var delegate: QuizOfFlagsViewControllerInput!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDesign()
         setupSubviews()
         setConstraints()
+    }
+    
+    func dataToResults(favourites: [Favourites]) {
+        viewModel.setFavourites(newFavourites: favourites)
     }
     
     private func setupDesign() {
@@ -278,13 +283,9 @@ class ResultsViewController: UIViewController {
                                 viewDescription, stackViewAnswers, stackViewTime,
                                 imageInfinity, buttonComplete, on: view)
     }
-    // MARK: - Press exit button
+    // MARK: - Press done button
     @objc private func exitToMenu() {
-        switch viewModel.game.gameType {
-        case .quizOfFlags: delegateQuizOfFlag.dataToQuizOfFlag(setting: viewModel.mode)
-        case .questionnaire: delegateQuestionnaire.dataToQuestionnaire(setting: viewModel.mode)
-        default: delegateQuizOfCapitals.dataToQuizOfCapitals(setting: viewModel.mode)
-        }
+        delegate.dataToMenu(setting: viewModel.mode, favourites: viewModel.favourites)
     }
     // MARK: - Show ratio
     @objc private func showRatio() {
@@ -310,6 +311,7 @@ class ResultsViewController: UIViewController {
         let incorrectAnswersVC = IncorrectAnswersViewController()
         let navigationVC = UINavigationController(rootViewController: incorrectAnswersVC)
         incorrectAnswersVC.viewModel = incorrectAnswers
+        incorrectAnswersVC.delegate = self
         navigationVC.modalPresentationStyle = .custom
         present(navigationVC, animated: true)
     }

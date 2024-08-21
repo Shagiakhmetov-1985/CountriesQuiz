@@ -15,6 +15,7 @@ protocol MenuViewModelProtocol {
     func forPresented(_ button: UIButton) -> Transition
     func forDismissed(_ button: UIButton) -> Transition
     func setMode(_ setting: Setting)
+    func setData(_ setting: Setting, newFavourites: [Favourites])
     
     func gameTypeViewModel(tag: Int) -> GameTypeViewModelProtocol
     func settingViewModel() -> SettingViewModelProtocol
@@ -69,6 +70,11 @@ class MenuViewModel: MenuViewModelProtocol {
     
     func setMode(_ setting: Setting) {
         mode = setting
+    }
+    
+    func setData(_ setting: Setting, newFavourites: [Favourites]) {
+        mode = setting
+        favourites = newFavourites
     }
     
     func settingViewModel() -> SettingViewModelProtocol {

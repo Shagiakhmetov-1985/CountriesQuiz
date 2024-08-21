@@ -7,11 +7,7 @@
 
 import UIKit
 
-protocol QuestionnaireViewControllerInput: AnyObject {
-    func dataToQuestionnaire(setting: Setting)
-}
-
-class QuestionnaireViewController: UIViewController, QuestionnaireViewControllerInput {
+class QuestionnaireViewController: UIViewController {
     private lazy var buttonExit: UIButton = {
         setButton(image: "multiply", action: #selector(exitToGameType))
     }()
@@ -103,7 +99,7 @@ class QuestionnaireViewController: UIViewController, QuestionnaireViewController
     }()
     
     var viewModel: QuestionnaireViewModelProtocol!
-    weak var delegateInput: GameTypeViewControllerInput!
+    weak var delegate: GameTypeViewControllerInput!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -128,10 +124,6 @@ class QuestionnaireViewController: UIViewController, QuestionnaireViewController
         viewModel.stopTimer()
         viewModel.setTimeSpent()
         resultsVC()
-    }
-    // MARK: - QuestionnaireViewControllerInput
-    func dataToQuestionnaire(setting: Setting) {
-        delegateInput.dataToGameType(setting: setting)
     }
     // MARK: - General methods
     private func setupData() {
@@ -305,7 +297,6 @@ extension QuestionnaireViewController {
         let resultsViewModel = viewModel.resultsViewController()
         let resultsVC = ResultsViewController()
         resultsVC.viewModel = resultsViewModel
-        resultsVC.delegateQuestionnaire = self
         navigationController?.pushViewController(resultsVC, animated: true)
     }
 }

@@ -52,5 +52,6 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
     func customCell(cell: FavouritesCell, indexPath: IndexPath) {
         cell.flag.image = UIImage(named: favourites[indexPath.row].flag)
         cell.name.text = favourites[indexPath.row].name
+        cell.contentView.backgroundColor = background
     }
 }

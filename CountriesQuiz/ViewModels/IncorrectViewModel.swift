@@ -17,6 +17,7 @@ protocol IncorrectViewModelProtocol {
     var buttonThird: Countries { get }
     var buttonFourth: Countries { get }
     var heightStackView: CGFloat { get }
+    var favourites: [Favourites] { get }
     
     init(mode: Setting, game: Games, incorrect: Incorrects, favourites: [Favourites])
     func setSubviews(subviews: UIView..., on otherSubview: UIView)
@@ -63,10 +64,10 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
         isFlag ? 215 : 235
     }
     
+    var favourites: [Favourites]
     private let mode: Setting
     private let game: Games
     private let incorrect: Incorrects
-    private var favourites: [Favourites]
     private var isFlag: Bool {
         mode.flag ? true : false
     }
@@ -87,6 +88,15 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     }
     private var answerFourth: String {
         isFlag ? incorrect.buttonFourth.flag : incorrect.buttonFourth.name
+    }
+    private var newFavourite: Favourites {
+        Favourites(flag: flag, name: name, buttonFirst: answerFirst,
+                   buttonSecond: answerSecond, buttonThird: answerThird,
+                   buttonFourth: answerFourth, currectQuestion: incorrect.currentQuestion,
+                   tag: incorrect.tag, isFlag: isFlag, isTimeUp: incorrect.timeUp)
+    }
+    private var key: String {
+        game.keys
     }
     
     required init(mode: Setting, game: Games, incorrect: Incorrects,
@@ -205,10 +215,12 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     }
     
     func addOrDeleteFavourite(_ button: UIButton) {
-        let currentImage = button.currentImage
-        let image = UIImage(systemName: "star")
-        setButton(button, currentImage: currentImage, and: image)
-        
+        let size = UIImage.SymbolConfiguration(pointSize: 20)
+        let currentImage = button.currentImage?.withConfiguration(size)
+        let image = UIImage(systemName: "star", withConfiguration: size)
+        let bool = currentImage == image ? true : false
+        setButton(button, isFill: bool)
+        setFavourites(isFill: bool)
     }
 }
 // MARK: - Private methods, constants
@@ -421,24 +433,21 @@ extension IncorrectViewModel {
 }
 // MARK: - Add or delete favourites
 extension IncorrectViewModel {
-    private func setButton(_ button: UIButton, currentImage: UIImage?, and image: UIImage?) {
-        let systemName = currentImage == image ? "star.fill" : "star"
+    private func setButton(_ button: UIButton, isFill: Bool) {
+        let systemName = isFill ? "star.fill" : "star"
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let setImage = UIImage(systemName: systemName, withConfiguration: size)
         button.setImage(setImage, for: .normal)
     }
     
-    private func setFavourites(currentImage: UIImage?, and image: UIImage?) {
-        if currentImage == image {
-            let favourite = Favourites(flag: flag, name: name,
-                                       buttonFirst: answerFirst, buttonSecond: answerSecond,
-                                       buttonThird: answerThird, buttonFourth: answerFourth,
-                                       currectQuestion: incorrect.currentQuestion,
-                                       tag: incorrect.tag, isFlag: isFlag,
-                                       isTimeUp: incorrect.timeUp)
-            favourites.append(favourite)
+    private func setFavourites(isFill: Bool) {
+        if isFill {
+            favourites.append(newFavourite)
+            StorageManager.shared.addFavourite(favourite: newFavourite, key: key)
         } else {
-            
+            guard let index = favourites.firstIndex(where: { $0.flag == flag }) else { return }
+            favourites.remove(at: index)
+            StorageManager.shared.deleteFavourite(favourite: index, key: key)
         }
     }
 }

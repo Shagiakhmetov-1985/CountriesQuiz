@@ -13,12 +13,14 @@ protocol IncorrectAnswersViewModelProtocol {
     var cell: AnyClass { get }
     var numberOfRows: Int { get }
     var heightForRow: CGFloat { get }
+    var favourites: [Favourites] { get }
     
     init(mode: Setting, game: Games, results: [Incorrects], favourites: [Favourites])
     
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
     func customCell(cell: UITableViewCell, indexPath: IndexPath)
+    func setFavourites(newFavourites: [Favourites])
     
     func detailsViewModel(_ indexPath: Int) -> IncorrectViewModelProtocol
 }
@@ -38,10 +40,10 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
         isFlag ? 70 : 95
     }
     
+    var favourites: [Favourites]
     private let mode: Setting
     private let game: Games
     private let results: [Incorrects]
-    private let favourites: [Favourites]
     private var isFlag: Bool {
         mode.flag ? true : false
     }
@@ -71,6 +73,10 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
         } else {
             nameCell(cell: cell as! NameCell, indexPath: indexPath)
         }
+    }
+    
+    func setFavourites(newFavourites: [Favourites]) {
+        favourites = newFavourites
     }
     
     func detailsViewModel(_ indexPath: Int) -> IncorrectViewModelProtocol {

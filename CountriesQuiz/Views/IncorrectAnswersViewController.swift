@@ -7,7 +7,12 @@
 
 import UIKit
 
-class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+protocol IncorrectAnswersViewControllerDelegate {
+    func dataToIncorrectAnswers(favourites: [Favourites])
+}
+
+class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, IncorrectAnswersViewControllerDelegate {
+    
     private lazy var buttonBack: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: "multiply", withConfiguration: size)
@@ -44,6 +49,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }()
     
     var viewModel: IncorrectAnswersViewModelProtocol!
+    var delegate: ResultsViewControllerDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,8 +77,13 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         let incorrectViewModel = viewModel.detailsViewModel(indexPath.row)
         let incorrectVC = IncorrectViewController()
         incorrectVC.viewModel = incorrectViewModel
+        incorrectVC.delegate = self
         navigationController?.pushViewController(incorrectVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func dataToIncorrectAnswers(favourites: [Favourites]) {
+        viewModel.setFavourites(newFavourites: favourites)
     }
     
     private func setupDesign() {
@@ -88,6 +99,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     @objc private func exitToResults() {
+        delegate.dataToResults(favourites: viewModel.favourites)
         dismiss(animated: true)
     }
 }

@@ -7,11 +7,7 @@
 
 import UIKit
 
-protocol QuizOfCapitalsViewControllerInput: AnyObject {
-    func dataToQuizOfCapitals(setting: Setting)
-}
-
-class QuizOfCapitalsViewController: UIViewController, QuizOfCapitalsViewControllerInput {
+class QuizOfCapitalsViewController: UIViewController {
     private lazy var buttonBack: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: "multiply", withConfiguration: size)
@@ -78,7 +74,7 @@ class QuizOfCapitalsViewController: UIViewController, QuizOfCapitalsViewControll
     }()
     
     var viewModel: QuizOfCapitalsViewModelProtocol!
-    weak var delegateInput: GameTypeViewControllerInput!
+    weak var delegate: GameTypeViewControllerInput!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -107,14 +103,9 @@ class QuizOfCapitalsViewController: UIViewController, QuizOfCapitalsViewControll
                 let resultsViewModel = viewModel.resultsViewController()
                 let resultsVC = ResultsViewController()
                 resultsVC.viewModel = resultsViewModel
-                resultsVC.delegateQuizOfCapitals = self
                 navigationController?.pushViewController(resultsVC, animated: true)
             }
         }
-    }
-    // MARK: - QuizOfCapitalsViewControllerInput
-    func dataToQuizOfCapitals(setting: Setting) {
-        delegateInput.dataToGameType(setting: setting)
     }
     // MARK: - General methods
     private func setupData() {

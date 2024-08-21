@@ -79,6 +79,7 @@ class IncorrectViewController: UIViewController {
     }()
     
     var viewModel: IncorrectViewModelProtocol!
+    var delegate: IncorrectAnswersViewControllerDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -102,6 +103,7 @@ class IncorrectViewController: UIViewController {
     }
     
     @objc private func backToList() {
+        delegate.dataToIncorrectAnswers(favourites: viewModel.favourites)
         navigationController?.popViewController(animated: true)
     }
     

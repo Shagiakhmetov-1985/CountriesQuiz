@@ -8,8 +8,8 @@
 import UIKit
 
 protocol GameTypeViewModelProtocol {
-    var setting: Setting { get }
-    var setTag: Int { get }
+    var mode: Setting { get }
+    var tag: Int { get }
     var countQuestions: Int { get }
     var countContinents: Int { get }
     
@@ -107,6 +107,7 @@ protocol GameTypeViewModelProtocol {
     func setConstraints(_ viewHelp: UIView,_ view: UIView)
     func setConstraints(_ button: UIButton, _ view: UIView)
     
+    func favouritesViewModel() -> FavouritesViewModelProtocol
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol
     func questionnaireViewModel() -> QuestionnaireViewModelProtocol
     func quizOfCapitalsViewModel() -> QuizOfCapitalsViewModelProtocol
@@ -115,12 +116,6 @@ protocol GameTypeViewModelProtocol {
 class GameTypeViewModel: GameTypeViewModelProtocol {
     typealias ParagraphData = (bullet: String, paragraph: String)
     
-    var setting: Setting {
-        mode
-    }
-    var setTag: Int {
-        tag
-    }
     var countQuestions: Int {
         mode.countQuestions
     }
@@ -173,9 +168,9 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     var countCountriesOfAsia = FlagsOfCountries.shared.countriesOfAsianContinent.count
     var countCountriesOfOceania = FlagsOfCountries.shared.countriesOfOceanContinent.count
     
-    private var mode: Setting
+    var mode: Setting
+    let tag: Int
     private let game: Games
-    private let tag: Int
     private let favourites: [Favourites]
     
     private var countRowsDefault = DefaultSetting.countRows.rawValue
@@ -490,6 +485,10 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         completion()
     }
     // MARK: - Transitions to other view controller
+    func favouritesViewModel() -> FavouritesViewModelProtocol {
+        FavouritesViewModel(game: game, favourites: favourites)
+    }
+    
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol {
         QuizOfFlagsViewModel(mode: mode, game: game, favourites: favourites)
     }

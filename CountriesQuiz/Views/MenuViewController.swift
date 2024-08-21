@@ -6,19 +6,12 @@
 //
 
 import UIKit
-// MARK: - Protocol of delegate rewrite user defaults
-protocol SettingViewControllerDelegate {
-    func dataToMenuFromSetting(setting: Setting)
-}
-
-protocol GameTypeViewControllerDelegate {
-    func dataToMenuFromGameType(setting: Setting)
-}
 
 protocol MenuViewControllerInput: AnyObject {
-    func dataToMenu(setting: Setting)
+    func dataToMenu(setting: Setting, favourites: [Favourites])
+    func modeToMenu(setting: Setting)
 }
-// MARK: - Private properties
+
 class MenuViewController: UIViewController {
     private lazy var labelMenu: UILabel = {
         setLabel(title: "Countries Quiz", size: 40, style: "echorevival", color: .blueBlackSea)
@@ -226,19 +219,13 @@ class MenuViewController: UIViewController {
     }
 }
 // MARK: - Delegates for send data
-extension MenuViewController: SettingViewControllerDelegate,
-                              GameTypeViewControllerDelegate,
-                              MenuViewControllerInput {
-    func dataToMenu(setting: Setting) {
+extension MenuViewController: MenuViewControllerInput {
+    func dataToMenu(setting: Setting, favourites: [Favourites]) {
         navigationController?.popToRootViewController(animated: true)
-        viewModel.setMode(setting)
+        viewModel.setData(setting, newFavourites: favourites)
     }
     
-    func dataToMenuFromGameType(setting: Setting) {
-        viewModel.setMode(setting)
-    }
-    
-    func dataToMenuFromSetting(setting: Setting) {
+    func modeToMenu(setting: Setting) {
         viewModel.setMode(setting)
     }
 }
@@ -280,7 +267,6 @@ extension MenuViewController {
         let gameTypeVC = GameTypeViewController()
         gameTypeVC.viewModel = gameTypeViewModel
         gameTypeVC.delegate = self
-        gameTypeVC.delegateInput = self
         navigationController?.pushViewController(gameTypeVC, animated: true)
     }
     

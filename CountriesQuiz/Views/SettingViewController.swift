@@ -284,7 +284,7 @@ class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
     }()
     
     var viewModel: SettingViewModelProtocol!
-    var delegate: SettingViewControllerDelegate!
+    var delegate: MenuViewControllerInput!
     
     // MARK: - Override methods
     override func viewDidLoad() {
@@ -367,7 +367,7 @@ class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
     }
     // MARK: - Activating buttons
     @objc private func backToMenu() {
-        delegate.dataToMenuFromSetting(setting: viewModel.mode)
+        delegate.modeToMenu(setting: viewModel.mode)
         StorageManager.shared.saveSetting(setting: viewModel.mode)
         dismiss(animated: true)
     }

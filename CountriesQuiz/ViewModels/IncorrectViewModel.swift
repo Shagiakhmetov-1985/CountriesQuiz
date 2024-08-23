@@ -77,22 +77,25 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     private var name: String {
         incorrect.question.name
     }
+    private var capital: String {
+        incorrect.question.capitals
+    }
     private var answerFirst: String {
-        isFlag ? incorrect.buttonFirst.flag : incorrect.buttonFirst.name
+        buttonName(buttonFirst)
     }
     private var answerSecond: String {
-        isFlag ? incorrect.buttonSecond.flag : incorrect.buttonSecond.name
+        buttonName(buttonSecond)
     }
     private var answerThird: String {
-        isFlag ? incorrect.buttonThird.flag : incorrect.buttonThird.name
+        buttonName(buttonThird)
     }
     private var answerFourth: String {
-        isFlag ? incorrect.buttonFourth.flag : incorrect.buttonFourth.name
+        buttonName(buttonFourth)
     }
     private var newFavourite: Favourites {
-        Favourites(flag: flag, name: name, buttonFirst: answerFirst,
-                   buttonSecond: answerSecond, buttonThird: answerThird,
-                   buttonFourth: answerFourth, currectQuestion: incorrect.currentQuestion,
+        Favourites(flag: flag, name: name, capital: capital,
+                   buttonFirst: answerFirst, buttonSecond: answerSecond,
+                   buttonThird: answerThird, buttonFourth: answerFourth,
                    tag: incorrect.tag, isFlag: isFlag, isTimeUp: incorrect.timeUp)
     }
     private var key: String {
@@ -428,6 +431,13 @@ extension IncorrectViewModel {
             return subview.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: center)
         } else {
             return subview.centerXAnchor.constraint(equalTo: button.centerXAnchor)
+        }
+    }
+    
+    private func buttonName(_ button: Countries) -> String {
+        switch game.gameType {
+        case .quizOfCapitals: button.capitals
+        default: isFlag ? button.name : button.flag
         }
     }
 }

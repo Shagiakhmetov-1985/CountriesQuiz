@@ -7,7 +7,11 @@
 
 import UIKit
 
-class FavouritesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+protocol FavouritesViewControllerDelegate {
+    func dataToFavourites(favourites: [Favourites])
+}
+
+class FavouritesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FavouritesViewControllerDelegate {
     private lazy var buttonClose: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: "multiply", withConfiguration: size)
@@ -47,8 +51,8 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         setDesign()
-        setSubviews()
         setBarButton()
+        setSubviews()
         setConstraints()
     }
     
@@ -67,7 +71,17 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailsViewModel = viewModel.detailsViewController(indexPath)
+        let detailsVC = DetailsViewController()
+        detailsVC.viewModel = detailsViewModel
+        detailsVC.delegate = self
+        navigationController?.pushViewController(detailsVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func dataToFavourites(favourites: [Favourites]) {
+        viewModel.setFavourites(newFavourites: favourites)
+        tableView.reloadData()
     }
     
     private func setDesign() {

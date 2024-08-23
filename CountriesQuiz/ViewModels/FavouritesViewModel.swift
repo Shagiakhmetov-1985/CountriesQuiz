@@ -18,11 +18,14 @@ protocol FavouritesViewModelProtocol {
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func setSubviews(subviews: UIView..., on subviewOther: UIView)
     func customCell(cell: FavouritesCell, indexPath: IndexPath)
+    func setFavourites(newFavourites: [Favourites])
+    
+    func detailsViewController(_ indexPath: IndexPath) -> DetailsViewModelProtocol
 }
 
 class FavouritesViewModel: FavouritesViewModelProtocol {
     var background: UIColor {
-        game.background
+        game.favourite
     }
     var cell: AnyClass = FavouritesCell.self
     var numberOfRows: Int {
@@ -31,7 +34,7 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
     var heightOfRow: CGFloat = 60
     
     private let game: Games
-    private let favourites: [Favourites]
+    private var favourites: [Favourites]
     
     required init(game: Games, favourites: [Favourites]) {
         self.game = game
@@ -53,5 +56,13 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         cell.flag.image = UIImage(named: favourites[indexPath.row].flag)
         cell.name.text = favourites[indexPath.row].name
         cell.contentView.backgroundColor = background
+    }
+    
+    func setFavourites(newFavourites: [Favourites]) {
+        favourites = newFavourites
+    }
+    
+    func detailsViewController(_ indexPath: IndexPath) -> DetailsViewModelProtocol {
+        DetailsViewModel(game: game, favourite: favourites[indexPath.row], favourites: favourites)
     }
 }

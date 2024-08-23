@@ -10,11 +10,11 @@ import Foundation
 struct Favourites: Codable {
     let flag: String
     let name: String
+    let capital: String
     let buttonFirst: String
     let buttonSecond: String
     let buttonThird: String
     let buttonFourth: String
-    let currectQuestion: Int
     let tag: Int
     let isFlag: Bool
     let isTimeUp: Bool

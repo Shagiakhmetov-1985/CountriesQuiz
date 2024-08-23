@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C32C24392C7722880088D40D /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C24382C7722880088D40D /* DetailsViewController.swift */; };
+		C32C243B2C7722A80088D40D /* DetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C243A2C7722A80088D40D /* DetailsViewModel.swift */; };
 		C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3301D6C2B9C8D3E00024479 /* Box.swift */; };
 		C33167C72BF9F7EB00504F47 /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33167C62BF9F7EB00504F47 /* SettingViewModel.swift */; };
 		C333038A2BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33303892BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift */; };
@@ -61,6 +63,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C32C24382C7722880088D40D /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
+		C32C243A2C7722A80088D40D /* DetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewModel.swift; sourceTree = "<group>"; };
 		C3301D6C2B9C8D3E00024479 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		C33167C62BF9F7EB00504F47 /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
 		C33303892BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameTypeViewController + UIKit.swift"; sourceTree = "<group>"; };
@@ -141,6 +145,7 @@
 				C33669D12B98A13D0081C39A /* MenuViewModel.swift */,
 				C33669D32B998DC30081C39A /* GameTypeViewModel.swift */,
 				C3B324892C6DE277003BB31F /* FavouritesViewModel.swift */,
+				C32C243A2C7722A80088D40D /* DetailsViewModel.swift */,
 				C333038B2BBAB14D00AEE04E /* QuizOfFlagsViewModel.swift */,
 				C3BADD032BC7EF5A0098BDCB /* QuestionnaireViewModel.swift */,
 				C3E853482BD7845500D244F8 /* QuizOfCapitalsViewModel.swift */,
@@ -242,6 +247,7 @@
 				C3E7C9932A7B68AA0046A883 /* GameTypeViewController.swift */,
 				C33303892BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift */,
 				C3B324872C6DE1F9003BB31F /* FavouritesViewController.swift */,
+				C32C24382C7722880088D40D /* DetailsViewController.swift */,
 				C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */,
 				C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */,
 				C36EC9F92B2729D500ECF1EE /* ScrabbleViewController.swift */,
@@ -388,6 +394,7 @@
 				C3E853492BD7845500D244F8 /* QuizOfCapitalsViewModel.swift in Sources */,
 				C392B18A2C36864900779A53 /* RatioViewModel.swift in Sources */,
 				C3E3C2DA295B602900054A1F /* AlertController.swift in Sources */,
+				C32C24392C7722880088D40D /* DetailsViewController.swift in Sources */,
 				C341078E2BBFE4C800D0E993 /* ResultsViewModel.swift in Sources */,
 				C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */,
 				C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */,
@@ -413,6 +420,7 @@
 				C34EC0702986694900300585 /* Incorrects.swift in Sources */,
 				C376AC072947261D00DE5E86 /* Setting.swift in Sources */,
 				C33653282A94CFF7008CF2C6 /* NameCell.swift in Sources */,
+				C32C243B2C7722A80088D40D /* DetailsViewModel.swift in Sources */,
 				C3B324882C6DE1F9003BB31F /* FavouritesViewController.swift in Sources */,
 				C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */,
 				C384F2992C441B6F00827B9F /* CorrectAnswersViewController.swift in Sources */,

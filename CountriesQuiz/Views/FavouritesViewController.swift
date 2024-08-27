@@ -13,26 +13,35 @@ protocol FavouritesViewControllerDelegate {
 
 class FavouritesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FavouritesViewControllerDelegate {
     private lazy var buttonClose: UIButton = {
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
-        let image = UIImage(systemName: "multiply", withConfiguration: size)
-        let button = UIButton(type: .system)
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.layer.borderWidth = 1.5
-        button.layer.borderColor = UIColor.white.cgColor
-        button.layer.cornerRadius = 12
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(close), for: .touchUpInside)
-        return button
+        setButton(action: #selector(extiToGameType))
+    }()
+    
+    private lazy var visualEffectBlur: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .dark)
+        let view = UIVisualEffectView(effect: blurEffect)
+        view.alpha = 0
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     private lazy var labelTitle: UILabel = {
-        let label = UILabel()
-        label.text = "Избранное"
-        label.font = UIFont(name: "mr_fontick", size: 28)
-        label.textColor = .white
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+        viewModel.setLabel(title: "Избранное", font: "mr_fontick", size: 28, color: .white)
+    }()
+    
+    private lazy var imageTitle: UIImageView = {
+        let size = UIImage.SymbolConfiguration(pointSize: 28)
+        let image = UIImage(systemName: "star.fill", withConfiguration: size)
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = .white
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private lazy var stackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [labelTitle, imageTitle])
+        stackView.spacing = 20
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     private lazy var tableView: UITableView = {
@@ -44,6 +53,14 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
+    }()
+    
+    private lazy var viewDetails: UIView = {
+        let view = viewModel.setView(color: viewModel.backgroundDetails, radius: 15)
+        let button = setButton(action: #selector(closeDetails))
+        view.addSubview(button)
+        viewModel.setConstraints(button, view)
+        return view
     }()
     
     var viewModel: FavouritesViewModelProtocol!
@@ -71,11 +88,14 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        /*
         let detailsViewModel = viewModel.detailsViewController(indexPath)
         let detailsVC = DetailsViewController()
         detailsVC.viewModel = detailsViewModel
         detailsVC.delegate = self
         navigationController?.pushViewController(detailsVC, animated: true)
+         */
+        viewModel.showDetails(viewDetails, view, and: indexPath)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -94,32 +114,56 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     private func setSubviews() {
-        viewModel.setSubviews(subviews: labelTitle, tableView, on: view)
+        viewModel.setSubviews(subviews: visualEffectBlur, stackView, tableView,
+                              on: view)
     }
     
-    @objc private func close() {
+    @objc private func extiToGameType() {
         dismiss(animated: true)
+    }
+    
+    @objc private func closeDetails() {
+        
     }
 }
 
 extension FavouritesViewController {
     private func setConstraints() {
+        viewModel.setSquare(button: buttonClose, sizes: 40)
+        
         NSLayoutConstraint.activate([
-            buttonClose.widthAnchor.constraint(equalToConstant: 40),
-            buttonClose.heightAnchor.constraint(equalToConstant: 40)
+            visualEffectBlur.topAnchor.constraint(equalTo: view.topAnchor),
+            visualEffectBlur.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            visualEffectBlur.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            visualEffectBlur.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            labelTitle.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
-            labelTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            labelTitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
         ])
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: labelTitle.bottomAnchor, constant: 20),
+            tableView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 20),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+}
+
+extension FavouritesViewController {
+    private func setButton(action: Selector) -> UIButton {
+        let size = UIImage.SymbolConfiguration(pointSize: 20)
+        let image = UIImage(systemName: "multiply", withConfiguration: size)
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.layer.borderWidth = 1.5
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.cornerRadius = 12
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
     }
 }

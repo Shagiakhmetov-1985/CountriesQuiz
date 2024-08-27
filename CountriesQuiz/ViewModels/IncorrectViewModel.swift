@@ -218,7 +218,8 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     }
     
     func addOrDeleteFavourite(_ button: UIButton) {
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
+        let pointSize: CGFloat = button.tag == 1 ? 33 : 20
+        let size = UIImage.SymbolConfiguration(pointSize: pointSize)
         let currentImage = button.currentImage?.withConfiguration(size)
         let image = UIImage(systemName: "star", withConfiguration: size)
         let bool = currentImage == image ? true : false
@@ -444,8 +445,9 @@ extension IncorrectViewModel {
 // MARK: - Add or delete favourites
 extension IncorrectViewModel {
     private func setButton(_ button: UIButton, isFill: Bool) {
+        let pointSize: CGFloat = button.tag == 1 ? 33 : 20
         let systemName = isFill ? "star.fill" : "star"
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
+        let size = UIImage.SymbolConfiguration(pointSize: pointSize)
         let setImage = UIImage(systemName: systemName, withConfiguration: size)
         button.setImage(setImage, for: .normal)
     }

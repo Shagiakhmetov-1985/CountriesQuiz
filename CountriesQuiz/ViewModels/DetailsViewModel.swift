@@ -20,7 +20,6 @@ protocol DetailsViewModelProtocol {
     var buttonFour: String { get }
     var titleButton: String { get }
     var backgroundButton: UIColor { get }
-    var colorTitleButton: UIColor { get }
     var heightStackView: CGFloat { get }
     var favourites: [Favourites] { get }
     
@@ -69,9 +68,6 @@ class DetailsViewModel: DetailsViewModelProtocol {
     var titleButton: String = "   Удалить из списка"
     var backgroundButton: UIColor {
         game.done
-    }
-    var colorTitleButton: UIColor {
-        game.swap
     }
     var heightStackView: CGFloat {
         isFlag ? 215 : 235

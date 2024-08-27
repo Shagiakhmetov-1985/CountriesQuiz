@@ -78,6 +78,18 @@ class IncorrectViewController: UIViewController {
         viewModel.stackView(viewFirst, viewSecond, viewThird, viewFourth)
     }()
     
+    private lazy var buttonAdd: UIButton = {
+        let size = UIImage.SymbolConfiguration(pointSize: 33)
+        let image = UIImage(systemName: "star", withConfiguration: size)
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.tag = 1
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(favourites), for: .touchUpInside)
+        return button
+    }()
+    
     var viewModel: IncorrectViewModelProtocol!
     var delegate: IncorrectAnswersViewControllerDelegate!
     
@@ -99,7 +111,8 @@ class IncorrectViewController: UIViewController {
     }
     
     private func setSubviews() {
-        viewModel.setSubviews(subviews: question, progressView, labelNumber, stackView, on: view)
+        viewModel.setSubviews(subviews: question, progressView, labelNumber,
+                              stackView, on: view)
     }
     
     @objc private func backToList() {
@@ -107,8 +120,8 @@ class IncorrectViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc private func favourites() {
-        viewModel.addOrDeleteFavourite(buttonFavourites)
+    @objc private func favourites(sender: UIButton) {
+        viewModel.addOrDeleteFavourite(sender)
     }
 }
 // MARK: - Set button
@@ -157,5 +170,10 @@ extension IncorrectViewController {
         viewModel.setConstraints(subviewSecond, on: viewSecond, view, viewModel.buttonSecond.flag)
         viewModel.setConstraints(subviewThird, on: viewThird, view, viewModel.buttonThird.flag)
         viewModel.setConstraints(subviewFourth, on: viewFourth, view, viewModel.buttonFourth.flag)
+        
+//        NSLayoutConstraint.activate([
+//            buttonAdd.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 25),
+//            buttonAdd.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+//        ])
     }
 }

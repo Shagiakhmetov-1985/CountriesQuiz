@@ -402,7 +402,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         setStackView(buttonFirst: buttonDone, buttonSecond: buttonCancel, spacing: 15)
     }()
     
-    lazy var viewSetting: UIView = {
+    private lazy var viewSetting: UIView = {
         let view = setView(action: #selector(closeViewSetting), view: viewModel.viewSetting())
         view.backgroundColor = viewModel.colorSwap
         view.translatesAutoresizingMaskIntoConstraints = false

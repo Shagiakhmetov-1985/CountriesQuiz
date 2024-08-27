@@ -87,11 +87,11 @@ class DetailsViewController: UIViewController {
         let image = UIImage(systemName: "trash", withConfiguration: size)
         let button = Button(type: .system)
         button.setTitle(viewModel.titleButton, for: .normal)
-        button.tintColor = viewModel.colorTitleButton
+        button.tintColor = .white
         button.titleLabel?.font = UIFont(name: "mr_fontick", size: 25)
         button.setImage(image, for: .normal)
-        button.backgroundColor = viewModel.backgroundButton
-        button.layer.shadowColor = UIColor.white.cgColor
+        button.backgroundColor = .bismarkFuriozo
+        button.layer.shadowColor = UIColor.bismarkFuriozo.cgColor
         button.layer.shadowOpacity = 0.4
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.layer.cornerRadius = 12

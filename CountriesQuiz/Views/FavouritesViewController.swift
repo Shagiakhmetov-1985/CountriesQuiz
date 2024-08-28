@@ -13,7 +13,7 @@ protocol FavouritesViewControllerDelegate {
 
 class FavouritesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FavouritesViewControllerDelegate {
     private lazy var buttonClose: UIButton = {
-        setButton(action: #selector(extiToGameType))
+        setButton(action: #selector(extiToGameType), isBarButton: true)
     }()
     
     private lazy var visualEffectBlur: UIVisualEffectView = {
@@ -25,7 +25,7 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     }()
     
     private lazy var labelTitle: UILabel = {
-        viewModel.setLabel(title: "Избранное", font: "mr_fontick", size: 28, color: .white)
+        viewModel.setLabel(title: viewModel.title, font: "mr_fontick", size: 28, color: .white)
     }()
     
     private lazy var imageTitle: UIImageView = {
@@ -57,9 +57,10 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     private lazy var viewDetails: UIView = {
         let view = viewModel.setView(color: viewModel.backgroundDetails, radius: 15)
-        let button = setButton(action: #selector(closeDetails))
-        view.addSubview(button)
-        viewModel.setConstraints(button, view)
+        let button = setButton(action: #selector(closeDetails), isBarButton: false)
+        let label = viewModel.setLabel(title: viewModel.details, font: "GillSans", size: 22, color: .white)
+        viewModel.setSubviews(subviews: button, label, on: view)
+        viewModel.setConstraints(button, and: label, on: view)
         return view
     }()
     
@@ -95,7 +96,11 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
         detailsVC.delegate = self
         navigationController?.pushViewController(detailsVC, animated: true)
          */
-        viewModel.showDetails(viewDetails, view, and: indexPath)
+        viewModel.setDetails(viewDetails, view, and: indexPath)
+        viewModel.setSubviews(subviews: viewDetails, on: view)
+        viewModel.setConstraints(viewDetails, on: view)
+        viewModel.barButtonOnOff(button: buttonClose, isOn: false)
+        viewModel.showAnimationView(viewDetails, visualEffectBlur)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -114,7 +119,7 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     private func setSubviews() {
-        viewModel.setSubviews(subviews: visualEffectBlur, stackView, tableView,
+        viewModel.setSubviews(subviews: stackView, tableView, visualEffectBlur,
                               on: view)
     }
     
@@ -123,7 +128,8 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @objc private func closeDetails() {
-        
+        viewModel.barButtonOnOff(button: buttonClose, isOn: true)
+        viewModel.hideAnimationView(viewDetails, visualEffectBlur)
     }
 }
 
@@ -153,13 +159,14 @@ extension FavouritesViewController {
 }
 
 extension FavouritesViewController {
-    private func setButton(action: Selector) -> UIButton {
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
+    private func setButton(action: Selector, isBarButton: Bool) -> UIButton {
+        let pointSize: CGFloat = isBarButton ? 20 : 28
+        let size = UIImage.SymbolConfiguration(pointSize: pointSize)
         let image = UIImage(systemName: "multiply", withConfiguration: size)
         let button = UIButton(type: .system)
         button.setImage(image, for: .normal)
         button.tintColor = .white
-        button.layer.borderWidth = 1.5
+        button.layer.borderWidth = isBarButton ? 1.5 : 0
         button.layer.borderColor = UIColor.white.cgColor
         button.layer.cornerRadius = 12
         button.translatesAutoresizingMaskIntoConstraints = false

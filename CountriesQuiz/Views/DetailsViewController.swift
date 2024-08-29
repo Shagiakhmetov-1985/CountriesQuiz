@@ -22,8 +22,8 @@ class DetailsViewController: UIViewController {
         return button
     }()
     
-    private lazy var titleFlag: UILabel = {
-        viewModel.setLabel(title: viewModel.titleFlag, size: 24, style: "GillSans-Italic", color: .white)
+    private lazy var iconFlag: UIImageView = {
+        viewModel.setImage(image: "flag", color: .white, size: 33)
     }()
     
     private lazy var imageFlag: UIImageView = {
@@ -34,16 +34,32 @@ class DetailsViewController: UIViewController {
         return imageView
     }()
     
-    private lazy var titleName: UILabel = {
-        viewModel.setLabel(title: viewModel.titleName, size: 24, style: "GillSans-Italic", color: .white)
+    private lazy var viewFlag: UIView = {
+        viewModel.setView(iconFlag, and: imageFlag)
+    }()
+    
+    private lazy var iconCountry: UIImageView = {
+        viewModel.setImage(image: "building", color: .white, size: 33)
+    }()
+    
+    private lazy var iconCapital: UIImageView = {
+        viewModel.setImage(image: "house.and.flag", color: .white, size: 33)
+    }()
+    
+    private lazy var iconContinent: UIImageView = {
+        viewModel.setImage(image: "globe.desk", color: .white, size: 33)
     }()
     
     private lazy var titleCountry: UILabel = {
-        viewModel.setLabel(title: viewModel.name, size: 30, style: "mr_fontick", color: .white)
+        viewModel.setLabel(title: viewModel.name, size: 27, style: "GillSans-SemiBold", color: .white)
     }()
     
-    private lazy var titleError: UILabel = {
-        viewModel.setLabel(title: viewModel.error, size: 24, style: "GillSans-Italic", color: .white)
+    private lazy var titleCapital: UILabel = {
+        viewModel.setLabel(title: viewModel.capital, size: 27, style: "GillSans-SemiBold", color: .white)
+    }()
+    
+    private lazy var titleContinent: UILabel = {
+        viewModel.setLabel(title: <#T##String#>, size: <#T##CGFloat#>, style: <#T##String#>, color: <#T##UIColor#>)
     }()
     
     private lazy var viewFirst: UIView = {
@@ -121,8 +137,7 @@ class DetailsViewController: UIViewController {
     }
     
     private func setSubviews() {
-        viewModel.setSubviews(subviews: titleFlag, imageFlag, titleName,
-                              titleCountry, titleError, stackView, buttonDelete, 
+        viewModel.setSubviews(subviews: viewFlag, stackView, buttonDelete,
                               on: view)
     }
     
@@ -142,12 +157,19 @@ extension DetailsViewController {
         viewModel.setSquare(button: buttonBack, sizes: 40)
         
         NSLayoutConstraint.activate([
-            titleFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            titleFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            viewFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            viewFlag.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            viewFlag.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            viewFlag.heightAnchor.constraint(equalToConstant: 142)
+        ])
+        /*
+        NSLayoutConstraint.activate([
+            iconFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            iconFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            imageFlag.topAnchor.constraint(equalTo: titleFlag.bottomAnchor, constant: 10),
+            imageFlag.topAnchor.constraint(equalTo: iconFlag.bottomAnchor, constant: 10),
             imageFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageFlag.widthAnchor.constraint(equalToConstant: viewModel.width(viewModel.flag)),
             imageFlag.heightAnchor.constraint(equalToConstant: 168)
@@ -186,5 +208,6 @@ extension DetailsViewController {
             buttonDelete.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             buttonDelete.heightAnchor.constraint(equalToConstant: 55)
         ])
+         */
     }
 }

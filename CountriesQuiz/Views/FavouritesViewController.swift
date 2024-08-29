@@ -13,7 +13,7 @@ protocol FavouritesViewControllerDelegate {
 
 class FavouritesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FavouritesViewControllerDelegate {
     private lazy var buttonClose: UIButton = {
-        setButton(action: #selector(extiToGameType), isBarButton: true)
+        setButton(image: "multiply", action: #selector(extiToGameType), isBarButton: true)
     }()
     
     private lazy var visualEffectBlur: UIVisualEffectView = {
@@ -57,10 +57,12 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     private lazy var viewDetails: UIView = {
         let view = viewModel.setView(color: viewModel.backgroundDetails, radius: 15)
-        let button = setButton(action: #selector(closeDetails), isBarButton: false)
+        let close = setButton(image: "multiply", action: #selector(closeDetails))
         let label = viewModel.setLabel(title: viewModel.details, font: "GillSans", size: 22, color: .white)
-        viewModel.setSubviews(subviews: button, label, on: view)
-        viewModel.setConstraints(button, and: label, on: view)
+        let moreInfo = setButton()
+        let delete = setButton(image: "trash", action: #selector(deleteFavourite))
+        viewModel.setSubviews(subviews: close, label, moreInfo, delete, on: view)
+        viewModel.setConstraints(close, label, moreInfo, and: delete, on: view)
         return view
     }()
     
@@ -89,13 +91,6 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        /*
-        let detailsViewModel = viewModel.detailsViewController(indexPath)
-        let detailsVC = DetailsViewController()
-        detailsVC.viewModel = detailsViewModel
-        detailsVC.delegate = self
-        navigationController?.pushViewController(detailsVC, animated: true)
-         */
         viewModel.setDetails(viewDetails, view, and: indexPath)
         viewModel.setSubviews(subviews: viewDetails, on: view)
         viewModel.setConstraints(viewDetails, on: view)
@@ -131,6 +126,18 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
         viewModel.barButtonOnOff(button: buttonClose, isOn: true)
         viewModel.hideAnimationView(viewDetails, visualEffectBlur)
     }
+    
+    @objc private func deleteFavourite() {
+        
+    }
+    
+    @objc private func moreInfo() {
+        let detailsViewModel = viewModel.detailsViewController()
+        let detailsVC = DetailsViewController()
+        detailsVC.viewModel = detailsViewModel
+        detailsVC.delegate = self
+        navigationController?.pushViewController(detailsVC, animated: true)
+    }
 }
 
 extension FavouritesViewController {
@@ -159,18 +166,33 @@ extension FavouritesViewController {
 }
 
 extension FavouritesViewController {
-    private func setButton(action: Selector, isBarButton: Bool) -> UIButton {
-        let pointSize: CGFloat = isBarButton ? 20 : 28
+    private func setButton(image: String, action: Selector,
+                           isBarButton: Bool? = nil) -> UIButton {
+        let pointSize: CGFloat = isBarButton ?? false ? 20 : 26
         let size = UIImage.SymbolConfiguration(pointSize: pointSize)
-        let image = UIImage(systemName: "multiply", withConfiguration: size)
+        let image = UIImage(systemName: image, withConfiguration: size)
         let button = UIButton(type: .system)
         button.setImage(image, for: .normal)
         button.tintColor = .white
-        button.layer.borderWidth = isBarButton ? 1.5 : 0
+        button.layer.borderWidth = isBarButton ?? false ? 1.5 : 0
         button.layer.borderColor = UIColor.white.cgColor
         button.layer.cornerRadius = 12
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: action, for: .touchUpInside)
+        return button
+    }
+    
+    private func setButton() -> UIButton {
+        let label = viewModel.setLabel(title: "Подробнее", font: "mr_fontick", size: 26, color: .white)
+        let image = viewModel.setImage(image: "chevron.right", color: .white, size: 21)
+        let button = Button(type: .custom)
+        button.backgroundColor = viewModel.colorButton
+        button.layer.cornerRadius = 15
+        button.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(moreInfo), for: .touchUpInside)
+        viewModel.setSubviews(subviews: label, image, on: button)
+        viewModel.setConstraints(label, and: image, on: button)
         return button
     }
 }

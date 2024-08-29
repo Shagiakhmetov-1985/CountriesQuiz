@@ -10,6 +10,7 @@ import UIKit
 protocol FavouritesViewModelProtocol {
     var background: UIColor { get }
     var backgroundDetails: UIColor { get }
+    var colorButton: UIColor { get }
     var cell: AnyClass { get }
     var numberOfRows: Int { get }
     var heightOfRow: CGFloat { get }
@@ -22,20 +23,22 @@ protocol FavouritesViewModelProtocol {
     func setSubviews(subviews: UIView..., on subviewOther: UIView)
     func customCell(cell: FavouritesCell, indexPath: IndexPath)
     func setFavourites(newFavourites: [Favourites])
-    func setView(color: UIColor, radius: CGFloat) -> UIView
+    func setView(color: UIColor, radius: CGFloat?) -> UIView
     func setLabel(title: String, font: String, size: CGFloat, color: UIColor) -> UILabel
     func setImage(image: String) -> UIImageView
+    func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView
     func setDetails(_ viewDetails: UIView,_ view: UIView, and indexPath: IndexPath)
     
     func setSquare(button: UIButton, sizes: CGFloat)
-    func setConstraints(_ button: UIButton, and label: UILabel, on view: UIView)
+    func setConstraints(_ button: UIButton,_ label: UILabel,_ moreInfo: UIButton, and delete: UIButton, on view: UIView)
     func setConstraints(_ viewDetails: UIView, on view: UIView)
+    func setConstraints(_ label: UILabel, and image: UIImageView, on button: UIButton)
     
     func barButtonOnOff(button: UIButton, isOn: Bool)
     func showAnimationView(_ viewDetails: UIView,_ visualEffectBlur: UIVisualEffectView)
     func hideAnimationView(_ viewDetails: UIView,_ visualEffectBlur: UIVisualEffectView)
     
-    func detailsViewController(_ indexPath: IndexPath) -> DetailsViewModelProtocol
+    func detailsViewController() -> DetailsViewModelProtocol
 }
 
 class FavouritesViewModel: FavouritesViewModelProtocol {
@@ -44,6 +47,9 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
     }
     var backgroundDetails: UIColor {
         game.swap
+    }
+    var colorButton: UIColor {
+        game.background
     }
     var cell: AnyClass = FavouritesCell.self
     var numberOfRows: Int {
@@ -55,6 +61,7 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
     
     private let game: Games
     private var favourites: [Favourites]
+    private var indexPath: IndexPath!
     
     private var viewSecondary: UIView!
     private var subview: UIView!
@@ -86,14 +93,14 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         favourites = newFavourites
     }
     
-    func detailsViewController(_ indexPath: IndexPath) -> DetailsViewModelProtocol {
+    func detailsViewController() -> DetailsViewModelProtocol {
         DetailsViewModel(game: game, favourite: favourites[indexPath.row], favourites: favourites)
     }
     
-    func setView(color: UIColor, radius: CGFloat) -> UIView {
+    func setView(color: UIColor, radius: CGFloat? = nil) -> UIView {
         let view = UIView()
         view.backgroundColor = color
-        view.layer.cornerRadius = radius
+        view.layer.cornerRadius = radius ?? 0
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }
@@ -116,9 +123,18 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         return imageView
     }
     
+    func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView {
+        let size = UIImage.SymbolConfiguration(pointSize: size)
+        let image = UIImage(systemName: image, withConfiguration: size)
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = color
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }
+    
     func setDetails(_ viewDetails: UIView, _ view: UIView, and indexPath: IndexPath) {
-        let favourite = favourites[indexPath.row]
-        viewSecondary = setViewSecondary(color: game.background, radius: 15)
+        let favourite = setIndexPath(index: indexPath)
+        viewSecondary = setView(color: game.background)
         subview = setName(favourite: favourite)
         stackView = setStackView(favourite, view)
         setSubviews(subviews: viewSecondary, on: viewDetails)
@@ -133,16 +149,29 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         ])
     }
     
-    func setConstraints(_ button: UIButton, and label: UILabel, on view: UIView) {
+    func setConstraints(_ button: UIButton, _ label: UILabel, _ moreInfo: UIButton, 
+                        and delete: UIButton, on view: UIView) {
         setSquare(button: button, sizes: 40)
         NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: view.topAnchor, constant: 12.5),
-            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12.5)
+            button.centerXAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            button.centerYAnchor.constraint(equalTo: view.topAnchor, constant: 24)
         ])
         
         NSLayoutConstraint.activate([
             label.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 15),
-            label.centerYAnchor.constraint(equalTo: view.topAnchor, constant: 31.875)
+            label.centerYAnchor.constraint(equalTo: view.topAnchor, constant: 26)
+        ])
+        
+        NSLayoutConstraint.activate([
+            moreInfo.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            moreInfo.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            moreInfo.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            moreInfo.heightAnchor.constraint(equalToConstant: 52)
+        ])
+        
+        NSLayoutConstraint.activate([
+            delete.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            delete.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 25)
         ])
     }
     
@@ -151,10 +180,22 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
             viewDetails.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             viewDetails.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             viewDetails.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.85),
-            viewDetails.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.6)
+            viewDetails.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.645)
         ])
     }
     
+    func setConstraints(_ label: UILabel, and image: UIImageView, on button: UIButton) {
+        NSLayoutConstraint.activate([
+            label.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            label.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 25)
+        ])
+        
+        NSLayoutConstraint.activate([
+            image.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            image.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -12)
+        ])
+    }
+    // MARK: - Show / hide subviews
     func barButtonOnOff(button: UIButton, isOn: Bool) {
         let opacity: Float = isOn ? 1 : 0
         isEnabled(buttons: button, isOn: isOn)
@@ -235,16 +276,12 @@ extension FavouritesViewModel {
         }
     }
     
-    private func setViewSecondary(color: UIColor, radius: CGFloat) -> UIView {
-        let view = setView(color: color, radius: radius)
-        view.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        return view
-    }
-    
     private func setView(_ favourite: Favourites, _ name: String,
                          and tag: Int, view: UIView) -> UIView {
         let background = backgroundColor(favourite, name, and: tag)
         let button = setView(color: background, radius: 12)
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = game.gameType == .questionnaire ? 1.5 : 0
         addSubviews(button, favourite, name, and: tag, view)
         return button
     }
@@ -253,8 +290,8 @@ extension FavouritesViewModel {
                              _ name: String, and tag: Int, _ view: UIView) {
         if game.gameType == .questionnaire {
             let subview = subview(favourite, name, and: tag)
-            let checkmark = setCheckmark(image: checkmark(favourite, name, tag),
-                                         color: color(favourite, name, tag))
+            let checkmark = setImage(image: checkmark(favourite, name, tag),
+                                     color: color(favourite, name, tag), size: 26)
             setSubviews(subviews: checkmark, subview, on: button)
             setConstraints(favourite: favourite, checkmark, and: subview, on: button, name, view)
         } else {
@@ -283,15 +320,6 @@ extension FavouritesViewModel {
             return setImage(image: name)
         }
     }
-    
-    private func setCheckmark(image: String, color: UIColor) -> UIImageView {
-        let size = UIImage.SymbolConfiguration(pointSize: 26)
-        let image = UIImage(systemName: image, withConfiguration: size)
-        let imageView = UIImageView(image: image)
-        imageView.tintColor = color
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }
 }
 // MARK: - Show / hide subviews
 extension FavouritesViewModel {
@@ -311,7 +339,12 @@ extension FavouritesViewModel {
 }
 // MARK: - Constants
 extension FavouritesViewModel {
-    private func backgroundColor(_ favourite: Favourites, _ name: String, 
+    private func setIndexPath(index: IndexPath) -> Favourites {
+        indexPath = index
+        return favourites[indexPath.row]
+    }
+    
+    private func backgroundColor(_ favourite: Favourites, _ name: String,
                                  and tag: Int) -> UIColor {
         question(favourite) == name ? correctBackground() : incorrectBackground(favourite, tag)
     }
@@ -370,7 +403,7 @@ extension FavouritesViewModel {
     
     private func checkmark(_ favourite: Favourites, _ name: String,
                            _ tag: Int) -> String {
-        favourite.flag == name ? "checkmark.circle.fill" : incorrectCheckmark(favourite, tag)
+        question(favourite) == name ? "checkmark.circle.fill" : incorrectCheckmark(favourite, tag)
     }
     
     private func incorrectCheckmark(_ favourite: Favourites, _ tag: Int) -> String {
@@ -379,7 +412,7 @@ extension FavouritesViewModel {
     
     private func color(_ favourite: Favourites, _ name: String,
                        _ tag: Int) -> UIColor {
-        favourite.flag == name ? .greenHarlequin : incorrectColor(favourite, tag)
+        question(favourite) == name ? .greenHarlequin : incorrectColor(favourite, tag)
     }
     
     private func incorrectColor(_ favourite: Favourites, _ tag: Int) -> UIColor {
@@ -469,10 +502,10 @@ extension FavouritesViewModel {
                                 _ subview: UIView, and stackView: UIStackView,
                                 on view: UIView) {
         NSLayoutConstraint.activate([
-            viewSecondary.topAnchor.constraint(equalTo: view.topAnchor, constant: 63.75),
+            viewSecondary.topAnchor.constraint(equalTo: view.topAnchor, constant: 52),
             viewSecondary.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             viewSecondary.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            viewSecondary.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            viewSecondary.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -53)
         ])
         
         if favourite.isFlag {
@@ -493,7 +526,7 @@ extension FavouritesViewModel {
         let constant: CGFloat = favourite.isFlag ? 10 : 5
         let height: CGFloat = favourite.isFlag ? 200 : 220
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: subview.bottomAnchor, constant: 30),
+            stackView.topAnchor.constraint(equalTo: subview.bottomAnchor, constant: 25),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: constant),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -constant),
             stackView.heightAnchor.constraint(equalToConstant: height)

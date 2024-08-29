@@ -13,7 +13,8 @@ protocol DetailsViewModelProtocol {
     var flag: String { get }
     var titleName: String { get }
     var name: String { get }
-    var error: String { get }
+    var capital: String { get }
+    var continent: String { get }
     var buttonFirst: String { get }
     var buttonSecond: String { get }
     var buttonThird: String { get }
@@ -27,13 +28,14 @@ protocol DetailsViewModelProtocol {
     
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func setSubviews(subviews: UIView..., on otherSubview: UIView)
+    func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView
+    func setView(_ iconFlag: UIImageView, and imageFlag: UIImageView) -> UIView
     func setLabel(title: String, size: CGFloat, style: String, color: UIColor) -> UILabel
     func setView(_ title: String, addSubview: UIView, and tag: Int) -> UIView
     func subview(title: String, and tag: Int) -> UIView
     func stackView(_ first: UIView,_ second: UIView,_ third: UIView,_ fourth: UIView) -> UIStackView
     
     func widthStackView(_ view: UIView) -> CGFloat
-    func width(_ image: String) -> CGFloat
     func setSquare(button: UIButton, sizes: CGFloat)
     func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView,_ flag: String)
     
@@ -52,7 +54,12 @@ class DetailsViewModel: DetailsViewModelProtocol {
     var name: String {
         favourite.name
     }
-    var error: String = "Ошибка ответа:"
+    var capital: String {
+        favourite.capital
+    }
+    var continent: String {
+        
+    }
     var buttonFirst: String {
         favourite.buttonFirst
     }
@@ -104,6 +111,15 @@ class DetailsViewModel: DetailsViewModelProtocol {
         }
     }
     
+    func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView {
+        let size = UIImage.SymbolConfiguration(pointSize: size)
+        let image = UIImage(systemName: image, withConfiguration: size)
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = color
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }
+    
     func setLabel(title: String, size: CGFloat, style: String, 
                   color: UIColor) -> UILabel {
         let label = UILabel()
@@ -114,6 +130,16 @@ class DetailsViewModel: DetailsViewModelProtocol {
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }
+    
+    func setView(_ iconFlag: UIImageView, and imageFlag: UIImageView) -> UIView {
+        let view = UIView()
+        view.backgroundColor = game.background
+        view.layer.cornerRadius = 15
+        view.translatesAutoresizingMaskIntoConstraints = false
+        setSubviews(subviews: iconFlag, imageFlag, on: view)
+        setConstraints(iconFlag, and: imageFlag, on: view)
+        return view
     }
     
     func setView(_ title: String, addSubview: UIView, and tag: Int) -> UIView {
@@ -146,13 +172,6 @@ class DetailsViewModel: DetailsViewModelProtocol {
     // MARK: - Constants
     func widthStackView(_ view: UIView) -> CGFloat {
         isFlag ? view.bounds.width - 40 : view.bounds.width - 20
-    }
-    
-    func width(_ image: String) -> CGFloat {
-        switch image {
-        case "nepal", "vatican city", "switzerland": return 168
-        default: return 280
-        }
     }
     // MARK: - Constraints
     func setSquare(button: UIButton, sizes: CGFloat) {
@@ -280,6 +299,29 @@ extension DetailsViewModel {
         let centerFlag = flagWidth / 2 + 5
         return buttonWidth / 2 - centerFlag
     }
+    
+    private func width(_ image: String) -> CGFloat {
+        switch image {
+        case "nepal", "vatican city", "switzerland": return 126
+        default: return 210
+        }
+    }
+    
+    private func checkContinent(flag: String) -> String {
+        
+    }
+    
+    private func continents(index: Int) -> String {
+        
+    }
+    
+    private func search(_ flags: [String]) -> Bool {
+        flags.contains(where: { $0 == flag }) ? true : false
+    }
+    
+    private func title(_ isAvailable: Bool) -> Bool {
+        
+    }
 }
 // MARK: - Set subviews
 extension DetailsViewModel {
@@ -294,8 +336,8 @@ extension DetailsViewModel {
     private func addSubviews(subview: UIView, on view: UIView, and name: String,
                              tag: Int) {
         if game.gameType == .questionnaire {
-            let checkmark = setCheckmark(image: checkmark(name, tag),
-                                         color: color(name, tag))
+            let checkmark = setImage(image: checkmark(name, tag),
+                                     color: color(name, tag), size: 26)
             setSubviews(subviews: subview, checkmark, on: view)
             setConstraints(checkmark: checkmark, on: view)
         } else {
@@ -308,15 +350,6 @@ extension DetailsViewModel {
         imageView.layer.borderWidth = 1
         imageView.layer.cornerRadius = isFlag ? 0 : 8
         imageView.clipsToBounds = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }
-    
-    private func setCheckmark(image: String, color: UIColor) -> UIImageView {
-        let size = UIImage.SymbolConfiguration(pointSize: 26)
-        let image = UIImage(systemName: image, withConfiguration: size)
-        let imageView = UIImageView(image: image)
-        imageView.tintColor = color
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }
@@ -370,5 +403,20 @@ extension DetailsViewModel {
         } else {
             return subview.centerXAnchor.constraint(equalTo: button.centerXAnchor)
         }
+    }
+    
+    private func setConstraints(_ iconFlag: UIImageView,
+                                and imageFlag: UIImageView, on view: UIView) {
+        NSLayoutConstraint.activate([
+            iconFlag.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            iconFlag.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            imageFlag.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            imageFlag.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            imageFlag.widthAnchor.constraint(equalToConstant: width(flag)),
+            imageFlag.heightAnchor.constraint(equalToConstant: 126)
+        ])
     }
 }

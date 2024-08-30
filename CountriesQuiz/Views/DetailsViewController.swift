@@ -26,6 +26,10 @@ class DetailsViewController: UIViewController {
         viewModel.setImage(image: "flag", color: .white, size: 33)
     }()
     
+    private lazy var viewFlag: UIView = {
+        viewModel.setView(addSubview: iconFlag)
+    }()
+    
     private lazy var imageFlag: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: viewModel.flag)
@@ -34,32 +38,72 @@ class DetailsViewController: UIViewController {
         return imageView
     }()
     
-    private lazy var viewFlag: UIView = {
-        viewModel.setView(iconFlag, and: imageFlag)
+    private lazy var viewFlagDetails: UIView = {
+        viewModel.setView(viewFlag, and: imageFlag)
     }()
     
     private lazy var iconCountry: UIImageView = {
         viewModel.setImage(image: "building", color: .white, size: 33)
     }()
     
+    private lazy var viewCountry: UIView = {
+        viewModel.setView(addSubview: iconCountry)
+    }()
+    
+    private lazy var titleCountry: UILabel = {
+        viewModel.setLabel(title: viewModel.name, size: 24, style: "GillSans", color: .white)
+    }()
+    
+    private lazy var viewCountryDetails: UIView = {
+        viewModel.setViewNames(viewCountry, titleCountry)
+    }()
+    
     private lazy var iconCapital: UIImageView = {
-        viewModel.setImage(image: "house.and.flag", color: .white, size: 33)
+        viewModel.setImage(image: "house.and.flag", color: .white, size: 28)
+    }()
+    
+    private lazy var viewCapital: UIView = {
+        viewModel.setView(addSubview: iconCapital)
+    }()
+    
+    private lazy var titleCapital: UILabel = {
+        viewModel.setLabel(title: viewModel.capital, size: 24, style: "GillSans", color: .white)
+    }()
+    
+    private lazy var viewCapitalDetails: UIView = {
+        viewModel.setViewNames(viewCapital, titleCapital)
     }()
     
     private lazy var iconContinent: UIImageView = {
         viewModel.setImage(image: "globe.desk", color: .white, size: 33)
     }()
     
-    private lazy var titleCountry: UILabel = {
-        viewModel.setLabel(title: viewModel.name, size: 27, style: "GillSans-SemiBold", color: .white)
-    }()
-    
-    private lazy var titleCapital: UILabel = {
-        viewModel.setLabel(title: viewModel.capital, size: 27, style: "GillSans-SemiBold", color: .white)
+    private lazy var viewContinent: UIView = {
+        viewModel.setView(addSubview: iconContinent)
     }()
     
     private lazy var titleContinent: UILabel = {
-        viewModel.setLabel(title: <#T##String#>, size: <#T##CGFloat#>, style: <#T##String#>, color: <#T##UIColor#>)
+        viewModel.setLabel(title: viewModel.continent, size: 24, style: "GillSans", color: .white)
+    }()
+    
+    private lazy var viewContinentDetails: UIView = {
+        viewModel.setViewNames(viewContinent, titleContinent)
+    }()
+    
+    private lazy var iconCorrect: UIImageView = {
+        viewModel.setImage(image: "checkmark", color: .white, size: 33)
+    }()
+    
+    private lazy var iconIncorrect: UIImageView = {
+        viewModel.setImage(image: "multiply", color: .white, size: 33)
+    }()
+    
+    private lazy var iconsStackView: UIStackView = {
+        viewModel.stackView(iconCorrect, iconIncorrect)
+    }()
+    
+    private lazy var viewIcons: UIView = {
+        viewModel.setView(addSubview: iconsStackView)
     }()
     
     private lazy var viewFirst: UIView = {
@@ -96,6 +140,10 @@ class DetailsViewController: UIViewController {
     
     private lazy var stackView: UIStackView = {
         viewModel.stackView(viewFirst, viewSecond, viewThird, viewFourth)
+    }()
+    
+    private lazy var viewSubviews: UIView = {
+        viewModel.setView(viewIcons, stackView)
     }()
     
     private lazy var buttonDelete: UIButton = {
@@ -137,7 +185,9 @@ class DetailsViewController: UIViewController {
     }
     
     private func setSubviews() {
-        viewModel.setSubviews(subviews: viewFlag, stackView, buttonDelete,
+        viewModel.setSubviews(subviews: viewFlagDetails, viewCountryDetails,
+                              viewCapitalDetails, viewContinentDetails,
+                              viewSubviews, buttonDelete,
                               on: view)
     }
     
@@ -157,10 +207,45 @@ extension DetailsViewController {
         viewModel.setSquare(button: buttonBack, sizes: 40)
         
         NSLayoutConstraint.activate([
-            viewFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
-            viewFlag.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            viewFlag.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            viewFlag.heightAnchor.constraint(equalToConstant: 142)
+            viewFlagDetails.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            viewFlagDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            viewFlagDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            viewFlagDetails.heightAnchor.constraint(equalToConstant: 142)
+        ])
+        
+        NSLayoutConstraint.activate([
+            viewCountryDetails.topAnchor.constraint(equalTo: viewFlagDetails.bottomAnchor, constant: 8),
+            viewCountryDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            viewCountryDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            viewCountryDetails.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        
+        NSLayoutConstraint.activate([
+            viewCapitalDetails.topAnchor.constraint(equalTo: viewCountryDetails.bottomAnchor, constant: 5),
+            viewCapitalDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            viewCapitalDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            viewCapitalDetails.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        
+        NSLayoutConstraint.activate([
+            viewContinentDetails.topAnchor.constraint(equalTo: viewCapitalDetails.bottomAnchor, constant: 5),
+            viewContinentDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            viewContinentDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            viewContinentDetails.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        
+        NSLayoutConstraint.activate([
+            viewSubviews.topAnchor.constraint(equalTo: viewContinentDetails.bottomAnchor, constant: 8),
+            viewSubviews.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            viewSubviews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            viewSubviews.heightAnchor.constraint(equalToConstant: viewModel.heightStackView)
+        ])
+        
+        NSLayoutConstraint.activate([
+            buttonDelete.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
+            buttonDelete.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            buttonDelete.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            buttonDelete.heightAnchor.constraint(equalToConstant: 55)
         ])
         /*
         NSLayoutConstraint.activate([

@@ -80,6 +80,9 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     private var capital: String {
         incorrect.question.capitals
     }
+    private var continent: String {
+        setContinent()
+    }
     private var answerFirst: String {
         buttonName(buttonFirst)
     }
@@ -93,13 +96,28 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
         buttonName(buttonFourth)
     }
     private var newFavourite: Favourites {
-        Favourites(flag: flag, name: name, capital: capital,
+        Favourites(flag: flag, name: name, capital: capital, continent: continent,
                    buttonFirst: answerFirst, buttonSecond: answerSecond,
                    buttonThird: answerThird, buttonFourth: answerFourth,
                    tag: incorrect.tag, isFlag: isFlag, isTimeUp: incorrect.timeUp)
     }
     private var key: String {
         game.keys
+    }
+    private var americanContinent: [String] {
+        FlagsOfCountries.shared.imagesOfAmericanContinent
+    }
+    private var europeanContinent: [String] {
+        FlagsOfCountries.shared.imagesOfEuropeanContinent
+    }
+    private var africanContinent: [String] {
+        FlagsOfCountries.shared.imagesOfAfricanContinent
+    }
+    private var asianContinent: [String] {
+        FlagsOfCountries.shared.imagesOfAsianContinent
+    }
+    private var oceanContinent: [String] {
+        FlagsOfCountries.shared.imagesOfOceanContinent
     }
     
     required init(mode: Setting, game: Games, incorrect: Incorrects,
@@ -329,6 +347,34 @@ extension IncorrectViewModel {
         switch flag {
         case "nepal", "vatican city", "switzerland": return setHeight()
         default: return setWidth(view)
+        }
+    }
+    
+    private func setContinent() -> String {
+        search(continents: americanContinent, europeanContinent,
+               africanContinent, asianContinent, oceanContinent)
+    }
+    
+    private func search(continents: [String]...) -> String {
+        var setContinent = String()
+        var counter = 0
+        for continent in continents {
+            if continent.contains(where: { $0 == flag }) {
+                setContinent = getContinent(counter: counter)
+                break
+            }
+            counter += 1
+        }
+        return setContinent
+    }
+    
+    private func getContinent(counter: Int) -> String {
+        switch counter {
+        case 0: "Континент Америки"
+        case 1: "Континент Европы"
+        case 2: "Континент Африки"
+        case 3: "Континент Азии"
+        default: "Континент Океании"
         }
     }
 }

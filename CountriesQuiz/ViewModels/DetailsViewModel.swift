@@ -9,9 +9,7 @@ import UIKit
 
 protocol DetailsViewModelProtocol {
     var background: UIColor { get }
-    var titleFlag: String { get }
     var flag: String { get }
-    var titleName: String { get }
     var name: String { get }
     var capital: String { get }
     var continent: String { get }
@@ -20,7 +18,6 @@ protocol DetailsViewModelProtocol {
     var buttonThird: String { get }
     var buttonFour: String { get }
     var titleButton: String { get }
-    var backgroundButton: UIColor { get }
     var heightStackView: CGFloat { get }
     var favourites: [Favourites] { get }
     
@@ -29,13 +26,16 @@ protocol DetailsViewModelProtocol {
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func setSubviews(subviews: UIView..., on otherSubview: UIView)
     func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView
-    func setView(_ iconFlag: UIImageView, and imageFlag: UIImageView) -> UIView
+    func setView(_ viewFlag: UIView, and imageFlag: UIImageView) -> UIView
+    func setView(addSubview: UIView) -> UIView
+    func setView(_ viewIcons: UIView, _ stackView: UIStackView) -> UIView
+    func setViewNames(_ view: UIView, _ label: UILabel) -> UIView
     func setLabel(title: String, size: CGFloat, style: String, color: UIColor) -> UILabel
     func setView(_ title: String, addSubview: UIView, and tag: Int) -> UIView
     func subview(title: String, and tag: Int) -> UIView
+    func stackView(_ first: UIView,_ second: UIView) -> UIStackView
     func stackView(_ first: UIView,_ second: UIView,_ third: UIView,_ fourth: UIView) -> UIStackView
     
-    func widthStackView(_ view: UIView) -> CGFloat
     func setSquare(button: UIButton, sizes: CGFloat)
     func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView,_ flag: String)
     
@@ -44,13 +44,11 @@ protocol DetailsViewModelProtocol {
 
 class DetailsViewModel: DetailsViewModelProtocol {
     var background: UIColor {
-        game.favourite
+        game.swap
     }
-    var titleFlag: String = "Флаг:"
     var flag: String {
         favourite.flag
     }
-    var titleName: String = "Наименование:"
     var name: String {
         favourite.name
     }
@@ -58,7 +56,7 @@ class DetailsViewModel: DetailsViewModelProtocol {
         favourite.capital
     }
     var continent: String {
-        
+        favourite.continent
     }
     var buttonFirst: String {
         favourite.buttonFirst
@@ -73,11 +71,8 @@ class DetailsViewModel: DetailsViewModelProtocol {
         favourite.buttonFourth
     }
     var titleButton: String = "   Удалить из списка"
-    var backgroundButton: UIColor {
-        game.done
-    }
     var heightStackView: CGFloat {
-        isFlag ? 215 : 235
+        isFlag ? 200 : 220
     }
     
     var favourites: [Favourites]
@@ -93,6 +88,7 @@ class DetailsViewModel: DetailsViewModelProtocol {
         default: isFlag ? name : flag
         }
     }
+    private let constant: CGFloat = 58
     
     required init(game: Games, favourite: Favourites, favourites: [Favourites]) {
         self.game = game
@@ -132,13 +128,32 @@ class DetailsViewModel: DetailsViewModelProtocol {
         return label
     }
     
-    func setView(_ iconFlag: UIImageView, and imageFlag: UIImageView) -> UIView {
-        let view = UIView()
-        view.backgroundColor = game.background
-        view.layer.cornerRadius = 15
-        view.translatesAutoresizingMaskIntoConstraints = false
-        setSubviews(subviews: iconFlag, imageFlag, on: view)
-        setConstraints(iconFlag, and: imageFlag, on: view)
+    func setView(_ viewFlag: UIView, and imageFlag: UIImageView) -> UIView {
+        let view = setView(color: game.background)
+        setSubviews(subviews: viewFlag, imageFlag, on: view)
+        setConstraints(viewFlag, and: imageFlag, on: view)
+        return view
+    }
+    
+    func setView(addSubview: UIView) -> UIView {
+        let view = setView(color: game.favourite)
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+        view.addSubview(addSubview)
+        setConstraints(subview: addSubview, on: view)
+        return view
+    }
+    
+    func setViewNames(_ viewIcon: UIView, _ label: UILabel) -> UIView {
+        let view = setView(color: game.background)
+        setSubviews(subviews: viewIcon, label, on: view)
+        setConstraints(viewIcon, label, on: view)
+        return view
+    }
+    
+    func setView(_ viewIcons: UIView, _ stackView: UIStackView) -> UIView {
+        let view = setView(color: game.background)
+        setSubviews(subviews: viewIcons, stackView, on: view)
+        setConstraints(viewIcons: viewIcons, and: stackView, on: view)
         return view
     }
     
@@ -161,6 +176,15 @@ class DetailsViewModel: DetailsViewModelProtocol {
         }
     }
     
+    func stackView(_ first: UIView, _ second: UIView) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [first, second])
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
     func stackView(_ first: UIView, _ second: UIView, 
                    _ third: UIView, _ fourth: UIView) -> UIStackView {
         if isFlag {
@@ -168,10 +192,6 @@ class DetailsViewModel: DetailsViewModelProtocol {
         } else {
             checkGameType(first, second, third, fourth)
         }
-    }
-    // MARK: - Constants
-    func widthStackView(_ view: UIView) -> CGFloat {
-        isFlag ? view.bounds.width - 40 : view.bounds.width - 20
     }
     // MARK: - Constraints
     func setSquare(button: UIButton, sizes: CGFloat) {
@@ -307,20 +327,9 @@ extension DetailsViewModel {
         }
     }
     
-    private func checkContinent(flag: String) -> String {
-        
-    }
-    
-    private func continents(index: Int) -> String {
-        
-    }
-    
-    private func search(_ flags: [String]) -> Bool {
-        flags.contains(where: { $0 == flag }) ? true : false
-    }
-    
-    private func title(_ isAvailable: Bool) -> Bool {
-        
+    private func widthStackView(_ view: UIView) -> CGFloat {
+        let side: CGFloat = isFlag ? 10 : 5
+        return view.bounds.width - side - constant
     }
 }
 // MARK: - Set subviews
@@ -343,6 +352,14 @@ extension DetailsViewModel {
         } else {
             setSubviews(subviews: subview, on: view)
         }
+    }
+    
+    private func setView(color: UIColor) -> UIView {
+        let view = UIView()
+        view.backgroundColor = color
+        view.layer.cornerRadius = 15
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }
     
     private func setImage(image: UIImage?) -> UIImageView {
@@ -405,18 +422,60 @@ extension DetailsViewModel {
         }
     }
     
-    private func setConstraints(_ iconFlag: UIImageView,
-                                and imageFlag: UIImageView, on view: UIView) {
+    private func setConstraints(_ view: UIView, and imageFlag: UIImageView,
+                                on viewDetails: UIView) {
         NSLayoutConstraint.activate([
-            iconFlag.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            iconFlag.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
+            view.topAnchor.constraint(equalTo: viewDetails.topAnchor),
+            view.leadingAnchor.constraint(equalTo: viewDetails.leadingAnchor),
+            view.bottomAnchor.constraint(equalTo: viewDetails.bottomAnchor),
+            view.trailingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: constant)
         ])
         
         NSLayoutConstraint.activate([
-            imageFlag.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            imageFlag.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            imageFlag.centerYAnchor.constraint(equalTo: viewDetails.centerYAnchor),
+            imageFlag.centerXAnchor.constraint(equalTo: viewDetails.centerXAnchor, constant: constant / 2),
             imageFlag.widthAnchor.constraint(equalToConstant: width(flag)),
             imageFlag.heightAnchor.constraint(equalToConstant: 126)
+        ])
+    }
+    
+    private func setConstraints(subview: UIView, on view: UIView) {
+        NSLayoutConstraint.activate([
+            subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            subview.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    private func setConstraints(_ viewIcon: UIView, _ label: UILabel,
+                                on viewDetails: UIView) {
+        NSLayoutConstraint.activate([
+            viewIcon.topAnchor.constraint(equalTo: viewDetails.topAnchor),
+            viewIcon.leadingAnchor.constraint(equalTo: viewDetails.leadingAnchor),
+            viewIcon.bottomAnchor.constraint(equalTo: viewDetails.bottomAnchor),
+            viewIcon.trailingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: constant)
+        ])
+        
+        NSLayoutConstraint.activate([
+            label.centerYAnchor.constraint(equalTo: viewDetails.centerYAnchor),
+            label.leadingAnchor.constraint(equalTo: viewIcon.trailingAnchor, constant: 5),
+            label.trailingAnchor.constraint(equalTo: viewDetails.trailingAnchor, constant: -10)
+        ])
+    }
+    
+    private func setConstraints(viewIcons: UIView, and stackView: UIStackView,
+                                on viewDetails: UIView) {
+        NSLayoutConstraint.activate([
+            viewIcons.topAnchor.constraint(equalTo: viewDetails.topAnchor),
+            viewIcons.leadingAnchor.constraint(equalTo: viewDetails.leadingAnchor),
+            viewIcons.bottomAnchor.constraint(equalTo: viewDetails.bottomAnchor),
+            viewIcons.trailingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: constant)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackView.centerYAnchor.constraint(equalTo: viewDetails.centerYAnchor),
+            stackView.centerXAnchor.constraint(equalTo: viewDetails.centerXAnchor, constant: constant / 2),
+            stackView.widthAnchor.constraint(equalToConstant: widthStackView(viewDetails)),
+            stackView.heightAnchor.constraint(equalToConstant: heightStackView - 10)
         ])
     }
 }

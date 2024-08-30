@@ -11,6 +11,7 @@ struct Favourites: Codable {
     let flag: String
     let name: String
     let capital: String
+    let continent: String
     let buttonFirst: String
     let buttonSecond: String
     let buttonThird: String

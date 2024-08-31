@@ -7,7 +7,7 @@
 
 import UIKit
 
-class QuestionnaireViewController: UIViewController {
+class QuestionnaireViewController: UIViewController, ViewControllerInput {
     private lazy var buttonExit: UIButton = {
         setButton(image: "multiply", action: #selector(exitToGameType))
     }()
@@ -125,6 +125,11 @@ class QuestionnaireViewController: UIViewController {
         viewModel.setTimeSpent()
         resultsVC()
     }
+    
+    func dataToMenu(setting: Setting, favourites: [Favourites]) {
+        delegate.dataToMenu(setting: setting, favourites: favourites)
+    }
+    
     // MARK: - General methods
     private func setupData() {
         viewModel.getQuestions()
@@ -297,6 +302,7 @@ extension QuestionnaireViewController {
         let resultsViewModel = viewModel.resultsViewController()
         let resultsVC = ResultsViewController()
         resultsVC.viewModel = resultsViewModel
+        resultsVC.delegate = self
         navigationController?.pushViewController(resultsVC, animated: true)
     }
 }
@@ -352,16 +358,6 @@ extension QuestionnaireViewController {
         viewModel.setButton(button: button, tag: tag)
         viewModel.imagesOnButton(checkmark, and: flag, on: button, view)
         return button
-    }
-}
-// MARK: - Setup stack view
-extension QuestionnaireViewController {
-    private func setupStackView(buttonFirst: UIButton, buttonSecond: UIButton) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [buttonFirst, buttonSecond])
-        stackView.spacing = 8
-        stackView.distribution = .fillEqually
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
     }
 }
 // MARK: - Setup constraints

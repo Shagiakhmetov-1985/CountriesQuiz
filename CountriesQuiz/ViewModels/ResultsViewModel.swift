@@ -253,39 +253,4 @@ class ResultsViewModel: ResultsViewModelProtocol {
     private func stringWithoutNull(count: CGFloat) -> String {
         String(format: "%.0f", count)
     }
-    // MARK: - Set circles
-    private func setCircle(_ subview: UIView, color: UIColor, strokeEnd: CGFloat,
-                           value: Float? = nil, duration: CGFloat? = nil, view: UIView) {
-        let center = CGPoint(x: subview.center.x, y: subview.center.y)
-        let endAngle = CGFloat.pi / 2
-        let startAngle = 2 * CGFloat.pi + endAngle
-        let circularPath = UIBezierPath(
-            arcCenter: center,
-            radius: 45,
-            startAngle: -startAngle,
-            endAngle: -endAngle,
-            clockwise: true)
-        
-        let trackShape = CAShapeLayer()
-        trackShape.path = circularPath.cgPath
-        trackShape.lineWidth = 13
-        trackShape.fillColor = UIColor.clear.cgColor
-        trackShape.strokeEnd = strokeEnd
-        trackShape.strokeColor = color.cgColor
-        trackShape.lineCap = CAShapeLayerLineCap.round
-        view.layer.addSublayer(trackShape)
-        
-        if let value = value, let duration = duration {
-            animateCircle(shape: trackShape, value: value, duration: duration)
-        }
-    }
-    
-    private func animateCircle(shape: CAShapeLayer, value: Float, duration: CGFloat) {
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.toValue = value
-        animation.duration = CFTimeInterval(duration)
-        animation.fillMode = CAMediaTimingFillMode.forwards
-        animation.isRemovedOnCompletion = false
-        shape.add(animation, forKey: "animation")
-    }
 }

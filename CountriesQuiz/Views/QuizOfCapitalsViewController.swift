@@ -7,7 +7,7 @@
 
 import UIKit
 
-class QuizOfCapitalsViewController: UIViewController {
+class QuizOfCapitalsViewController: UIViewController, ViewControllerInput {
     private lazy var buttonBack: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: "multiply", withConfiguration: size)
@@ -103,10 +103,16 @@ class QuizOfCapitalsViewController: UIViewController {
                 let resultsViewModel = viewModel.resultsViewController()
                 let resultsVC = ResultsViewController()
                 resultsVC.viewModel = resultsViewModel
+                resultsVC.delegate = self
                 navigationController?.pushViewController(resultsVC, animated: true)
             }
         }
     }
+    
+    func dataToMenu(setting: Setting, favourites: [Favourites]) {
+        delegate.dataToMenu(setting: setting, favourites: favourites)
+    }
+    
     // MARK: - General methods
     private func setupData() {
         viewModel.getQuestions()

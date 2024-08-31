@@ -7,11 +7,11 @@
 
 import UIKit
 
-protocol QuizOfFlagsViewControllerInput: AnyObject {
+protocol ViewControllerInput: AnyObject {
     func dataToMenu(setting: Setting, favourites: [Favourites])
 }
 
-class QuizOfFlagsViewController: UIViewController, QuizOfFlagsViewControllerInput {
+class QuizOfFlagsViewController: UIViewController, ViewControllerInput {
     private lazy var buttonback: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 20)
         let image = UIImage(systemName: "multiply", withConfiguration: size)

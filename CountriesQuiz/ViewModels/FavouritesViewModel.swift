@@ -25,13 +25,12 @@ protocol FavouritesViewModelProtocol {
     func setFavourites(newFavourites: [Favourites])
     func setView(color: UIColor, radius: CGFloat?) -> UIView
     func setLabel(title: String, font: String, size: CGFloat, color: UIColor) -> UILabel
-    func setImage(image: String) -> UIImageView
     func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView
     func setDetails(_ viewDetails: UIView,_ view: UIView, and indexPath: IndexPath)
     
     func setSquare(button: UIButton, sizes: CGFloat)
     func setConstraints(_ button: UIButton,_ label: UILabel,_ moreInfo: UIButton, and delete: UIButton, on view: UIView)
-    func setConstraints(_ viewDetails: UIView, on view: UIView)
+    func setConstraints(_ indexPath: IndexPath,_ viewDetails: UIView, on view: UIView)
     func setConstraints(_ label: UILabel, and image: UIImageView, on button: UIButton)
     
     func barButtonOnOff(button: UIButton, isOn: Bool)
@@ -115,14 +114,6 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         return label
     }
     
-    func setImage(image: String) -> UIImageView {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: image)
-        imageView.layer.borderWidth = 1
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }
-    
     func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView {
         let size = UIImage.SymbolConfiguration(pointSize: size)
         let image = UIImage(systemName: image, withConfiguration: size)
@@ -139,7 +130,7 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         stackView = setStackView(favourite, view)
         setSubviews(subviews: viewSecondary, on: viewDetails)
         setSubviews(subviews: subview, stackView, on: viewSecondary)
-        setConstraints(favourite: favourite, viewSecondary, subview, and: stackView, on: viewDetails)
+        setConstraints(favourite: favourite, on: viewDetails)
     }
     // MARK: - Constraints
     func setSquare(button: UIButton, sizes: CGFloat) {
@@ -175,12 +166,13 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         ])
     }
     
-    func setConstraints(_ viewDetails: UIView, on view: UIView) {
+    func setConstraints(_ indexPath: IndexPath, _ viewDetails: UIView, on view: UIView) {
+        let constant: CGFloat = favourites[indexPath.row].isFlag ? 0.645 : 0.5
         NSLayoutConstraint.activate([
-            viewDetails.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             viewDetails.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            viewDetails.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.85),
-            viewDetails.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.645)
+            viewDetails.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: constant),
+            viewDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            viewDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
     }
     
@@ -218,7 +210,8 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
             viewDetails.alpha = 0
             viewDetails.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
         } completion: { _ in
-            viewDetails.removeFromSuperview()
+            self.removeSubviews(subviews: viewDetails, self.viewSecondary, 
+                                self.subview, self.stackView)
         }
     }
 }
@@ -230,6 +223,16 @@ extension FavouritesViewModel {
         } else {
             setLabel(title: favourite.name, font: "mr_fontick", size: 28, color: .white)
         }
+    }
+    
+    private func setImage(image: String, radius: CGFloat? = nil) -> UIImageView {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: image)
+        imageView.layer.borderWidth = 1
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = radius ?? 0
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }
     
     private func setStackView(_ favourite: Favourites, _ view: UIView) -> UIStackView {
@@ -317,7 +320,7 @@ extension FavouritesViewModel {
             let color = textColor(favourite, name, and: tag)
             return setLabel(title: name, font: "mr_fontick", size: 21, color: color)
         } else {
-            return setImage(image: name)
+            return setImage(image: name, radius: 8)
         }
     }
 }
@@ -334,6 +337,12 @@ extension FavouritesViewModel {
             UIView.animate(withDuration: 0.5) {
                 button.layer.opacity = opacity
             }
+        }
+    }
+    
+    private func removeSubviews(subviews: UIView...) {
+        subviews.forEach { subview in
+            subview.removeFromSuperview()
         }
     }
 }
@@ -426,8 +435,9 @@ extension FavouritesViewModel {
         return buttonWidth / 2 - centerFlag
     }
     
-    private func setWidth(_ view: UIView) -> CGFloat {
-        let buttonWidth = ((view.frame.width - 20) / 2) - 4
+    private func setWidth(_ favourite: Favourites, _ view: UIView) -> CGFloat {
+        let constant: CGFloat = favourite.isFlag ? 70 : 55
+        let buttonWidth = ((view.frame.width - constant) / 2) - 4
         if game.gameType == .questionnaire {
             return buttonWidth - 40
         } else {
@@ -436,7 +446,7 @@ extension FavouritesViewModel {
     }
     
     private func setHeight(_ favourite: Favourites) -> CGFloat {
-        let heightStackView: CGFloat = favourite.isFlag ? 200 : 220
+        let heightStackView: CGFloat = favourite.isFlag ? 205 : 225
         let buttonHeight = heightStackView / 2 - 4
         return buttonHeight - 10
     }
@@ -445,7 +455,7 @@ extension FavouritesViewModel {
                             _ view: UIView) -> CGFloat {
         switch flag {
         case "nepal", "vatican city", "switzerland": return setHeight(favourite)
-        default: return setWidth(view)
+        default: return setWidth(favourite, view)
         }
     }
     
@@ -498,9 +508,7 @@ extension FavouritesViewModel {
         }
     }
     
-    private func setConstraints(favourite: Favourites, _ viewSecondary: UIView,
-                                _ subview: UIView, and stackView: UIStackView,
-                                on view: UIView) {
+    private func setConstraints(favourite: Favourites, on view: UIView) {
         NSLayoutConstraint.activate([
             viewSecondary.topAnchor.constraint(equalTo: view.topAnchor, constant: 52),
             viewSecondary.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -523,8 +531,8 @@ extension FavouritesViewModel {
             ])
         }
         
-        let constant: CGFloat = favourite.isFlag ? 10 : 5
-        let height: CGFloat = favourite.isFlag ? 200 : 220
+        let constant: CGFloat = favourite.isFlag ? 15 : 7.5
+        let height: CGFloat = favourite.isFlag ? 205 : 225
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: subview.bottomAnchor, constant: 25),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: constant),

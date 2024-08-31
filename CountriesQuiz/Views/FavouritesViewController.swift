@@ -93,7 +93,7 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.setDetails(viewDetails, view, and: indexPath)
         viewModel.setSubviews(subviews: viewDetails, on: view)
-        viewModel.setConstraints(viewDetails, on: view)
+        viewModel.setConstraints(indexPath, viewDetails, on: view)
         viewModel.barButtonOnOff(button: buttonClose, isOn: false)
         viewModel.showAnimationView(viewDetails, visualEffectBlur)
         tableView.deselectRow(at: indexPath, animated: true)

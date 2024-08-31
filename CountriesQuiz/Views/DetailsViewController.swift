@@ -98,12 +98,8 @@ class DetailsViewController: UIViewController {
         viewModel.setImage(image: "multiply", color: .white, size: 33)
     }()
     
-    private lazy var iconsStackView: UIStackView = {
-        viewModel.stackView(iconCorrect, iconIncorrect)
-    }()
-    
     private lazy var viewIcons: UIView = {
-        viewModel.setView(addSubview: iconsStackView)
+        viewModel.setView(addFirst: iconCorrect, addSecond: iconIncorrect)
     }()
     
     private lazy var viewFirst: UIView = {
@@ -186,8 +182,7 @@ class DetailsViewController: UIViewController {
     
     private func setSubviews() {
         viewModel.setSubviews(subviews: viewFlagDetails, viewCountryDetails,
-                              viewCapitalDetails, viewContinentDetails,
-                              viewSubviews, buttonDelete,
+                              viewCapitalDetails, viewContinentDetails, viewSubviews, buttonDelete,
                               on: view)
     }
     
@@ -240,48 +235,6 @@ extension DetailsViewController {
             viewSubviews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             viewSubviews.heightAnchor.constraint(equalToConstant: viewModel.heightStackView)
         ])
-        
-        NSLayoutConstraint.activate([
-            buttonDelete.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
-            buttonDelete.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonDelete.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            buttonDelete.heightAnchor.constraint(equalToConstant: 55)
-        ])
-        /*
-        NSLayoutConstraint.activate([
-            iconFlag.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            iconFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            imageFlag.topAnchor.constraint(equalTo: iconFlag.bottomAnchor, constant: 10),
-            imageFlag.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageFlag.widthAnchor.constraint(equalToConstant: viewModel.width(viewModel.flag)),
-            imageFlag.heightAnchor.constraint(equalToConstant: 168)
-        ])
-        
-        NSLayoutConstraint.activate([
-            titleName.topAnchor.constraint(equalTo: imageFlag.bottomAnchor, constant: 10),
-            titleName.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            titleCountry.topAnchor.constraint(equalTo: titleName.bottomAnchor, constant: 10),
-            titleCountry.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            titleCountry.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            titleError.topAnchor.constraint(equalTo: titleCountry.bottomAnchor, constant: 10),
-            titleError.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: titleError.bottomAnchor, constant: 15),
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.widthAnchor.constraint(equalToConstant: viewModel.widthStackView(view)),
-            stackView.heightAnchor.constraint(equalToConstant: viewModel.heightStackView)
-        ])
         viewModel.setConstraints(subviewFirst, on: viewFirst, view, viewModel.buttonFirst)
         viewModel.setConstraints(subviewSecond, on: viewSecond, view, viewModel.buttonSecond)
         viewModel.setConstraints(subviewThird, on: viewThird, view, viewModel.buttonThird)
@@ -289,10 +242,9 @@ extension DetailsViewController {
         
         NSLayoutConstraint.activate([
             buttonDelete.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
-            buttonDelete.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonDelete.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            buttonDelete.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            buttonDelete.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             buttonDelete.heightAnchor.constraint(equalToConstant: 55)
         ])
-         */
     }
 }

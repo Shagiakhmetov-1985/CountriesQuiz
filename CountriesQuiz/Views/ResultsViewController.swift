@@ -259,7 +259,7 @@ class ResultsViewController: UIViewController, ResultsViewControllerDelegate {
     }()
     
     var viewModel: ResultsViewModelProtocol!
-    weak var delegate: QuizOfFlagsViewControllerInput!
+    weak var delegate: ViewControllerInput!
     
     override func viewDidLoad() {
         super.viewDidLoad()

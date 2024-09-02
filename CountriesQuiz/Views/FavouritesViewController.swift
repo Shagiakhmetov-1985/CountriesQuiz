@@ -16,6 +16,13 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
         setButton(image: "multiply", action: #selector(extiToGameType), isBarButton: true)
     }()
     
+    private lazy var buttonDelete: UIButton = {
+        let button = setButton(image: "trash", action: #selector(deleteFavourite))
+        button.isEnabled = false
+        button.layer.opacity = 0
+        return button
+    }()
+    
     private lazy var visualEffectBlur: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .dark)
         let view = UIVisualEffectView(effect: blurEffect)
@@ -60,9 +67,8 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
         let close = setButton(image: "multiply", action: #selector(closeDetails))
         let label = viewModel.setLabel(title: viewModel.details, font: "GillSans", size: 22, color: .white)
         let moreInfo = setButton()
-        let delete = setButton(image: "trash", action: #selector(deleteFavourite))
-        viewModel.setSubviews(subviews: close, label, moreInfo, delete, on: view)
-        viewModel.setConstraints(close, label, moreInfo, and: delete, on: view)
+        viewModel.setSubviews(subviews: close, label, moreInfo, on: view)
+        viewModel.setConstraints(close, label, moreInfo, on: view)
         return view
     }()
     
@@ -94,7 +100,7 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
         viewModel.setDetails(viewDetails, view, and: indexPath)
         viewModel.setSubviews(subviews: viewDetails, on: view)
         viewModel.setConstraints(indexPath, viewDetails, on: view)
-        viewModel.barButtonOnOff(button: buttonClose, isOn: false)
+        viewModel.buttonOnOff(button: buttonClose, isOn: false)
         viewModel.showAnimationView(viewDetails, visualEffectBlur)
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -123,8 +129,9 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @objc private func closeDetails() {
-        viewModel.barButtonOnOff(button: buttonClose, isOn: true)
+        viewModel.buttonOnOff(button: buttonClose, isOn: true)
         viewModel.hideAnimationView(viewDetails, visualEffectBlur)
+        viewModel.buttonOnOff(buttonDelete, isOn: false, viewDetails)
     }
     
     @objc private func deleteFavourite() {

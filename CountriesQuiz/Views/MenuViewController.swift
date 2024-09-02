@@ -32,19 +32,17 @@ class MenuViewController: UIViewController {
     }()
     
     private lazy var contentView: UIView = {
-        let currentView = view
-        let view = UIView()
-        view.backgroundColor = .white
-        view.frame.size = viewModel.size(view: currentView)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
+        let contentView = UIView()
+        contentView.backgroundColor = .white
+        contentView.frame.size = viewModel.size(view: view)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        return contentView
     }()
     
     private lazy var scrollView: UIScrollView = {
-        let currentView = view
         let scrollView = UIScrollView()
         scrollView.frame = view.bounds
-        scrollView.contentSize = viewModel.size(view: currentView)
+        scrollView.contentSize = viewModel.size(view: view)
         return scrollView
     }()
     

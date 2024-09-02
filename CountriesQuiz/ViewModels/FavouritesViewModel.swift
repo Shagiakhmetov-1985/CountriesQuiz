@@ -29,11 +29,12 @@ protocol FavouritesViewModelProtocol {
     func setDetails(_ viewDetails: UIView,_ view: UIView, and indexPath: IndexPath)
     
     func setSquare(button: UIButton, sizes: CGFloat)
-    func setConstraints(_ button: UIButton,_ label: UILabel,_ moreInfo: UIButton, and delete: UIButton, on view: UIView)
+    func setConstraints(_ button: UIButton,_ label: UILabel,_ moreInfo: UIButton, on view: UIView)
     func setConstraints(_ indexPath: IndexPath,_ viewDetails: UIView, on view: UIView)
     func setConstraints(_ label: UILabel, and image: UIImageView, on button: UIButton)
     
-    func barButtonOnOff(button: UIButton, isOn: Bool)
+    func buttonOnOff(button: UIButton, isOn: Bool)
+    func buttonOnOff(_ button: UIButton, isOn: Bool,_ view: UIView)
     func showAnimationView(_ viewDetails: UIView,_ visualEffectBlur: UIVisualEffectView)
     func hideAnimationView(_ viewDetails: UIView,_ visualEffectBlur: UIVisualEffectView)
     
@@ -140,8 +141,8 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         ])
     }
     
-    func setConstraints(_ button: UIButton, _ label: UILabel, _ moreInfo: UIButton, 
-                        and delete: UIButton, on view: UIView) {
+    func setConstraints(_ button: UIButton, _ label: UILabel, _ moreInfo: UIButton,
+                        on view: UIView) {
         setSquare(button: button, sizes: 40)
         NSLayoutConstraint.activate([
             button.centerXAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
@@ -159,11 +160,6 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
             moreInfo.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             moreInfo.heightAnchor.constraint(equalToConstant: 52)
         ])
-        
-        NSLayoutConstraint.activate([
-            delete.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            delete.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 25)
-        ])
     }
     
     func setConstraints(_ indexPath: IndexPath, _ viewDetails: UIView, on view: UIView) {
@@ -171,8 +167,8 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         NSLayoutConstraint.activate([
             viewDetails.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             viewDetails.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: constant),
-            viewDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            viewDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            viewDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            viewDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
         ])
     }
     
@@ -188,10 +184,17 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         ])
     }
     // MARK: - Show / hide subviews
-    func barButtonOnOff(button: UIButton, isOn: Bool) {
+    func buttonOnOff(button: UIButton, isOn: Bool) {
         let opacity: Float = isOn ? 1 : 0
         isEnabled(buttons: button, isOn: isOn)
         setOpacityButtons(buttons: button, opacity: opacity)
+    }
+    
+    func buttonOnOff(_ button: UIButton, isOn: Bool, _ view: UIView) {
+        let opacity: Float = isOn ? 1 : 0
+        isEnabled(buttons: button, isOn: isOn)
+        setOpacityButtons(buttons: button, opacity: opacity)
+        isOn ? setConstraints(button: button, on: view) : deactivateConstraints(button: button, on: view)
     }
     
     func showAnimationView(_ viewDetails: UIView, _ visualEffectBlur: UIVisualEffectView) {
@@ -252,7 +255,7 @@ extension FavouritesViewModel {
         let stackView = UIStackView(
             arrangedSubviews: [first, second, third, fourth])
         stackView.axis = .vertical
-        stackView.spacing = 5
+        stackView.spacing = 4
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -262,7 +265,7 @@ extension FavouritesViewModel {
                               axis: NSLayoutConstraint.Axis? = nil) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [first, second])
         stackView.axis = axis ?? .horizontal
-        stackView.spacing = 5
+        stackView.spacing = 4
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -429,25 +432,23 @@ extension FavouritesViewModel {
     }
     
     private func setCenter(_ view: UIView) -> CGFloat {
-        let buttonWidth = ((view.frame.width - 20) / 2) - 4
-        let flagWidth = buttonWidth - 40
+        let buttonWidth = (view.frame.width - 49) / 2
+        let flagWidth = buttonWidth - 45
         let centerFlag = flagWidth / 2 + 5
         return buttonWidth / 2 - centerFlag
     }
     
-    private func setWidth(_ favourite: Favourites, _ view: UIView) -> CGFloat {
-        let constant: CGFloat = favourite.isFlag ? 70 : 55
-        let buttonWidth = ((view.frame.width - constant) / 2) - 4
+    private func setWidth(_ view: UIView) -> CGFloat {
+        let buttonWidth = (view.frame.width - 49) / 2
         if game.gameType == .questionnaire {
-            return buttonWidth - 40
+            return buttonWidth - 45
         } else {
             return buttonWidth - 10
         }
     }
     
     private func setHeight(_ favourite: Favourites) -> CGFloat {
-        let heightStackView: CGFloat = favourite.isFlag ? 205 : 225
-        let buttonHeight = heightStackView / 2 - 4
+        let buttonHeight = (height(favourite) - 4) / 2
         return buttonHeight - 10
     }
     
@@ -455,7 +456,7 @@ extension FavouritesViewModel {
                             _ view: UIView) -> CGFloat {
         switch flag {
         case "nepal", "vatican city", "switzerland": return setHeight(favourite)
-        default: return setWidth(favourite, view)
+        default: return setWidth(view)
         }
     }
     
@@ -464,6 +465,10 @@ extension FavouritesViewModel {
         case "nepal", "vatican city", "switzerland": return 168
         default: return 280
         }
+    }
+    
+    private func height(_ favourite: Favourites) -> CGFloat {
+        favourite.isFlag ? 205 : 225
     }
 }
 // MARK: - Constraints
@@ -532,12 +537,26 @@ extension FavouritesViewModel {
         }
         
         let constant: CGFloat = favourite.isFlag ? 15 : 7.5
-        let height: CGFloat = favourite.isFlag ? 205 : 225
+        let height: CGFloat = height(favourite)
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: subview.bottomAnchor, constant: 25),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: constant),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -constant),
             stackView.heightAnchor.constraint(equalToConstant: height)
+        ])
+    }
+    
+    private func setConstraints(button: UIButton, on view: UIView) {
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 25)
+        ])
+    }
+    
+    private func deactivateConstraints(button: UIButton, on view: UIView) {
+        NSLayoutConstraint.deactivate([
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 25)
         ])
     }
 }

@@ -19,6 +19,7 @@ protocol DetailsViewModelProtocol {
     var buttonFour: String { get }
     var titleButton: String { get }
     var heightStackView: CGFloat { get }
+    var constant: CGFloat { get }
     var favourites: [Favourites] { get }
     
     init(game: Games, favourite: Favourites, favourites: [Favourites])
@@ -26,6 +27,8 @@ protocol DetailsViewModelProtocol {
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func setSubviews(subviews: UIView..., on otherSubview: UIView)
     func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView
+    func setView(color: UIColor, subviews: UIView...) -> UIView
+    func setView() -> UIView
     func setView(_ viewFlag: UIView, and imageFlag: UIImageView) -> UIView
     func setView(addSubview: UIView) -> UIView
     func setView(addFirst: UIView, addSecond: UIView) -> UIView
@@ -35,6 +38,7 @@ protocol DetailsViewModelProtocol {
     func setView(_ title: String, addSubview: UIView, and tag: Int) -> UIView
     func subview(title: String, and tag: Int) -> UIView
     func stackView(_ first: UIView,_ second: UIView,_ third: UIView,_ fourth: UIView) -> UIStackView
+    func setLine(y: CGFloat, subview: UIView,_ view: UIView)
     
     func setSquare(button: UIButton, sizes: CGFloat)
     func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView,_ flag: String)
@@ -74,6 +78,7 @@ class DetailsViewModel: DetailsViewModelProtocol {
     var heightStackView: CGFloat {
         isFlag ? 205 : 225
     }
+    let constant: CGFloat = 58
     
     var favourites: [Favourites]
     private let game: Games
@@ -88,7 +93,6 @@ class DetailsViewModel: DetailsViewModelProtocol {
         default: isFlag ? name : flag
         }
     }
-    private let constant: CGFloat = 58
     
     required init(game: Games, favourite: Favourites, favourites: [Favourites]) {
         self.game = game
@@ -128,6 +132,13 @@ class DetailsViewModel: DetailsViewModelProtocol {
         return label
     }
     
+    func setView() -> UIView {
+        let view = UIView()
+        view.backgroundColor = background
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }
+    
     func setView(_ viewFlag: UIView, and imageFlag: UIImageView) -> UIView {
         let view = setView(color: game.background)
         setSubviews(subviews: viewFlag, imageFlag, on: view)
@@ -145,7 +156,7 @@ class DetailsViewModel: DetailsViewModelProtocol {
     
     func setView(addFirst: UIView, addSecond: UIView) -> UIView {
         let view = setView(color: game.favourite)
-        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         setSubviews(subviews: addFirst, addSecond, on: view)
         setConstraints(addFirst, addSecond, on: view)
         return view
@@ -176,6 +187,16 @@ class DetailsViewModel: DetailsViewModelProtocol {
         return view
     }
     
+    func setView(color: UIColor, subviews: UIView...) -> UIView {
+        let view = UIView()
+        view.backgroundColor = color
+        view.translatesAutoresizingMaskIntoConstraints = false
+        subviews.forEach { subview in
+            view.addSubview(subview)
+        }
+        return view
+    }
+    
     func subview(title: String, and tag: Int) -> UIView {
         if isFlag {
             setLabel(title: title, size: 23, style: "mr_fontick", color: textColor(title, tag))
@@ -191,6 +212,13 @@ class DetailsViewModel: DetailsViewModelProtocol {
         } else {
             checkGameType(first, second, third, fourth)
         }
+    }
+    
+    func setLine(y: CGFloat, subview: UIView, _ view: UIView) {
+        let line = CALayer()
+        line.frame = CGRect(x: 0, y: y, width: view.frame.width, height: 0.5)
+        line.backgroundColor = UIColor.white.cgColor
+        subview.layer.addSublayer(line)
     }
     // MARK: - Constraints
     func setSquare(button: UIButton, sizes: CGFloat) {
@@ -292,7 +320,7 @@ extension DetailsViewModel {
     }
     
     private func setWidth(_ view: UIView) -> CGFloat {
-        let buttonWidth = ((view.frame.width - 20) / 2) - 4
+        let buttonWidth = (view.frame.width - 34) / 2
         if game.gameType == .questionnaire {
             return buttonWidth - 45
         } else {
@@ -301,7 +329,7 @@ extension DetailsViewModel {
     }
     
     private func setHeight() -> CGFloat {
-        let buttonHeight = heightStackView / 2 - 4
+        let buttonHeight = (heightStackView - 4) / 2
         return buttonHeight - 10
     }
     
@@ -313,7 +341,7 @@ extension DetailsViewModel {
     }
     
     private func setCenter(_ view: UIView) -> CGFloat {
-        let buttonWidth = ((view.frame.width - 20) / 2) - 4
+        let buttonWidth = (view.frame.width - 34) / 2
         let flagWidth = buttonWidth - 45
         let centerFlag = flagWidth / 2 + 5
         return buttonWidth / 2 - centerFlag
@@ -321,14 +349,9 @@ extension DetailsViewModel {
     
     private func width(_ image: String) -> CGFloat {
         switch image {
-        case "nepal", "vatican city", "switzerland": return 126
+        case "nepal", "vatican city", "switzerland": return 134
         default: return 210
         }
-    }
-    
-    private func widthStackView(_ view: UIView) -> CGFloat {
-        let side: CGFloat = isFlag ? 10 : 5
-        return view.bounds.width - side - constant
     }
 }
 // MARK: - Set subviews
@@ -434,7 +457,7 @@ extension DetailsViewModel {
             imageFlag.centerYAnchor.constraint(equalTo: viewDetails.centerYAnchor),
             imageFlag.centerXAnchor.constraint(equalTo: viewDetails.centerXAnchor, constant: constant / 2),
             imageFlag.widthAnchor.constraint(equalToConstant: width(flag)),
-            imageFlag.heightAnchor.constraint(equalToConstant: 126)
+            imageFlag.heightAnchor.constraint(equalToConstant: 134)
         ])
     }
     
@@ -464,10 +487,10 @@ extension DetailsViewModel {
     private func setConstraints(_ imageFirst: UIView, _ imageSecond: UIView, 
                                 on view: UIView) {
         NSLayoutConstraint.activate([
-            imageFirst.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageFirst.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -21.5),
-            imageSecond.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageSecond.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 21.5)
+            imageFirst.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: -21.5),
+            imageFirst.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            imageSecond.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 21.5),
+            imageSecond.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
@@ -476,13 +499,13 @@ extension DetailsViewModel {
         NSLayoutConstraint.activate([
             viewIcons.topAnchor.constraint(equalTo: viewDetails.topAnchor),
             viewIcons.leadingAnchor.constraint(equalTo: viewDetails.leadingAnchor),
-            viewIcons.bottomAnchor.constraint(equalTo: viewDetails.bottomAnchor),
-            viewIcons.trailingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: constant)
+            viewIcons.trailingAnchor.constraint(equalTo: viewDetails.trailingAnchor),
+            viewIcons.bottomAnchor.constraint(equalTo: viewDetails.topAnchor, constant: constant)
         ])
         
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: viewDetails.topAnchor, constant: 5),
-            stackView.leadingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: constant + 5),
+            stackView.topAnchor.constraint(equalTo: viewDetails.topAnchor, constant: constant + 5),
+            stackView.leadingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: 5),
             stackView.trailingAnchor.constraint(equalTo: viewDetails.trailingAnchor, constant: -5),
             stackView.bottomAnchor.constraint(equalTo: viewDetails.bottomAnchor, constant: -5)
         ])

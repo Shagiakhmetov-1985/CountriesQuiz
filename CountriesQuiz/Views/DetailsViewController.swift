@@ -22,6 +22,10 @@ class DetailsViewController: UIViewController {
         return button
     }()
     
+    private lazy var viewTopPanel: UIView = {
+        viewModel.setView()
+    }()
+    
     private lazy var iconFlag: UIImageView = {
         viewModel.setImage(image: "flag", color: .white, size: 33)
     }()
@@ -142,6 +146,24 @@ class DetailsViewController: UIViewController {
         viewModel.setView(viewIcons, stackView)
     }()
     
+    private lazy var contentView: UIView = {
+        viewModel.setView(
+            color: viewModel.background,
+            subviews: viewFlagDetails,
+            viewCountryDetails,
+            viewCapitalDetails,
+            viewContinentDetails,
+            viewSubviews)
+    }()
+    
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = .clear
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(contentView)
+        return scrollView
+    }()
+    
     private lazy var buttonDelete: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 25)
         let image = UIImage(systemName: "trash", withConfiguration: size)
@@ -181,8 +203,7 @@ class DetailsViewController: UIViewController {
     }
     
     private func setSubviews() {
-        viewModel.setSubviews(subviews: viewFlagDetails, viewCountryDetails,
-                              viewCapitalDetails, viewContinentDetails, viewSubviews, buttonDelete,
+        viewModel.setSubviews(subviews: viewTopPanel, scrollView, buttonDelete,
                               on: view)
     }
     
@@ -202,10 +223,32 @@ extension DetailsViewController {
         viewModel.setSquare(button: buttonBack, sizes: 40)
         
         NSLayoutConstraint.activate([
-            viewFlagDetails.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            viewTopPanel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            viewTopPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            viewTopPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            viewTopPanel.heightAnchor.constraint(equalToConstant: 5)
+        ])
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: viewTopPanel.bottomAnchor, constant: 5),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -115)
+        ])
+        
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1.1)
+        ])
+        
+        NSLayoutConstraint.activate([
+            viewFlagDetails.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
             viewFlagDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             viewFlagDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            viewFlagDetails.heightAnchor.constraint(equalToConstant: 142)
+            viewFlagDetails.heightAnchor.constraint(equalToConstant: 150)
         ])
         
         NSLayoutConstraint.activate([
@@ -233,7 +276,7 @@ extension DetailsViewController {
             viewSubviews.topAnchor.constraint(equalTo: viewContinentDetails.bottomAnchor, constant: 8),
             viewSubviews.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             viewSubviews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            viewSubviews.heightAnchor.constraint(equalToConstant: viewModel.heightStackView)
+            viewSubviews.heightAnchor.constraint(equalToConstant: viewModel.heightStackView + viewModel.constant + 10)
         ])
         viewModel.setConstraints(subviewFirst, on: viewFirst, view, viewModel.buttonFirst)
         viewModel.setConstraints(subviewSecond, on: viewSecond, view, viewModel.buttonSecond)

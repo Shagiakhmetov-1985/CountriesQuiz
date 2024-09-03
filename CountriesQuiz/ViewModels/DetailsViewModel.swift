@@ -20,9 +20,9 @@ protocol DetailsViewModelProtocol {
     var titleButton: String { get }
     var heightStackView: CGFloat { get }
     var constant: CGFloat { get }
-    var favourites: [Favourites] { get }
+    var favorites: [Favorites] { get }
     
-    init(game: Games, favourite: Favourites, favourites: [Favourites])
+    init(game: Games, favorite: Favorites, favorites: [Favorites], indexPath: IndexPath)
     
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func setSubviews(subviews: UIView..., on otherSubview: UIView)
@@ -38,12 +38,10 @@ protocol DetailsViewModelProtocol {
     func setView(_ title: String, addSubview: UIView, and tag: Int) -> UIView
     func subview(title: String, and tag: Int) -> UIView
     func stackView(_ first: UIView,_ second: UIView,_ third: UIView,_ fourth: UIView) -> UIStackView
-    func setLine(y: CGFloat, subview: UIView,_ view: UIView)
+    func deleteFavorite()
     
     func setSquare(button: UIButton, sizes: CGFloat)
     func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView,_ flag: String)
-    
-    func deleteAndBack()
 }
 
 class DetailsViewModel: DetailsViewModelProtocol {
@@ -51,28 +49,28 @@ class DetailsViewModel: DetailsViewModelProtocol {
         game.swap
     }
     var flag: String {
-        favourite.flag
+        favorite.flag
     }
     var name: String {
-        favourite.name
+        favorite.name
     }
     var capital: String {
-        favourite.capital
+        favorite.capital
     }
     var continent: String {
-        favourite.continent
+        favorite.continent
     }
     var buttonFirst: String {
-        favourite.buttonFirst
+        favorite.buttonFirst
     }
     var buttonSecond: String {
-        favourite.buttonSecond
+        favorite.buttonSecond
     }
     var buttonThird: String {
-        favourite.buttonThird
+        favorite.buttonThird
     }
     var buttonFour: String {
-        favourite.buttonFourth
+        favorite.buttonFourth
     }
     var titleButton: String = "   Удалить из избранных"
     var heightStackView: CGFloat {
@@ -80,24 +78,26 @@ class DetailsViewModel: DetailsViewModelProtocol {
     }
     let constant: CGFloat = 58
     
-    var favourites: [Favourites]
+    var favorites: [Favorites]
     private let game: Games
-    private let favourite: Favourites
+    private let favorite: Favorites
+    private let indexPath: IndexPath
     
     private var isFlag: Bool {
-        favourite.isFlag
+        favorite.isFlag
     }
     private var question: String {
         switch game.gameType {
-        case .quizOfCapitals: favourite.capital
+        case .quizOfCapitals: favorite.capital
         default: isFlag ? name : flag
         }
     }
     
-    required init(game: Games, favourite: Favourites, favourites: [Favourites]) {
+    required init(game: Games, favorite: Favorites, favorites: [Favorites], indexPath: IndexPath) {
         self.game = game
-        self.favourite = favourite
-        self.favourites = favourites
+        self.favorite = favorite
+        self.favorites = favorites
+        self.indexPath = indexPath
     }
     // MARK: - Subviews
     func setBarButton(_ button: UIButton, _ navigationItem: UINavigationItem) {
@@ -147,7 +147,7 @@ class DetailsViewModel: DetailsViewModelProtocol {
     }
     
     func setView(addSubview: UIView) -> UIView {
-        let view = setView(color: game.favourite)
+        let view = setView(color: game.favorite)
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
         view.addSubview(addSubview)
         setConstraints(subview: addSubview, on: view)
@@ -155,7 +155,7 @@ class DetailsViewModel: DetailsViewModelProtocol {
     }
     
     func setView(addFirst: UIView, addSecond: UIView) -> UIView {
-        let view = setView(color: game.favourite)
+        let view = setView(color: game.favorite)
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         setSubviews(subviews: addFirst, addSecond, on: view)
         setConstraints(addFirst, addSecond, on: view)
@@ -213,12 +213,10 @@ class DetailsViewModel: DetailsViewModelProtocol {
             checkGameType(first, second, third, fourth)
         }
     }
-    
-    func setLine(y: CGFloat, subview: UIView, _ view: UIView) {
-        let line = CALayer()
-        line.frame = CGRect(x: 0, y: y, width: view.frame.width, height: 0.5)
-        line.backgroundColor = UIColor.white.cgColor
-        subview.layer.addSublayer(line)
+    // MARK: - Delete favorite
+    func deleteFavorite() {
+        favorites.remove(at: indexPath.row)
+        StorageManager.shared.deleteFavorite(favorite: indexPath.row, key: game.keys)
     }
     // MARK: - Constraints
     func setSquare(button: UIButton, sizes: CGFloat) {
@@ -246,12 +244,6 @@ class DetailsViewModel: DetailsViewModelProtocol {
             ])
         }
     }
-    // MARK: - Delete favourites and back to list
-    func deleteAndBack() {
-        guard let index = favourites.firstIndex(where: { $0.flag == flag }) else { return }
-        favourites.remove(at: index)
-        StorageManager.shared.deleteFavourite(favourite: index, key: game.keys)
-    }
 }
 // MARK: - Private methods, constants
 extension DetailsViewModel {
@@ -264,7 +256,7 @@ extension DetailsViewModel {
     }
     
     private func incorrectBackground(_ tag: Int) -> UIColor {
-        favourite.tag == tag ? checkSelect() : checkNotSelect()
+        favorite.tag == tag ? checkSelect() : checkNotSelect()
     }
     
     private func checkSelect() -> UIColor {
@@ -292,7 +284,7 @@ extension DetailsViewModel {
     }
     
     private func incorrectTextColor(_ tag: Int) -> UIColor {
-        favourite.tag == tag ? checkSelectText() : checkNotSelectText()
+        favorite.tag == tag ? checkSelectText() : checkNotSelectText()
     }
     
     private func checkSelectText() -> UIColor {
@@ -308,7 +300,7 @@ extension DetailsViewModel {
     }
     
     private func incorrectCheckmark(_ tag: Int) -> String {
-        favourite.tag == tag ? "xmark.circle.fill" : "circle"
+        favorite.tag == tag ? "xmark.circle.fill" : "circle"
     }
     
     private func color(_ name: String, _ tag: Int) -> UIColor {
@@ -316,7 +308,7 @@ extension DetailsViewModel {
     }
     
     private func incorrectColor(_ tag: Int) -> UIColor {
-        favourite.tag == tag ? .redTangerineTango : .white
+        favorite.tag == tag ? .redTangerineTango : .white
     }
     
     private func setWidth(_ view: UIView) -> CGFloat {

@@ -8,7 +8,7 @@
 import UIKit
 
 protocol MenuViewControllerInput: AnyObject {
-    func dataToMenu(setting: Setting, favourites: [Favourites])
+    func dataToMenu(setting: Setting, favorites: [Favorites])
     func modeToMenu(setting: Setting)
 }
 
@@ -218,9 +218,9 @@ class MenuViewController: UIViewController {
 }
 // MARK: - Delegates for send data
 extension MenuViewController: MenuViewControllerInput {
-    func dataToMenu(setting: Setting, favourites: [Favourites]) {
+    func dataToMenu(setting: Setting, favorites: [Favorites]) {
         navigationController?.popToRootViewController(animated: true)
-        viewModel.setData(setting, newFavourites: favourites)
+        viewModel.setData(setting, newFavorites: favorites)
     }
     
     func modeToMenu(setting: Setting) {

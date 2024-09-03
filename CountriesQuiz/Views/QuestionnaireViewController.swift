@@ -126,7 +126,7 @@ class QuestionnaireViewController: UIViewController, ViewControllerInput {
         resultsVC()
     }
     
-    func dataToMenu(setting: Setting, favourites: [Favourites]) {
+    func dataToMenu(setting: Setting, favourites: [Favorites]) {
         delegate.dataToMenu(setting: setting, favourites: favourites)
     }
     

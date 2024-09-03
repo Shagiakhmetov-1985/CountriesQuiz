@@ -74,7 +74,7 @@ class GameType {
     let buttonsPlay: [UIColor] = [.skyBlueLight, .greenYellowBrilliant,
                                   .redBeige, .fuchsiaCrayolaDeep, .redCardinal]
     
-    let buttonsFavourite: [UIColor] = [.blueMiddlePersian, .greenEmerald, .brown,
+    let buttonsFavorite: [UIColor] = [.blueMiddlePersian, .greenEmerald, .brown,
                                        .amethyst, .bismarkFuriozo]
     
     let buttonsSwap: [UIColor] = [.blueBlackSea, .greenDartmouth, .brownDeep,

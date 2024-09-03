@@ -20,7 +20,7 @@ protocol ResultsViewModelProtocol {
     var heading: String { get }
     var description: String { get }
     var percent: String { get }
-    var favourites: [Favourites] { get }
+    var favorites: [Favorites] { get }
     
     var mode: Setting { get }
     var game: Games { get }
@@ -29,7 +29,7 @@ protocol ResultsViewModelProtocol {
     
     init(mode: Setting, game: Games, correctAnswers: [Corrects],
          incorrectAnswers: [Incorrects], timeSpend: [CGFloat],
-         answeredQuestions: Int, favourites: [Favourites])
+         answeredQuestions: Int, favorites: [Favorites])
     
     func isTime() -> Bool
     func isOneQuestion() -> Bool
@@ -41,7 +41,7 @@ protocol ResultsViewModelProtocol {
     
     func percentCorrectAnswers() -> String
     func getRange(subString: String, fromString: String) -> NSRange
-    func setFavourites(newFavourites: [Favourites])
+    func setFavorites(newFavorites: [Favorites])
     
     func constraintsView(view: UIView, image: UIImageView, label: UILabel, button: UIButton)
     func constraintsButton(subview: UIView, labelFirst: UILabel, image: UIImageView,
@@ -90,19 +90,19 @@ class ResultsViewModel: ResultsViewModelProtocol {
     let correctAnswers: [Corrects]
     let incorrectAnswers: [Incorrects]
     var answeredQuestions: Int
-    var favourites: [Favourites]
+    var favorites: [Favorites]
     private let timeSpend: [CGFloat]
     
     required init(mode: Setting, game: Games, correctAnswers: [Corrects],
                   incorrectAnswers: [Incorrects], timeSpend: [CGFloat],
-                  answeredQuestions: Int, favourites: [Favourites]) {
+                  answeredQuestions: Int, favorites: [Favorites]) {
         self.mode = mode
         self.game = game
         self.correctAnswers = correctAnswers
         self.incorrectAnswers = incorrectAnswers
         self.timeSpend = timeSpend
         self.answeredQuestions = answeredQuestions
-        self.favourites = favourites
+        self.favorites = favorites
     }
     // MARK: - Constants
     func isTime() -> Bool {
@@ -148,7 +148,7 @@ class ResultsViewModel: ResultsViewModelProtocol {
     // MARK: - Transition to IncorrectAnswersViewController
     func incorrectAnswersViewController() -> IncorrectAnswersViewModelProtocol {
         IncorrectAnswersViewModel(mode: mode, game: game, results: incorrectAnswers,
-                                  favourites: favourites)
+                                  favourites: favorites)
     }
     // MARK: - Constraints
     func constraintsView(view: UIView, image: UIImageView, label: UILabel, button: UIButton) {
@@ -198,8 +198,8 @@ class ResultsViewModel: ResultsViewModelProtocol {
         return range
     }
     
-    func setFavourites(newFavourites: [Favourites]) {
-        favourites = newFavourites
+    func setFavorites(newFavorites: [Favorites]) {
+        favorites = newFavorites
     }
     
     // MARK: - Constants, countinue

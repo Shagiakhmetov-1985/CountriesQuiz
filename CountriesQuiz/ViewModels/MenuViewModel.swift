@@ -15,7 +15,7 @@ protocol MenuViewModelProtocol {
     func forPresented(_ button: UIButton) -> Transition
     func forDismissed(_ button: UIButton) -> Transition
     func setMode(_ setting: Setting)
-    func setData(_ setting: Setting, newFavourites: [Favourites])
+    func setData(_ setting: Setting, newFavorites: [Favorites])
     
     func gameTypeViewModel(tag: Int) -> GameTypeViewModelProtocol
     func settingViewModel() -> SettingViewModelProtocol
@@ -30,7 +30,7 @@ protocol MenuViewModelProtocol {
 class MenuViewModel: MenuViewModelProtocol {
     var mode: Setting?
     private var games: [Games] = []
-    private var favourites: [Favourites] = []
+    private var favorites: [Favorites] = []
     private let transition = Transition()
     
     func setSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -52,8 +52,8 @@ class MenuViewModel: MenuViewModelProtocol {
     func gameTypeViewModel(tag: Int) -> GameTypeViewModelProtocol {
         let mode = mode ?? Setting.getSettingDefault()
         let game = games[tag]
-        favourites = StorageManager.shared.fetchFavourites(key: game.keys)
-        return GameTypeViewModel(mode: mode, game: game, tag: tag, favourites: favourites)
+        favorites = StorageManager.shared.fetchFavorites(key: game.keys)
+        return GameTypeViewModel(mode: mode, game: game, tag: tag, favorites: favorites)
     }
     
     func forPresented(_ button: UIButton) -> Transition {
@@ -72,9 +72,9 @@ class MenuViewModel: MenuViewModelProtocol {
         mode = setting
     }
     
-    func setData(_ setting: Setting, newFavourites: [Favourites]) {
+    func setData(_ setting: Setting, newFavorites: [Favorites]) {
         mode = setting
-        favourites = newFavourites
+        favorites = newFavorites
     }
     
     func settingViewModel() -> SettingViewModelProtocol {
@@ -135,12 +135,12 @@ extension MenuViewModel {
         let backgrounds = GameType.shared.backgrounds
         let keys = GameType.shared.keys
         let plays = GameType.shared.buttonsPlay
-        let favourites = GameType.shared.buttonsFavourite
+        let favorites = GameType.shared.buttonsFavorite
         let swaps = GameType.shared.buttonsSwap
         let dones = GameType.shared.buttonsDone
         let iterrationCount = min(names.count, images.count, descriptions.count,
                                   backgrounds.count, plays.count,
-                                  favourites.count, swaps.count)
+                                  favorites.count, swaps.count)
         
         for index in 0..<iterrationCount {
             let information = Games(
@@ -151,7 +151,7 @@ extension MenuViewModel {
                 background: backgrounds[index], 
                 keys: keys[index],
                 play: plays[index],
-                favourite: favourites[index],
+                favorite: favorites[index],
                 swap: swaps[index],
                 done: dones[index])
             games.append(information)

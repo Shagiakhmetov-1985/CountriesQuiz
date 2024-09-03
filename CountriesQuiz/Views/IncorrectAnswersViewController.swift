@@ -8,7 +8,7 @@
 import UIKit
 
 protocol IncorrectAnswersViewControllerDelegate {
-    func dataToIncorrectAnswers(favourites: [Favourites])
+    func dataToIncorrectAnswers(favourites: [Favorites])
 }
 
 class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, IncorrectAnswersViewControllerDelegate {
@@ -82,8 +82,8 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func dataToIncorrectAnswers(favourites: [Favourites]) {
-        viewModel.setFavourites(newFavourites: favourites)
+    func dataToIncorrectAnswers(favourites: [Favorites]) {
+        viewModel.setFavorites(newFavorites: favourites)
     }
     
     private func setupDesign() {
@@ -99,7 +99,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     @objc private func exitToResults() {
-        delegate.dataToResults(favourites: viewModel.favourites)
+        delegate.dataToResults(favourites: viewModel.favorites)
         dismiss(animated: true)
     }
 }

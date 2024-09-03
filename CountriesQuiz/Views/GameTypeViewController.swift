@@ -8,7 +8,9 @@
 import UIKit
 
 protocol GameTypeViewControllerInput: AnyObject {
-    func dataToMenu(setting: Setting, favourites: [Favourites])
+    func dataToMenu(setting: Setting, favourites: [Favorites])
+    func favoritesToGameType(favorites: [Favorites])
+    func disableFavoriteButton()
 }
 
 class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, GameTypeViewControllerInput {
@@ -48,11 +50,11 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         setButton(image: "play", color: viewModel.colorPlay, action: #selector(startGame))
     }()
     
-    private lazy var buttonFavourites: UIButton = {
+    private lazy var buttonFavorites: UIButton = {
         setButton(
             image: "star",
             color: viewModel.colorFavourite,
-            action: #selector(favourites),
+            action: #selector(favorites),
             isEnabled: viewModel.haveFavourites())
     }()
     
@@ -67,7 +69,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var stackViewButtons: UIStackView = {
         setStackView(
             buttonFirst: buttonStart,
-            buttonSecond: buttonFavourites,
+            buttonSecond: buttonFavorites,
             buttonThird: buttonSwap)
     }()
     
@@ -499,8 +501,16 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         }
     }
     // MARK: - GameTypeViewControllerInput
-    func dataToMenu(setting: Setting, favourites: [Favourites]) {
-        delegate.dataToMenu(setting: setting, favourites: favourites)
+    func dataToMenu(setting: Setting, favourites: [Favorites]) {
+        delegate.dataToMenu(setting: setting, favorites: favourites)
+    }
+    
+    func favoritesToGameType(favorites: [Favorites]) {
+        viewModel.setFavorites(newFavorites: favorites)
+    }
+    
+    func disableFavoriteButton() {
+        viewModel.buttonOnOff(button: buttonFavorites, isOn: false)
     }
     // MARK: - General methods
     private func setupDesign() {
@@ -520,8 +530,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     // MARK: - Bar buttons activate
     @objc private func backToMenu() {
-        delegate.modeToMenu(setting: viewModel.mode)
-        navigationController?.popViewController(animated: true)
+        delegate.dataToMenu(setting: viewModel.mode, favorites: viewModel.favorites)
     }
     
     @objc private func showViewHelp() {
@@ -586,7 +595,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         default: setupConstraintsSettingTime()
         }
     }
-    // MARK: - Start game, favourites and swap
+    // MARK: - Start game, favorites and swap
     @objc private func startGame() {
         switch viewModel.tag {
         case 0: quizOfFlagsViewController()
@@ -630,11 +639,12 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         navigationController?.pushViewController(startGameVC, animated: true)
     }
     
-    @objc private func favourites() {
+    @objc private func favorites() {
         let favourites = viewModel.favouritesViewModel()
-        let favouritesVC = FavouritesViewController()
+        let favouritesVC = FavoritesViewController()
         let navigationVC = UINavigationController(rootViewController: favouritesVC)
         favouritesVC.viewModel = favourites
+        favouritesVC.delegate = self
         navigationVC.modalPresentationStyle = .custom
         present(navigationVC, animated: true)
     }

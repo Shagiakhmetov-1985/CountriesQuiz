@@ -13,14 +13,14 @@ protocol IncorrectAnswersViewModelProtocol {
     var cell: AnyClass { get }
     var numberOfRows: Int { get }
     var heightForRow: CGFloat { get }
-    var favourites: [Favourites] { get }
+    var favorites: [Favorites] { get }
     
-    init(mode: Setting, game: Games, results: [Incorrects], favourites: [Favourites])
+    init(mode: Setting, game: Games, results: [Incorrects], favourites: [Favorites])
     
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func setupSubviews(subviews: UIView..., on subviewOther: UIView)
     func customCell(cell: UITableViewCell, indexPath: IndexPath)
-    func setFavourites(newFavourites: [Favourites])
+    func setFavorites(newFavorites: [Favorites])
     
     func detailsViewModel(_ indexPath: Int) -> IncorrectViewModelProtocol
 }
@@ -40,7 +40,7 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
         isFlag ? 70 : 95
     }
     
-    var favourites: [Favourites]
+    var favorites: [Favorites]
     private let mode: Setting
     private let game: Games
     private let results: [Incorrects]
@@ -49,11 +49,11 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
     }
     
     required init(mode: Setting, game: Games, results: [Incorrects],
-                  favourites: [Favourites]) {
+                  favourites: [Favorites]) {
         self.mode = mode
         self.game = game
         self.results = results
-        self.favourites = favourites
+        self.favorites = favourites
     }
     
     func setBarButton(_ button: UIButton, _ navigationItem: UINavigationItem) {
@@ -75,13 +75,13 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
         }
     }
     
-    func setFavourites(newFavourites: [Favourites]) {
-        favourites = newFavourites
+    func setFavorites(newFavorites: [Favorites]) {
+        favorites = newFavorites
     }
     
     func detailsViewModel(_ indexPath: Int) -> IncorrectViewModelProtocol {
         IncorrectViewModel(mode: mode, game: game, incorrect: results[indexPath], 
-                           favourites: favourites)
+                           favorites: favorites)
     }
     // MARK: - Constants
     private func setProgress(value: Int) -> Float {

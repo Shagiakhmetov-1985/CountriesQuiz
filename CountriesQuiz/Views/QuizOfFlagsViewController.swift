@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ViewControllerInput: AnyObject {
-    func dataToMenu(setting: Setting, favourites: [Favourites])
+    func dataToMenu(setting: Setting, favourites: [Favorites])
 }
 
 class QuizOfFlagsViewController: UIViewController, ViewControllerInput {
@@ -129,7 +129,7 @@ class QuizOfFlagsViewController: UIViewController, ViewControllerInput {
         }
     }
     // MARK: - QuizOfFlagsViewControllerInput
-    func dataToMenu(setting: Setting, favourites: [Favourites]) {
+    func dataToMenu(setting: Setting, favourites: [Favorites]) {
         delegate.dataToMenu(setting: setting, favourites: favourites)
     }
     // MARK: - General methods

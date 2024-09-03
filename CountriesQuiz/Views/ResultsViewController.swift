@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ResultsViewControllerDelegate {
-    func dataToResults(favourites: [Favourites])
+    func dataToResults(favourites: [Favorites])
 }
 
 class ResultsViewController: UIViewController, ResultsViewControllerDelegate {
@@ -82,7 +82,7 @@ class ResultsViewController: UIViewController, ResultsViewControllerDelegate {
             NSAttributedString.Key.font: UIFont(name: "GillSans-SemiBold", size: 22) ?? ""
         ], range: viewModel.getRange(subString: viewModel.heading, fromString: text))
         attribited.addAttributes([
-            NSAttributedString.Key.foregroundColor: viewModel.game.favourite
+            NSAttributedString.Key.foregroundColor: viewModel.game.favorite
         ], range: viewModel.getRange(subString: viewModel.percent, fromString: text))
         label.attributedText = attribited
         return label
@@ -268,8 +268,8 @@ class ResultsViewController: UIViewController, ResultsViewControllerDelegate {
         setConstraints()
     }
     
-    func dataToResults(favourites: [Favourites]) {
-        viewModel.setFavourites(newFavourites: favourites)
+    func dataToResults(favourites: [Favorites]) {
+        viewModel.setFavorites(newFavorites: favourites)
     }
     
     private func setupDesign() {
@@ -285,7 +285,7 @@ class ResultsViewController: UIViewController, ResultsViewControllerDelegate {
     }
     // MARK: - Press done button
     @objc private func exitToMenu() {
-        delegate.dataToMenu(setting: viewModel.mode, favourites: viewModel.favourites)
+        delegate.dataToMenu(setting: viewModel.mode, favourites: viewModel.favorites)
     }
     // MARK: - Show ratio
     @objc private func showRatio() {

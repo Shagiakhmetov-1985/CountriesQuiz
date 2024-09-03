@@ -19,7 +19,7 @@
 		C33669D42B998DC30081C39A /* GameTypeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33669D32B998DC30081C39A /* GameTypeViewModel.swift */; };
 		C33669D62B998F990081C39A /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33669D52B998F990081C39A /* Game.swift */; };
 		C33762AE2BC4386700A417AB /* IncorrectViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33762AD2BC4386700A417AB /* IncorrectViewModel.swift */; };
-		C33BB07E2C70B7EC0083D907 /* Favourites.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33BB07D2C70B7EC0083D907 /* Favourites.swift */; };
+		C33BB07E2C70B7EC0083D907 /* Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33BB07D2C70B7EC0083D907 /* Favorites.swift */; };
 		C340723B2A690F4F00E5C9A4 /* UIColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */; };
 		C341078E2BBFE4C800D0E993 /* ResultsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C341078D2BBFE4C800D0E993 /* ResultsViewModel.swift */; };
 		C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */; };
@@ -44,9 +44,9 @@
 		C392B1882C36861300779A53 /* RatioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C392B1872C36861300779A53 /* RatioViewController.swift */; };
 		C392B18A2C36864900779A53 /* RatioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C392B1892C36864900779A53 /* RatioViewModel.swift */; };
 		C3B187C82ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */; };
-		C3B324882C6DE1F9003BB31F /* FavouritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B324872C6DE1F9003BB31F /* FavouritesViewController.swift */; };
+		C3B324882C6DE1F9003BB31F /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B324872C6DE1F9003BB31F /* FavoritesViewController.swift */; };
 		C3B3248A2C6DE277003BB31F /* FavouritesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B324892C6DE277003BB31F /* FavouritesViewModel.swift */; };
-		C3B3248C2C6DF843003BB31F /* FavouritesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B3248B2C6DF843003BB31F /* FavouritesCell.swift */; };
+		C3B3248C2C6DF843003BB31F /* FavoritesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B3248B2C6DF843003BB31F /* FavoritesCell.swift */; };
 		C3B35F20293FADC300A8493F /* fontick.otf in Resources */ = {isa = PBXBuildFile; fileRef = C3B35F1F293FADC300A8493F /* fontick.otf */; };
 		C3BADD042BC7EF5A0098BDCB /* QuestionnaireViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BADD032BC7EF5A0098BDCB /* QuestionnaireViewModel.swift */; };
 		C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D292EA293F5F0900786752 /* SettingViewController.swift */; };
@@ -75,7 +75,7 @@
 		C33669D32B998DC30081C39A /* GameTypeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeViewModel.swift; sourceTree = "<group>"; };
 		C33669D52B998F990081C39A /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		C33762AD2BC4386700A417AB /* IncorrectViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectViewModel.swift; sourceTree = "<group>"; };
-		C33BB07D2C70B7EC0083D907 /* Favourites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favourites.swift; sourceTree = "<group>"; };
+		C33BB07D2C70B7EC0083D907 /* Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorites.swift; sourceTree = "<group>"; };
 		C340723A2A690F4F00E5C9A4 /* UIColorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorManager.swift; sourceTree = "<group>"; };
 		C341078D2BBFE4C800D0E993 /* ResultsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsViewModel.swift; sourceTree = "<group>"; };
 		C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireViewController.swift; sourceTree = "<group>"; };
@@ -100,9 +100,9 @@
 		C392B1872C36861300779A53 /* RatioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatioViewController.swift; sourceTree = "<group>"; };
 		C392B1892C36864900779A53 /* RatioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatioViewModel.swift; sourceTree = "<group>"; };
 		C3B187C72ADFBF6F0086EC49 /* QuizOfCapitalsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfCapitalsViewController.swift; sourceTree = "<group>"; };
-		C3B324872C6DE1F9003BB31F /* FavouritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesViewController.swift; sourceTree = "<group>"; };
+		C3B324872C6DE1F9003BB31F /* FavoritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
 		C3B324892C6DE277003BB31F /* FavouritesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesViewModel.swift; sourceTree = "<group>"; };
-		C3B3248B2C6DF843003BB31F /* FavouritesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesCell.swift; sourceTree = "<group>"; };
+		C3B3248B2C6DF843003BB31F /* FavoritesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesCell.swift; sourceTree = "<group>"; };
 		C3B35F1F293FADC300A8493F /* fontick.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontick.otf; sourceTree = "<group>"; };
 		C3BADD032BC7EF5A0098BDCB /* QuestionnaireViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireViewModel.swift; sourceTree = "<group>"; };
 		C3D292EA293F5F0900786752 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
@@ -191,7 +191,7 @@
 			children = (
 				C38DF4DD2A8F4A5B00550BCC /* FlagCell.swift */,
 				C33653272A94CFF7008CF2C6 /* NameCell.swift */,
-				C3B3248B2C6DF843003BB31F /* FavouritesCell.swift */,
+				C3B3248B2C6DF843003BB31F /* FavoritesCell.swift */,
 			);
 			path = UITableViewCell;
 			sourceTree = "<group>";
@@ -246,7 +246,7 @@
 				C3E2EB332938E7F300AB40AD /* MenuViewController.swift */,
 				C3E7C9932A7B68AA0046A883 /* GameTypeViewController.swift */,
 				C33303892BBAA3B700AEE04E /* GameTypeViewController + UIKit.swift */,
-				C3B324872C6DE1F9003BB31F /* FavouritesViewController.swift */,
+				C3B324872C6DE1F9003BB31F /* FavoritesViewController.swift */,
 				C32C24382C7722880088D40D /* DetailsViewController.swift */,
 				C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */,
 				C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */,
@@ -285,7 +285,7 @@
 				C3E2EB4A2938EA6800AB40AD /* FlagsOfCountries.swift */,
 				C3E2EB4C2938ED6800AB40AD /* CountriesManager.swift */,
 				C376AC062947261D00DE5E86 /* Setting.swift */,
-				C33BB07D2C70B7EC0083D907 /* Favourites.swift */,
+				C33BB07D2C70B7EC0083D907 /* Favorites.swift */,
 				C384F29C2C44206900827B9F /* Corrects.swift */,
 				C34EC06F2986694900300585 /* Incorrects.swift */,
 				C3E7C9952A7C19F80046A883 /* GameType.swift */,
@@ -403,7 +403,7 @@
 				C36773F3296C3B880096BCC5 /* Transition.swift in Sources */,
 				C3613A712A7FB82C006C0F1E /* GameTypeManager.swift in Sources */,
 				C33167C72BF9F7EB00504F47 /* SettingViewModel.swift in Sources */,
-				C33BB07E2C70B7EC0083D907 /* Favourites.swift in Sources */,
+				C33BB07E2C70B7EC0083D907 /* Favorites.swift in Sources */,
 				C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */,
 				C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */,
 				C3342B352ACD9E6600C75C6E /* IncorrectViewController.swift in Sources */,
@@ -421,10 +421,10 @@
 				C376AC072947261D00DE5E86 /* Setting.swift in Sources */,
 				C33653282A94CFF7008CF2C6 /* NameCell.swift in Sources */,
 				C32C243B2C7722A80088D40D /* DetailsViewModel.swift in Sources */,
-				C3B324882C6DE1F9003BB31F /* FavouritesViewController.swift in Sources */,
+				C3B324882C6DE1F9003BB31F /* FavoritesViewController.swift in Sources */,
 				C3D292EB293F5F0900786752 /* SettingViewController.swift in Sources */,
 				C384F2992C441B6F00827B9F /* CorrectAnswersViewController.swift in Sources */,
-				C3B3248C2C6DF843003BB31F /* FavouritesCell.swift in Sources */,
+				C3B3248C2C6DF843003BB31F /* FavoritesCell.swift in Sources */,
 				C3B3248A2C6DE277003BB31F /* FavouritesViewModel.swift in Sources */,
 				C36EC9FA2B2729D500ECF1EE /* ScrabbleViewController.swift in Sources */,
 				C384F29D2C44206900827B9F /* Corrects.swift in Sources */,

@@ -12,6 +12,7 @@ protocol GameTypeViewModelProtocol {
     var tag: Int { get }
     var countQuestions: Int { get }
     var countContinents: Int { get }
+    var favorites: [Favorites] { get }
     
     var allCountries: Bool { get }
     var americaContinent: Bool { get }
@@ -36,7 +37,7 @@ protocol GameTypeViewModelProtocol {
     var countCountriesOfAsia: Int { get }
     var countCountriesOfOceania: Int { get }
     
-    init(mode: Setting, game: Games, tag: Int, favourites: [Favourites])
+    init(mode: Setting, game: Games, tag: Int, favorites: [Favorites])
     
     func numberOfComponents() -> Int
     func numberOfRows(_ pickerView: UIPickerView) -> Int
@@ -56,6 +57,7 @@ protocol GameTypeViewModelProtocol {
     func haveFavourites() -> Bool
     
     func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool)
+    func buttonOnOff(button: UIButton, isOn: Bool)
     
     func width(_ view: UIView) -> CGFloat
     func size() -> CGFloat
@@ -81,6 +83,7 @@ protocol GameTypeViewModelProtocol {
     func setSubviewsTag(subviews: UIView..., tag: Int)
     func viewHelp() -> UIView
     func viewSetting() -> UIView
+    func setFavorites(newFavorites: [Favorites])
     
     func buttonAllCountries(_ buttonAllCountries: UIButton,_ labelAllCountries: UILabel,
                             _ labelCountCountries: UILabel,_ colorButton: UIColor,_ colorLabel: UIColor)
@@ -145,7 +148,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         game.play
     }
     var colorFavourite: UIColor {
-        game.favourite
+        game.favorite
     }
     var colorSwap: UIColor {
         game.swap
@@ -170,8 +173,8 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     
     var mode: Setting
     let tag: Int
+    var favorites: [Favorites]
     private let game: Games
-    private let favourites: [Favourites]
     
     private var countRowsDefault = DefaultSetting.countRows.rawValue
     
@@ -182,11 +185,11 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     private var scrollView: UIScrollView!
     private var secondaryView: UIView!
     
-    required init(mode: Setting, game: Games, tag: Int, favourites: [Favourites]) {
+    required init(mode: Setting, game: Games, tag: Int, favorites: [Favorites]) {
         self.mode = mode
         self.game = game
         self.tag = tag
-        self.favourites = favourites
+        self.favorites = favorites
     }
     // MARK: - Set subviews
     func setSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -273,7 +276,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     }
     
     func haveFavourites() -> Bool {
-        favourites.isEmpty ? false : true
+        favorites.isEmpty ? false : true
     }
     
     func isCountdown() -> Bool {
@@ -340,6 +343,10 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         isEnabled(buttons: buttonBack, buttonHelp, bool: bool)
         setupOpacityButtons(buttons: buttonBack, buttonHelp, opacity: opacity)
     }
+    
+    func buttonOnOff(button: UIButton, isOn: Bool) {
+        isEnabled(buttons: button, bool: isOn)
+    }
     // MARK: - Press swap button of setting
     func swap(_ button: UIButton) {
         switch tag {
@@ -354,6 +361,10 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         } else {
             countContinents += count
         }
+    }
+    
+    func setFavorites(newFavorites: [Favorites]) {
+        favorites = newFavorites
     }
     // MARK: - Set popup view controller
     func setPickerViewCountQuestions(_ pickerView: UIPickerView,_ view: UIView) {
@@ -486,19 +497,19 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     }
     // MARK: - Transitions to other view controller
     func favouritesViewModel() -> FavouritesViewModelProtocol {
-        FavouritesViewModel(game: game, favourites: favourites)
+        FavouritesViewModel(game: game, favorites: favorites)
     }
     
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol {
-        QuizOfFlagsViewModel(mode: mode, game: game, favourites: favourites)
+        QuizOfFlagsViewModel(mode: mode, game: game, favorites: favorites)
     }
     
     func questionnaireViewModel() -> QuestionnaireViewModelProtocol {
-        QuestionnaireViewModel(mode: mode, game: game, favourites: favourites)
+        QuestionnaireViewModel(mode: mode, game: game, favorites: favorites)
     }
     
     func quizOfCapitalsViewModel() -> QuizOfCapitalsViewModelProtocol {
-        QuizOfCapitalsViewModel(mode: mode, game: game, favourites: favourites)
+        QuizOfCapitalsViewModel(mode: mode, game: game, favorites: favorites)
     }
     // MARK: - Constraints
     func setSquare(subviews: UIView..., sizes: CGFloat) {
@@ -745,7 +756,7 @@ extension GameTypeViewModel {
     }
     // MARK: - Attributted for picker view
     private func setAttributed(title: String, tag: Int, segmented: UISegmentedControl) -> NSAttributedString {
-        let color = tag == 1 ? game.favourite : color(tag: tag, segmented: segmented)
+        let color = tag == 1 ? game.favorite : color(tag: tag, segmented: segmented)
         return NSAttributedString(string: title, attributes: [
             .font: UIFont(name: "mr_fontick", size: 26) ?? "",
             .foregroundColor: color
@@ -755,9 +766,9 @@ extension GameTypeViewModel {
     private func color(tag: Int, segmented: UISegmentedControl) -> UIColor {
         switch segmented.selectedSegmentIndex {
         case 0:
-            return tag == 2 ? game.favourite : .grayLight
+            return tag == 2 ? game.favorite : .grayLight
         default:
-            return tag == 2 ? .grayLight : game.favourite
+            return tag == 2 ? .grayLight : game.favorite
         }
     }
     // MARK: - Show / hide bar buttons

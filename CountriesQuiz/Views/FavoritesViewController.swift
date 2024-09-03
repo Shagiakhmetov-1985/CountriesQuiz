@@ -1,5 +1,5 @@
 //
-//  FavouritesViewController.swift
+//  FavoritesViewController.swift
 //  CountriesQuiz
 //
 //  Created by Marat Shagiakhmetov on 15.08.2024.
@@ -7,20 +7,17 @@
 
 import UIKit
 
-protocol FavouritesViewControllerDelegate {
-    func dataToFavourites(favourites: [Favourites])
+protocol FavoritesViewControllerDelegate {
+    func dataToFavorites(favorites: [Favorites])
 }
 
-class FavouritesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FavouritesViewControllerDelegate {
+class FavoritesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FavoritesViewControllerDelegate {
     private lazy var buttonClose: UIButton = {
-        setButton(image: "multiply", action: #selector(extiToGameType), isBarButton: true)
+        setButton(image: "multiply", action: #selector(exitToGameType), isBarButton: true)
     }()
     
     private lazy var buttonDelete: UIButton = {
-        let button = setButton(image: "trash", action: #selector(deleteFavourite))
-        button.isEnabled = false
-        button.layer.opacity = 0
-        return button
+        setButton(image: "trash", action: #selector(deleteFavorite))
     }()
     
     private lazy var visualEffectBlur: UIVisualEffectView = {
@@ -73,6 +70,7 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     }()
     
     var viewModel: FavouritesViewModelProtocol!
+    var delegate: GameTypeViewControllerInput!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,7 +86,7 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        viewModel.customCell(cell: cell as! FavouritesCell, indexPath: indexPath)
+        viewModel.customCell(cell: cell as! FavoritesCell, indexPath: indexPath)
         return cell
     }
     
@@ -98,16 +96,19 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.setDetails(viewDetails, view, and: indexPath)
-        viewModel.setSubviews(subviews: viewDetails, on: view)
-        viewModel.setConstraints(indexPath, viewDetails, on: view)
+        viewModel.setSubviews(subviews: viewDetails, buttonDelete, on: view)
+        viewModel.setConstraints(indexPath, viewDetails, and: buttonDelete, on: view)
         viewModel.buttonOnOff(button: buttonClose, isOn: false)
-        viewModel.showAnimationView(viewDetails, visualEffectBlur)
+        viewModel.showAnimationView(viewDetails, buttonDelete, and: visualEffectBlur)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func dataToFavourites(favourites: [Favourites]) {
-        viewModel.setFavourites(newFavourites: favourites)
+    func dataToFavorites(favorites: [Favorites]) {
+        viewModel.setFavorites(newFavorites: favorites)
         tableView.reloadData()
+        guard viewModel.favorites.isEmpty else { return }
+        exitToGameType()
+        delegate.disableFavoriteButton()
     }
     
     private func setDesign() {
@@ -124,18 +125,23 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
                               on: view)
     }
     
-    @objc private func extiToGameType() {
+    @objc private func exitToGameType() {
         dismiss(animated: true)
+        delegate.favoritesToGameType(favorites: viewModel.favorites)
     }
     
     @objc private func closeDetails() {
         viewModel.buttonOnOff(button: buttonClose, isOn: true)
-        viewModel.hideAnimationView(viewDetails, visualEffectBlur)
-        viewModel.buttonOnOff(buttonDelete, isOn: false, viewDetails)
+        viewModel.hideAnimationView(viewDetails, buttonDelete, and: visualEffectBlur)
     }
     
-    @objc private func deleteFavourite() {
-        
+    @objc private func deleteFavorite() {
+        viewModel.buttonOnOff(button: buttonClose, isOn: true)
+        viewModel.hideAnimationView(viewDetails, buttonDelete, and: visualEffectBlur)
+        viewModel.deleteRow(tableView: tableView)
+        guard viewModel.favorites.isEmpty else { return }
+        exitToGameType()
+        delegate.disableFavoriteButton()
     }
     
     @objc private func moreInfo() {
@@ -144,10 +150,12 @@ class FavouritesViewController: UIViewController, UITableViewDelegate, UITableVi
         detailsVC.viewModel = detailsViewModel
         detailsVC.delegate = self
         navigationController?.pushViewController(detailsVC, animated: true)
+        viewModel.buttonOnOff(button: buttonClose, isOn: true)
+        viewModel.hideAnimationView(viewDetails, buttonDelete, and: visualEffectBlur)
     }
 }
 
-extension FavouritesViewController {
+extension FavoritesViewController {
     private func setConstraints() {
         viewModel.setSquare(button: buttonClose, sizes: 40)
         
@@ -172,7 +180,7 @@ extension FavouritesViewController {
     }
 }
 
-extension FavouritesViewController {
+extension FavoritesViewController {
     private func setButton(image: String, action: Selector,
                            isBarButton: Bool? = nil) -> UIButton {
         let pointSize: CGFloat = isBarButton ?? false ? 20 : 26

@@ -15,7 +15,7 @@ struct Games {
     let background: UIColor
     let keys: String
     let play: UIColor
-    let favourite: UIColor
+    let favorite: UIColor
     let swap: UIColor
     let done: UIColor
 }

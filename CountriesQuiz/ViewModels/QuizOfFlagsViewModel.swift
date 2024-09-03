@@ -30,7 +30,7 @@ protocol QuizOfFlagsViewModelProtocol {
     
     var shapeLayer: CAShapeLayer { get }
     
-    init(mode: Setting, game: Games, favourites: [Favourites])
+    init(mode: Setting, game: Games, favorites: [Favorites])
     
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func setSubviews(subviews: UIView..., on subviewOther: UIView)
@@ -131,7 +131,7 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     
     private let mode: Setting
     private let game: Games
-    private let favourites: [Favourites]
+    private let favorites: [Favorites]
     
     private var correctAnswers: [Corrects] = []
     private var incorrectAnswers: [Incorrects] = []
@@ -170,10 +170,10 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     private var imageThird: UIImageView!
     private var imageFourth: UIImageView!
     
-    required init(mode: Setting, game: Games, favourites: [Favourites]) {
+    required init(mode: Setting, game: Games, favorites: [Favorites]) {
         self.mode = mode
         self.game = game
-        self.favourites = favourites
+        self.favorites = favorites
     }
     // MARK: - Set subviews
     func setSubviews(subviews: UIView..., on subviewOther: UIView) {
@@ -584,7 +584,7 @@ class QuizOfFlagsViewModel: QuizOfFlagsViewModelProtocol {
     func resultsViewController() -> ResultsViewModelProtocol {
         ResultsViewModel(mode: mode, game: game, correctAnswers: correctAnswers,
                          incorrectAnswers: incorrectAnswers, timeSpend: timeSpend,
-                         answeredQuestions: answeredQuestions, favourites: favourites)
+                         answeredQuestions: answeredQuestions, favorites: favorites)
     }
     // MARK: - Get countries for questions, countinue
     private func getRandomCountries() -> [Countries] {

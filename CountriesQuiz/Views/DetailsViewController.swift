@@ -183,7 +183,7 @@ class DetailsViewController: UIViewController {
     }()
     
     var viewModel: DetailsViewModelProtocol!
-    var delegate: FavouritesViewControllerDelegate!
+    var delegate: FavoritesViewControllerDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -212,8 +212,8 @@ class DetailsViewController: UIViewController {
     }
     
     @objc private func deleteAndBackToList() {
-        viewModel.deleteAndBack()
-        delegate.dataToFavourites(favourites: viewModel.favourites)
+        viewModel.deleteFavorite()
+        delegate.dataToFavorites(favorites: viewModel.favorites)
         navigationController?.popViewController(animated: true)
     }
 }

@@ -13,7 +13,7 @@ class IncorrectViewController: UIViewController {
     }()
     
     private lazy var buttonFavourites: UIButton = {
-        setButton(image: viewModel.imageFavourites(), action: #selector(favourites))
+        setButton(image: viewModel.imageFavorites(), action: #selector(favorites))
     }()
     
     private lazy var question: UIView = {
@@ -86,7 +86,7 @@ class IncorrectViewController: UIViewController {
         button.tintColor = .white
         button.tag = 1
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(favourites), for: .touchUpInside)
+        button.addTarget(self, action: #selector(favorites), for: .touchUpInside)
         return button
     }()
     
@@ -116,12 +116,12 @@ class IncorrectViewController: UIViewController {
     }
     
     @objc private func backToList() {
-        delegate.dataToIncorrectAnswers(favourites: viewModel.favourites)
+        delegate.dataToIncorrectAnswers(favourites: viewModel.favorites)
         navigationController?.popViewController(animated: true)
     }
     
-    @objc private func favourites(sender: UIButton) {
-        viewModel.addOrDeleteFavourite(sender)
+    @objc private func favorites(sender: UIButton) {
+        viewModel.addOrDeleteFavorite(sender)
     }
 }
 // MARK: - Set button

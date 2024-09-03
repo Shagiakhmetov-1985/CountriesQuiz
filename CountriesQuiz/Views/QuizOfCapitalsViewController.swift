@@ -109,7 +109,7 @@ class QuizOfCapitalsViewController: UIViewController, ViewControllerInput {
         }
     }
     
-    func dataToMenu(setting: Setting, favourites: [Favourites]) {
+    func dataToMenu(setting: Setting, favourites: [Favorites]) {
         delegate.dataToMenu(setting: setting, favourites: favourites)
     }
     

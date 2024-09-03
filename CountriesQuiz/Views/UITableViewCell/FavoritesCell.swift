@@ -1,5 +1,5 @@
 //
-//  FavouritesCell.swift
+//  FavoritesCell.swift
 //  CountriesQuiz
 //
 //  Created by Marat Shagiakhmetov on 15.08.2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FavouritesCell: UITableViewCell {
+class FavoritesCell: UITableViewCell {
     let flag = UIImageView()
     let name = UILabel()
     let arrow = UIImageView()
@@ -38,7 +38,7 @@ class FavouritesCell: UITableViewCell {
     }
 }
 
-extension FavouritesCell {
+extension FavoritesCell {
     private func setImage(image: UIImageView) {
         image.layer.borderWidth = 1
         image.layer.cornerRadius = radius
@@ -59,7 +59,7 @@ extension FavouritesCell {
     }
 }
 
-extension FavouritesCell {
+extension FavoritesCell {
     private func setConstraints() {
         NSLayoutConstraint.activate([
             flag.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),

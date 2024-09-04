@@ -9,26 +9,35 @@ import UIKit
 
 class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     private lazy var buttonBack: UIButton = {
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
-        let image = UIImage(systemName: "multiply", withConfiguration: size)
-        let button = UIButton(type: .system)
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.layer.cornerRadius = 12
-        button.layer.borderColor = UIColor.white.cgColor
-        button.layer.borderWidth = 1.5
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(exitToResults), for: .touchUpInside)
-        return button
+        setButton(action: #selector(exitToResults), isBarButton: true)
+    }()
+    
+    private lazy var visualEffectView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .dark)
+        let visualEffectView = UIVisualEffectView(effect: blurEffect)
+        visualEffectView.alpha = 0
+        visualEffectView.translatesAutoresizingMaskIntoConstraints = false
+        return visualEffectView
     }()
     
     private lazy var labelTitle: UILabel = {
-        let label = UILabel()
-        label.text = viewModel.title
-        label.font = UIFont(name: "mr_fontick", size: 28)
-        label.textColor = .white
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+        viewModel.setLabel(title: viewModel.title, size: 28, color: .white)
+    }()
+    
+    private lazy var imageTitle: UIImageView = {
+        let size = UIImage.SymbolConfiguration(pointSize: 28)
+        let image = UIImage(systemName: "checkmark", withConfiguration: size)
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = .white
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private lazy var stackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [labelTitle, imageTitle])
+        stackView.spacing = 20
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     private lazy var tableView: UITableView = {
@@ -40,6 +49,14 @@ class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITab
         tableView.separatorColor = .white
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
+    }()
+    
+    private lazy var viewDetails: UIView = {
+        let view = viewModel.setView(color: viewModel.backgroundDetails, radius: 15, tag: 0)
+        let button = setButton(action: #selector(close))
+        view.addSubview(button)
+        viewModel.setConstraints(button: button, on: view)
+        return view
     }()
     
     var viewModel: CorrectAnswersViewModelProtocol!
@@ -67,10 +84,17 @@ class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        /*
         let correctViewModel = viewModel.correctViewModel(indexPath.row)
         let correctVC = CorrectViewController()
         correctVC.viewModel = correctViewModel
         navigationController?.pushViewController(correctVC, animated: true)
+         */
+        viewModel.setDetails(viewDetails, view, and: indexPath)
+        viewModel.setSubviews(subviews: viewDetails, on: view)
+        viewModel.setConstraints(viewDetails: viewDetails, on: view)
+        viewModel.buttonOnOff(button: buttonBack, isOn: false)
+        viewModel.showAnimationView(viewDetails, and: visualEffectView)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -83,25 +107,51 @@ class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     private func setSubviews() {
-        viewModel.setSubviews(subviews: labelTitle, tableView, on: view)
+        viewModel.setSubviews(subviews: stackView, tableView, visualEffectView,
+                              on: view)
     }
     
     @objc private func exitToResults() {
         dismiss(animated: true)
     }
+    
+    @objc private func close() {
+        viewModel.buttonOnOff(button: buttonBack, isOn: true)
+        viewModel.hideAnimationView(viewDetails, and: visualEffectView)
+    }
+}
+// MARK: - Subviews
+extension CorrectAnswersViewController {
+    private func setButton(action: Selector, isBarButton: Bool? = nil) -> UIButton {
+        let pointSize: CGFloat = isBarButton ?? false ? 20 : 26
+        let size = UIImage.SymbolConfiguration(pointSize: pointSize)
+        let image = UIImage(systemName: "multiply", withConfiguration: size)
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.layer.cornerRadius = 12
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = isBarButton ?? false ? 1.5 : 0
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
+    }
 }
 // MARK: - Set constraints
 extension CorrectAnswersViewController {
     private func setConstraints() {
+        viewModel.setSquare(button: buttonBack, sizes: 40)
+        
         NSLayoutConstraint.activate([
-            buttonBack.widthAnchor.constraint(equalToConstant: 40),
-            buttonBack.heightAnchor.constraint(equalToConstant: 40)
+            visualEffectView.topAnchor.constraint(equalTo: view.topAnchor),
+            visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            visualEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            labelTitle.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
-            labelTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            labelTitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
         ])
         
         NSLayoutConstraint.activate([

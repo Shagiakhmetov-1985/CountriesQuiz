@@ -17,6 +17,7 @@ class NameCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         setupSubviews()
         configure()
+        setupConstraints()
     }
     
     private func setupSubviews() {
@@ -36,8 +37,6 @@ class NameCell: UITableViewCell {
         setupProgressView(subview: progressView)
         setupLabel(label: labelNumber, size: 23)
         setupImageArrow(image: imageArrow)
-        
-        setupConstraints()
     }
 }
 // MARK: - Setup progress view

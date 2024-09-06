@@ -110,7 +110,7 @@ protocol GameTypeViewModelProtocol {
     func setConstraints(_ viewHelp: UIView,_ view: UIView)
     func setConstraints(_ button: UIButton, _ view: UIView)
     
-    func favouritesViewModel() -> FavouritesViewModelProtocol
+    func favouritesViewModel() -> FavoritesViewModelProtocol
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol
     func questionnaireViewModel() -> QuestionnaireViewModelProtocol
     func quizOfCapitalsViewModel() -> QuizOfCapitalsViewModelProtocol
@@ -496,8 +496,8 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         completion()
     }
     // MARK: - Transitions to other view controller
-    func favouritesViewModel() -> FavouritesViewModelProtocol {
-        FavouritesViewModel(game: game, favorites: favorites)
+    func favouritesViewModel() -> FavoritesViewModelProtocol {
+        FavoritesViewModel(game: game, favorites: favorites)
     }
     
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol {

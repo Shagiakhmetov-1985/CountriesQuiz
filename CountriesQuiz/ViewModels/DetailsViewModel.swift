@@ -18,8 +18,8 @@ protocol DetailsViewModelProtocol {
     var buttonThird: String { get }
     var buttonFour: String { get }
     var titleButton: String { get }
-    var heightStackView: CGFloat { get }
-    var constant: CGFloat { get }
+    var title: String { get }
+    var height: CGFloat { get }
     var favorites: [Favorites] { get }
     
     init(game: Games, favorite: Favorites, favorites: [Favorites], indexPath: IndexPath)
@@ -32,7 +32,7 @@ protocol DetailsViewModelProtocol {
     func setView(_ viewFlag: UIView, and imageFlag: UIImageView) -> UIView
     func setView(addSubview: UIView) -> UIView
     func setView(addFirst: UIView, addSecond: UIView) -> UIView
-    func setView(_ viewIcons: UIView, _ stackView: UIStackView) -> UIView
+    func setView(_ viewIcons: UIView, _ stackView: UIStackView, _ timeUp: UILabel) -> UIView
     func setViewNames(_ view: UIView, _ label: UILabel) -> UIView
     func setLabel(title: String, size: CGFloat, style: String, color: UIColor) -> UILabel
     func setView(_ title: String, addSubview: UIView, and tag: Int) -> UIView
@@ -73,16 +73,22 @@ class DetailsViewModel: DetailsViewModelProtocol {
         favorite.buttonFourth
     }
     var titleButton: String = "   Удалить из избранных"
-    var heightStackView: CGFloat {
-        isFlag ? 205 : 225
+    var title: String {
+        favorite.isTimeUp ? "Время вышло!" : ""
     }
-    let constant: CGFloat = 58
+    var height: CGFloat {
+        heightStackView + constant + (favorite.isTimeUp ? 44 : 0) + 10
+    }
     
     var favorites: [Favorites]
     private let game: Games
     private let favorite: Favorites
     private let indexPath: IndexPath
     
+    var heightStackView: CGFloat {
+        isFlag ? 205 : 225
+    }
+    private let constant: CGFloat = 58
     private var isFlag: Bool {
         favorite.isFlag
     }
@@ -169,10 +175,11 @@ class DetailsViewModel: DetailsViewModelProtocol {
         return view
     }
     
-    func setView(_ viewIcons: UIView, _ stackView: UIStackView) -> UIView {
+    func setView(_ viewIcons: UIView, _ stackView: UIStackView,
+                 _ timeUp: UILabel) -> UIView {
         let view = setView(color: game.background)
-        setSubviews(subviews: viewIcons, stackView, on: view)
-        setConstraints(viewIcons: viewIcons, and: stackView, on: view)
+        setSubviews(subviews: viewIcons, stackView, timeUp, on: view)
+        setConstraints(viewIcons: viewIcons, stackView, and: timeUp, on: view)
         return view
     }
     
@@ -486,8 +493,8 @@ extension DetailsViewModel {
         ])
     }
     
-    private func setConstraints(viewIcons: UIView, and stackView: UIStackView,
-                                on viewDetails: UIView) {
+    private func setConstraints(viewIcons: UIView, _ stackView: UIStackView,
+                                and timeUp: UILabel, on viewDetails: UIView) {
         NSLayoutConstraint.activate([
             viewIcons.topAnchor.constraint(equalTo: viewDetails.topAnchor),
             viewIcons.leadingAnchor.constraint(equalTo: viewDetails.leadingAnchor),
@@ -499,7 +506,12 @@ extension DetailsViewModel {
             stackView.topAnchor.constraint(equalTo: viewDetails.topAnchor, constant: constant + 5),
             stackView.leadingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: 5),
             stackView.trailingAnchor.constraint(equalTo: viewDetails.trailingAnchor, constant: -5),
-            stackView.bottomAnchor.constraint(equalTo: viewDetails.bottomAnchor, constant: -5)
+            stackView.heightAnchor.constraint(equalToConstant: heightStackView)
+        ])
+        
+        NSLayoutConstraint.activate([
+            timeUp.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10),
+            timeUp.centerXAnchor.constraint(equalTo: viewDetails.centerXAnchor)
         ])
     }
 }

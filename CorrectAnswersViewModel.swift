@@ -8,8 +8,9 @@
 import UIKit
 
 protocol CorrectAnswersViewModelProtocol {
-    var background: UIColor { get }
-    var backgroundDetails: UIColor { get }
+    var backgroundLight: UIColor { get }
+    var backgroundMedium: UIColor { get }
+    var backgroundDark: UIColor { get }
     var title: String { get }
     var cell: AnyClass { get }
     var numberOfRows: Int { get }
@@ -20,13 +21,13 @@ protocol CorrectAnswersViewModelProtocol {
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
     func setSubviews(subviews: UIView..., on otherSubview: UIView)
     func customCell(cell: UITableViewCell, indexPath: IndexPath)
-    func setView(color: UIColor, radius: CGFloat, tag: Int) -> UIView
+    func setView(color: UIColor, radius: CGFloat, tag: Int?) -> UIView
     func setLabel(title: String, size: CGFloat, color: UIColor) -> UILabel
     func setDetails(_ viewDetails: UIView,_ view: UIView, and indexPath: IndexPath)
     
     func setSquare(button: UIButton, sizes: CGFloat)
     func setConstraints(button: UIButton, on view: UIView)
-    func setConstraints(viewDetails: UIView, on view: UIView)
+    func setConstraints(viewDetails: UIView, on view: UIView,_ indexPath: IndexPath)
     
     func buttonOnOff(button: UIButton, isOn: Bool)
     func showAnimationView(_ viewDetails: UIView, and visualEffect: UIVisualEffectView)
@@ -36,18 +37,22 @@ protocol CorrectAnswersViewModelProtocol {
 }
 
 class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
-    var background: UIColor {
+    var backgroundLight: UIColor {
         game.background
     }
-    var backgroundDetails: UIColor {
+    var backgroundMedium: UIColor {
+        game.favorite
+    }
+    var backgroundDark: UIColor {
         game.swap
     }
     var title = "Правильные ответы"
     var cell: AnyClass {
-        isFlag ? FlagCell.self : NameCell.self
+//        isFlag ? FlagCell.self : NameCell.self
+        CorrectsFlagCell.self
     }
     var numberOfRows: Int {
-        correctAnswers.count
+        corrects.count
     }
     var heightOfRow: CGFloat {
         isFlag ? 70 : 95
@@ -55,13 +60,16 @@ class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
     
     private let mode: Setting
     private let game: Games
-    private let correctAnswers: [Corrects]
+    private let corrects: [Corrects]
     private var isFlag: Bool {
         mode.flag ? true : false
     }
-    private var radius: CGFloat = 4
+    private var radius: CGFloat = 5
+    private var heightProgressView: CGFloat {
+        radius * 2
+    }
     private var heightStackView: CGFloat {
-        isFlag ? 215 : 235
+        isFlag ? 205 : 225
     }
     
     private var viewSecondary: UIView!
@@ -73,7 +81,7 @@ class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
     required init(mode: Setting, game: Games, correctAnswers: [Corrects]) {
         self.game = game
         self.mode = mode
-        self.correctAnswers = correctAnswers
+        self.corrects = correctAnswers
     }
     
     func setBarButton(_ button: UIButton, _ navigationItem: UINavigationItem) {
@@ -88,18 +96,21 @@ class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
     }
     
     func customCell(cell: UITableViewCell, indexPath: IndexPath) {
+        /*
         if isFlag {
             flagCell(cell: cell as! FlagCell, indexPath: indexPath)
         } else {
             nameCell(cell: cell as! NameCell, indexPath: indexPath)
         }
+         */
+        correctFlagCell(cell: cell as! CorrectsFlagCell, indexPath: indexPath)
     }
     
-    func setView(color: UIColor, radius: CGFloat, tag: Int) -> UIView {
+    func setView(color: UIColor, radius: CGFloat, tag: Int? = nil) -> UIView {
         let view = UIView()
         view.backgroundColor = color
         view.layer.cornerRadius = radius
-        view.tag = tag
+        view.tag = tag ?? 0
         view.translatesAutoresizingMaskIntoConstraints = false
         maskedCorners(view: view)
         return view
@@ -111,16 +122,17 @@ class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
         label.font = UIFont(name: "mr_fontick", size: size)
         label.textColor = color
         label.textAlignment = .center
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
     
     func setDetails(_ viewDetails: UIView, _ view: UIView, and indexPath: IndexPath) {
-        let correct = correctAnswers[indexPath.row]
-        viewSecondary = setView(color: background, radius: 15, tag: 1)
+        let correct = corrects[indexPath.row]
+        viewSecondary = setView(color: backgroundLight, radius: 15, tag: 1)
         subview = setName(correct: correct)
         progressView = progressView(correct: correct)
-        labelNumber = setLabel(title: setText(value: correct.currentQuestion), size: 23, color: .white)
+        labelNumber = setLabel(title: setText(value: correct.currentQuestion), size: 22, color: .white)
         stackView = setStackView(correct: correct, and: view)
         setSubviews(subviews: viewSecondary, on: viewDetails)
         setSubviews(subviews: subview, progressView, labelNumber, stackView, on: viewSecondary)
@@ -134,7 +146,7 @@ class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
     }
     
     func showAnimationView(_ viewDetails: UIView, and visualEffect: UIVisualEffectView) {
-        viewDetails.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        viewDetails.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
         viewDetails.alpha = 0
         UIView.animate(withDuration: 0.5) { [self] in
             alpha(subviews: visualEffect, viewDetails, alpha: 1)
@@ -145,10 +157,10 @@ class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
     func hideAnimationView(_ viewDetails: UIView, and visualEffect: UIVisualEffectView) {
         UIView.animate(withDuration: 0.5) { [self] in
             alpha(subviews: visualEffect, viewDetails, alpha: 0)
-            viewDetails.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+            viewDetails.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
         } completion: { [self] _ in
-            self.removeSubviews(subviews: viewDetails, viewSecondary,
-                                subview, progressView, labelNumber, stackView)
+            removeSubviews(subviews: viewDetails, viewSecondary, subview,
+                           progressView, labelNumber, stackView)
         }
     }
     // MARK: - Constraints
@@ -168,18 +180,18 @@ class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
         ])
     }
     
-    func setConstraints(viewDetails: UIView, on view: UIView) {
-        let multiplier = isFlag ? 0.65 : 0.55
+    func setConstraints(viewDetails: UIView, on view: UIView, _ indexPath: IndexPath) {
+        let multiplier: CGFloat = isFlag ? 0.63 : 0.5 + countLetter(indexPath)
         NSLayoutConstraint.activate([
             viewDetails.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             viewDetails.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: multiplier),
-            viewDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            viewDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
+            viewDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            viewDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
         ])
     }
     
     func correctViewModel(_ indexPath: Int) -> CorrectViewModelProtocol {
-        CorrectViewModel(mode: mode, game: game, correctAnswer: correctAnswers[indexPath])
+        CorrectViewModel(mode: mode, game: game, correctAnswer: corrects[indexPath])
     }
 }
 // MARK: - Constants
@@ -192,18 +204,25 @@ extension CorrectAnswersViewModel {
         "\(value) / \(mode.countQuestions)"
     }
     
+    private func correctFlagCell(cell: CorrectsFlagCell, indexPath: IndexPath) {
+        cell.image.image = UIImage(named: corrects[indexPath.row].question.flag)
+        cell.progressView.progress = setProgress(value: corrects[indexPath.row].currentQuestion)
+        cell.title.text = setText(value: corrects[indexPath.row].currentQuestion)
+        cell.contentView.backgroundColor = backgroundLight
+    }
+    
     private func flagCell(cell: FlagCell, indexPath: IndexPath) {
-        cell.image.image = UIImage(named: correctAnswers[indexPath.row].question.flag)
-        cell.progressView.progress = setProgress(value: correctAnswers[indexPath.row].currentQuestion)
-        cell.labelNumber.text = setText(value: correctAnswers[indexPath.row].currentQuestion)
-        cell.contentView.backgroundColor = background
+        cell.image.image = UIImage(named: corrects[indexPath.row].question.flag)
+        cell.progressView.progress = setProgress(value: corrects[indexPath.row].currentQuestion)
+        cell.labelNumber.text = setText(value: corrects[indexPath.row].currentQuestion)
+        cell.contentView.backgroundColor = backgroundLight
     }
     
     private func nameCell(cell: NameCell, indexPath: IndexPath) {
-        cell.nameCountry.text = correctAnswers[indexPath.row].question.name
-        cell.progressView.progress = setProgress(value: correctAnswers[indexPath.row].currentQuestion)
-        cell.labelNumber.text = setText(value: correctAnswers[indexPath.row].currentQuestion)
-        cell.contentView.backgroundColor = background
+        cell.nameCountry.text = corrects[indexPath.row].question.name
+        cell.progressView.progress = setProgress(value: corrects[indexPath.row].currentQuestion)
+        cell.labelNumber.text = setText(value: corrects[indexPath.row].currentQuestion)
+        cell.contentView.backgroundColor = backgroundLight
     }
     
     private func maskedCorners(view: UIView) {
@@ -257,14 +276,14 @@ extension CorrectAnswersViewModel {
     }
     
     private func setCenter(_ view: UIView) -> CGFloat {
-        let buttonWidth = (view.frame.width - 34) / 2
+        let buttonWidth = (view.frame.width - 49) / 2
         let flagWidth = buttonWidth - 45
         let centerFlag = flagWidth / 2 + 5
         return buttonWidth / 2 - centerFlag
     }
     
     private func setWidth(_ view: UIView) -> CGFloat {
-        let buttonWidth = (view.frame.width - 34) / 2
+        let buttonWidth = (view.frame.width - 49) / 2
         if game.gameType == .questionnaire {
             return buttonWidth - 45
         } else {
@@ -296,6 +315,10 @@ extension CorrectAnswersViewModel {
         case "nepal", "vatican city", "switzerland": return 168
         default: return 280
         }
+    }
+    
+    private func countLetter(_ indexPath: IndexPath) -> CGFloat {
+        corrects[indexPath.row].question.name.count > 23 ? 0.035 : 0
     }
 }
 // MARK: - Subviews
@@ -330,8 +353,8 @@ extension CorrectAnswersViewModel {
     private func progressView(correct: Corrects) -> UIProgressView {
         let progressView = UIProgressView()
         progressView.progress = setProgress(value: correct.currentQuestion)
-        progressView.trackTintColor = .white
-        progressView.progressTintColor = .white.withAlphaComponent(0.3)
+        progressView.progressTintColor = .white
+        progressView.trackTintColor = .white.withAlphaComponent(0.3)
         progressView.layer.cornerRadius = radius
         progressView.clipsToBounds = true
         progressView.translatesAutoresizingMaskIntoConstraints = false
@@ -352,7 +375,7 @@ extension CorrectAnswersViewModel {
     
     private func setView(correct: Corrects, _ name: String, and view: UIView) -> UIView {
         let background = background(correct: correct, name: name)
-        let button = setView(color: background, radius: 12, tag: 0)
+        let button = setView(color: background, radius: 12)
         button.layer.borderColor = UIColor.white.cgColor
         button.layer.borderWidth = game.gameType == .questionnaire ? 1.5 : 0
         addSubviews(correct: correct, name, button, and: view)
@@ -377,7 +400,7 @@ extension CorrectAnswersViewModel {
     private func subview(correct: Corrects, and name: String) -> UIView {
         if isFlag {
             let color = textColor(correct: correct, name: name)
-            return setLabel(title: name, size: 23, color: color)
+            return setLabel(title: name, size: 21, color: color)
         } else {
             return setSubview(correct: correct, and: name)
         }
@@ -386,7 +409,7 @@ extension CorrectAnswersViewModel {
     private func setSubview(correct: Corrects, and name: String) -> UIView {
         if game.gameType == .quizOfCapitals {
             let color = textColor(correct: correct, name: name)
-            return setLabel(title: name, size: 23, color: color)
+            return setLabel(title: name, size: 21, color: color)
         } else {
             return setImage(image: name, radius: 8)
         }
@@ -467,7 +490,7 @@ extension CorrectAnswersViewModel {
     private func setConstraints(_ subview: UIView, on button: UIView,
                                 _ name: String, _ view: UIView) {
         if isFlag {
-            let constant: CGFloat = isFlag ? 40 : 10
+            let constant: CGFloat = game.gameType == .questionnaire ? 40 : 10
             NSLayoutConstraint.activate([
                 subview.centerYAnchor.constraint(equalTo: button.centerYAnchor),
                 subview.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: constant),
@@ -517,9 +540,9 @@ extension CorrectAnswersViewModel {
         }
         
         NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: subview.bottomAnchor, constant: 25),
+            progressView.topAnchor.constraint(equalTo: subview.bottomAnchor, constant: 30),
             progressView.leadingAnchor.constraint(equalTo: viewSecondary.leadingAnchor, constant: 10),
-            progressView.heightAnchor.constraint(equalToConstant: radius * 2)
+            progressView.heightAnchor.constraint(equalToConstant: heightProgressView)
         ])
         
         NSLayoutConstraint.activate([
@@ -529,7 +552,7 @@ extension CorrectAnswersViewModel {
             labelNumber.widthAnchor.constraint(equalToConstant: 85)
         ])
         
-        let constant: CGFloat = isFlag ? 10 : 5
+        let constant: CGFloat = isFlag ? 15 : 7.5
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: labelNumber.bottomAnchor, constant: 25),
             stackView.leadingAnchor.constraint(equalTo: viewSecondary.leadingAnchor, constant: constant),

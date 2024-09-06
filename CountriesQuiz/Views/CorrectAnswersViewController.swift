@@ -45,14 +45,14 @@ class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITab
         tableView.register(viewModel.cell, forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = viewModel.background
+        tableView.backgroundColor = viewModel.backgroundLight
         tableView.separatorColor = .white
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
     private lazy var viewDetails: UIView = {
-        let view = viewModel.setView(color: viewModel.backgroundDetails, radius: 15, tag: 0)
+        let view = viewModel.setView(color: viewModel.backgroundDark, radius: 15, tag: 0)
         let button = setButton(action: #selector(close))
         view.addSubview(button)
         viewModel.setConstraints(button: button, on: view)
@@ -92,14 +92,14 @@ class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITab
          */
         viewModel.setDetails(viewDetails, view, and: indexPath)
         viewModel.setSubviews(subviews: viewDetails, on: view)
-        viewModel.setConstraints(viewDetails: viewDetails, on: view)
+        viewModel.setConstraints(viewDetails: viewDetails, on: view, indexPath)
         viewModel.buttonOnOff(button: buttonBack, isOn: false)
         viewModel.showAnimationView(viewDetails, and: visualEffectView)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
     private func setDesign() {
-        view.backgroundColor = viewModel.background
+        view.backgroundColor = viewModel.backgroundMedium
     }
     
     private func setBarButton() {

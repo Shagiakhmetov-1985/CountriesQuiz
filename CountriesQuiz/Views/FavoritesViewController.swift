@@ -51,7 +51,7 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(viewModel.cell, forCellReuseIdentifier: "cell")
-        tableView.backgroundColor = viewModel.background
+        tableView.backgroundColor = viewModel.backgroundLight
         tableView.separatorColor = .white
         tableView.delegate = self
         tableView.dataSource = self
@@ -60,7 +60,7 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
     }()
     
     private lazy var viewDetails: UIView = {
-        let view = viewModel.setView(color: viewModel.backgroundDetails, radius: 15)
+        let view = viewModel.setView(color: viewModel.backgroundDark, radius: 15)
         let close = setButton(image: "multiply", action: #selector(closeDetails))
         let label = viewModel.setLabel(title: viewModel.details, font: "GillSans", size: 22, color: .white)
         let moreInfo = setButton()
@@ -69,7 +69,7 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
         return view
     }()
     
-    var viewModel: FavouritesViewModelProtocol!
+    var viewModel: FavoritesViewModelProtocol!
     var delegate: GameTypeViewControllerInput!
     
     override func viewDidLoad() {
@@ -112,7 +112,7 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     private func setDesign() {
-        view.backgroundColor = viewModel.background
+        view.backgroundColor = viewModel.backgroundMedium
         navigationItem.hidesBackButton = true
     }
     
@@ -201,7 +201,7 @@ extension FavoritesViewController {
         let label = viewModel.setLabel(title: "Подробнее", font: "mr_fontick", size: 26, color: .white)
         let image = viewModel.setImage(image: "chevron.right", color: .white, size: 21)
         let button = Button(type: .custom)
-        button.backgroundColor = viewModel.colorButton
+        button.backgroundColor = viewModel.backgroundLight
         button.layer.cornerRadius = 15
         button.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         button.translatesAutoresizingMaskIntoConstraints = false

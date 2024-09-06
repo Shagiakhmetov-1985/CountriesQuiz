@@ -142,8 +142,12 @@ class DetailsViewController: UIViewController {
         viewModel.stackView(viewFirst, viewSecond, viewThird, viewFourth)
     }()
     
+    private lazy var timeUp: UILabel = {
+        viewModel.setLabel(title: viewModel.title, size: 24, style: "mr_fontick", color: .white)
+    }()
+    
     private lazy var viewSubviews: UIView = {
-        viewModel.setView(viewIcons, stackView)
+        viewModel.setView(viewIcons, stackView, timeUp)
     }()
     
     private lazy var contentView: UIView = {
@@ -276,7 +280,7 @@ extension DetailsViewController {
             viewSubviews.topAnchor.constraint(equalTo: viewContinentDetails.bottomAnchor, constant: 8),
             viewSubviews.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             viewSubviews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            viewSubviews.heightAnchor.constraint(equalToConstant: viewModel.heightStackView + viewModel.constant + 10)
+            viewSubviews.heightAnchor.constraint(equalToConstant: viewModel.height)
         ])
         viewModel.setConstraints(subviewFirst, on: viewFirst, view, viewModel.buttonFirst)
         viewModel.setConstraints(subviewSecond, on: viewSecond, view, viewModel.buttonSecond)

@@ -7,10 +7,10 @@
 
 import UIKit
 
-protocol FavouritesViewModelProtocol {
-    var background: UIColor { get }
-    var backgroundDetails: UIColor { get }
-    var colorButton: UIColor { get }
+protocol FavoritesViewModelProtocol {
+    var backgroundMedium: UIColor { get }
+    var backgroundDark: UIColor { get }
+    var backgroundLight: UIColor { get }
     var cell: AnyClass { get }
     var numberOfRows: Int { get }
     var heightOfRow: CGFloat { get }
@@ -42,14 +42,14 @@ protocol FavouritesViewModelProtocol {
     func detailsViewController() -> DetailsViewModelProtocol
 }
 
-class FavouritesViewModel: FavouritesViewModelProtocol {
-    var background: UIColor {
+class FavoritesViewModel: FavoritesViewModelProtocol {
+    var backgroundMedium: UIColor {
         game.favorite
     }
-    var backgroundDetails: UIColor {
+    var backgroundDark: UIColor {
         game.swap
     }
-    var colorButton: UIColor {
+    var backgroundLight: UIColor {
         game.background
     }
     var cell: AnyClass = FavoritesCell.self
@@ -67,6 +67,7 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
     private var viewSecondary: UIView!
     private var subview: UIView!
     private var stackView: UIStackView!
+    private var timeUp: UILabel!
     
     required init(game: Games, favorites: [Favorites]) {
         self.game = game
@@ -87,7 +88,7 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
     func customCell(cell: FavoritesCell, indexPath: IndexPath) {
         cell.flag.image = UIImage(named: favorites[indexPath.row].flag)
         cell.name.text = favorites[indexPath.row].name
-        cell.contentView.backgroundColor = background
+        cell.contentView.backgroundColor = backgroundLight
     }
     
     func setFavorites(newFavorites: [Favorites]) {
@@ -113,6 +114,7 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         label.font = UIFont(name: font, size: size)
         label.textColor = color
         label.textAlignment = .center
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
@@ -127,13 +129,14 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
     }
     
     func setDetails(_ viewDetails: UIView, _ view: UIView, and indexPath: IndexPath) {
-        let favourite = setIndexPath(index: indexPath)
+        let favorite = setIndexPath(index: indexPath)
         viewSecondary = setView(color: game.background)
-        subview = setName(favourite: favourite)
-        stackView = setStackView(favourite, view)
+        subview = setName(favourite: favorite)
+        stackView = setStackView(favorite, view)
+        timeUp = setLabel(title: title(favorite), font: "mr_fontick", size: 22, color: .white)
         setSubviews(subviews: viewSecondary, on: viewDetails)
-        setSubviews(subviews: subview, stackView, on: viewSecondary)
-        setConstraints(favourite: favourite, on: viewDetails)
+        setSubviews(subviews: subview, stackView, timeUp, on: viewSecondary)
+        setConstraints(favourite: favorite, on: viewDetails)
     }
     // MARK: - Constraints
     func setSquare(button: UIButton, sizes: CGFloat) {
@@ -166,7 +169,7 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
     
     func setConstraints(_ indexPath: IndexPath, _ viewDetails: UIView,
                         and button: UIButton, on view: UIView) {
-        let constant: CGFloat = favorites[indexPath.row].isFlag ? 0.645 : 0.5
+        let constant: CGFloat = constant(favorite: favorites[indexPath.row])
         NSLayoutConstraint.activate([
             viewDetails.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             viewDetails.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: constant),
@@ -213,9 +216,9 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
         UIView.animate(withDuration: 0.5) { [self] in
             alpha(subviews: visualEffectBlur, viewDetails, button, alpha: 0)
             transforms(subviews: viewDetails, button, transform: CGAffineTransform(scaleX: 0.6, y: 0.6))
-        } completion: { _ in
-            self.removeSubviews(subviews: viewDetails, button, self.viewSecondary,
-                                self.subview, self.stackView)
+        } completion: { [self] _ in
+            removeSubviews(subviews: viewDetails, button, viewSecondary,
+                           subview, stackView)
         }
     }
     // MARK: - Table view
@@ -226,7 +229,7 @@ class FavouritesViewModel: FavouritesViewModelProtocol {
     }
 }
 // MARK: - Subviews
-extension FavouritesViewModel {
+extension FavoritesViewModel {
     private func setName(favourite: Favorites) -> UIView {
         if favourite.isFlag {
             setImage(image: favourite.flag)
@@ -335,7 +338,7 @@ extension FavouritesViewModel {
     }
 }
 // MARK: - Show / hide subviews
-extension FavouritesViewModel {
+extension FavoritesViewModel {
     private func isEnabled(buttons: UIButton..., isOn: Bool) {
         buttons.forEach { button in
             button.isEnabled = isOn
@@ -369,7 +372,7 @@ extension FavouritesViewModel {
     }
 }
 // MARK: - Constants
-extension FavouritesViewModel {
+extension FavoritesViewModel {
     private func setIndexPath(index: IndexPath) -> Favorites {
         indexPath = index
         return favorites[indexPath.row]
@@ -481,17 +484,33 @@ extension FavouritesViewModel {
     
     private func width(_ image: String) -> CGFloat {
         switch image {
-        case "nepal", "vatican city", "switzerland": return 168
-        default: return 280
+        case "nepal", "vatican city", "switzerland": return 140
+        default: return 234
         }
     }
     
-    private func height(_ favourite: Favorites) -> CGFloat {
-        favourite.isFlag ? 205 : 225
+    private func height(_ favorite: Favorites) -> CGFloat {
+        favorite.isFlag ? 205 : 225
+    }
+    
+    private func constant(favorite: Favorites) -> CGFloat {
+        (favorite.isFlag ? 0.6 : 0.5) + name(favorite) + isTimeUp(favorite)
+    }
+    
+    private func name(_ favorite: Favorites) -> CGFloat {
+        favorite.isFlag ? 0 : favorite.name.count > 23 ? 0.035 : 0
+    }
+    
+    private func isTimeUp(_ favorite: Favorites) -> CGFloat {
+        favorite.isTimeUp ? 0.035 : 0
+    }
+    
+    private func title(_ favorite: Favorites) -> String {
+        favorite.isTimeUp ? "Время вышло!" : ""
     }
 }
 // MARK: - Constraints
-extension FavouritesViewModel {
+extension FavoritesViewModel {
     private func setConstraints(favourite: Favorites, _ checkmark: UIImageView,
                                 and subview: UIView, on button: UIView, 
                                 _ name: String, _ view: UIView) {
@@ -545,7 +564,7 @@ extension FavouritesViewModel {
                 subview.topAnchor.constraint(equalTo: viewSecondary.topAnchor, constant: 25),
                 subview.centerXAnchor.constraint(equalTo: viewSecondary.centerXAnchor),
                 subview.widthAnchor.constraint(equalToConstant: width(favourite.flag)),
-                subview.heightAnchor.constraint(equalToConstant: 168)
+                subview.heightAnchor.constraint(equalToConstant: 140)
             ])
         } else {
             NSLayoutConstraint.activate([
@@ -562,6 +581,11 @@ extension FavouritesViewModel {
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: constant),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -constant),
             stackView.heightAnchor.constraint(equalToConstant: height)
+        ])
+        
+        NSLayoutConstraint.activate([
+            timeUp.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10),
+            timeUp.centerXAnchor.constraint(equalTo: viewSecondary.centerXAnchor)
         ])
     }
 }

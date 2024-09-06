@@ -12,11 +12,13 @@ class FlagCell: UITableViewCell {
     let progressView = UIProgressView()
     let labelNumber = UILabel()
     let imageArrow = UIImageView()
+    private let radius: CGFloat = 27.5
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         setupSubviews()
         configure()
+        setupConstraints()
     }
     
     private func setupSubviews() {
@@ -36,15 +38,13 @@ class FlagCell: UITableViewCell {
         setupProgressView(subview: progressView)
         setupLabel(label: labelNumber)
         setupImageArrow(image: imageArrow)
-        
-        setupConstraints()
     }
 }
 // MARK: - Setup image
 extension FlagCell {
     private func setupImage(image: UIImageView) {
         image.layer.borderWidth = 1
-        image.layer.cornerRadius = radius()
+        image.layer.cornerRadius = radius
         image.clipsToBounds = true
     }
     
@@ -77,8 +77,8 @@ extension FlagCell {
         NSLayoutConstraint.activate([
             image.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             image.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            image.widthAnchor.constraint(equalToConstant: radius() * 2),
-            image.heightAnchor.constraint(equalToConstant: radius() * 2)
+            image.widthAnchor.constraint(equalToConstant: radius * 2),
+            image.heightAnchor.constraint(equalToConstant: radius * 2)
         ])
         
         NSLayoutConstraint.activate([
@@ -97,9 +97,5 @@ extension FlagCell {
             imageArrow.centerYAnchor.constraint(equalTo: labelNumber.centerYAnchor),
             imageArrow.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
         ])
-    }
-    
-    private func radius() -> CGFloat {
-        27.5
     }
 }

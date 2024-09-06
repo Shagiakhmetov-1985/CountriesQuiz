@@ -32,8 +32,6 @@ protocol CorrectAnswersViewModelProtocol {
     func buttonOnOff(button: UIButton, isOn: Bool)
     func showAnimationView(_ viewDetails: UIView, and visualEffect: UIVisualEffectView)
     func hideAnimationView(_ viewDetails: UIView, and visualEffect: UIVisualEffectView)
-    
-    func correctViewModel(_ indexPath: Int) -> CorrectViewModelProtocol
 }
 
 class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
@@ -188,10 +186,6 @@ class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
             viewDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             viewDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
         ])
-    }
-    
-    func correctViewModel(_ indexPath: Int) -> CorrectViewModelProtocol {
-        CorrectViewModel(mode: mode, game: game, correctAnswer: corrects[indexPath])
     }
 }
 // MARK: - Constants

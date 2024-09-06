@@ -84,12 +84,6 @@ class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        /*
-        let correctViewModel = viewModel.correctViewModel(indexPath.row)
-        let correctVC = CorrectViewController()
-        correctVC.viewModel = correctViewModel
-        navigationController?.pushViewController(correctVC, animated: true)
-         */
         viewModel.setDetails(viewDetails, view, and: indexPath)
         viewModel.setSubviews(subviews: viewDetails, on: view)
         viewModel.setConstraints(viewDetails: viewDetails, on: view, indexPath)

@@ -414,17 +414,17 @@ extension FavoritesViewModel {
         }
     }
     
-    private func textColor(_ favourite: Favorites, _ name: String, 
+    private func textColor(_ favorite: Favorites, _ name: String,
                            and tag: Int) -> UIColor {
-        question(favourite) == name ? correctTextColor() : incorrectTextColor(favourite, tag)
+        question(favorite) == name ? correctTextColor() : incorrectTextColor(favorite, tag)
     }
     
     private func correctTextColor() -> UIColor {
         game.gameType == .questionnaire ? .greenHarlequin : .white
     }
     
-    private func incorrectTextColor(_ favourite: Favorites, _ tag: Int) -> UIColor {
-        favourite.tag == tag ? checkSelectText() : checkNotSelectText()
+    private func incorrectTextColor(_ favorite: Favorites, _ tag: Int) -> UIColor {
+        favorite.tag == tag ? checkSelectText() : checkNotSelectText()
     }
     
     private func checkSelectText() -> UIColor {
@@ -435,22 +435,22 @@ extension FavoritesViewModel {
         game.gameType == .questionnaire ? .white : .grayLight
     }
     
-    private func checkmark(_ favourite: Favorites, _ name: String,
+    private func checkmark(_ favorite: Favorites, _ name: String,
                            _ tag: Int) -> String {
-        question(favourite) == name ? "checkmark.circle.fill" : incorrectCheckmark(favourite, tag)
+        question(favorite) == name ? "checkmark.circle.fill" : incorrectCheckmark(favorite, tag)
     }
     
-    private func incorrectCheckmark(_ favourite: Favorites, _ tag: Int) -> String {
-        favourite.tag == tag ? "xmark.circle.fill" : "circle"
+    private func incorrectCheckmark(_ favorite: Favorites, _ tag: Int) -> String {
+        favorite.tag == tag ? "xmark.circle.fill" : "circle"
     }
     
-    private func color(_ favourite: Favorites, _ name: String,
+    private func color(_ favorite: Favorites, _ name: String,
                        _ tag: Int) -> UIColor {
-        question(favourite) == name ? .greenHarlequin : incorrectColor(favourite, tag)
+        question(favorite) == name ? .greenHarlequin : incorrectColor(favorite, tag)
     }
     
-    private func incorrectColor(_ favourite: Favorites, _ tag: Int) -> UIColor {
-        favourite.tag == tag ? .redTangerineTango : .white
+    private func incorrectColor(_ favorite: Favorites, _ tag: Int) -> UIColor {
+        favorite.tag == tag ? .redTangerineTango : .white
     }
     
     private func setCenter(_ view: UIView) -> CGFloat {
@@ -469,15 +469,15 @@ extension FavoritesViewModel {
         }
     }
     
-    private func setHeight(_ favourite: Favorites) -> CGFloat {
-        let buttonHeight = (height(favourite) - 4) / 2
+    private func setHeight(_ favorite: Favorites) -> CGFloat {
+        let buttonHeight = (height(favorite) - 4) / 2
         return buttonHeight - 10
     }
     
-    private func widthImage(_ favourite: Favorites, _ flag: String, 
+    private func widthImage(_ favorite: Favorites, _ flag: String, 
                             _ view: UIView) -> CGFloat {
         switch flag {
-        case "nepal", "vatican city", "switzerland": return setHeight(favourite)
+        case "nepal", "vatican city", "switzerland": return setHeight(favorite)
         default: return setWidth(view)
         }
     }

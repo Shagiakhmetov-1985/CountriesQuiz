@@ -10,7 +10,7 @@ import UIKit
 class CorrectsFlagCell: UITableViewCell {
     let image = UIImageView()
     let progressView = UIProgressView()
-    let title = UILabel()
+    let number = UILabel()
     private let radius: CGFloat = 27.5
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -21,7 +21,7 @@ class CorrectsFlagCell: UITableViewCell {
     }
     
     private func setSubviews() {
-        addSubviews(subviews: image, progressView, title, on: contentView)
+        addSubviews(subviews: image, progressView, number, on: contentView)
     }
     
     private func addSubviews(subviews: UIView..., on otherSubviews: UIView) {
@@ -34,7 +34,7 @@ class CorrectsFlagCell: UITableViewCell {
     private func setConfigure() {
         setImage(image: image)
         setProgressView(progressView: progressView)
-        setLabel(label: title)
+        setLabel(label: number)
     }
 }
 
@@ -75,9 +75,9 @@ extension CorrectsFlagCell {
         ])
         
         NSLayoutConstraint.activate([
-            title.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
-            title.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 10),
-            title.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12)
+            number.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
+            number.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 10),
+            number.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12)
         ])
     }
 }

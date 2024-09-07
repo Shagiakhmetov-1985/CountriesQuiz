@@ -15,12 +15,12 @@ class NameCell: UITableViewCell {
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        setupSubviews()
-        configure()
-        setupConstraints()
+        setSubviews()
+        setConfigure()
+        setConstraints()
     }
     
-    private func setupSubviews() {
+    private func setSubviews() {
         addSubviews(subviews: nameCountry, progressView, labelNumber,
                     imageArrow, on: contentView)
     }
@@ -32,14 +32,14 @@ class NameCell: UITableViewCell {
         }
     }
     
-    private func configure() {
+    private func setConfigure() {
         setupLabel(label: nameCountry, size: 26)
         setupProgressView(subview: progressView)
         setupLabel(label: labelNumber, size: 23)
         setupImageArrow(image: imageArrow)
     }
 }
-// MARK: - Setup progress view
+
 extension NameCell {
     private func setupProgressView(subview: UIProgressView) {
         subview.progressTintColor = .white
@@ -67,11 +67,11 @@ extension NameCell {
 }
 // MARK: - Setup constraints
 extension NameCell {
-    private func setupConstraints() {
+    private func setConstraints() {
         NSLayoutConstraint.activate([
             nameCountry.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -15),
             nameCountry.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            nameCountry.trailingAnchor.constraint(equalTo: imageArrow.trailingAnchor, constant: -10)
+            nameCountry.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -45)
         ])
         
         NSLayoutConstraint.activate([
@@ -83,7 +83,7 @@ extension NameCell {
         NSLayoutConstraint.activate([
             labelNumber.topAnchor.constraint(equalTo: nameCountry.bottomAnchor, constant: 5),
             labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 10),
-            labelNumber.trailingAnchor.constraint(equalTo: imageArrow.leadingAnchor, constant: -10)
+            labelNumber.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -45)
         ])
         
         NSLayoutConstraint.activate([

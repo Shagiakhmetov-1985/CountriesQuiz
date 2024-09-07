@@ -114,7 +114,7 @@ class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITab
         viewModel.hideAnimationView(viewDetails, and: visualEffectView)
     }
 }
-// MARK: - Subviews
+
 extension CorrectAnswersViewController {
     private func setButton(action: Selector, isBarButton: Bool? = nil) -> UIButton {
         let pointSize: CGFloat = isBarButton ?? false ? 20 : 26
@@ -149,7 +149,7 @@ extension CorrectAnswersViewController {
         ])
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: labelTitle.bottomAnchor, constant: 20),
+            tableView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 20),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)

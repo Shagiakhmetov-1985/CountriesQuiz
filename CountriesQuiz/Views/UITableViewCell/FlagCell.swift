@@ -90,11 +90,11 @@ extension FlagCell {
         NSLayoutConstraint.activate([
             labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
             labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 10),
-            labelNumber.trailingAnchor.constraint(equalTo: imageArrow.leadingAnchor, constant: -10)
+            labelNumber.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -45)
         ])
         
         NSLayoutConstraint.activate([
-            imageArrow.centerYAnchor.constraint(equalTo: labelNumber.centerYAnchor),
+            imageArrow.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             imageArrow.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
         ])
     }

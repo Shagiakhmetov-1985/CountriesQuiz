@@ -25,6 +25,7 @@
 		C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */; };
 		C34EC0702986694900300585 /* Incorrects.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34EC06F2986694900300585 /* Incorrects.swift */; };
 		C35568F22C89C6BC00F2D4DD /* CorrectsFlagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C35568F12C89C6BC00F2D4DD /* CorrectsFlagCell.swift */; };
+		C35568F42C8B609600F2D4DD /* CorrectsNameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C35568F32C8B609600F2D4DD /* CorrectsNameCell.swift */; };
 		C359C3092BC1947300473B33 /* IncorrectAnswersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C359C3082BC1947300473B33 /* IncorrectAnswersViewModel.swift */; };
 		C3613A712A7FB82C006C0F1E /* GameTypeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */; };
 		C36773F1296BF9E10096BCC5 /* QuizOfFlagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */; };
@@ -80,6 +81,7 @@
 		C34BA4292A9E2C9B006E191D /* QuestionnaireViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireViewController.swift; sourceTree = "<group>"; };
 		C34EC06F2986694900300585 /* Incorrects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Incorrects.swift; sourceTree = "<group>"; };
 		C35568F12C89C6BC00F2D4DD /* CorrectsFlagCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectsFlagCell.swift; sourceTree = "<group>"; };
+		C35568F32C8B609600F2D4DD /* CorrectsNameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectsNameCell.swift; sourceTree = "<group>"; };
 		C359C3082BC1947300473B33 /* IncorrectAnswersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncorrectAnswersViewModel.swift; sourceTree = "<group>"; };
 		C3613A702A7FB82C006C0F1E /* GameTypeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeManager.swift; sourceTree = "<group>"; };
 		C36773F0296BF9E10096BCC5 /* QuizOfFlagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizOfFlagsViewController.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				C35568F12C89C6BC00F2D4DD /* CorrectsFlagCell.swift */,
+				C35568F32C8B609600F2D4DD /* CorrectsNameCell.swift */,
 				C38DF4DD2A8F4A5B00550BCC /* FlagCell.swift */,
 				C33653272A94CFF7008CF2C6 /* NameCell.swift */,
 				C3B3248B2C6DF843003BB31F /* FavoritesCell.swift */,
@@ -423,6 +426,7 @@
 				C3B3248C2C6DF843003BB31F /* FavoritesCell.swift in Sources */,
 				C3B3248A2C6DE277003BB31F /* FavoritesViewModel.swift in Sources */,
 				C36EC9FA2B2729D500ECF1EE /* ScrabbleViewController.swift in Sources */,
+				C35568F42C8B609600F2D4DD /* CorrectsNameCell.swift in Sources */,
 				C384F29D2C44206900827B9F /* Corrects.swift in Sources */,
 				C376AC0929474EB400DE5E86 /* StorageManager.swift in Sources */,
 				C34BA42A2A9E2C9B006E191D /* QuestionnaireViewController.swift in Sources */,

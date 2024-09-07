@@ -46,8 +46,7 @@ class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
     }
     var title = "Правильные ответы"
     var cell: AnyClass {
-//        isFlag ? FlagCell.self : NameCell.self
-        CorrectsFlagCell.self
+        isFlag ? CorrectsFlagCell.self : CorrectsNameCell.self
     }
     var numberOfRows: Int {
         corrects.count
@@ -94,14 +93,11 @@ class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
     }
     
     func customCell(cell: UITableViewCell, indexPath: IndexPath) {
-        /*
         if isFlag {
-            flagCell(cell: cell as! FlagCell, indexPath: indexPath)
+            correctFlagCell(cell: cell as! CorrectsFlagCell, indexPath: indexPath)
         } else {
-            nameCell(cell: cell as! NameCell, indexPath: indexPath)
+            correctNameCell(cell: cell as! CorrectsNameCell, indexPath: indexPath)
         }
-         */
-        correctFlagCell(cell: cell as! CorrectsFlagCell, indexPath: indexPath)
     }
     
     func setView(color: UIColor, radius: CGFloat, tag: Int? = nil) -> UIView {
@@ -201,21 +197,14 @@ extension CorrectAnswersViewModel {
     private func correctFlagCell(cell: CorrectsFlagCell, indexPath: IndexPath) {
         cell.image.image = UIImage(named: corrects[indexPath.row].question.flag)
         cell.progressView.progress = setProgress(value: corrects[indexPath.row].currentQuestion)
-        cell.title.text = setText(value: corrects[indexPath.row].currentQuestion)
+        cell.number.text = setText(value: corrects[indexPath.row].currentQuestion)
         cell.contentView.backgroundColor = backgroundLight
     }
     
-    private func flagCell(cell: FlagCell, indexPath: IndexPath) {
-        cell.image.image = UIImage(named: corrects[indexPath.row].question.flag)
+    private func correctNameCell(cell: CorrectsNameCell, indexPath: IndexPath) {
+        cell.name.text = corrects[indexPath.row].question.name
         cell.progressView.progress = setProgress(value: corrects[indexPath.row].currentQuestion)
-        cell.labelNumber.text = setText(value: corrects[indexPath.row].currentQuestion)
-        cell.contentView.backgroundColor = backgroundLight
-    }
-    
-    private func nameCell(cell: NameCell, indexPath: IndexPath) {
-        cell.nameCountry.text = corrects[indexPath.row].question.name
-        cell.progressView.progress = setProgress(value: corrects[indexPath.row].currentQuestion)
-        cell.labelNumber.text = setText(value: corrects[indexPath.row].currentQuestion)
+        cell.number.text = setText(value: corrects[indexPath.row].currentQuestion)
         cell.contentView.backgroundColor = backgroundLight
     }
     

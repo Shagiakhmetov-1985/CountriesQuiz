@@ -136,7 +136,7 @@ class FavoritesViewModel: FavoritesViewModelProtocol {
         timeUp = setLabel(title: title(favorite), font: "mr_fontick", size: 22, color: .white)
         setSubviews(subviews: viewSecondary, on: viewDetails)
         setSubviews(subviews: subview, stackView, timeUp, on: viewSecondary)
-        setConstraints(favourite: favorite, on: viewDetails)
+        setConstraints(favorite: favorite, on: viewDetails)
     }
     // MARK: - Constraints
     func setSquare(button: UIButton, sizes: CGFloat) {
@@ -551,7 +551,7 @@ extension FavoritesViewModel {
         }
     }
     
-    private func setConstraints(favourite: Favorites, on view: UIView) {
+    private func setConstraints(favorite: Favorites, on view: UIView) {
         NSLayoutConstraint.activate([
             viewSecondary.topAnchor.constraint(equalTo: view.topAnchor, constant: 52),
             viewSecondary.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -559,11 +559,11 @@ extension FavoritesViewModel {
             viewSecondary.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -53)
         ])
         
-        if favourite.isFlag {
+        if favorite.isFlag {
             NSLayoutConstraint.activate([
                 subview.topAnchor.constraint(equalTo: viewSecondary.topAnchor, constant: 25),
                 subview.centerXAnchor.constraint(equalTo: viewSecondary.centerXAnchor),
-                subview.widthAnchor.constraint(equalToConstant: width(favourite.flag)),
+                subview.widthAnchor.constraint(equalToConstant: width(favorite.flag)),
                 subview.heightAnchor.constraint(equalToConstant: 140)
             ])
         } else {
@@ -574,8 +574,8 @@ extension FavoritesViewModel {
             ])
         }
         
-        let constant: CGFloat = favourite.isFlag ? 15 : 7.5
-        let height: CGFloat = height(favourite)
+        let constant: CGFloat = favorite.isFlag ? 15 : 7.5
+        let height: CGFloat = height(favorite)
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: subview.bottomAnchor, constant: 25),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: constant),

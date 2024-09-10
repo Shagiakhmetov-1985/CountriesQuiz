@@ -20,7 +20,7 @@ protocol IncorrectAnswersViewModelProtocol {
     init(mode: Setting, game: Games, results: [Incorrects], favourites: [Favorites])
     
     func setBarButton(_ button: UIButton,_ navigationItem: UINavigationItem)
-    func setupSubviews(subviews: UIView..., on subviewOther: UIView)
+    func setSubviews(subviews: UIView..., on subviewOther: UIView)
     func customCell(cell: UITableViewCell, indexPath: IndexPath)
     func setView(color: UIColor, radius: CGFloat) -> UIView
     func setLabel(title: String, color: UIColor, size: CGFloat) -> UILabel
@@ -31,8 +31,13 @@ protocol IncorrectAnswersViewModelProtocol {
     func setSquare(button: UIButton, sizes: CGFloat)
     func setConstraints(_ button: UIButton,_ moreInfo: UIButton, on view: UIView)
     func setConstraints(_ label: UILabel, and image: UIImageView, on view: UIView)
+    func setConstraints(_ viewDetails: UIView, and button: UIButton, on view: UIView,_ indexPath: IndexPath)
     
-    func detailsViewModel(_ indexPath: Int) -> IncorrectViewModelProtocol
+    func buttonOnOff(button: UIButton, isOn: Bool)
+    func showAnimationView(_ viewDetails: UIView, _ button: UIButton, and visualEffect: UIVisualEffectView)
+    func hideAnimationView(_ viewDetails: UIView, _ button: UIButton, and visualEffect: UIVisualEffectView)
+    
+    func detailsViewModel() -> IncorrectViewModelProtocol
 }
 
 class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
@@ -60,6 +65,8 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
     private let mode: Setting
     private let game: Games
     private let incorrects: [Incorrects]
+    
+    private var indexPath: IndexPath!
     private var isFlag: Bool {
         mode.flag ? true : false
     }
@@ -91,7 +98,7 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
         navigationItem.leftBarButtonItem = leftButton
     }
     
-    func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
+    func setSubviews(subviews: UIView..., on subviewOther: UIView) {
         subviews.forEach { subview in
             subviewOther.addSubview(subview)
         }
@@ -134,12 +141,16 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
     }
     
     func setDetails(_ viewDetails: UIView, _ view: UIView, and indexPath: IndexPath) {
-        let incorrect = incorrects[indexPath.row]
+        let incorrect = setIndexPath(index: indexPath)
         viewSecondary = setView(color: backgroundLight, radius: 0)
         subview = setName(incorrect: incorrect)
         progressView = setProgressView(incorrect: incorrect)
         labelNumber = setLabel(title: setText(value: incorrect.currentQuestion), color: .white, size: 22)
-        stackView = 
+        stackView = setStackView(incorrect: incorrect, and: view)
+        timeUp = setLabel(title: title(incorrect), color: .white, size: 22)
+        setSubviews(subviews: viewSecondary, on: viewDetails)
+        setSubviews(subviews: subview, progressView, labelNumber, stackView, timeUp, on: viewSecondary)
+        setConstraints(incorrect: incorrect, on: viewDetails)
     }
     
     func setFavorites(newFavorites: [Favorites]) {
@@ -181,13 +192,61 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
         ])
     }
     
-    func detailsViewModel(_ indexPath: Int) -> IncorrectViewModelProtocol {
-        IncorrectViewModel(mode: mode, game: game, incorrect: incorrects[indexPath], 
+    func setConstraints(_ viewDetails: UIView, and button: UIButton,
+                        on view: UIView, _ indexPath: IndexPath) {
+        let constant: CGFloat = constant(incorrect: incorrects[indexPath.row])
+        NSLayoutConstraint.activate([
+            viewDetails.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            viewDetails.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: constant),
+            viewDetails.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            viewDetails.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
+        ])
+        
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.topAnchor.constraint(equalTo: viewDetails.bottomAnchor, constant: 25)
+        ])
+    }
+    
+    func buttonOnOff(button: UIButton, isOn: Bool) {
+        let opacity: Float = isOn ? 1 : 0
+        isEnabled(buttons: button, isOn: isOn)
+        setOpacityButtons(buttons: button, opacity: opacity)
+    }
+    
+    func showAnimationView(_ viewDetails: UIView, _ button: UIButton,
+                           and visualEffect: UIVisualEffectView) {
+        transform(subviews: viewDetails, button, transform: CGAffineTransform(scaleX: 0.6, y: 0.6))
+        alpha(subviews: viewDetails, button, alpha: 0)
+        UIView.animate(withDuration: 0.5) { [self] in
+            alpha(subviews: visualEffect, viewDetails, button, alpha: 1)
+            transform(subviews: viewDetails, button, transform: .identity)
+        }
+    }
+    
+    func hideAnimationView(_ viewDetails: UIView, _ button: UIButton,
+                           and visualEffect: UIVisualEffectView) {
+        UIView.animate(withDuration: 0.5) { [self] in
+            alpha(subviews: visualEffect, viewDetails, button, alpha: 0)
+            transform(subviews: viewDetails, button, transform: CGAffineTransform(scaleX: 0.6, y: 0.6))
+        } completion: { [self] _ in
+            removeSubviews(subviews: viewDetails, viewSecondary, subview,
+                           progressView, labelNumber, stackView, timeUp)
+        }
+    }
+    
+    func detailsViewModel() -> IncorrectViewModelProtocol {
+        IncorrectViewModel(mode: mode, game: game, incorrect: incorrects[indexPath.row],
                            favorites: favorites)
     }
 }
 // MARK: - Constants
 extension IncorrectAnswersViewModel {
+    private func setIndexPath(index: IndexPath) -> Incorrects {
+        indexPath = index
+        return incorrects[indexPath.row]
+    }
+    
     private func setProgress(value: Int) -> Float {
         Float(value) / Float(mode.countQuestions)
     }
@@ -210,18 +269,28 @@ extension IncorrectAnswersViewModel {
         cell.contentView.backgroundColor = backgroundLight
     }
     
-    private func background(incorrect: Incorrects, name: String) -> UIColor {
-        title(incorrect.question) == name ? correctBackground() : notSelectBackground()
+    private func background(_ incorrect: Incorrects,_ name: String, 
+                            and tag: Int) -> UIColor {
+        title(incorrect.question) == name ? correctBackground() : incorrectBackground(incorrect, tag)
     }
     
     private func correctBackground() -> UIColor {
+        game.gameType == .questionnaire ? .white : .greenYellowBrilliant
+    }
+    
+    private func incorrectBackground(_ incorrect: Incorrects, _ tag: Int) -> UIColor {
+        incorrect.tag == tag ? checkSelect() : checkNotSelect()
+    }
+    
+    private func checkSelect() -> UIColor {
         switch game.gameType {
-        case .quizOfFlags, .quizOfCapitals: .greenYellowBrilliant
-        default: .white
+        case .quizOfFlags: .redTangerineTango
+        case .questionnaire: .white
+        default: .bismarkFuriozo
         }
     }
     
-    private func notSelectBackground() -> UIColor {
+    private func checkNotSelect() -> UIColor {
         switch game.gameType {
         case .quizOfFlags: isFlag ? .whiteAlpha : .skyGrayLight
         case .questionnaire: .greenHarlequin
@@ -229,19 +298,25 @@ extension IncorrectAnswersViewModel {
         }
     }
     
-    private func textColor(incorrect: Incorrects, _ name: String, and tag: Int) -> UIColor {
-        title(incorrect.question) == name ? correctTextColor() : notSelectTextColor()
+    private func textColor(_ incorrect: Incorrects, _ name: String, 
+                           and tag: Int) -> UIColor {
+        title(incorrect.question) == name ? correctTextColor() : notSelectTextColor(incorrect, tag)
     }
     
     private func correctTextColor() -> UIColor {
         game.gameType == .questionnaire ? .greenHarlequin : .white
     }
     
-    private func notSelectTextColor() -> UIColor {
-        switch game.gameType {
-        case .quizOfFlags, .quizOfCapitals: .grayLight
-        default: .white
-        }
+    private func notSelectTextColor(_ incorrect: Incorrects, _ tag: Int) -> UIColor {
+        incorrect.tag == tag ? checkSelectText() : checkNotSelectText()
+    }
+    
+    private func checkSelectText() -> UIColor {
+        game.gameType == .questionnaire ? .redTangerineTango : .white
+    }
+    
+    private func checkNotSelectText() -> UIColor {
+        game.gameType == .questionnaire ? .white : .grayLight
     }
     
     private func checkmark(_ incorrect: Incorrects, _ name: String,
@@ -296,6 +371,29 @@ extension IncorrectAnswersViewModel {
         default: return setWidth(view)
         }
     }
+    
+    private func width(_ image: String) -> CGFloat {
+        switch image {
+        case "nepal", "vatican city", "switzerland": return 140
+        default: return 234
+        }
+    }
+    
+    private func title(_ incorrect: Incorrects) -> String {
+        incorrect.timeUp ? "Время вышло!" : ""
+    }
+    
+    private func constant(incorrect: Incorrects) -> CGFloat {
+        (isFlag ? 0.62 : 0.52) + name(incorrect) + timeUp(incorrect)
+    }
+    
+    private func name(_ incorrect: Incorrects) -> CGFloat {
+        isFlag ? 0 : incorrect.question.name.count > 23 ? 0.035 : 0
+    }
+    
+    private func timeUp(_ incorrect: Incorrects) -> CGFloat {
+        isFlag ? 0.035 : 0
+    }
 }
 // MARK: - Subviews
 extension IncorrectAnswersViewModel {
@@ -329,12 +427,52 @@ extension IncorrectAnswersViewModel {
     }
     
     private func setStackView(incorrect: Incorrects, and view: UIView) -> UIStackView {
-        
+        let first = setView(incorrect, title(incorrect.buttonFirst), 1, and: view)
+        let second = setView(incorrect, title(incorrect.buttonSecond), 2, and: view)
+        let third = setView(incorrect, title(incorrect.buttonThird), 3, and: view)
+        let fourth = setView(incorrect, title(incorrect.buttonFourth), 4, and: view)
+        if isFlag {
+            return setStackView(first, second, third, fourth)
+        } else {
+            return checkGameType(first, second, third, fourth)
+        }
     }
     
-    private func setView(incorrect: Incorrects, _ name: String, _ tag: Int,
+    private func setStackView(_ first: UIView, _ second: UIView, 
+                              _ third: UIView, _ fourth: UIView) -> UIStackView {
+        let stackView = UIStackView(
+            arrangedSubviews: [first, second, third, fourth])
+        stackView.axis = .vertical
+        stackView.spacing = 4
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    private func setStackView(_ first: UIView, _ second: UIView,
+                              axis: NSLayoutConstraint.Axis? = nil) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [first, second])
+        stackView.axis = axis ?? .horizontal
+        stackView.spacing = 4
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    private func checkGameType(_ first: UIView, _ second: UIView,
+                               _ third: UIView, _ fourth: UIView) -> UIStackView {
+        if game.gameType == .quizOfCapitals {
+            return setStackView(first, second, third, fourth)
+        } else {
+            let stackViewOne = setStackView(first, second)
+            let stackViewTwo = setStackView(third, fourth)
+            return setStackView(stackViewOne, stackViewTwo, axis: .vertical)
+        }
+    }
+    
+    private func setView(_ incorrect: Incorrects, _ name: String, _ tag: Int,
                          and view: UIView) -> UIView {
-        let background = background(incorrect: incorrect, name: name)
+        let background = background(incorrect, name, and: tag)
         let button = setView(color: background, radius: 12)
         button.layer.borderColor = UIColor.white.cgColor
         button.layer.borderWidth = game.gameType == .questionnaire ? 1.5 : 0
@@ -345,32 +483,69 @@ extension IncorrectAnswersViewModel {
     private func addSubviews(incorrect: Incorrects, _ name: String, 
                              _ button: UIView, and tag: Int, _ view: UIView) {
         if game.gameType == .questionnaire {
-            let subview = subview(incorrect: incorrect, and: name)
+            let subview = subview(incorrect, name, and: tag)
             let checkmark = setImage(image: checkmark(incorrect, name, tag),
                                      color: color(incorrect, name, tag), size: 26)
-            setupSubviews(subviews: subview, checkmark, on: button)
+            setSubviews(subviews: subview, checkmark, on: button)
             setConstraints(checkmark, and: subview, on: button, name, view)
         } else {
-            let subview = subview(incorrect: incorrect, and: name)
-            setupSubviews(subviews: subview, on: button)
+            let subview = subview(incorrect, name, and: tag)
+            setSubviews(subviews: subview, on: button)
             setConstraints(subview, on: button, name, view)
         }
     }
     
-    private func subview(incorrect: Incorrects, and name: String) -> UIView {
+    private func subview(_ incorrect: Incorrects, _ name: String, 
+                         and tag: Int) -> UIView {
         if isFlag {
-            let color = textColor(incorrect: incorrect, name: name)
-            
+            let color = textColor(incorrect, name, and: tag)
+            return setLabel(title: name, color: color, size: 21)
         } else {
-            
+            return setSubview(incorrect, name, and: tag)
         }
     }
     
-    private func setSubview(_ name: String, and tag: Int) -> UIView {
+    private func setSubview(_ incorrect: Incorrects, _ name: String,
+                            and tag: Int) -> UIView {
         if game.gameType == .quizOfCapitals {
-            
+            let color = textColor(incorrect, name, and: tag)
+            return setLabel(title: name, color: color, size: 21)
         } else {
-            
+            return setImage(image: name, radius: 8)
+        }
+    }
+}
+// MARK: - Show / hide subviews
+extension IncorrectAnswersViewModel {
+    private func isEnabled(buttons: UIButton..., isOn: Bool) {
+        buttons.forEach { button in
+            button.isEnabled = isOn
+        }
+    }
+    
+    private func setOpacityButtons(buttons: UIButton..., opacity: Float) {
+        buttons.forEach { button in
+            UIView.animate(withDuration: 0.5) {
+                button.layer.opacity = opacity
+            }
+        }
+    }
+    
+    private func transform(subviews: UIView..., transform: CGAffineTransform) {
+        subviews.forEach { subview in
+            subview.transform = transform
+        }
+    }
+    
+    private func alpha(subviews: UIView..., alpha: CGFloat) {
+        subviews.forEach { subview in
+            subview.alpha = alpha
+        }
+    }
+    
+    private func removeSubviews(subviews: UIView...) {
+        subviews.forEach { subview in
+            subview.removeFromSuperview()
         }
     }
 }
@@ -389,7 +564,7 @@ extension IncorrectAnswersViewModel {
     private func setConstraints(_ subview: UIView, on button: UIView,
                                 _ name: String, _ view: UIView) {
         if isFlag {
-            let constant: CGFloat = isFlag ? 40 : 10
+            let constant: CGFloat = game.gameType == .questionnaire ? 40 : 10
             NSLayoutConstraint.activate([
                 subview.centerYAnchor.constraint(equalTo: button.centerYAnchor),
                 subview.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: constant),
@@ -413,5 +588,55 @@ extension IncorrectAnswersViewModel {
         } else {
             return subview.centerXAnchor.constraint(equalTo: button.centerXAnchor)
         }
+    }
+    
+    private func setConstraints(incorrect: Incorrects, on view: UIView) {
+        NSLayoutConstraint.activate([
+            viewSecondary.topAnchor.constraint(equalTo: view.topAnchor, constant: 52),
+            viewSecondary.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            viewSecondary.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            viewSecondary.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -53)
+        ])
+        
+        if isFlag {
+            NSLayoutConstraint.activate([
+                subview.topAnchor.constraint(equalTo: viewSecondary.topAnchor, constant: 25),
+                subview.centerXAnchor.constraint(equalTo: viewSecondary.centerXAnchor),
+                subview.widthAnchor.constraint(equalToConstant: width(incorrect.question.flag)),
+                subview.heightAnchor.constraint(equalToConstant: 140)
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                subview.topAnchor.constraint(equalTo: viewSecondary.topAnchor, constant: 25),
+                subview.leadingAnchor.constraint(equalTo: viewSecondary.leadingAnchor, constant: 10),
+                subview.trailingAnchor.constraint(equalTo: viewSecondary.trailingAnchor, constant: -10)
+            ])
+        }
+        
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: subview.bottomAnchor, constant: 30),
+            progressView.leadingAnchor.constraint(equalTo: viewSecondary.leadingAnchor, constant: 10),
+            progressView.heightAnchor.constraint(equalToConstant: heightProgressView)
+        ])
+        
+        NSLayoutConstraint.activate([
+            labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
+            labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 15),
+            labelNumber.trailingAnchor.constraint(equalTo: viewSecondary.trailingAnchor, constant: -10),
+            labelNumber.widthAnchor.constraint(equalToConstant: 85)
+        ])
+        
+        let constant: CGFloat = isFlag ? 15 : 7.5
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: labelNumber.bottomAnchor, constant: 25),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: constant),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -constant),
+            stackView.heightAnchor.constraint(equalToConstant: heightStackView)
+        ])
+        
+        NSLayoutConstraint.activate([
+            timeUp.centerXAnchor.constraint(equalTo: viewSecondary.centerXAnchor),
+            timeUp.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10)
+        ])
     }
 }

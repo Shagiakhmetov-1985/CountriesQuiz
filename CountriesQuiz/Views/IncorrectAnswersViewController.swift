@@ -13,7 +13,7 @@ protocol IncorrectAnswersViewControllerDelegate {
 
 class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, IncorrectAnswersViewControllerDelegate {
     
-    private lazy var buttonBack: UIButton = {
+    private lazy var buttonClose: UIButton = {
         setButton(image: "multiply", action: #selector(exitToResults), isBarButton: true)
     }()
     
@@ -64,7 +64,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         let view = viewModel.setView(color: viewModel.backgroundDark, radius: 15)
         let button = setButton(image: "multiply", action: #selector(close))
         let moreInfo = setButton()
-        viewModel.setupSubviews(subviews: button, moreInfo, on: view)
+        viewModel.setSubviews(subviews: button, moreInfo, on: view)
         viewModel.setConstraints(button, moreInfo, on: view)
         return view
     }()
@@ -95,14 +95,11 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        /*
-        let incorrectViewModel = viewModel.detailsViewModel(indexPath.row)
-        let incorrectVC = IncorrectViewController()
-        incorrectVC.viewModel = incorrectViewModel
-        incorrectVC.delegate = self
-        navigationController?.pushViewController(incorrectVC, animated: true)
-         */
-        
+        viewModel.setDetails(viewDetails, view, and: indexPath)
+        viewModel.setSubviews(subviews: viewDetails, buttonFavorite, on: view)
+        viewModel.setConstraints(viewDetails, and: buttonFavorite, on: view, indexPath)
+        viewModel.buttonOnOff(button: buttonClose, isOn: false)
+        viewModel.showAnimationView(viewDetails, buttonFavorite, and: visualEffectView)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -115,12 +112,12 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     private func setupSubviews() {
-        viewModel.setupSubviews(subviews: stackView, tableView, visualEffectView,
-                                on: view)
+        viewModel.setSubviews(subviews: stackView, tableView, visualEffectView,
+                              on: view)
     }
     
     private func setupBarButton() {
-        viewModel.setBarButton(buttonBack, navigationItem)
+        viewModel.setBarButton(buttonClose, navigationItem)
     }
     
     @objc private func exitToResults() {
@@ -129,7 +126,8 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     @objc private func close() {
-        
+        viewModel.buttonOnOff(button: buttonClose, isOn: true)
+        viewModel.hideAnimationView(viewDetails, buttonFavorite, and: visualEffectView)
     }
     
     @objc private func addDeleteFavorite() {
@@ -137,7 +135,11 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     @objc private func moreInfo() {
-        
+        let incorrectViewModel = viewModel.detailsViewModel()
+        let incorrectVC = IncorrectViewController()
+        incorrectVC.viewModel = incorrectViewModel
+        incorrectVC.delegate = self
+        navigationController?.pushViewController(incorrectVC, animated: true)
     }
 }
 
@@ -167,7 +169,7 @@ extension IncorrectAnswersViewController {
         button.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(moreInfo), for: .touchUpInside)
-        viewModel.setupSubviews(subviews: label, image, on: button)
+        viewModel.setSubviews(subviews: label, image, on: button)
         viewModel.setConstraints(label, and: image, on: button)
         return button
     }
@@ -175,7 +177,14 @@ extension IncorrectAnswersViewController {
 // MARK: - Constraints
 extension IncorrectAnswersViewController {
     private func setupConstraints() {
-        viewModel.setSquare(button: buttonBack, sizes: 40)
+        viewModel.setSquare(button: buttonClose, sizes: 40)
+        
+        NSLayoutConstraint.activate([
+            visualEffectView.topAnchor.constraint(equalTo: view.topAnchor),
+            visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            visualEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
         
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),

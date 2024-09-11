@@ -25,6 +25,7 @@ protocol IncorrectAnswersViewModelProtocol {
     func setView(color: UIColor, radius: CGFloat) -> UIView
     func setLabel(title: String, color: UIColor, size: CGFloat) -> UILabel
     func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView
+    func setButtonFavorite(_ button: UIButton, and indexPath: IndexPath)
     func setDetails(_ viewDetails: UIView,_ view: UIView, and indexPath: IndexPath)
     func setFavorites(newFavorites: [Favorites])
     
@@ -36,6 +37,7 @@ protocol IncorrectAnswersViewModelProtocol {
     func buttonOnOff(button: UIButton, isOn: Bool)
     func showAnimationView(_ viewDetails: UIView, _ button: UIButton, and visualEffect: UIVisualEffectView)
     func hideAnimationView(_ viewDetails: UIView, _ button: UIButton, and visualEffect: UIVisualEffectView)
+    func addOrDeleteFavorite(_ button: UIButton)
     
     func detailsViewModel() -> IncorrectViewModelProtocol
 }
@@ -76,6 +78,24 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
     }
     private var heightStackView: CGFloat {
         isFlag ? 205 : 225
+    }
+    private var americanContinent: [String] {
+        FlagsOfCountries.shared.imagesOfAmericanContinent
+    }
+    private var europeanContinent: [String] {
+        FlagsOfCountries.shared.imagesOfEuropeanContinent
+    }
+    private var africanContinent: [String] {
+        FlagsOfCountries.shared.imagesOfAfricanContinent
+    }
+    private var asianContinent: [String] {
+        FlagsOfCountries.shared.imagesOfAsianContinent
+    }
+    private var oceanContinent: [String] {
+        FlagsOfCountries.shared.imagesOfOceanContinent
+    }
+    private var key: String {
+        game.keys
     }
     
     private var viewSecondary: UIView!
@@ -138,6 +158,13 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
         imageView.tintColor = color
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
+    }
+    
+    func setButtonFavorite(_ button: UIButton, and indexPath: IndexPath) {
+        let flag = incorrects[indexPath.row].question.flag
+        let size = UIImage.SymbolConfiguration(pointSize: 26)
+        let image = UIImage(systemName: setImage(flag), withConfiguration: size)
+        button.setImage(image, for: .normal)
     }
     
     func setDetails(_ viewDetails: UIView, _ view: UIView, and indexPath: IndexPath) {
@@ -233,6 +260,15 @@ class IncorrectAnswersViewModel: IncorrectAnswersViewModelProtocol {
             removeSubviews(subviews: viewDetails, viewSecondary, subview,
                            progressView, labelNumber, stackView, timeUp)
         }
+    }
+    
+    func addOrDeleteFavorite(_ button: UIButton) {
+        let size = UIImage.SymbolConfiguration(pointSize: 26)
+        let currentImage = button.currentImage?.withConfiguration(size)
+        let image = UIImage(systemName: "star", withConfiguration: size)
+        let isFill = currentImage == image ? true : false
+        setButton(button, isFill)
+        setFavorite(isFill: isFill)
     }
     
     func detailsViewModel() -> IncorrectViewModelProtocol {
@@ -384,7 +420,7 @@ extension IncorrectAnswersViewModel {
     }
     
     private func constant(incorrect: Incorrects) -> CGFloat {
-        (isFlag ? 0.62 : 0.52) + name(incorrect) + timeUp(incorrect)
+        (isFlag ? 0.66 : 0.56) + name(incorrect) + timeUp(incorrect)
     }
     
     private func name(_ incorrect: Incorrects) -> CGFloat {
@@ -392,7 +428,80 @@ extension IncorrectAnswersViewModel {
     }
     
     private func timeUp(_ incorrect: Incorrects) -> CGFloat {
-        isFlag ? 0.035 : 0
+        isTimeUp() ? 0.035 : 0
+    }
+    
+    private func setImage(_ flag: String) -> String {
+        if let _ = favorites.first(where: { $0.flag == flag }) {
+            "star.fill"
+        } else {
+            "star"
+        }
+    }
+    
+    private func continent() -> String {
+        search(continents: americanContinent, europeanContinent,
+               africanContinent, asianContinent, oceanContinent)
+    }
+    
+    private func search(continents: [String]...) -> String {
+        let flag = incorrects[indexPath.row].question.flag
+        var setContinent = String()
+        var counter = 0
+        for continent in continents {
+            if continent.contains(where: { $0 == flag }) {
+                setContinent = getContinent(counter: counter)
+                break
+            }
+            counter += 1
+        }
+        return setContinent
+    }
+    
+    private func getContinent(counter: Int) -> String {
+        switch counter {
+        case 0: "Континент Америки"
+        case 1: "Континент Европы"
+        case 2: "Континент Африки"
+        case 3: "Континент Азии"
+        default: "Континент Океании"
+        }
+    }
+    
+    private func flag() -> String {
+        incorrects[indexPath.row].question.flag
+    }
+    
+    private func name() -> String {
+        incorrects[indexPath.row].question.name
+    }
+    
+    private func capital() -> String {
+        incorrects[indexPath.row].question.capitals
+    }
+    
+    private func answerFirst() -> String {
+        title(incorrects[indexPath.row].buttonFirst)
+    }
+    
+    private func answerSecond() -> String {
+        title(incorrects[indexPath.row].buttonSecond)
+    }
+    
+    private func answerThird() -> String {
+        title(incorrects[indexPath.row].buttonThird)
+    }
+    
+    private func answerFourth() -> String {
+        title(incorrects[indexPath.row].buttonFourth)
+    }
+    
+    private func tag() -> Int {
+        incorrects[indexPath.row].tag
+    }
+    
+    private func isTimeUp() -> Bool {
+        incorrects[indexPath.row].timeUp
     }
 }
 // MARK: - Subviews
@@ -638,5 +747,32 @@ extension IncorrectAnswersViewModel {
             timeUp.centerXAnchor.constraint(equalTo: viewSecondary.centerXAnchor),
             timeUp.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10)
         ])
+    }
+}
+// MARK: - Add or delete favorite
+extension IncorrectAnswersViewModel {
+    private func setButton(_ button: UIButton, _ isFill: Bool) {
+        let systemName = isFill ? "star.fill" : "star"
+        let size = UIImage.SymbolConfiguration(pointSize: 26)
+        let image = UIImage(systemName: systemName, withConfiguration: size)
+        button.setImage(image, for: .normal)
+    }
+    
+    private func setFavorite(isFill: Bool) {
+        if isFill {
+            favorites.append(newFavorite())
+            StorageManager.shared.addFavorite(favorite: newFavorite(), key: key)
+        } else {
+            guard let index = favorites.firstIndex(where: { $0.flag == flag() }) else { return }
+            favorites.remove(at: index)
+            StorageManager.shared.deleteFavorite(favorite: index, key: key)
+        }
+    }
+    
+    private func newFavorite() -> Favorites {
+        Favorites(flag: flag(), name: name(), capital: capital(), continent: continent(),
+                  buttonFirst: answerFirst(), buttonSecond: answerSecond(),
+                  buttonThird: answerThird(), buttonFourth: answerFourth(),
+                  tag: tag(), isFlag: isFlag, isTimeUp: isTimeUp())
     }
 }

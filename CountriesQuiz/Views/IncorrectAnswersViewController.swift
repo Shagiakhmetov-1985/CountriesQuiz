@@ -22,10 +22,12 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
     }()
     
     private lazy var visualEffectView: UIVisualEffectView = {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(close))
         let blurEffect = UIBlurEffect(style: .dark)
         let visualEffectView = UIVisualEffectView(effect: blurEffect)
         visualEffectView.alpha = 0
         visualEffectView.translatesAutoresizingMaskIntoConstraints = false
+        visualEffectView.addGestureRecognizer(tap)
         return visualEffectView
     }()
     
@@ -99,6 +101,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         viewModel.setSubviews(subviews: viewDetails, buttonFavorite, on: view)
         viewModel.setConstraints(viewDetails, and: buttonFavorite, on: view, indexPath)
         viewModel.buttonOnOff(button: buttonClose, isOn: false)
+        viewModel.setButtonFavorite(buttonFavorite, and: indexPath)
         viewModel.showAnimationView(viewDetails, buttonFavorite, and: visualEffectView)
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -130,8 +133,8 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         viewModel.hideAnimationView(viewDetails, buttonFavorite, and: visualEffectView)
     }
     
-    @objc private func addDeleteFavorite() {
-        
+    @objc private func addDeleteFavorite(sender: UIButton) {
+        viewModel.addOrDeleteFavorite(sender)
     }
     
     @objc private func moreInfo() {
@@ -140,6 +143,7 @@ class IncorrectAnswersViewController: UIViewController, UITableViewDelegate, UIT
         incorrectVC.viewModel = incorrectViewModel
         incorrectVC.delegate = self
         navigationController?.pushViewController(incorrectVC, animated: true)
+        close()
     }
 }
 

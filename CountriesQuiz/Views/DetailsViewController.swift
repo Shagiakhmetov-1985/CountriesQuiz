@@ -230,11 +230,11 @@ extension DetailsViewController {
             viewTopPanel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             viewTopPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             viewTopPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            viewTopPanel.heightAnchor.constraint(equalToConstant: 5)
+            viewTopPanel.heightAnchor.constraint(equalToConstant: 10)
         ])
         
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: viewTopPanel.bottomAnchor, constant: 5),
+            scrollView.topAnchor.constraint(equalTo: viewTopPanel.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -115)

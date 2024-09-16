@@ -478,7 +478,7 @@ extension DetailsViewModel {
         
         NSLayoutConstraint.activate([
             label.centerYAnchor.constraint(equalTo: viewDetails.centerYAnchor),
-            label.leadingAnchor.constraint(equalTo: viewIcon.trailingAnchor, constant: 5),
+            label.leadingAnchor.constraint(equalTo: viewIcon.trailingAnchor, constant: 10),
             label.trailingAnchor.constraint(equalTo: viewDetails.trailingAnchor, constant: -10)
         ])
     }

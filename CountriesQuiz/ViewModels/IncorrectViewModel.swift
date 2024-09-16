@@ -10,6 +10,7 @@ import UIKit
 protocol IncorrectViewModelProtocol {
     var background: UIColor { get }
     var radius: CGFloat { get }
+    var flag: String { get }
     var numberQuestion: String { get }
     var progress: Float { get }
     var buttonFirst: Countries { get }
@@ -18,20 +19,30 @@ protocol IncorrectViewModelProtocol {
     var buttonFourth: Countries { get }
     var heightStackView: CGFloat { get }
     var favorites: [Favorites] { get }
+    var title: String { get }
+    var name: String { get }
+    var capital: String { get }
+    var continent: String { get }
     
     init(mode: Setting, game: Games, incorrect: Incorrects, favorites: [Favorites])
     func setSubviews(subviews: UIView..., on otherSubview: UIView)
     func setBarButton(_ buttonBack: UIButton,_ buttonFavourites: UIButton,_ navigationItem: UINavigationItem)
     
-    func question() -> UIView
     func view(_ button: Countries, addSubview: UIView, and tag: Int) -> UIView
     func subview(button: Countries, and tag: Int) -> UIView
     func stackView(_ first: UIView,_ second: UIView,_ third: UIView,_ fourth: UIView) -> UIStackView
+    func setView() -> UIView
+    func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView
+    func setView(addSubview: UIView) -> UIView
+    func setView(_ viewFlag: UIView, and imageFlag: UIImageView) -> UIView
+    func setView(subviews: UIView...) -> UIView
+    func setLabel(text: String, color: UIColor, font: String, size: CGFloat) -> UILabel
+    func setView(_ viewNumber: UIView, _ progressView: UIProgressView, and labelNumber: UILabel) -> UIView
+    func setView(_ viewIcon: UIView, _ label: UILabel) -> UIView
     
     func widthStackView(_ view: UIView) -> CGFloat
     func imageFavorites() -> String
     
-    func constraintsQuestion(_ subview: UIView, _ view: UIView)
     func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView,_ flag: String)
     func setSquare(_ buttons: UIButton..., sizes: CGFloat)
     func addOrDeleteFavorite(_ button: UIButton)
@@ -39,9 +50,12 @@ protocol IncorrectViewModelProtocol {
 
 class IncorrectViewModel: IncorrectViewModelProtocol {
     var background: UIColor {
-        game.background
+        game.swap
     }
     let radius: CGFloat = 6
+    var flag: String {
+        incorrect.question.flag
+    }
     var numberQuestion: String {
         "\(incorrect.currentQuestion) / \(mode.countQuestions)"
     }
@@ -63,6 +77,16 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     var heightStackView: CGFloat {
         isFlag ? 215 : 235
     }
+    var title: String = "   Добавить в избранное"
+    var name: String {
+        incorrect.question.name
+    }
+    var capital: String {
+        incorrect.question.capitals
+    }
+    var continent: String {
+        setContinent()
+    }
     
     var favorites: [Favorites]
     private let mode: Setting
@@ -70,18 +94,6 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     private let incorrect: Incorrects
     private var isFlag: Bool {
         mode.flag ? true : false
-    }
-    private var flag: String {
-        incorrect.question.flag
-    }
-    private var name: String {
-        incorrect.question.name
-    }
-    private var capital: String {
-        incorrect.question.capitals
-    }
-    private var continent: String {
-        setContinent()
     }
     private var answerFirst: String {
         buttonName(buttonFirst)
@@ -104,6 +116,7 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     private var key: String {
         game.keys
     }
+    private let constant: CGFloat = 58
     private var americanContinent: [String] {
         FlagsOfCountries.shared.imagesOfAmericanContinent
     }
@@ -154,14 +167,6 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
         }
     }
     // MARK: - Subviews
-    func question() -> UIView {
-        if isFlag {
-            setImage(image: UIImage(named: flag))
-        } else {
-            setLabel(text: name, size: 32, color: .white)
-        }
-    }
-    
     func view(_ button: Countries, addSubview: UIView, and tag: Int) -> UIView {
         let view = UIView()
         view.backgroundColor = backgroundColor(button, tag)
@@ -175,7 +180,7 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     
     func subview(button: Countries, and tag: Int) -> UIView {
         if isFlag {
-            setLabel(text: text(button), size: 23, color: textColor(button, tag))
+            setLabel(text: text(button), color: textColor(button, tag), font: "mr_fontick", size: 23)
         } else {
             setSubview(button: button, tag: tag)
         }
@@ -189,24 +194,73 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
             checkGameType(first, second, third, fourth)
         }
     }
-    // MARK: - Set constraints
-    func constraintsQuestion(_ subview: UIView, _ view: UIView) {
-        if isFlag {
-            NSLayoutConstraint.activate([
-                subview.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-                subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                subview.widthAnchor.constraint(equalToConstant: width(flag)),
-                subview.heightAnchor.constraint(equalToConstant: 168)
-            ])
-        } else {
-            NSLayoutConstraint.activate([
-                subview.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
-                subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                subview.widthAnchor.constraint(equalToConstant: widthStackView(view))
-            ])
-        }
+    
+    func setView() -> UIView {
+        let view = UIView()
+        view.backgroundColor = background
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }
     
+    func setImage(image: String, color: UIColor, size: CGFloat) -> UIImageView {
+        let size = UIImage.SymbolConfiguration(pointSize: size)
+        let image = UIImage(systemName: image, withConfiguration: size)
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = color
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }
+    
+    func setView(addSubview: UIView) -> UIView {
+        let view = setView(color: game.favorite)
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+        view.addSubview(addSubview)
+        setConstraints(subview: addSubview, on: view)
+        return view
+    }
+    
+    func setView(_ viewFlag: UIView, and imageFlag: UIImageView) -> UIView {
+        let view = setView(color: game.background)
+        setSubviews(subviews: viewFlag, imageFlag, on: view)
+        setConstraints(viewFlag, and: imageFlag, on: view)
+        return view
+    }
+    
+    func setView(subviews: UIView...) -> UIView {
+        let view = setView(color: background)
+        subviews.forEach { subview in
+            view.addSubview(subview)
+        }
+        return view
+    }
+    
+    func setView(_ viewNumber: UIView, _ progressView: UIProgressView, 
+                 and labelNumber: UILabel) -> UIView {
+        let view = setView(color: game.background)
+        setSubviews(subviews: viewNumber, progressView, labelNumber, on: view)
+        setConstraints(viewNumber, progressView, and: labelNumber, on: view)
+        return view
+    }
+    
+    func setView(_ viewIcon: UIView, _ label: UILabel) -> UIView {
+        let view = setView(color: game.background)
+        setSubviews(subviews: viewIcon, label, on: view)
+        setConstraints(viewIcon, and: label, on: view)
+        return view
+    }
+    
+    func setLabel(text: String, color: UIColor, font: String, 
+                  size: CGFloat) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.textColor = color
+        label.font = UIFont(name: font, size: size)
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+    // MARK: - Set constraints
     func setConstraints(_ subview: UIView, on button: UIView, _ view: UIView,
                         _ flag: String) {
         if isFlag {
@@ -317,8 +371,8 @@ extension IncorrectViewModel {
     
     private func width(_ image: String) -> CGFloat {
         switch image {
-        case "nepal", "vatican city", "switzerland": return 168
-        default: return 280
+        case "nepal", "vatican city", "switzerland": return 134
+        default: return 210
         }
     }
     
@@ -377,6 +431,13 @@ extension IncorrectViewModel {
         default: "Континент Океании"
         }
     }
+    
+    private func buttonName(_ button: Countries) -> String {
+        switch game.gameType {
+        case .quizOfCapitals: button.capitals
+        default: isFlag ? button.name : button.flag
+        }
+    }
 }
 // MARK: - Set subviews
 extension IncorrectViewModel {
@@ -394,7 +455,7 @@ extension IncorrectViewModel {
     
     private func setSubview(button: Countries, tag: Int) -> UIView {
         if game.gameType == .quizOfCapitals {
-            setLabel(text: button.capitals, size: 23, color: textColor(button, tag))
+            setLabel(text: button.capitals, color: textColor(button, tag), font: "mr_fontick", size: 23)
         } else {
             setImage(image: UIImage(named: button.flag))
         }
@@ -416,17 +477,6 @@ extension IncorrectViewModel {
         imageView.tintColor = color
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
-    }
-
-    private func setLabel(text: String, size: CGFloat, color: UIColor) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = UIFont(name: "mr_fontick", size: size)
-        label.textColor = color
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
     }
     
     private func setStackView(_ first: UIView, _ second: UIView,
@@ -460,6 +510,14 @@ extension IncorrectViewModel {
             return setStackView(stackViewOne, stackViewTwo, axis: .vertical)
         }
     }
+    
+    private func setView(color: UIColor) -> UIView {
+        let view = UIView()
+        view.backgroundColor = color
+        view.layer.cornerRadius = 15
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }
 }
 // MARK: - Private methods, constraints
 extension IncorrectViewModel {
@@ -481,11 +539,65 @@ extension IncorrectViewModel {
         }
     }
     
-    private func buttonName(_ button: Countries) -> String {
-        switch game.gameType {
-        case .quizOfCapitals: button.capitals
-        default: isFlag ? button.name : button.flag
-        }
+    private func setConstraints(subview: UIView, on view: UIView) {
+        NSLayoutConstraint.activate([
+            subview.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            subview.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    private func setConstraints(_ viewFlag: UIView, and imageFlag: UIImageView, 
+                                on viewDetails: UIView) {
+        NSLayoutConstraint.activate([
+            viewFlag.topAnchor.constraint(equalTo: viewDetails.topAnchor),
+            viewFlag.leadingAnchor.constraint(equalTo: viewDetails.leadingAnchor),
+            viewFlag.bottomAnchor.constraint(equalTo: viewDetails.bottomAnchor),
+            viewFlag.trailingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: constant)
+        ])
+        
+        NSLayoutConstraint.activate([
+            imageFlag.centerXAnchor.constraint(equalTo: viewDetails.centerXAnchor, constant: constant / 2),
+            imageFlag.centerYAnchor.constraint(equalTo: viewDetails.centerYAnchor),
+            imageFlag.widthAnchor.constraint(equalToConstant: width(flag)),
+            imageFlag.heightAnchor.constraint(equalToConstant: 134)
+        ])
+    }
+    
+    private func setConstraints(_ viewNumber: UIView, _ progressView: UIProgressView, 
+                                and labelNumber: UILabel, on viewDetails: UIView) {
+        NSLayoutConstraint.activate([
+            viewNumber.topAnchor.constraint(equalTo: viewDetails.topAnchor),
+            viewNumber.leadingAnchor.constraint(equalTo: viewDetails.leadingAnchor),
+            viewNumber.bottomAnchor.constraint(equalTo: viewDetails.bottomAnchor),
+            viewNumber.trailingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: constant)
+        ])
+        
+        NSLayoutConstraint.activate([
+            progressView.centerYAnchor.constraint(equalTo: viewDetails.centerYAnchor),
+            progressView.leadingAnchor.constraint(equalTo: viewNumber.trailingAnchor, constant: 8),
+            progressView.trailingAnchor.constraint(equalTo: labelNumber.leadingAnchor, constant: -8),
+            progressView.heightAnchor.constraint(equalToConstant: radius * 2)
+        ])
+        
+        NSLayoutConstraint.activate([
+            labelNumber.centerYAnchor.constraint(equalTo: viewDetails.centerYAnchor),
+            labelNumber.trailingAnchor.constraint(equalTo: viewDetails.trailingAnchor, constant: -10)
+        ])
+    }
+    
+    private func setConstraints(_ view: UIView, and label: UILabel, on viewDetails: UIView) {
+        NSLayoutConstraint.activate([
+            view.topAnchor.constraint(equalTo: viewDetails.topAnchor),
+            view.leadingAnchor.constraint(equalTo: viewDetails.leadingAnchor),
+            view.bottomAnchor.constraint(equalTo: viewDetails.bottomAnchor),
+            view.trailingAnchor.constraint(equalTo: viewDetails.leadingAnchor, constant: constant)
+        ])
+        
+        NSLayoutConstraint.activate([
+            label.centerYAnchor.constraint(equalTo: viewDetails.centerYAnchor),
+            label.leadingAnchor.constraint(equalTo: view.trailingAnchor, constant: 10),
+            label.trailingAnchor.constraint(equalTo: viewDetails.trailingAnchor, constant: -10)
+        ])
     }
 }
 // MARK: - Add or delete favorites

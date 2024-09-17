@@ -13,10 +13,12 @@ class CorrectAnswersViewController: UIViewController, UITableViewDelegate, UITab
     }()
     
     private lazy var visualEffectView: UIVisualEffectView = {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(close))
         let blurEffect = UIBlurEffect(style: .dark)
         let visualEffectView = UIVisualEffectView(effect: blurEffect)
         visualEffectView.alpha = 0
         visualEffectView.translatesAutoresizingMaskIntoConstraints = false
+        visualEffectView.addGestureRecognizer(tap)
         return visualEffectView
     }()
     

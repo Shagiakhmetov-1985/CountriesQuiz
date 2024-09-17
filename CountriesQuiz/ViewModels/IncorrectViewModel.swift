@@ -20,13 +20,16 @@ protocol IncorrectViewModelProtocol {
     var heightStackView: CGFloat { get }
     var favorites: [Favorites] { get }
     var title: String { get }
+    var image: String { get }
     var name: String { get }
     var capital: String { get }
     var continent: String { get }
+    var timeUp: String { get }
+    var height: CGFloat { get }
     
     init(mode: Setting, game: Games, incorrect: Incorrects, favorites: [Favorites])
     func setSubviews(subviews: UIView..., on otherSubview: UIView)
-    func setBarButton(_ buttonBack: UIButton,_ buttonFavourites: UIButton,_ navigationItem: UINavigationItem)
+    func setBarButton(_ buttonBack: UIButton,_ navigationItem: UINavigationItem)
     
     func view(_ button: Countries, addSubview: UIView, and tag: Int) -> UIView
     func subview(button: Countries, and tag: Int) -> UIView
@@ -39,11 +42,10 @@ protocol IncorrectViewModelProtocol {
     func setLabel(text: String, color: UIColor, font: String, size: CGFloat) -> UILabel
     func setView(_ viewNumber: UIView, _ progressView: UIProgressView, and labelNumber: UILabel) -> UIView
     func setView(_ viewIcon: UIView, _ label: UILabel) -> UIView
+    func setView(first: UIImageView, second: UIImageView) -> UIView
+    func setView(_ viewIcons: UIView, _ stackView: UIStackView, and timeUp: UILabel) -> UIView
     
-    func widthStackView(_ view: UIView) -> CGFloat
-    func imageFavorites() -> String
-    
-    func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView,_ flag: String)
+    func setConstraints(_ subview: UIView, on button: UIView,_ view: UIView)
     func setSquare(_ buttons: UIButton..., sizes: CGFloat)
     func addOrDeleteFavorite(_ button: UIButton)
 }
@@ -75,9 +77,22 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
         incorrect.buttonFourth
     }
     var heightStackView: CGFloat {
-        isFlag ? 215 : 235
+        isFlag ? 205 : 225
     }
-    var title: String = "   Добавить в избранное"
+    var title: String {
+        if let _ = favorites.first(where: { $0.flag == flag }) {
+            "   Удалить из избранных"
+        } else {
+            "   Добавить в избранное"
+        }
+    }
+    var image: String {
+        if let _ = favorites.first(where: { $0.flag == flag }) {
+            "star.fill"
+        } else {
+            "star"
+        }
+    }
     var name: String {
         incorrect.question.name
     }
@@ -86,6 +101,12 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     }
     var continent: String {
         setContinent()
+    }
+    var timeUp: String {
+        incorrect.timeUp ? "Время вышло!" : ""
+    }
+    var height: CGFloat {
+        heightStackView + constant + (incorrect.timeUp ? 44 : 0) + 10
     }
     
     var favorites: [Favorites]
@@ -147,24 +168,9 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
         }
     }
     
-    func setBarButton(_ buttonBack: UIButton, _ buttonFavourites: UIButton,
-                      _ navigationItem: UINavigationItem) {
+    func setBarButton(_ buttonBack: UIButton, _ navigationItem: UINavigationItem) {
         let leftBarButton = UIBarButtonItem(customView: buttonBack)
-        let rightBarButton = UIBarButtonItem(customView: buttonFavourites)
         navigationItem.leftBarButtonItem = leftBarButton
-        navigationItem.rightBarButtonItem = rightBarButton
-    }
-    // MARK: - Constants
-    func widthStackView(_ view: UIView) -> CGFloat {
-        isFlag ? view.bounds.width - 40 : view.bounds.width - 20
-    }
-    
-    func imageFavorites() -> String {
-        if let _ = favorites.first(where: { $0.flag == flag }) {
-            "star.fill"
-        } else {
-            "star"
-        }
     }
     // MARK: - Subviews
     func view(_ button: Countries, addSubview: UIView, and tag: Int) -> UIView {
@@ -249,6 +255,22 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
         return view
     }
     
+    func setView(first: UIImageView, second: UIImageView) -> UIView {
+        let view = setView(color: game.favorite)
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        setSubviews(subviews: first, second, on: view)
+        setConstraints(first, and: second, on: view)
+        return view
+    }
+    
+    func setView(_ viewIcons: UIView, _ stackView: UIStackView, 
+                 and timeUp: UILabel) -> UIView {
+        let view = setView(color: game.background)
+        setSubviews(subviews: viewIcons, stackView, timeUp, on: view)
+        setConstraints(viewIcons, stackView, and: timeUp, on: view)
+        return view
+    }
+    
     func setLabel(text: String, color: UIColor, font: String, 
                   size: CGFloat) -> UILabel {
         let label = UILabel()
@@ -261,8 +283,7 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
         return label
     }
     // MARK: - Set constraints
-    func setConstraints(_ subview: UIView, on button: UIView, _ view: UIView,
-                        _ flag: String) {
+    func setConstraints(_ subview: UIView, on button: UIView, _ view: UIView) {
         if isFlag {
             let constant: CGFloat = game.gameType == .questionnaire ? 50 : 20
             NSLayoutConstraint.activate([
@@ -271,6 +292,7 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
                 subview.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -20)
             ])
         } else {
+            let flag = flagName(subview)
             NSLayoutConstraint.activate([
                 layoutConstraint(subview: subview, on: button, view),
                 subview.centerYAnchor.constraint(equalTo: button.centerYAnchor),
@@ -290,13 +312,12 @@ class IncorrectViewModel: IncorrectViewModelProtocol {
     }
     
     func addOrDeleteFavorite(_ button: UIButton) {
-        let pointSize: CGFloat = button.tag == 1 ? 33 : 20
-        let size = UIImage.SymbolConfiguration(pointSize: pointSize)
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
         let currentImage = button.currentImage?.withConfiguration(size)
         let image = UIImage(systemName: "star", withConfiguration: size)
-        let bool = currentImage == image ? true : false
-        setButton(button, isFill: bool)
-        setFavorites(isFill: bool)
+        let isOn = currentImage == image ? true : false
+        setButton(button, isFill: isOn)
+        setFavorites(isFill: isOn)
     }
 }
 // MARK: - Private methods, constants
@@ -377,14 +398,14 @@ extension IncorrectViewModel {
     }
     
     private func setCenter(_ view: UIView) -> CGFloat {
-        let buttonWidth = ((view.frame.width - 20) / 2) - 4
+        let buttonWidth = (view.frame.width - 34) / 2
         let flagWidth = buttonWidth - 45
         let centerFlag = flagWidth / 2 + 5
         return buttonWidth / 2 - centerFlag
     }
     
     private func setWidth(_ view: UIView) -> CGFloat {
-        let buttonWidth = ((view.frame.width - 20) / 2) - 4
+        let buttonWidth = (view.frame.width - 34) / 2
         if game.gameType == .questionnaire {
             return buttonWidth - 45
         } else {
@@ -393,7 +414,7 @@ extension IncorrectViewModel {
     }
     
     private func setHeight() -> CGFloat {
-        let buttonHeight = heightStackView / 2 - 4
+        let buttonHeight = (heightStackView - 4) / 2
         return buttonHeight - 10
     }
     
@@ -436,6 +457,15 @@ extension IncorrectViewModel {
         switch game.gameType {
         case .quizOfCapitals: button.capitals
         default: isFlag ? button.name : button.flag
+        }
+    }
+    
+    private func flagName(_ subview: UIView) -> String {
+        switch subview.tag {
+        case 1: buttonFirst.flag
+        case 2: buttonSecond.flag
+        case 3: buttonThird.flag
+        default: buttonFourth.flag
         }
     }
 }
@@ -484,7 +514,7 @@ extension IncorrectViewModel {
         let stackView = UIStackView(
             arrangedSubviews: [first, second, third, fourth])
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = 4
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -494,7 +524,7 @@ extension IncorrectViewModel {
                               axis: NSLayoutConstraint.Axis? = nil) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [first, second])
         stackView.axis = axis ?? .horizontal
-        stackView.spacing = 8
+        stackView.spacing = 4
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -599,15 +629,48 @@ extension IncorrectViewModel {
             label.trailingAnchor.constraint(equalTo: viewDetails.trailingAnchor, constant: -10)
         ])
     }
+    
+    private func setConstraints(_ first: UIImageView, and second: UIImageView, 
+                                on view: UIView) {
+        NSLayoutConstraint.activate([
+            first.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: -21.5),
+            first.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            second.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 21.5),
+            second.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    private func setConstraints(_ viewIcons: UIView, _ stackView: UIStackView, 
+                                and timeUp: UILabel, on view: UIView) {
+        NSLayoutConstraint.activate([
+            viewIcons.topAnchor.constraint(equalTo: view.topAnchor),
+            viewIcons.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            viewIcons.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            viewIcons.bottomAnchor.constraint(equalTo: view.topAnchor, constant: constant)
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: viewIcons.bottomAnchor, constant: 5),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
+            stackView.heightAnchor.constraint(equalToConstant: heightStackView)
+        ])
+        
+        NSLayoutConstraint.activate([
+            timeUp.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            timeUp.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10)
+        ])
+    }
 }
 // MARK: - Add or delete favorites
 extension IncorrectViewModel {
     private func setButton(_ button: UIButton, isFill: Bool) {
-        let pointSize: CGFloat = button.tag == 1 ? 33 : 20
         let systemName = isFill ? "star.fill" : "star"
-        let size = UIImage.SymbolConfiguration(pointSize: pointSize)
-        let setImage = UIImage(systemName: systemName, withConfiguration: size)
-        button.setImage(setImage, for: .normal)
+        let title = isFill ? "Удалить из избранных" : "Добавить в избранное"
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
+        let image = UIImage(systemName: systemName, withConfiguration: size)
+        button.setImage(image, for: .normal)
+        button.setTitle("   " + title, for: .normal)
     }
     
     private func setFavorites(isFill: Bool) {

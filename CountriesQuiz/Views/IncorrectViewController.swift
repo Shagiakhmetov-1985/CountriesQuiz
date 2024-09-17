@@ -12,10 +12,6 @@ class IncorrectViewController: UIViewController {
         setButton(image: "arrow.left", action: #selector(backToList))
     }()
     
-    private lazy var buttonFavourites: UIButton = {
-        setButton(image: viewModel.imageFavorites(), action: #selector(favorites))
-    }()
-    
     private lazy var viewTopPanel: UIView = {
         viewModel.setView()
     }()
@@ -115,6 +111,18 @@ class IncorrectViewController: UIViewController {
         viewModel.setView(viewNumber, progressView, and: labelNumber)
     }()
     
+    private lazy var iconCorrect: UIImageView = {
+        viewModel.setImage(image: "checkmark", color: .white, size: 33)
+    }()
+    
+    private lazy var iconIncorrect: UIImageView = {
+        viewModel.setImage(image: "multiply", color: .white, size: 33)
+    }()
+    
+    private lazy var viewIcons: UIView = {
+        viewModel.setView(first: iconCorrect, second: iconIncorrect)
+    }()
+    
     private lazy var viewFirst: UIView = {
         viewModel.view(viewModel.buttonFirst, addSubview: subviewFirst, and: 1)
     }()
@@ -151,12 +159,21 @@ class IncorrectViewController: UIViewController {
         viewModel.stackView(viewFirst, viewSecond, viewThird, viewFourth)
     }()
     
+    private lazy var timeUp: UILabel = {
+        viewModel.setLabel(text: viewModel.timeUp, color: .white, font: "mr_fontick", size: 24)
+    }()
+    
+    private lazy var viewAnswers: UIView = {
+        viewModel.setView(viewIcons, stackView, and: timeUp)
+    }()
+    
     private lazy var contentView: UIView = {
         viewModel.setView(subviews: viewFlagDetails,
                           viewCountryDetails,
                           viewCapitalDetails,
                           viewContinentDetails,
-                          viewNumberDetails)
+                          viewNumberDetails,
+                          viewAnswers)
     }()
     
     private lazy var scrollView: UIScrollView = {
@@ -169,7 +186,7 @@ class IncorrectViewController: UIViewController {
     
     private lazy var buttonAdd: UIButton = {
         let size = UIImage.SymbolConfiguration(pointSize: 25)
-        let image = UIImage(systemName: "star", withConfiguration: size)
+        let image = UIImage(systemName: viewModel.image, withConfiguration: size)
         let button = Button(type: .system)
         button.setTitle(viewModel.title, for: .normal)
         button.titleLabel?.font = UIFont(name: "mr_fontick", size: 25)
@@ -203,7 +220,7 @@ class IncorrectViewController: UIViewController {
     }
     
     private func setBarButton() {
-        viewModel.setBarButton(buttonBack, buttonFavourites, navigationItem)
+        viewModel.setBarButton(buttonBack, navigationItem)
     }
     
     private func setSubviews() {
@@ -217,7 +234,7 @@ class IncorrectViewController: UIViewController {
     }
     
     @objc private func favorites(sender: UIButton) {
-//        viewModel.addOrDeleteFavorite(sender)
+        viewModel.addOrDeleteFavorite(sender)
     }
 }
 // MARK: - Set button
@@ -239,7 +256,7 @@ extension IncorrectViewController {
 // MARK: - Setup constraints
 extension IncorrectViewController {
     private func setConstraints() {
-        viewModel.setSquare(buttonBack, buttonFavourites, sizes: 40)
+        viewModel.setSquare(buttonBack, sizes: 40)
         
         NSLayoutConstraint.activate([
             viewTopPanel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -260,7 +277,7 @@ extension IncorrectViewController {
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1.1)
+            contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1.15)
         ])
         
         NSLayoutConstraint.activate([
@@ -299,37 +316,21 @@ extension IncorrectViewController {
         ])
         
         NSLayoutConstraint.activate([
+            viewAnswers.topAnchor.constraint(equalTo: viewNumberDetails.bottomAnchor, constant: 8),
+            viewAnswers.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            viewAnswers.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            viewAnswers.heightAnchor.constraint(equalToConstant: viewModel.height)
+        ])
+        viewModel.setConstraints(subviewFirst, on: viewFirst, view)
+        viewModel.setConstraints(subviewSecond, on: viewSecond, view)
+        viewModel.setConstraints(subviewThird, on: viewThird, view)
+        viewModel.setConstraints(subviewFourth, on: viewFourth, view)
+        
+        NSLayoutConstraint.activate([
             buttonAdd.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
             buttonAdd.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             buttonAdd.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             buttonAdd.heightAnchor.constraint(equalToConstant: 55)
         ])
-        /*
-        viewModel.constraintsQuestion(question, view)
-        
-        NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: question.bottomAnchor, constant: 30),
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            progressView.heightAnchor.constraint(equalToConstant: viewModel.radius * 2)
-        ])
-        
-        NSLayoutConstraint.activate([
-            labelNumber.centerYAnchor.constraint(equalTo: progressView.centerYAnchor),
-            labelNumber.leadingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 20),
-            labelNumber.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            labelNumber.widthAnchor.constraint(equalToConstant: 85)
-        ])
-        
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: labelNumber.bottomAnchor, constant: 25),
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.widthAnchor.constraint(equalToConstant: viewModel.widthStackView(view)),
-            stackView.heightAnchor.constraint(equalToConstant: viewModel.heightStackView)
-        ])
-        viewModel.setConstraints(subviewFirst, on: viewFirst, view, viewModel.buttonFirst.flag)
-        viewModel.setConstraints(subviewSecond, on: viewSecond, view, viewModel.buttonSecond.flag)
-        viewModel.setConstraints(subviewThird, on: viewThird, view, viewModel.buttonThird.flag)
-        viewModel.setConstraints(subviewFourth, on: viewFourth, view, viewModel.buttonFourth.flag)
-         */
     }
 }

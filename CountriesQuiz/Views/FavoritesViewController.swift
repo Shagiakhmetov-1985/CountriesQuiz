@@ -21,10 +21,12 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
     }()
     
     private lazy var visualEffectBlur: UIVisualEffectView = {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(closeDetails))
         let blurEffect = UIBlurEffect(style: .dark)
         let view = UIVisualEffectView(effect: blurEffect)
         view.alpha = 0
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.addGestureRecognizer(tap)
         return view
     }()
     
@@ -136,8 +138,7 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     @objc private func deleteFavorite() {
-        viewModel.buttonOnOff(button: buttonClose, isOn: true)
-        viewModel.hideAnimationView(viewDetails, buttonDelete, and: visualEffectBlur)
+        closeDetails()
         viewModel.deleteRow(tableView: tableView)
         guard viewModel.favorites.isEmpty else { return }
         exitToGameType()

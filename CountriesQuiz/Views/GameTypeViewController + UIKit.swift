@@ -60,15 +60,17 @@ extension GameTypeViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func setButton(image: String, action: Selector) -> UIButton {
-        let size = UIImage.SymbolConfiguration(pointSize: 20)
+    func setButton(image: String, action: Selector,
+                   isBarButton: Bool? = nil) -> UIButton {
+        let pointSize: CGFloat = isBarButton ?? false ? 20 : 26
+        let size = UIImage.SymbolConfiguration(pointSize: pointSize)
         let image = UIImage(systemName: image, withConfiguration: size)
         let button = UIButton(type: .system)
         button.setImage(image, for: .normal)
         button.tintColor = .white
         button.layer.cornerRadius = 12
         button.layer.borderColor = UIColor.white.cgColor
-        button.layer.borderWidth = 1.5
+        button.layer.borderWidth = isBarButton ?? false ? 1.5 : 0
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: action, for: .touchUpInside)
         return button
@@ -179,9 +181,9 @@ extension GameTypeViewController {
         return stackView
     }
     
-    func setPickerView(color: UIColor? = nil, tag: Int) -> UIPickerView {
+    func setPickerView(tag: Int) -> UIPickerView {
         let pickerView = UIPickerView()
-        pickerView.backgroundColor = color
+        pickerView.backgroundColor = .white
         pickerView.layer.cornerRadius = 13
         pickerView.tag = tag
         pickerView.translatesAutoresizingMaskIntoConstraints = false

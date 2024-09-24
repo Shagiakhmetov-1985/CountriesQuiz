@@ -129,7 +129,6 @@ class QuestionnaireViewController: UIViewController, ViewControllerInput {
     func dataToMenu(setting: Setting, favourites: [Favorites]) {
         delegate.dataToMenu(setting: setting, favourites: favourites)
     }
-    
     // MARK: - General methods
     private func setupData() {
         viewModel.getQuestions()

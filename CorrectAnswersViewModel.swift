@@ -167,10 +167,9 @@ class CorrectAnswersViewModel: CorrectAnswersViewModelProtocol {
     
     func setConstraints(button: UIButton, on view: UIView) {
         setSquare(button: button, sizes: 40)
-        
         NSLayoutConstraint.activate([
-            button.centerYAnchor.constraint(equalTo: view.topAnchor, constant: 24),
-            button.centerXAnchor.constraint(equalTo: view.leadingAnchor, constant: 24)
+            button.centerYAnchor.constraint(equalTo: view.topAnchor, constant: 26),
+            button.centerXAnchor.constraint(equalTo: view.leadingAnchor, constant: 26)
         ])
     }
     

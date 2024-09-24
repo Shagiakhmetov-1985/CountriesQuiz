@@ -29,6 +29,7 @@ protocol GameTypeViewModelProtocol {
     var image: String { get }
     var name: String { get }
     var diameter: CGFloat { get }
+    var popUpViewHelp: Bool { get set }
     
     var countAllCountries: Int { get }
     var countCountriesOfAmerica: Int { get }
@@ -45,7 +46,6 @@ protocol GameTypeViewModelProtocol {
     func titles(_ pickerView: UIPickerView,_ row: Int, and segmented: UISegmentedControl) -> UIView
     func swap(_ button: UIButton)
     
-    func titleSetting(tag: Int) -> String
     func isCountdown() -> Bool
     func isOneQuestion() -> Bool
     func oneQuestionTime() -> Int
@@ -58,6 +58,9 @@ protocol GameTypeViewModelProtocol {
     
     func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool)
     func buttonOnOff(button: UIButton, isOn: Bool)
+    func showAnimationView(_ viewDetails: UIView, and visualEffect: UIVisualEffectView)
+    func hideAnimationView(_ viewDetails: UIView, and visualEffect: UIVisualEffectView)
+    func showViewSetting(_ viewSetting: UIView, and visualEffect: UIVisualEffectView, _ view: UIView)
     
     func width(_ view: UIView) -> CGFloat
     func size() -> CGFloat
@@ -83,6 +86,7 @@ protocol GameTypeViewModelProtocol {
     func setSubviewsTag(subviews: UIView..., tag: Int)
     func viewHelp() -> UIView
     func viewSetting() -> UIView
+    func setSubview(subview: UIView, on viewSetting: UIView, and view: UIView)
     func setFavorites(newFavorites: [Favorites])
     
     func buttonAllCountries(_ buttonAllCountries: UIButton,_ labelAllCountries: UILabel,
@@ -163,6 +167,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     var name: String {
         game.name
     }
+    var popUpViewHelp: Bool = false
     
     var countAllCountries = FlagsOfCountries.shared.countries.count
     var countCountriesOfAmerica = FlagsOfCountries.shared.countriesOfAmericanContinent.count
@@ -183,7 +188,8 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     private var list: UILabel!
     private var contentView: UIView!
     private var scrollView: UIScrollView!
-    private var secondaryView: UIView!
+    private var viewSecondary: UIView!
+    private var titleSetting: UILabel!
     
     required init(mode: Setting, game: Games, tag: Int, favorites: [Favorites]) {
         self.mode = mode
@@ -221,11 +227,19 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     
     func viewSetting() -> UIView {
         let popUpView = setView(color: game.swap)
-        secondaryView = setView(color: game.background)
-        secondaryView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        popUpView.addSubview(secondaryView)
+        viewSecondary = setView(color: game.background)
+        titleSetting = setLabel(title: "", size: 22, font: "GillSans")
+        viewSecondary.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        setSubviews(subviews: viewSecondary, titleSetting, on: popUpView)
+//        popUpView.addSubview(viewSecondary)
         setConstraints(popUpView: popUpView)
         return popUpView
+    }
+    
+    func setSubview(subview: UIView, on viewSetting: UIView, and view: UIView) {
+        setSubviews(subviews: subview, on: viewSetting)
+        setConstraints(subview: subview, on: viewSetting, and: view, tag: viewSetting.tag)
+        titleSetting.text = titleSetting(tag: viewSetting.tag)
     }
     // MARK: - PickerView
     func numberOfComponents() -> Int {
@@ -303,15 +317,6 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         isOn ? background : .white
     }
     
-    func titleSetting(tag: Int) -> String {
-        switch tag {
-        case 1: return "Количество вопросов"
-        case 2: return "Континенты"
-        case 3: return "Обратный отсчет"
-        default: return checkTimeDescription()
-        }
-    }
-    
     func comma() -> String {
         comma(continents: allCountries, americaContinent, europeContinent,
               africaContinent, asiaContinent, oceaniaContinent)
@@ -337,7 +342,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         default: 1.65
         }
     }
-    // MARK: - Show / hide bar buttons
+    // MARK: - Show / hide subviews
     func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool) {
         let opacity: Float = bool ? 1 : 0
         isEnabled(buttons: buttonBack, buttonHelp, bool: bool)
@@ -346,6 +351,34 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     
     func buttonOnOff(button: UIButton, isOn: Bool) {
         isEnabled(buttons: button, bool: isOn)
+    }
+    
+    func showAnimationView(_ viewDetails: UIView, and visualEffect: UIVisualEffectView) {
+        viewDetails.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+        viewDetails.alpha = 0
+        UIView.animate(withDuration: 0.5) { [self] in
+            alpha(subviews: viewDetails, visualEffect, alpha: 1)
+            viewDetails.transform = .identity
+        }
+    }
+    
+    func hideAnimationView(_ viewDetails: UIView, and visualEffect: UIVisualEffectView) {
+        UIView.animate(withDuration: 0.5) { [self] in
+            alpha(subviews: viewDetails, visualEffect, alpha: 0)
+            viewDetails.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+        } completion: { [self] _ in
+            removeSubviews(subviews: viewDetails)
+        }
+    }
+    
+    func showViewSetting(_ viewSetting: UIView, and visualEffect:
+                         UIVisualEffectView, _ view: UIView) {
+        viewSetting.transform = CGAffineTransform(translationX: 0, y: view.frame.height)
+        viewSetting.alpha = 0
+        UIView.animate(withDuration: 0.5) { [self] in
+            alpha(subviews: visualEffect, viewSetting, alpha: 1)
+            viewSetting.transform = .identity
+        }
     }
     // MARK: - Press swap button of setting
     func swap(_ button: UIButton) {
@@ -557,8 +590,8 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     func setConstraints(_ button: UIButton, _ view: UIView) {
         setSquare(subviews: button, sizes: 40)
         NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: view.topAnchor, constant: 12.5),
-            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12.5)
+            button.centerYAnchor.constraint(equalTo: view.topAnchor, constant: 26),
+            button.centerXAnchor.constraint(equalTo: view.leadingAnchor, constant: 26)
         ])
     }
     
@@ -771,7 +804,7 @@ extension GameTypeViewModel {
             return tag == 2 ? .grayLight : game.favorite
         }
     }
-    // MARK: - Show / hide bar buttons
+    // MARK: - Show / hide subviews
     private func isEnabled(buttons: UIButton..., bool: Bool) {
         buttons.forEach { button in
             button.isEnabled = bool
@@ -783,6 +816,12 @@ extension GameTypeViewModel {
             UIView.animate(withDuration: 0.5) {
                 button.layer.opacity = opacity
             }
+        }
+    }
+    
+    private func alpha(subviews: UIView..., alpha: CGFloat) {
+        subviews.forEach { subview in
+            subview.alpha = alpha
         }
     }
     // MARK: - Methods for popup view controller
@@ -1072,6 +1111,15 @@ extension GameTypeViewModel {
         game.gameType == .questionnaire ? "\(allQuestionsTime())" : "\(oneQuestionTime())"
     }
     
+    private func titleSetting(tag: Int) -> String {
+        switch tag {
+        case 1: return "Количество вопросов"
+        case 2: return "Континенты"
+        case 3: return "Обратный отсчет"
+        default: return checkTimeDescription()
+        }
+    }
+    
     private func checkTitleGameType() -> String {
         game.gameType == .questionnaire ? "Время всех вопросов" : "Время одного вопроса"
     }
@@ -1128,7 +1176,7 @@ extension GameTypeViewModel {
 // MARK: - Set subviews for popup view help
 extension GameTypeViewModel {
     private func setLabel(title: String, size: CGFloat, font: String,
-                  alignment: NSTextAlignment? = nil) -> UILabel {
+                          alignment: NSTextAlignment? = nil) -> UILabel {
         let label = UILabel()
         label.text = title
         label.textColor = .white
@@ -1201,11 +1249,11 @@ extension GameTypeViewModel {
     private func setConstraints(_ popUpView: UIView) {
         NSLayoutConstraint.activate([
             title.centerXAnchor.constraint(equalTo: popUpView.centerXAnchor, constant: 20),
-            title.centerYAnchor.constraint(equalTo: popUpView.topAnchor, constant: 31.875)
+            title.centerYAnchor.constraint(equalTo: popUpView.topAnchor, constant: 26)
         ])
         
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: popUpView.topAnchor, constant: 63.75),
+            scrollView.topAnchor.constraint(equalTo: popUpView.topAnchor, constant: 52),
             scrollView.leadingAnchor.constraint(equalTo: popUpView.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: popUpView.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: popUpView.bottomAnchor)
@@ -1235,10 +1283,62 @@ extension GameTypeViewModel {
     
     private func setConstraints(popUpView: UIView) {
         NSLayoutConstraint.activate([
-            secondaryView.topAnchor.constraint(equalTo: popUpView.topAnchor, constant: 63.75),
-            secondaryView.leadingAnchor.constraint(equalTo: popUpView.leadingAnchor),
-            secondaryView.trailingAnchor.constraint(equalTo: popUpView.trailingAnchor),
-            secondaryView.bottomAnchor.constraint(equalTo: popUpView.bottomAnchor)
+            viewSecondary.topAnchor.constraint(equalTo: popUpView.topAnchor, constant: 52),
+            viewSecondary.leadingAnchor.constraint(equalTo: popUpView.leadingAnchor),
+            viewSecondary.trailingAnchor.constraint(equalTo: popUpView.trailingAnchor),
+            viewSecondary.bottomAnchor.constraint(equalTo: popUpView.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            titleSetting.centerXAnchor.constraint(equalTo: popUpView.centerXAnchor, constant: 20),
+            titleSetting.centerYAnchor.constraint(equalTo: popUpView.topAnchor, constant: 26)
+        ])
+    }
+    
+    private func setConstraints(subview: UIView, on viewSetting: UIView,
+                                and view: UIView, tag: Int) {
+        switch tag {
+        case 1: setCountQuestions(subview, on: viewSetting, and: view)
+        case 2: setContinents(subview, on: viewSetting, and: view)
+        case 3: setCheckmarkTime(subview, on: viewSetting, and: view)
+        default: setTime(subview, on: viewSetting, and: view)
+        }
+    }
+    
+    private func setCountQuestions(_ pickerView: UIView, on viewSetting: UIView,
+                                   and view: UIView) {
+        setConstraints(pickerView, on: viewSetting, and: view, constant: 100, height: 110)
+    }
+    
+    private func setContinents(_ stackView: UIView, on viewSetting: UIView,
+                               and view: UIView) {
+        setConstraints(stackView, on: viewSetting, and: view, constant: -220, height: 435)
+    }
+    
+    private func setCheckmarkTime(_ stackView: UIView, on viewSetting: UIView,
+                                  and view: UIView) {
+        setConstraints(stackView, on: viewSetting, and: view, constant: 165, height: 60)
+    }
+    
+    private func setTime(_ stackView: UIView, on viewSetting: UIView,
+                         and view: UIView) {
+        setConstraints(stackView, on: viewSetting, and: view, constant: 60, height: 60)
+    }
+    
+    private func setConstraints(_ subview: UIView, on viewSetting: UIView, and
+                                view: UIView, constant: CGFloat, height: CGFloat) {
+        NSLayoutConstraint.activate([
+            viewSetting.topAnchor.constraint(equalTo: view.centerYAnchor, constant: constant),
+            viewSetting.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            viewSetting.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+            viewSetting.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25)
+        ])
+        
+        NSLayoutConstraint.activate([
+            subview.topAnchor.constraint(equalTo: viewSecondary.topAnchor, constant: 20),
+            subview.leadingAnchor.constraint(equalTo: viewSecondary.leadingAnchor, constant: 20),
+            subview.trailingAnchor.constraint(equalTo: viewSecondary.trailingAnchor, constant: -20),
+            subview.heightAnchor.constraint(equalToConstant: height)
         ])
     }
 }

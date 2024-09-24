@@ -27,11 +27,11 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var buttonBack: UIButton = {
-        setButton(image: "multiply", action: #selector(backToMenu))
+        setButton(image: "multiply", action: #selector(backToMenu), isBarButton: true)
     }()
     
     private lazy var buttonHelp: UIButton = {
-        setButton(image: "questionmark", action: #selector(showViewHelp))
+        setButton(image: "questionmark", action: #selector(showViewHelp), isBarButton: true)
     }()
     
     private lazy var viewHelp: UIView = {
@@ -39,10 +39,12 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var visualEffectView: UIVisualEffectView = {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(popUpViewCheck))
         let blurEffect = UIBlurEffect(style: .dark)
         let view = UIVisualEffectView(effect: blurEffect)
         view.alpha = 0
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.addGestureRecognizer(tap)
         return view
     }()
     
@@ -171,7 +173,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var pickerViewQuestions: UIPickerView = {
-        setPickerView(color: .white, tag: 1)
+        setPickerView(tag: 1)
     }()
     
     private lazy var labelAllCountries: UILabel = {
@@ -406,10 +408,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     private lazy var viewSetting: UIView = {
         let view = setView(action: #selector(closeViewSetting), view: viewModel.viewSetting())
-        view.backgroundColor = viewModel.colorSwap
-        view.translatesAutoresizingMaskIntoConstraints = false
-        viewModel.setSubviews(subviews: labelSetting, viewSecondary, stackView,
-                              on: view)
+        viewModel.setSubviews(subviews: stackView, on: view)
         return view
     }()
     
@@ -438,16 +437,12 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     // MARK: - Press button count questions / continents / countdown / time
     @objc func showSetting(sender: UIButton) {
         viewModel.setSubviews(subviews: viewSetting, on: view)
-        setting(tag: sender.tag)
+        viewModel.setSubviewsTag(subviews: buttonDone, viewSetting, tag: sender.tag)
+        viewModel.setSubview(subview: subview(tag: sender.tag), on: viewSetting, and: view)
+//        setting(tag: sender.tag)
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
-        
-        viewSetting.transform = CGAffineTransform(translationX: 0, y: view.frame.height)
-        viewSetting.alpha = 0
-        UIView.animate(withDuration: 0.5) { [self] in
-            visualEffectView.alpha = 1
-            viewSetting.alpha = 1
-            viewSetting.transform = .identity
-        }
+        viewModel.showViewSetting(viewSetting, and: visualEffectView, view)
+//        labelSetting.text = viewModel.titleSetting(tag: sender.tag)
     }
     
     @objc func closeViewSetting() {
@@ -528,34 +523,36 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func setupBarButton() {
         viewModel.setupBarButtons(buttonBack, buttonHelp, navigationItem)
     }
+    
+    private func subview(tag: Int) -> UIView {
+        switch tag {
+        case 1: pickerViewQuestions
+        case 2: stackViewContinents
+        case 3: stackViewCheckmark
+        default: stackViewTime
+        }
+    }
     // MARK: - Bar buttons activate
     @objc private func backToMenu() {
         delegate.dataToMenu(setting: viewModel.mode, favorites: viewModel.favorites)
     }
     
-    @objc private func showViewHelp() {
+    @objc private func showViewHelp(sender: UIButton) {
+        viewModel.popUpViewHelp.toggle()
         viewModel.setSubviews(subviews: viewHelp, on: view)
         viewModel.setConstraints(viewHelp, view)
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
-        
-        viewHelp.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
-        viewHelp.alpha = 0
-        UIView.animate(withDuration: 0.5) { [self] in
-            visualEffectView.alpha = 1
-            viewHelp.alpha = 1
-            viewHelp.transform = .identity
-        }
+        viewModel.showAnimationView(viewHelp, and: visualEffectView)
     }
     
     @objc private func closeView() {
+        viewModel.popUpViewHelp.toggle()
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: true)
-        UIView.animate(withDuration: 0.5) { [self] in
-            visualEffectView.alpha = 0
-            viewHelp.alpha = 0
-            viewHelp.transform = CGAffineTransform.init(scaleX: 0.6, y: 0.6)
-        } completion: { [self] _ in
-            viewHelp.removeFromSuperview()
-        }
+        viewModel.hideAnimationView(viewHelp, and: visualEffectView)
+    }
+    
+    @objc private func popUpViewCheck() {
+        viewModel.popUpViewHelp ? closeView() : closeViewSetting()
     }
     // MARK: - Methods for popup view controllers
     private func addSubviews(tag: Int) {
@@ -655,8 +652,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     // MARK: - Press button count questions / continents / countdown / time. Continue
     private func setting(tag: Int) {
         addSubviews(tag: tag)
-        labelSetting.text = viewModel.titleSetting(tag: tag)
-        viewModel.setSubviewsTag(subviews: buttonDone, viewSetting, tag: tag)
+//        labelSetting.text = viewModel.titleSetting(tag: tag)
+//        viewModel.setSubviewsTag(subviews: buttonDone, viewSetting, tag: tag)
         setConstraintsSetting(tag: tag)
     }
     // MARK: - Button press continents, change setting continents. Continue

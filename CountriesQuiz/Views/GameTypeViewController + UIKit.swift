@@ -8,20 +8,20 @@
 import UIKit
 
 extension GameTypeViewController {
-    func setView(color: UIColor, radius: CGFloat? = nil, addSubview: UIView? = nil,
-                 addButton: UIButton? = nil) -> UIView {
+    func setView(color: UIColor, radius: CGFloat, addButton: UIButton? = nil,
+                 sizes: CGFloat) -> UIView {
         let view = UIView()
         view.backgroundColor = color
-        view.layer.cornerRadius = radius ?? 0
+        view.layer.cornerRadius = radius
         view.translatesAutoresizingMaskIntoConstraints = false
-        if let image = addSubview {
-            view.addSubview(image)
-        } else if let button = addButton {
+        if let button = addButton {
             view.addSubview(button)
             view.layer.shadowColor = color.cgColor
             view.layer.shadowOpacity = 0.4
             view.layer.shadowOffset = CGSize(width: 0, height: 6)
+            viewModel.setCenterSubview(subview: button, on: view)
         }
+        viewModel.setSquare(subviews: view, sizes: sizes)
         return view
     }
     
@@ -130,8 +130,7 @@ extension GameTypeViewController {
         return button
     }
     
-    func setButton(color: UIColor, labelName: UILabel, labelCount: UILabel,
-                   tag: Int? = nil) -> UIButton {
+    func setButton(color: UIColor, label: UILabel, tag: Int? = nil) -> UIButton {
         let button = UIButton(type: .custom)
         button.backgroundColor = color
         button.layer.borderColor = UIColor.white.cgColor
@@ -143,7 +142,8 @@ extension GameTypeViewController {
         button.tag = tag ?? 0
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(continents), for: .touchUpInside)
-        viewModel.setSubviews(subviews: labelName, labelCount, on: button)
+        viewModel.setSubviews(subviews: label, on: button)
+        viewModel.setConstraints(label: label, on: button)
         return button
     }
     
@@ -155,6 +155,7 @@ extension GameTypeViewController {
         button.tintColor = viewModel.background
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(countdown), for: .touchUpInside)
+        viewModel.setSquare(subviews: button, sizes: 50)
         return button
     }
     
@@ -182,6 +183,7 @@ extension GameTypeViewController {
     }
     
     func setPickerView(tag: Int) -> UIPickerView {
+        let row = viewModel.setRowPickerView(tag: tag)
         let pickerView = UIPickerView()
         pickerView.backgroundColor = .white
         pickerView.layer.cornerRadius = 13
@@ -189,6 +191,7 @@ extension GameTypeViewController {
         pickerView.translatesAutoresizingMaskIntoConstraints = false
         pickerView.delegate = self
         pickerView.dataSource = self
+        pickerView.selectRow(row, inComponent: 0, animated: false)
         return pickerView
     }
 }

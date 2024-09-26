@@ -29,19 +29,14 @@ protocol GameTypeViewModelProtocol {
     var image: String { get }
     var name: String { get }
     var diameter: CGFloat { get }
+    var radius: CGFloat { get }
     var popUpViewHelp: Bool { get set }
-    
-    var countAllCountries: Int { get }
-    var countCountriesOfAmerica: Int { get }
-    var countCountriesOfEurope: Int { get }
-    var countCountriesOfAfrica: Int { get }
-    var countCountriesOfAsia: Int { get }
-    var countCountriesOfOceania: Int { get }
     
     init(mode: Setting, game: Games, tag: Int, favorites: [Favorites])
     
     func numberOfComponents() -> Int
     func numberOfRows(_ pickerView: UIPickerView) -> Int
+    func text(tag: Int) -> String
     
     func titles(_ pickerView: UIPickerView,_ row: Int, and segmented: UISegmentedControl) -> UIView
     func swap(_ button: UIButton)
@@ -75,12 +70,16 @@ protocol GameTypeViewModelProtocol {
     func setSubviews(subviews: UIView..., on subviewOther: UIView)
     func removeSubviews(subviews: UIView...)
     func setupBarButtons(_ buttonBack: UIButton,_ buttonHelp: UIButton,_ navigationItem: UINavigationItem)
-    func setPickerViewCountQuestions(_ pickerView: UIPickerView,_ view: UIView)
+    func setRowPickerView(tag: Int) -> Int
+    func setIndexSegment() -> Int
+    func isOnSegment() -> Bool
+    func setHeightSegment(segment: UISegmentedControl)
+//    func setPickerViewCountQuestions(_ pickerView: UIPickerView,_ view: UIView)
     func setColors(buttons: UIButton..., completion: @escaping ([UIColor]) -> Void)
-    func setLabels(_ labels: UILabel..., and countLabels: UILabel..., colors: [UIColor])
+    func setLabels(_ labels: UILabel..., colors: [UIColor])
     func setButtonCheckmarkCountdown(_ stackView: UIStackView,_ view: UIView,_ button: UIButton)
-    func setPickerViewsTime(_ stackView: UIStackView,_ view: UIView,_ segmentedControl: UISegmentedControl)
-    func setPickerViewsTime(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView)
+//    func setPickerViewsTime(_ stackView: UIStackView,_ view: UIView,_ segmentedControl: UISegmentedControl)
+//    func setPickerViewsTime(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView)
     func segmentSelect(_ segment: UISegmentedControl,_ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView,_ label: UILabel)
     func counterContinents()
     func setSubviewsTag(subviews: UIView..., tag: Int)
@@ -90,11 +89,12 @@ protocol GameTypeViewModelProtocol {
     func setFavorites(newFavorites: [Favorites])
     
     func buttonAllCountries(_ buttonAllCountries: UIButton,_ labelAllCountries: UILabel,
-                            _ labelCountCountries: UILabel,_ colorButton: UIColor,_ colorLabel: UIColor)
+                            _ colorButton: UIColor,_ colorLabel: UIColor)
     func buttonContinents(_ buttons: UIButton...,and labels: UILabel...,and colorButton: UIColor,_ colorLabel: UIColor)
     func colorButtonContinent(_ sender: UIButton)
     func labelOnOff(_ labels: UILabel...,and color: UIColor)
     func checkmarkOnOff(_ button: UIButton)
+    func mutableAttributedString(string: String, tag: Int) -> NSMutableAttributedString
     
     func setQuestions(_ pickerView: UIPickerView, _ labelQuestions: UILabel,
                       _ labelTime: UILabel, completion: @escaping () -> Void)
@@ -113,6 +113,8 @@ protocol GameTypeViewModelProtocol {
     func setConstraints(_ label: UILabel, on button: UIButton, constant: CGFloat)
     func setConstraints(_ viewHelp: UIView,_ view: UIView)
     func setConstraints(_ button: UIButton, _ view: UIView)
+    func setConstraints(stackView: UIStackView)
+    func setConstraints(label: UILabel, on button: UIButton)
     
     func favouritesViewModel() -> FavoritesViewModelProtocol
     func quizOfFlagsViewModel() -> QuizOfFlagsViewModelProtocol
@@ -161,6 +163,9 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         game.done
     }
     var diameter: CGFloat = 100
+    var radius: CGFloat {
+        diameter / 2
+    }
     var image: String {
         game.image
     }
@@ -168,13 +173,6 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         game.name
     }
     var popUpViewHelp: Bool = false
-    
-    var countAllCountries = FlagsOfCountries.shared.countries.count
-    var countCountriesOfAmerica = FlagsOfCountries.shared.countriesOfAmericanContinent.count
-    var countCountriesOfEurope = FlagsOfCountries.shared.countriesOfEuropeanContinent.count
-    var countCountriesOfAfrica = FlagsOfCountries.shared.countriesOfAfricanContinent.count
-    var countCountriesOfAsia = FlagsOfCountries.shared.countriesOfAsianContinent.count
-    var countCountriesOfOceania = FlagsOfCountries.shared.countriesOfOceanContinent.count
     
     var mode: Setting
     let tag: Int
@@ -231,13 +229,12 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         titleSetting = setLabel(title: "", size: 22, font: "GillSans")
         viewSecondary.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         setSubviews(subviews: viewSecondary, titleSetting, on: popUpView)
-//        popUpView.addSubview(viewSecondary)
         setConstraints(popUpView: popUpView)
         return popUpView
     }
     
     func setSubview(subview: UIView, on viewSetting: UIView, and view: UIView) {
-        setSubviews(subviews: subview, on: viewSetting)
+        setSubviews(subviews: subview, on: viewSecondary)
         setConstraints(subview: subview, on: viewSetting, and: view, tag: viewSetting.tag)
         titleSetting.text = titleSetting(tag: viewSetting.tag)
     }
@@ -342,6 +339,13 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         default: 1.65
         }
     }
+    
+    func text(tag: Int) -> String {
+        """
+        \(continent(tag: tag))
+        \(count(tag: tag))
+        """
+    }
     // MARK: - Show / hide subviews
     func barButtonsOnOff(_ buttonBack: UIButton,_ buttonHelp: UIButton, bool: Bool) {
         let opacity: Float = bool ? 1 : 0
@@ -400,12 +404,20 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         favorites = newFavorites
     }
     // MARK: - Set popup view controller
+    func setRowPickerView(tag: Int) -> Int {
+        switch tag {
+        case 1: countQuestions - 10
+        case 2: oneQuestionTime() - 6
+        default: allQuestionsTime() - 4 * countQuestions
+        }
+    }
+    /*
     func setPickerViewCountQuestions(_ pickerView: UIPickerView,_ view: UIView) {
         let row = countQuestions - 10
         setSubviews(subviews: pickerView, on: view)
         pickerView.selectRow(row, inComponent: 0, animated: false)
     }
-    
+    */
     func counterContinents() {
         counterContinents(continents: americaContinent, europeContinent,
                           africaContinent, asiaContinent, oceaniaContinent)
@@ -421,16 +433,16 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         var colors: [UIColor] = []
         buttons.forEach { button in
             let color = checkBool(tag: button.tag, button: button)
-            buttonOnOff(buttons: button, color: color.0)
+            buttonColor(buttons: button, color: color.0)
             colors.append(color.1)
         }
         completion(colors)
     }
     
-    func setLabels(_ labels: UILabel..., and countLabels: UILabel..., colors: [UIColor]) {
-        let iterration = min(labels.count, countLabels.count, colors.count)
+    func setLabels(_ labels: UILabel..., colors: [UIColor]) {
+        let iterration = min(labels.count, colors.count)
         for index in 0..<iterration {
-            labelOnOff(labels[index], countLabels[index], and: colors[index])
+            labelOnOff(labels[index], and: colors[index])
         }
     }
     
@@ -439,6 +451,14 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         checkButtonCheckmark(button: button)
     }
     
+    func setIndexSegment() -> Int {
+        isOneQuestion() ? game.gameType == .questionnaire ? 1 : 0 : 1
+    }
+    
+    func isOnSegment() -> Bool {
+        game.gameType == .questionnaire ? false : true
+    }
+    /*
     func setPickerViewsTime(_ stackView: UIStackView, _ view: UIView, _ segmentedControl: UISegmentedControl) {
         setSubviews(subviews: stackView, on: view)
         setSegmentIndex(segmentedControl: segmentedControl)
@@ -450,8 +470,8 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         setPickerViewsRows(pickerViewOneTime, pickerViewAllTime)
         reloadPickerViews(pickerViews: pickerViewOneTime, pickerViewAllTime)
     }
-    
-    func segmentSelect(_ segment: UISegmentedControl, _ pickerViewOne: UIPickerView, 
+    */
+    func segmentSelect(_ segment: UISegmentedControl, _ pickerViewOne: UIPickerView,
                        _ pickerViewAll: UIPickerView, _ label: UILabel) {
         let index = segment.selectedSegmentIndex
         index == 0 ? pickerViewSecondOn(pickerViewOne, pickerViewAll) : pickerViewThirdOn(pickerViewOne, pickerViewAll)
@@ -460,9 +480,9 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     }
     // MARK: - Button press continents
     func buttonAllCountries(_ buttonAllCountries: UIButton, _ labelAllCountries: UILabel, 
-                            _ labelCountCountries: UILabel, _ colorButton: UIColor, _ colorLabel: UIColor) {
-        buttonOnOff(buttons: buttonAllCountries, color: colorButton)
-        labelOnOff(labelAllCountries, labelCountCountries, and: colorLabel)
+                            _ colorButton: UIColor, _ colorLabel: UIColor) {
+        buttonColor(buttons: buttonAllCountries, color: colorButton)
+        labelOnOff(labelAllCountries, and: colorLabel)
     }
     
     func buttonContinents(_ buttons: UIButton..., and labels: UILabel..., 
@@ -473,7 +493,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     
     func colorButtonContinent(_ sender: UIButton) {
         let color = sender.backgroundColor == background ? .white : background
-        buttonOnOff(buttons: sender, color: color)
+        buttonColor(buttons: sender, color: color)
     }
     
     func labelOnOff(_ labels: UILabel...,and color: UIColor) {
@@ -527,6 +547,15 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         setDataFromPickerViews(pickerViewOne, pickerViewAll)
         setTitlesTime(labelTime, labelDescription)
         completion()
+    }
+    
+    func mutableAttributedString(string: String, tag: Int) -> NSMutableAttributedString {
+        let attributed = NSMutableAttributedString(string: string)
+        let font = NSAttributedString.Key.font
+        let key = UIFont(name: "mr_fontick", size: 20)
+        let range = setRange(subString: count(tag: tag), fromString: string)
+        attributed.addAttributes([font: key ?? ""], range: range)
+        return attributed
     }
     // MARK: - Transitions to other view controller
     func favouritesViewModel() -> FavoritesViewModelProtocol {
@@ -601,6 +630,28 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
             viewHelp.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             viewHelp.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
             viewHelp.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
+        ])
+    }
+    
+    func setConstraints(label: UILabel, on button: UIButton) {
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: button.centerYAnchor)
+        ])
+    }
+    
+    func setHeightSegment(segment: UISegmentedControl) {
+        NSLayoutConstraint.activate([
+            segment.heightAnchor.constraint(equalToConstant: 40)
+        ])
+    }
+    
+    func setConstraints(stackView: UIStackView) {
+        NSLayoutConstraint.activate([
+            stackView.bottomAnchor.constraint(equalTo: viewSecondary.bottomAnchor, constant: -20),
+            stackView.leadingAnchor.constraint(equalTo: viewSecondary.leadingAnchor, constant: 20),
+            stackView.trailingAnchor.constraint(equalTo: viewSecondary.trailingAnchor, constant: -20),
+            stackView.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 }
@@ -849,7 +900,7 @@ extension GameTypeViewModel {
         bool ? (.white, background) : (background, .white)
     }
     
-    private func buttonOnOff(buttons: UIButton..., color: UIColor) {
+    private func buttonColor(buttons: UIButton..., color: UIColor) {
         buttons.forEach { button in
             UIView.animate(withDuration: 0.3) {
                 button.backgroundColor = color
@@ -863,42 +914,48 @@ extension GameTypeViewModel {
         let image = UIImage(systemName: symbol, withConfiguration: size)
         button.setImage(image, for: .normal)
     }
-    
+    /*
     private func setSegmentIndex(segmentedControl: UISegmentedControl) {
         let index = game.gameType == .questionnaire ? 1 : 0
         segmentedControl.selectedSegmentIndex = isOneQuestion() ? index : 1
         segmentedControl.isUserInteractionEnabled = isQuestionnaire()
     }
-    
-    private func checkQuestionnaire(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView) {
-        tag == 1 ? pickerViewThirdOn(pickerViewOneTime, pickerViewAllTime) :
-        pickerViewSecondOn(pickerViewOneTime, pickerViewAllTime)
+    */
+    private func checkQuestionnaire(_ pickerViewOneTime: UIPickerView,
+                                    _ pickerViewAllTime: UIPickerView) {
+        if tag == 1 {
+            pickerViewThirdOn(pickerViewOneTime, pickerViewAllTime)
+        } else {
+            pickerViewSecondOn(pickerViewOneTime, pickerViewAllTime)
+        }
     }
     
-    private func pickerViewSecondOn(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView) {
-        setPickerView(pickerView: pickerViewOneTime, color: .white, isOn: true)
-        setPickerView(pickerView: pickerViewAllTime, color: .skyGrayLight, isOn: false)
+    private func pickerViewSecondOn(_ pickerViewOneTime: UIPickerView,
+                                    _ pickerViewAllTime: UIPickerView) {
+        pickerViewColorIsOn(pickerView: pickerViewOneTime, color: .white, isOn: true)
+        pickerViewColorIsOn(pickerView: pickerViewAllTime, color: .skyGrayLight, isOn: false)
     }
     
-    private func pickerViewThirdOn(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView) {
-        setPickerView(pickerView: pickerViewOneTime, color: .skyGrayLight, isOn: false)
-        setPickerView(pickerView: pickerViewAllTime, color: .white, isOn: true)
+    private func pickerViewThirdOn(_ pickerViewOneTime: UIPickerView,
+                                   _ pickerViewAllTime: UIPickerView) {
+        pickerViewColorIsOn(pickerView: pickerViewOneTime, color: .skyGrayLight, isOn: false)
+        pickerViewColorIsOn(pickerView: pickerViewAllTime, color: .white, isOn: true)
     }
     
-    private func setPickerView(pickerView: UIPickerView, color: UIColor, isOn: Bool) {
+    private func pickerViewColorIsOn(pickerView: UIPickerView, color: UIColor, isOn: Bool) {
         pickerView.isUserInteractionEnabled = isOn
         UIView.animate(withDuration: 0.3) {
             pickerView.backgroundColor = color
         }
     }
-    
+    /*
     private func setPickerViewsRows(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView) {
         let rowOneQuestion = oneQuestionTime() - 6
         let rowAllQuestions = allQuestionsTime() - 4 * countQuestions
         pickerViewOneTime.selectRow(rowOneQuestion, inComponent: 0, animated: false)
         pickerViewAllTime.selectRow(rowAllQuestions, inComponent: 0, animated: false)
     }
-    
+    */
     private func reloadPickerViews(pickerViews: UIPickerView...) {
         pickerViews.forEach { pickerView in
             pickerView.reloadAllComponents()
@@ -907,7 +964,7 @@ extension GameTypeViewModel {
     // MARK: - Button press continents
     private func setColorButton(buttons: [UIButton], color: UIColor) {
         buttons.forEach { button in
-            buttonOnOff(buttons: button, color: color)
+            buttonColor(buttons: button, color: color)
         }
     }
     
@@ -959,12 +1016,12 @@ extension GameTypeViewModel {
     
     private func checkContinents(continent: Int) -> Int {
         switch continent {
-        case 0: countAllCountries
-        case 1: countCountriesOfAmerica
-        case 2: countCountriesOfEurope
-        case 3: countCountriesOfAfrica
-        case 4: countCountriesOfAsia
-        default: countCountriesOfOceania
+        case 0: FlagsOfCountries.shared.countries.count
+        case 1: FlagsOfCountries.shared.countriesOfAmericanContinent.count
+        case 2: FlagsOfCountries.shared.countriesOfEuropeanContinent.count
+        case 3: FlagsOfCountries.shared.countriesOfAfricanContinent.count
+        case 4: FlagsOfCountries.shared.countriesOfAsianContinent.count
+        default: FlagsOfCountries.shared.countriesOfOceanContinent.count
         }
     }
     
@@ -1071,13 +1128,17 @@ extension GameTypeViewModel {
     private func setTimeAllQuestions(time: Int) {
         mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = time
     }
+    
+    private func setRange(subString: String, fromString: String) -> NSRange {
+        let linkRange = fromString.range(of: subString)!
+        let start = fromString.distance(from: fromString.startIndex, to: linkRange.lowerBound)
+        let end = fromString.distance(from: fromString.startIndex, to: linkRange.upperBound)
+        let range = NSMakeRange(start, end - start)
+        return range
+    }
 }
 // MARK: - Constants
 extension GameTypeViewModel {
-    private func isQuestionnaire() -> Bool {
-        game.gameType == .questionnaire ? false : true
-    }
-    
     private func comma(continents: Bool...) -> String {
         var text = ""
         var number = 0
@@ -1091,16 +1152,14 @@ extension GameTypeViewModel {
     }
     
     private func checkContinent(continent: Int) -> String {
-        var text = ""
         switch continent {
-        case 1: text = "Все страны"
-        case 2: text = "Америка"
-        case 3: text = "Европа"
-        case 4: text = "Африка"
-        case 5: text = "Азия"
-        default: text = "Океания"
+        case 1: "Все страны"
+        case 2: "Америка"
+        case 3: "Европа"
+        case 4: "Африка"
+        case 5: "Азия"
+        default: "Океания"
         }
-        return text
     }
     
     private func checkCountdownType() -> String {
@@ -1171,6 +1230,32 @@ extension GameTypeViewModel {
     
     private func descriptionThird() -> String {
         "В качестве вопроса задается наименование столицы и пользователь должен составить слово из букв наименования страны."
+    }
+    
+    private func continent(tag: Int) -> String {
+        switch tag {
+        case 1: "Все страны мира"
+        case 2: "Континент Америки"
+        case 3: "Континент Европы"
+        case 4: "Континент Африки"
+        case 5: "Континент Азии"
+        default: "Континент Океании"
+        }
+    }
+    
+    private func count(tag: Int) -> String {
+        "Количество стран: \(countCountries(tag: tag))"
+    }
+    
+    private func countCountries(tag: Int) -> Int {
+        switch tag {
+        case 1: FlagsOfCountries.shared.countries.count
+        case 2: FlagsOfCountries.shared.countriesOfAmericanContinent.count
+        case 3: FlagsOfCountries.shared.countriesOfEuropeanContinent.count
+        case 4: FlagsOfCountries.shared.countriesOfAfricanContinent.count
+        case 5: FlagsOfCountries.shared.countriesOfAsianContinent.count
+        default: FlagsOfCountries.shared.countriesOfOceanContinent.count
+        }
     }
 }
 // MARK: - Set subviews for popup view help
@@ -1322,7 +1407,7 @@ extension GameTypeViewModel {
     
     private func setTime(_ stackView: UIView, on viewSetting: UIView,
                          and view: UIView) {
-        setConstraints(stackView, on: viewSetting, and: view, constant: 60, height: 60)
+        setConstraints(stackView, on: viewSetting, and: view, constant: 60, height: 165)
     }
     
     private func setConstraints(_ subview: UIView, on viewSetting: UIView, and

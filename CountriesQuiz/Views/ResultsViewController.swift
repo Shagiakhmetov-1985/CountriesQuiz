@@ -77,14 +77,14 @@ class ResultsViewController: UIViewController, ResultsViewControllerDelegate {
     private lazy var labelDescription: UILabel = {
         let text = viewModel.description
         let label = setLabel(title: text, style: "GillSans", size: 21, color: .black)
-        let attribited = NSMutableAttributedString(string: text)
-        attribited.addAttributes([
+        let attributed = NSMutableAttributedString(string: text)
+        attributed.addAttributes([
             NSAttributedString.Key.font: UIFont(name: "GillSans-SemiBold", size: 22) ?? ""
         ], range: viewModel.getRange(subString: viewModel.heading, fromString: text))
-        attribited.addAttributes([
+        attributed.addAttributes([
             NSAttributedString.Key.foregroundColor: viewModel.game.favorite
         ], range: viewModel.getRange(subString: viewModel.percent, fromString: text))
-        label.attributedText = attribited
+        label.attributedText = attributed
         return label
     }()
     

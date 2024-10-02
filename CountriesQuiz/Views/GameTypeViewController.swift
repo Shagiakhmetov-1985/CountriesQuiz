@@ -175,16 +175,16 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private lazy var pickerViewQuestions: UIPickerView = {
         setPickerView(tag: 1)
     }()
-    
+    /*
     private lazy var labelAllCountries: UILabel = {
         let text = viewModel.text(tag: 1)
         let color = viewModel.isSelect(isOn: viewModel.allCountries)
         let label = setLabel(color: color, title: text, size: 26, style: "mr_fontick")
-        let attributed = viewModel.mutableAttributedString(string: text, tag: 1)
+        let attributed = viewModel.attributedText(text: text, tag: 1)
         label.attributedText = attributed
         return label
     }()
-    /*
+    
     private lazy var labelCountAllCountries: UILabel = {
         setLabel(
             color: viewModel.isSelect(isOn: viewModel.allCountries),
@@ -195,19 +195,19 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     */
     private lazy var buttonAllCountries: UIButton = {
         setButton(
-            color: viewModel.isSelect(isOn: !viewModel.allCountries),
-            label: labelAllCountries)
+            backgroundIsOn: !viewModel.allCountries,
+            colorIsOn: viewModel.allCountries)
     }()
-    
+    /*
     private lazy var labelAmericaContinent: UILabel = {
         let text = viewModel.text(tag: 2)
         let color = viewModel.isSelect(isOn: viewModel.americaContinent)
         let label = setLabel(color: color, title: text, size: 26, style: "mr_fontick")
-        let attributed = viewModel.mutableAttributedString(string: text, tag: 2)
+        let attributed = viewModel.attributedText(text: text, tag: 2)
         label.attributedText = attributed
         return label
     }()
-    /*
+    
     private lazy var labelCountAmericaContinent: UILabel = {
         setLabel(
             color: viewModel.isSelect(isOn: viewModel.americaContinent),
@@ -218,20 +218,20 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     */
     private lazy var buttonAmericaContinent: UIButton = {
         setButton(
-            color: viewModel.isSelect(isOn: !viewModel.americaContinent),
-            label: labelAmericaContinent,
+            backgroundIsOn: !viewModel.americaContinent,
+            colorIsOn: viewModel.americaContinent,
             tag: 1)
     }()
-    
+    /*
     private lazy var labelEuropeContinent: UILabel = {
         let text = viewModel.text(tag: 3)
         let color = viewModel.isSelect(isOn: viewModel.europeContinent)
         let label = setLabel(color: color, title: text, size: 26, style: "mr_fontick")
-        let attributed = viewModel.mutableAttributedString(string: text, tag: 3)
+        let attributed = viewModel.attributedText(text: text, tag: 3)
         label.attributedText = attributed
         return label
     }()
-    /*
+    
     private lazy var labelCountEuropeContinent: UILabel = {
         setLabel(
             color: viewModel.isSelect(isOn: viewModel.europeContinent),
@@ -242,20 +242,20 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     */
     private lazy var buttonEuropeContinent: UIButton = {
         setButton(
-            color: viewModel.isSelect(isOn: !viewModel.europeContinent),
-            label: labelEuropeContinent,
+            backgroundIsOn: !viewModel.europeContinent,
+            colorIsOn: viewModel.europeContinent,
             tag: 2)
     }()
-    
+    /*
     private lazy var labelAfricaContinent: UILabel = {
         let text = viewModel.text(tag: 4)
         let color = viewModel.isSelect(isOn: viewModel.africaContinent)
         let label = setLabel(color: color, title: text, size: 26, style: "mr_fontick")
-        let attributed = viewModel.mutableAttributedString(string: text, tag: 4)
+        let attributed = viewModel.attributedText(text: text, tag: 4)
         label.attributedText = attributed
         return label
     }()
-    /*
+    
     private lazy var labelCountAfricaContinent: UILabel = {
         setLabel(
             color: viewModel.isSelect(isOn: viewModel.africaContinent),
@@ -266,20 +266,20 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     */
     private lazy var buttonAfricaContinent: UIButton = {
         setButton(
-            color: viewModel.isSelect(isOn: !viewModel.africaContinent),
-            label: labelAfricaContinent,
+            backgroundIsOn: !viewModel.africaContinent,
+            colorIsOn: viewModel.africaContinent,
             tag: 3)
     }()
-    
+    /*
     private lazy var labelAsiaContinent: UILabel = {
         let text = viewModel.text(tag: 5)
         let color = viewModel.isSelect(isOn: viewModel.asiaContinent)
         let label = setLabel(color: color, title: text, size: 26, style: "mr_fontick")
-        let attributed = viewModel.mutableAttributedString(string: text, tag: 5)
+        let attributed = viewModel.attributedText(text: text, tag: 5)
         label.attributedText = attributed
         return label
     }()
-    /*
+    
     private lazy var labelCountAsiaContinent: UILabel = {
         setLabel(
             color: viewModel.isSelect(isOn: viewModel.asiaContinent),
@@ -290,20 +290,20 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     */
     private lazy var buttonAsiaContinent: UIButton = {
         setButton(
-            color: viewModel.isSelect(isOn: !viewModel.asiaContinent),
-            label: labelAsiaContinent,
+            backgroundIsOn: !viewModel.asiaContinent,
+            colorIsOn: viewModel.asiaContinent,
             tag: 4)
     }()
-    
+    /*
     private lazy var labelOceanContinent: UILabel = {
         let text = viewModel.text(tag: 6)
         let color = viewModel.isSelect(isOn: viewModel.oceaniaContinent)
         let label = setLabel(color: color, title: text, size: 26, style: "mr_fontick")
-        let attributed = viewModel.mutableAttributedString(string: text, tag: 6)
+        let attributed = viewModel.attributedText(text: text, tag: 6)
         label.attributedText = attributed
         return label
     }()
-    /*
+    
     private lazy var labelCountOceanContinent: UILabel = {
         setLabel(
             color: viewModel.isSelect(isOn: viewModel.oceaniaContinent),
@@ -314,8 +314,8 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     */
     private lazy var buttonOceanContinent: UIButton = {
         setButton(
-            color: viewModel.isSelect(isOn: !viewModel.oceaniaContinent),
-            label: labelOceanContinent,
+            backgroundIsOn: !viewModel.oceaniaContinent,
+            colorIsOn: viewModel.oceaniaContinent,
             tag: 5)
     }()
     
@@ -332,7 +332,16 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }()
     
     private lazy var buttonCheckmark: UIButton = {
-        setCheckmarkButton(image: viewModel.isCheckmark(isOn: viewModel.isCountdown()))
+        let checkmark = viewModel.isCheckmark(isOn: viewModel.isCountdown())
+        let size = UIImage.SymbolConfiguration(pointSize: 25)
+        let image = UIImage(systemName: checkmark, withConfiguration: size)
+        let button = UIButton(type: .system)
+        button.setImage(image, for: .normal)
+        button.tintColor = viewModel.background
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(countdown), for: .touchUpInside)
+        viewModel.setSquare(subviews: button, sizes: 50)
+        return button
     }()
     
     private lazy var viewCheckmark: UIView = {
@@ -441,8 +450,9 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     @objc func showSetting(sender: UIButton) {
         viewModel.setSubviews(subviews: viewSetting, on: view)
         viewModel.setSubviewsTag(subviews: buttonDone, viewSetting, tag: sender.tag)
-        viewModel.setSubview(subview: subview(tag: sender.tag), on: viewSetting, and: view)
+        viewModel.setSubview(subview(tag: sender.tag), on: viewSetting, and: view)
         viewModel.setConstraints(stackView: stackView)
+        viewModel.setDataSubviews(tag: sender.tag)
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
         viewModel.showViewSetting(viewSetting, and: visualEffectView, view)
     }
@@ -667,33 +677,16 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private func colorAllCountries(sender: UIButton) {
         guard sender.backgroundColor == viewModel.background else { return }
         viewModel.setCountContinents(0)
-        viewModel.buttonAllCountries(buttonAllCountries, labelAllCountries, .white, viewModel.background)
+        viewModel.buttonAllCountries(buttonAllCountries, isOn: true)
         viewModel.buttonContinents(buttonAmericaContinent, buttonEuropeContinent,
                                    buttonAfricaContinent, buttonAsiaContinent,
-                                   buttonOceanContinent,
-                                   and: labelAmericaContinent,
-                                   labelEuropeContinent, labelAfricaContinent,
-                                   labelAsiaContinent, labelOceanContinent,
-                                   and: viewModel.background, .white)
+                                   buttonOceanContinent)
     }
     
     private func colorContinents(sender: UIButton) {
-        let colorLabel = sender.backgroundColor == viewModel.background ? viewModel.background : .white
-        labelOnOff(tag: sender.tag, color: colorLabel)
         viewModel.colorButtonContinent(sender)
         guard buttonAllCountries.backgroundColor == .white else { return }
-        viewModel.buttonAllCountries(buttonAllCountries, labelAllCountries, viewModel.background, .white)
-    }
-    
-    private func labelOnOff(tag: Int, color: UIColor) {
-        switch tag {
-        case 0: viewModel.labelOnOff(labelAllCountries, and: color)
-        case 1: viewModel.labelOnOff(labelAmericaContinent, and: color)
-        case 2: viewModel.labelOnOff(labelEuropeContinent, and: color)
-        case 3: viewModel.labelOnOff(labelAfricaContinent, and: color)
-        case 4: viewModel.labelOnOff(labelAsiaContinent, and: color)
-        default: viewModel.labelOnOff(labelOceanContinent, and: color)
-        }
+        viewModel.buttonAllCountries(buttonAllCountries, isOn: false)
     }
     // MARK: - Segmented control press, change setting time for one question or for all questions
     @objc private func segmentSelect() {

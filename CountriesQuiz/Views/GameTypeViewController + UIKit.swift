@@ -130,9 +130,17 @@ extension GameTypeViewController {
         return button
     }
     
-    func setButton(color: UIColor, label: UILabel, tag: Int? = nil) -> UIButton {
+    func setButton(backgroundIsOn: Bool, colorIsOn: Bool, tag: Int? = nil) -> UIButton {
+        let text = viewModel.text(tag: tag ?? 0)
+        let attributed = viewModel.attributedText(text: text, tag: tag ?? 0)
         let button = UIButton(type: .custom)
-        button.backgroundColor = color
+        button.backgroundColor = viewModel.isSelect(isOn: backgroundIsOn)
+        button.setTitle(text, for: .normal)
+        button.setTitleColor(viewModel.isSelect(isOn: colorIsOn), for: .normal)
+        button.titleLabel?.font = UIFont(name: "mr_fontick", size: 26)
+        button.titleLabel?.attributedText = attributed
+        button.titleLabel?.numberOfLines = 0
+        button.titleLabel?.textAlignment = .center
         button.layer.borderColor = UIColor.white.cgColor
         button.layer.borderWidth = 2
         button.layer.cornerRadius = 13
@@ -142,20 +150,7 @@ extension GameTypeViewController {
         button.tag = tag ?? 0
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(continents), for: .touchUpInside)
-        viewModel.setSubviews(subviews: label, on: button)
-        viewModel.setConstraints(label: label, on: button)
-        return button
-    }
-    
-    func setCheckmarkButton(image: String) -> UIButton {
-        let size = UIImage.SymbolConfiguration(pointSize: 25)
-        let image = UIImage(systemName: image, withConfiguration: size)
-        let button = UIButton(type: .system)
-        button.setImage(image, for: .normal)
-        button.tintColor = viewModel.background
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(countdown), for: .touchUpInside)
-        viewModel.setSquare(subviews: button, sizes: 50)
+        viewModel.setButtonsContinent(button: button, tag: tag ?? 0)
         return button
     }
     

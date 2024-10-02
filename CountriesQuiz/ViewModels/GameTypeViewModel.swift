@@ -71,12 +71,13 @@ protocol GameTypeViewModelProtocol {
     func removeSubviews(subviews: UIView...)
     func setupBarButtons(_ buttonBack: UIButton,_ buttonHelp: UIButton,_ navigationItem: UINavigationItem)
     func setRowPickerView(tag: Int) -> Int
+    func setButtonsContinent(button: UIButton, tag: Int)
     func setIndexSegment() -> Int
     func isOnSegment() -> Bool
     func setHeightSegment(segment: UISegmentedControl)
 //    func setPickerViewCountQuestions(_ pickerView: UIPickerView,_ view: UIView)
-    func setColors(buttons: UIButton..., completion: @escaping ([UIColor]) -> Void)
-    func setLabels(_ labels: UILabel..., colors: [UIColor])
+    func setDataSubviews(tag: Int)
+    func setColors(buttons: UIButton...)
     func setButtonCheckmarkCountdown(_ stackView: UIStackView,_ view: UIView,_ button: UIButton)
 //    func setPickerViewsTime(_ stackView: UIStackView,_ view: UIView,_ segmentedControl: UISegmentedControl)
 //    func setPickerViewsTime(_ pickerViewOneTime: UIPickerView,_ pickerViewAllTime: UIPickerView)
@@ -85,16 +86,14 @@ protocol GameTypeViewModelProtocol {
     func setSubviewsTag(subviews: UIView..., tag: Int)
     func viewHelp() -> UIView
     func viewSetting() -> UIView
-    func setSubview(subview: UIView, on viewSetting: UIView, and view: UIView)
+    func setSubview(_ subview: UIView, on viewSetting: UIView, and view: UIView)
     func setFavorites(newFavorites: [Favorites])
     
-    func buttonAllCountries(_ buttonAllCountries: UIButton,_ labelAllCountries: UILabel,
-                            _ colorButton: UIColor,_ colorLabel: UIColor)
-    func buttonContinents(_ buttons: UIButton...,and labels: UILabel...,and colorButton: UIColor,_ colorLabel: UIColor)
+    func buttonAllCountries(_ button: UIButton, isOn: Bool)
+    func buttonContinents(_ buttons: UIButton...)
     func colorButtonContinent(_ sender: UIButton)
-    func labelOnOff(_ labels: UILabel...,and color: UIColor)
     func checkmarkOnOff(_ button: UIButton)
-    func mutableAttributedString(string: String, tag: Int) -> NSMutableAttributedString
+    func attributedText(text: String, tag: Int) -> NSMutableAttributedString
     
     func setQuestions(_ pickerView: UIPickerView, _ labelQuestions: UILabel,
                       _ labelTime: UILabel, completion: @escaping () -> Void)
@@ -188,6 +187,12 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     private var scrollView: UIScrollView!
     private var viewSecondary: UIView!
     private var titleSetting: UILabel!
+    private var buttonAllCountries: UIButton!
+    private var buttonAmerica: UIButton!
+    private var buttonEurope: UIButton!
+    private var buttonAfrica: UIButton!
+    private var buttonAsia: UIButton!
+    private var buttonOcean: UIButton!
     
     required init(mode: Setting, game: Games, tag: Int, favorites: [Favorites]) {
         self.mode = mode
@@ -233,7 +238,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         return popUpView
     }
     
-    func setSubview(subview: UIView, on viewSetting: UIView, and view: UIView) {
+    func setSubview(_ subview: UIView, on viewSetting: UIView, and view: UIView) {
         setSubviews(subviews: subview, on: viewSecondary)
         setConstraints(subview: subview, on: viewSetting, and: view, tag: viewSetting.tag)
         titleSetting.text = titleSetting(tag: viewSetting.tag)
@@ -418,6 +423,17 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         pickerView.selectRow(row, inComponent: 0, animated: false)
     }
     */
+    func setButtonsContinent(button: UIButton, tag: Int) {
+        switch tag {
+        case 0: buttonAllCountries = button
+        case 1: buttonAmerica = button
+        case 2: buttonEurope = button
+        case 3: buttonAfrica = button
+        case 4: buttonAsia = button
+        default: buttonOcean = button
+        }
+    }
+    
     func counterContinents() {
         counterContinents(continents: americaContinent, europeContinent,
                           africaContinent, asiaContinent, oceaniaContinent)
@@ -429,20 +445,20 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         }
     }
     
-    func setColors(buttons: UIButton..., completion: @escaping ([UIColor]) -> Void) {
-        var colors: [UIColor] = []
-        buttons.forEach { button in
-            let color = checkBool(tag: button.tag, button: button)
-            buttonColor(buttons: button, color: color.0)
-            colors.append(color.1)
+    func setDataSubviews(tag: Int) {
+        switch tag {
+        case 2:
+            counterContinents()
+            setColors(buttons: buttonAllCountries, buttonAmerica, buttonEurope,
+                      buttonAfrica, buttonAsia, buttonOcean)
+        default: break
         }
-        completion(colors)
     }
     
-    func setLabels(_ labels: UILabel..., colors: [UIColor]) {
-        let iterration = min(labels.count, colors.count)
-        for index in 0..<iterration {
-            labelOnOff(labels[index], and: colors[index])
+    func setColors(buttons: UIButton...) {
+        buttons.forEach { button in
+            let color = checkContinent(tag: button.tag)
+            buttonColor(buttons: button, backgroundColor: color.0, textColor: color.1)
         }
     }
     
@@ -479,29 +495,20 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         reloadPickerViews(pickerViews: pickerViewOne, pickerViewAll)
     }
     // MARK: - Button press continents
-    func buttonAllCountries(_ buttonAllCountries: UIButton, _ labelAllCountries: UILabel, 
-                            _ colorButton: UIColor, _ colorLabel: UIColor) {
-        buttonColor(buttons: buttonAllCountries, color: colorButton)
-        labelOnOff(labelAllCountries, and: colorLabel)
+    func buttonAllCountries(_ button: UIButton, isOn: Bool) {
+        let backgroundColor: UIColor = isOn ? .white : background
+        let textColor: UIColor = isOn ? background : .white
+        buttonColor(buttons: button, backgroundColor: backgroundColor, textColor: textColor)
     }
     
-    func buttonContinents(_ buttons: UIButton..., and labels: UILabel..., 
-                          and colorButton: UIColor, _ colorLabel: UIColor) {
-        setColorButton(buttons: buttons, color: colorButton)
-        setColorLabel(labels: labels, color: colorLabel)
+    func buttonContinents(_ buttons: UIButton...) {
+        setColorButton(buttons: buttons, backgroundColor: background, textColor: .white)
     }
     
     func colorButtonContinent(_ sender: UIButton) {
-        let color = sender.backgroundColor == background ? .white : background
-        buttonColor(buttons: sender, color: color)
-    }
-    
-    func labelOnOff(_ labels: UILabel...,and color: UIColor) {
-        labels.forEach { label in
-            UIView.animate(withDuration: 0.3) {
-                label.textColor = color
-            }
-        }
+        let backgroundColor = sender.backgroundColor == background ? .white : background
+        let textColor = sender.backgroundColor == background ? background : .white
+        buttonColor(buttons: sender, backgroundColor: backgroundColor, textColor: textColor)
     }
     // MARK: - Button press checkmark
     func checkmarkOnOff(_ button: UIButton) {
@@ -549,11 +556,11 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         completion()
     }
     
-    func mutableAttributedString(string: String, tag: Int) -> NSMutableAttributedString {
-        let attributed = NSMutableAttributedString(string: string)
+    func attributedText(text: String, tag: Int) -> NSMutableAttributedString {
+        let attributed = NSMutableAttributedString(string: text)
         let font = NSAttributedString.Key.font
         let key = UIFont(name: "mr_fontick", size: 20)
-        let range = setRange(subString: count(tag: tag), fromString: string)
+        let range = setRange(subString: count(tag: tag), fromString: text)
         attributed.addAttributes([font: key ?? ""], range: range)
         return attributed
     }
@@ -885,25 +892,27 @@ extension GameTypeViewModel {
         }
     }
     
-    private func checkBool(tag: Int, button: UIButton) -> (UIColor, UIColor) {
+    private func checkContinent(tag: Int) -> (UIColor, UIColor) {
         switch tag {
-        case 0: checkBool(bool: allCountries, button: button)
-        case 1: checkBool(bool: americaContinent, button: button)
-        case 2: checkBool(bool: europeContinent, button: button)
-        case 3: checkBool(bool: africaContinent, button: button)
-        case 4: checkBool(bool: asiaContinent, button: button)
-        default: checkBool(bool: oceaniaContinent, button: button)
+        case 0: continent(isOn: allCountries)
+        case 1: continent(isOn: americaContinent)
+        case 2: continent(isOn: europeContinent)
+        case 3: continent(isOn: africaContinent)
+        case 4: continent(isOn: asiaContinent)
+        default: continent(isOn: oceaniaContinent)
         }
     }
     
-    private func checkBool(bool: Bool, button: UIButton) -> (UIColor, UIColor) {
-        bool ? (.white, background) : (background, .white)
+    private func continent(isOn: Bool) -> (UIColor, UIColor) {
+        isOn ? (.white, background) : (background, .white)
     }
     
-    private func buttonColor(buttons: UIButton..., color: UIColor) {
+    private func buttonColor(buttons: UIButton..., backgroundColor: UIColor,
+                             textColor: UIColor) {
         buttons.forEach { button in
             UIView.animate(withDuration: 0.3) {
-                button.backgroundColor = color
+                button.backgroundColor = backgroundColor
+                button.setTitleColor(textColor, for: .normal)
             }
         }
     }
@@ -962,17 +971,18 @@ extension GameTypeViewModel {
         }
     }
     // MARK: - Button press continents
-    private func setColorButton(buttons: [UIButton], color: UIColor) {
+    private func setColorButton(buttons: [UIButton], backgroundColor: UIColor,
+                                textColor: UIColor) {
         buttons.forEach { button in
-            buttonColor(buttons: button, color: color)
+            buttonColor(buttons: button, backgroundColor: backgroundColor, textColor: textColor)
         }
     }
     
-    private func setColorLabel(labels: [UILabel], color: UIColor) {
-        labels.forEach { label in
-            labelOnOff(label, and: color)
-        }
-    }
+//    private func setColorLabel(labels: [UILabel], color: UIColor) {
+//        labels.forEach { label in
+//            labelOnOff(label, and: color)
+//        }
+//    }
     // MARK: - Press done for change setting, count questions
     private func setTitleCountQuestions(_ title: String, _ labelQuestions: UILabel) {
         labelQuestions.text = title
@@ -1046,7 +1056,7 @@ extension GameTypeViewModel {
         let currentImage = button.currentImage?.withConfiguration(size)
         let imageCircle = UIImage(systemName: "circle", withConfiguration: size)
         label.text = currentImage == imageCircle ? "Нет" : "Да"
-        countdownOnOff(isOn: currentImage == imageCircle ? false : true)
+        setCountdown(isOn: currentImage == imageCircle ? false : true)
     }
     
     private func setTitlesCountdown(_ image: UIImageView,_ label: UILabel) {
@@ -1061,7 +1071,7 @@ extension GameTypeViewModel {
     // MARK: - Press done for change setting, time
     private func setSegmentedControl(_ segment: UISegmentedControl) {
         let isOn = segment.selectedSegmentIndex == 0 ? true : false
-        oneQuestionOnOff(isOn: isOn)
+        setOneQuestion(isOn: isOn)
     }
     
     private func setTitlesTime(_ labelTime: UILabel,_ labelDescription: UILabel) {
@@ -1113,11 +1123,11 @@ extension GameTypeViewModel {
         mode.oceaniaContinent = bool
     }
     
-    private func countdownOnOff(isOn: Bool) {
+    private func setCountdown(isOn: Bool) {
         mode.timeElapsed.timeElapsed = isOn
     }
     
-    private func oneQuestionOnOff(isOn: Bool) {
+    private func setOneQuestion(isOn: Bool) {
         mode.timeElapsed.questionSelect.oneQuestion = isOn
     }
     
@@ -1234,11 +1244,11 @@ extension GameTypeViewModel {
     
     private func continent(tag: Int) -> String {
         switch tag {
-        case 1: "Все страны мира"
-        case 2: "Континент Америки"
-        case 3: "Континент Европы"
-        case 4: "Континент Африки"
-        case 5: "Континент Азии"
+        case 0: "Все страны мира"
+        case 1: "Континент Америки"
+        case 2: "Континент Европы"
+        case 3: "Континент Африки"
+        case 4: "Континент Азии"
         default: "Континент Океании"
         }
     }
@@ -1249,11 +1259,11 @@ extension GameTypeViewModel {
     
     private func countCountries(tag: Int) -> Int {
         switch tag {
-        case 1: FlagsOfCountries.shared.countries.count
-        case 2: FlagsOfCountries.shared.countriesOfAmericanContinent.count
-        case 3: FlagsOfCountries.shared.countriesOfEuropeanContinent.count
-        case 4: FlagsOfCountries.shared.countriesOfAfricanContinent.count
-        case 5: FlagsOfCountries.shared.countriesOfAsianContinent.count
+        case 0: FlagsOfCountries.shared.countries.count
+        case 1: FlagsOfCountries.shared.countriesOfAmericanContinent.count
+        case 2: FlagsOfCountries.shared.countriesOfEuropeanContinent.count
+        case 3: FlagsOfCountries.shared.countriesOfAfricanContinent.count
+        case 4: FlagsOfCountries.shared.countriesOfAsianContinent.count
         default: FlagsOfCountries.shared.countriesOfOceanContinent.count
         }
     }

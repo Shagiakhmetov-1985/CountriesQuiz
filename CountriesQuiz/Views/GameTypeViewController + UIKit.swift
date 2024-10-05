@@ -150,7 +150,7 @@ extension GameTypeViewController {
         button.tag = tag ?? 0
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(continents), for: .touchUpInside)
-        viewModel.setButtonsContinent(button: button, tag: tag ?? 0)
+        viewModel.setButtonsContinent(button: button)
         return button
     }
     
@@ -173,7 +173,9 @@ extension GameTypeViewController {
     func setStackView(view: UIView, label: UILabel) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [view, label])
         stackView.spacing = 10
+        stackView.tag = 2
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        viewModel.setStackView(stackView: stackView)
         return stackView
     }
     
@@ -187,6 +189,7 @@ extension GameTypeViewController {
         pickerView.delegate = self
         pickerView.dataSource = self
         pickerView.selectRow(row, inComponent: 0, animated: false)
+        viewModel.setPickerView(pickerView: pickerView)
         return pickerView
     }
 }

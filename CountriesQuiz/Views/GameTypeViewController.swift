@@ -354,10 +354,10 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     // MARK: - Button press continents, change setting continents
     @objc func continents(sender: UIButton) {
-        guard sender.tag > 0 else { return colorAllCountries(sender: sender) }
+        guard sender.tag > 0 else { return viewModel.setAllCountries(sender) }
         viewModel.setCountContinents(sender.backgroundColor == .white ? -1 : 1)
-        guard viewModel.countContinents > 4 else { return condition(sender: sender) }
-        colorAllCountries(sender: buttonAllCountries)
+        guard viewModel.countContinents > 4 else { return viewModel.condition(sender) }
+        viewModel.setAllCountries(sender)
     }
     // MARK: - Button press checkmark, change setting countdown
     @objc func countdown() {
@@ -366,26 +366,12 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     // MARK: - Press done button for change setting
     @objc func done(sender: UIButton) {
         switch sender.tag {
-            
-        case 1: viewModel.setQuestions(pickerViewQuestions, labelCountQuestion, labelTime) {
-            self.closeViewSetting()
+        case 1: viewModel.setQuestions(labelCountQuestion, and: labelTime)
+        case 2: viewModel.setContinents(labelContinents, labelCountQuestion, and: pickerViewQuestions)
+        case 3: viewModel.setCountdown(labelCountdown, imageInfinity, labelTime, and: buttonTime)
+        default: viewModel.setTime(labelTime, and: labelTimeDesription)
         }
-        case 2: viewModel.setContinents(
-            labelContinents, labelCountQuestion, pickerViewQuestions, buttonAllCountries,
-            buttonAmericaContinent, buttonEuropeContinent, buttonAfricaContinent,
-            buttonAsiaContinent, buttonOceanContinent) {
-                self.closeViewSetting()
-            }
-        case 3: viewModel.setCountdown(buttonCheckmark, labelCountdown, imageInfinity,
-                                       labelTime, buttonTime) {
-            self.closeViewSetting()
-        }
-        default: viewModel.setTime(segmentedControl, labelTime, labelTimeDesription,
-                                   pickerViewOneTime, pickerViewAllTime) {
-            self.closeViewSetting()
-        }
-            
-        }
+        closeViewSetting()
     }
     // MARK: - GameTypeViewControllerInput
     func dataToMenu(setting: Setting, favourites: [Favorites]) {
@@ -430,7 +416,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     @objc private func showViewHelp(sender: UIButton) {
-        viewModel.popUpViewHelp.toggle()
+        viewModel.popUpViewHelpToggle()
         viewModel.setSubviews(subviews: viewHelp, on: view)
         viewModel.setConstraints(viewHelp, view)
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: false)
@@ -438,7 +424,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     @objc private func closeView() {
-        viewModel.popUpViewHelp.toggle()
+        viewModel.popUpViewHelpToggle()
         viewModel.barButtonsOnOff(buttonBack, buttonHelp, bool: true)
         viewModel.hideAnimationView(viewHelp, and: visualEffectView)
     }
@@ -502,25 +488,6 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     @objc private func swap() {
         viewModel.swap(buttonSwap)
-    }
-    // MARK: - Button press continents, change setting continents. Continue
-    private func condition(sender: UIButton) {
-        viewModel.countContinents == 0 ? colorAllCountries(sender: buttonAllCountries) : colorContinents(sender: sender)
-    }
-    
-    private func colorAllCountries(sender: UIButton) {
-        guard sender.backgroundColor == viewModel.background else { return }
-        viewModel.setCountContinents(0)
-        viewModel.buttonAllCountries(buttonAllCountries, isOn: true)
-        viewModel.buttonContinents(buttonAmericaContinent, buttonEuropeContinent,
-                                   buttonAfricaContinent, buttonAsiaContinent,
-                                   buttonOceanContinent)
-    }
-    
-    private func colorContinents(sender: UIButton) {
-        viewModel.colorButtonContinent(sender)
-        guard buttonAllCountries.backgroundColor == .white else { return }
-        viewModel.buttonAllCountries(buttonAllCountries, isOn: false)
     }
     // MARK: - Segmented control press, change setting time for one question or for all questions
     @objc private func segmentSelect() {

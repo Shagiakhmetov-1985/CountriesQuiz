@@ -271,11 +271,12 @@ extension MenuViewController {
     @objc private func setting() {
         let settingViewModel = viewModel.settingViewModel()
         let settingVC = SettingViewController()
+        let navigationVC = UINavigationController(rootViewController: settingVC)
         settingVC.viewModel = settingViewModel
-        settingVC.modalPresentationStyle = .custom
-        settingVC.transitioningDelegate = self
         settingVC.delegate = self
-        present(settingVC, animated: true)
+        navigationVC.transitioningDelegate = self
+        navigationVC.modalPresentationStyle = .custom
+        present(navigationVC, animated: true)
     }
 }
 // MARK: - Setup subviews

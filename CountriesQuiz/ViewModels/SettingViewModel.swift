@@ -24,6 +24,10 @@ protocol SettingViewModelProtocol {
     var oceaniaContinent: Bool { get }
     var oneQuestionTime: Int { get }
     var allQuestionsTime: Int { get }
+    var title: String { get }
+    var cell: AnyClass { get }
+    var heightOfRow: CGFloat { get }
+    var numberOfSections: Int { get }
     
     var mode: Setting { get }
     
@@ -40,8 +44,12 @@ protocol SettingViewModelProtocol {
                    _ labelTimeQuestion: UILabel,_ labelTimeNumber: UILabel,_ labelNum: UILabel)
     func setSegmentedControl(_ segmentControl: UISegmentedControl)
     func setPickerViews(_ pickerViewOne: UIPickerView,_ pickerViewAll: UIPickerView,_ pickerViewNumber: UIPickerView)
-    func setupSubviews(subviews: UIView..., on subviewOther: UIView)
+    func setBarButtons(_ buttonBack: UIButton, _ buttonDefault: UIButton, and navigationItem: UINavigationItem)
+    func setSubviews(subviews: UIView..., on subviewOther: UIView)
+    func setLabel(text: String, size: CGFloat, color: UIColor) -> UILabel
     
+    func numberOfRows(_ section: Int) -> Int
+    func customCell(cell: SettingCell, indexPath: IndexPath)
     func contentSize(_ view: UIView?) -> CGSize
     func isTime() -> Bool
     func isOneQuestion() -> Bool
@@ -79,10 +87,12 @@ protocol SettingViewModelProtocol {
     
     func setConstraints(_ subviewFirst: UIView, to subviewSecond: UIView,
                         leadingConstant: CGFloat, constant: CGFloat,_ view: UIView)
-    func setSquare(subview: UIView, sizes: CGFloat)
+    func setSquare(subviews: UIView..., sizes: CGFloat)
     func setHeightSubview(_ subview: UIView, height: CGFloat)
     func setConstraintsCentersOnView(_ viewFirst: UIView, on viewSecond: UIView)
     func setConstraintsOnButton(_ labelFirst: UILabel, and labelSecond: UILabel, on button: UIButton)
+    
+    func countQuestionsViewController() -> CountQuestionsViewModelProtocol
 }
 
 class SettingViewModel: SettingViewModelProtocol {
@@ -134,11 +144,21 @@ class SettingViewModel: SettingViewModelProtocol {
     var allQuestionsTime: Int {
         mode.timeElapsed.questionSelect.questionTime.allQuestionsTime
     }
+    var title = "Настройки"
+    var cell: AnyClass = SettingCell.self
+    var heightOfRow: CGFloat = 55
+    var numberOfSections = 2
     
     var mode: Setting
     
     private var defaultCountRows: Int {
         DefaultSetting.countRows.rawValue
+    }
+    private var time: String {
+        isTime() ? "\(seconds)" : "Нет"
+    }
+    private var seconds: Int {
+        isOneQuestion() ? oneQuestionTime : allQuestionsTime
     }
     
     private var buttonAllCountries: UIButton!
@@ -220,12 +240,44 @@ class SettingViewModel: SettingViewModelProtocol {
         pickerViewNumberQuestion = pickerViewNumber
     }
     
-    func setupSubviews(subviews: UIView..., on subviewOther: UIView) {
+    func setBarButtons(_ buttonBack: UIButton, _ buttonDefault: UIButton,
+                       and navigationItem: UINavigationItem) {
+        let buttonLeft = UIBarButtonItem(customView: buttonBack)
+        let buttonRight = UIBarButtonItem(customView: buttonDefault)
+        navigationItem.leftBarButtonItem = buttonLeft
+        navigationItem.rightBarButtonItem = buttonRight
+    }
+    
+    func setSubviews(subviews: UIView..., on subviewOther: UIView) {
         subviews.forEach { subview in
             subviewOther.addSubview(subview)
         }
     }
+    
+    func customCell(cell: SettingCell, indexPath: IndexPath) {
+        cell.image.image = image(name: images(indexPath.section)[indexPath.row])
+        cell.title.text = title(indexPath.section)[indexPath.row]
+        cell.additional.text = additional(indexPath.section)[indexPath.row]
+    }
+    
+    func setLabel(text: String, size: CGFloat, color: UIColor) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.font = UIFont(name: "mr_fontick", size: size)
+        label.textColor = color
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
     // MARK: - Constants
+    func numberOfRows(_ section: Int) -> Int {
+        switch section {
+        case 0: 3
+        default: 2
+        }
+    }
+    
     func contentSize(_ view: UIView?) -> CGSize {
         guard let view = view else { return CGSize(width: 0, height: 0) }
         return CGSize(width: view.frame.width, height: view.frame.height + checkSizeScreenIphone(view))
@@ -475,11 +527,13 @@ class SettingViewModel: SettingViewModelProtocol {
         ])
     }
     
-    func setSquare(subview: UIView, sizes: CGFloat) {
-        NSLayoutConstraint.activate([
-            subview.heightAnchor.constraint(equalToConstant: sizes),
-            subview.widthAnchor.constraint(equalToConstant: sizes)
-        ])
+    func setSquare(subviews: UIView..., sizes: CGFloat) {
+        subviews.forEach { subview in
+            NSLayoutConstraint.activate([
+                subview.heightAnchor.constraint(equalToConstant: sizes),
+                subview.widthAnchor.constraint(equalToConstant: sizes)
+            ])
+        }
     }
     
     func setHeightSubview(_ subview: UIView, height: CGFloat) {
@@ -503,9 +557,39 @@ class SettingViewModel: SettingViewModelProtocol {
             labelSecond.centerYAnchor.constraint(equalTo: button.centerYAnchor, constant: 12.5)
         ])
     }
+    // MARK: - Transition to next view controller
+    func countQuestionsViewController() -> CountQuestionsViewModelProtocol {
+        CountQuestionsViewModel(mode: mode)
+    }
     // MARK: - Constants, countinue
     private func checkSizeScreenIphone(_ view: UIView) -> CGFloat {
         view.frame.height > 736 ? 180 : 320
+    }
+    
+    private func image(name: String) -> UIImage? {
+        let size = UIImage.SymbolConfiguration(pointSize: 27)
+        return UIImage(systemName: name, withConfiguration: size)
+    }
+    
+    private func images(_ section: Int) -> [String] {
+        switch section {
+        case 0: ["questionmark.bubble", "globe.europe.africa", "timer"]
+        default: ["globe", "slider.horizontal.3"]
+        }
+    }
+    
+    private func title(_ section: Int) -> [String] {
+        switch section {
+        case 0: ["Количество вопросов", "Континенты", "Время для вопросов"]
+        default: ["Язык", "Оформление"]
+        }
+    }
+    
+    private func additional(_ section: Int) -> [String] {
+        switch section {
+        case 0: ["\(countQuestions)", "", "\(time) сек."]
+        default: ["Русский", ""]
+        }
     }
     // MARK: - Change color buttons and labels of continents
     private func buttonOnAllCountries() {

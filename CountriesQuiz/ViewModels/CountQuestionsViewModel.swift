@@ -12,6 +12,7 @@ protocol CountQuestionsViewModelProtocol {
     var numberOfComponents: Int { get }
     var numberOfRows: Int { get }
     var heightOfRows: CGFloat { get }
+    var currentRow: Int { get }
     var mode: Setting { get }
     
     init(mode: Setting)
@@ -21,26 +22,30 @@ protocol CountQuestionsViewModelProtocol {
     func setLabel(text: String, font: String, size: CGFloat) -> UILabel
     func setTitles(pickerView: UIPickerView, and row: Int) -> UIView
     
+    func setCountQuestionsFromRow(_ row: Int)
     func setSquare(subview: UIView, sizes: CGFloat)
 }
 
 class CountQuestionsViewModel: CountQuestionsViewModelProtocol {
     var title = "Количество вопросов"
     var description = """
-    Установите определенное количество вопросов, на которые вы будете отвечать в игре. Минимальное значение - 10, а максимальное - 100.
+    Установите определенное количество вопросов, на которые вы будете отвечать. Минимальное значение - 10, а максимальное - 100.
     """
     var numberOfComponents = 1
     var numberOfRows: Int {
         mode.countRows
     }
     var heightOfRows: CGFloat = 35
+    var currentRow: Int {
+        mode.countQuestions - 10
+    }
     
-    let mode: Setting
+    var mode: Setting
     
     required init(mode: Setting) {
         self.mode = mode
     }
-    // MARK: - Subviews
+    
     func setBarButton(button: UIButton, navigationItem: UINavigationItem) {
         let barButton = UIBarButtonItem(customView: button)
         navigationItem.leftBarButtonItem = barButton
@@ -71,7 +76,14 @@ class CountQuestionsViewModel: CountQuestionsViewModelProtocol {
         label.attributedText = attributed
         return label
     }
-    // MARK: - Constraints
+    
+    func setCountQuestionsFromRow(_ row: Int) {
+        let countQuestions = row + 10
+        let averageTime = 5 * countQuestions
+        setCountQuestions(countQuestions)
+        setTimeAllQuestions(averageTime)
+    }
+    
     func setSquare(subview: UIView, sizes: CGFloat) {
         NSLayoutConstraint.activate([
             subview.widthAnchor.constraint(equalToConstant: sizes),
@@ -88,5 +100,13 @@ extension CountQuestionsViewModel {
             .font: font ?? "",
             .foregroundColor: color
         ])
+    }
+    
+    internal func setCountQuestions(_ countQuestions: Int) {
+        mode.countQuestions = countQuestions
+    }
+    
+    private func setTimeAllQuestions(_ time: Int) {
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = time
     }
 }

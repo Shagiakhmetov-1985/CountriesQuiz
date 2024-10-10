@@ -43,7 +43,6 @@ class SettingCell: UITableViewCell {
 
 extension SettingCell {
     private func setView(view: UIView) {
-        view.backgroundColor = .blueMiddlePersian
         view.layer.cornerRadius = 9
     }
     

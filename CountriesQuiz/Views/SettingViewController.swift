@@ -383,6 +383,7 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
 extension SettingViewController: SettingViewControllerInput {
     func dataToSetting(mode: Setting) {
         viewModel.setMode(mode)
+        tableView.reloadData()
     }
 }
 // MARK: - General methods
@@ -452,6 +453,7 @@ extension SettingViewController {
     private func transition(row: Int, section: Int) {
         switch (row, section) {
         case (0, 0): countQuestionsViewController()
+        case (1, 0): continentsViewController()
         default: break
         }
     }
@@ -462,6 +464,14 @@ extension SettingViewController {
         countQuestionsVC.viewModel = countQuestionsViewModel
         countQuestionsVC.delegate = self
         navigationController?.pushViewController(countQuestionsVC, animated: true)
+    }
+    
+    private func continentsViewController() {
+        let continentsViewModel = viewModel.continentsViewController()
+        let continentsVC = ContinentsViewController()
+        continentsVC.viewModel = continentsViewModel
+        continentsVC.delegate = self
+        navigationController?.pushViewController(continentsVC, animated: true)
     }
     // MARK: - Setting of checkmarks
     /*

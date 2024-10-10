@@ -46,6 +46,7 @@ class CountQuestionsViewController: UIViewController, UIPickerViewDataSource, UI
         pickerView.translatesAutoresizingMaskIntoConstraints = false
         pickerView.dataSource = self
         pickerView.delegate = self
+        pickerView.selectRow(viewModel.currentRow, inComponent: 0, animated: false)
         return pickerView
     }()
     
@@ -74,6 +75,10 @@ class CountQuestionsViewController: UIViewController, UIPickerViewDataSource, UI
     
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
         viewModel.heightOfRows
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        viewModel.setCountQuestionsFromRow(row)
     }
     
     private func setDesign() {

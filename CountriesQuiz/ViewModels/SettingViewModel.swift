@@ -93,6 +93,7 @@ protocol SettingViewModelProtocol {
     func setConstraintsOnButton(_ labelFirst: UILabel, and labelSecond: UILabel, on button: UIButton)
     
     func countQuestionsViewController() -> CountQuestionsViewModelProtocol
+    func continentsViewController() -> ContinentsViewModelProtocol
 }
 
 class SettingViewModel: SettingViewModelProtocol {
@@ -255,6 +256,7 @@ class SettingViewModel: SettingViewModelProtocol {
     }
     
     func customCell(cell: SettingCell, indexPath: IndexPath) {
+        cell.view.backgroundColor = color(indexPath.section)[indexPath.row]
         cell.image.image = image(name: images(indexPath.section)[indexPath.row])
         cell.title.text = title(indexPath.section)[indexPath.row]
         cell.additional.text = additional(indexPath.section)[indexPath.row]
@@ -561,9 +563,20 @@ class SettingViewModel: SettingViewModelProtocol {
     func countQuestionsViewController() -> CountQuestionsViewModelProtocol {
         CountQuestionsViewModel(mode: mode)
     }
+    
+    func continentsViewController() -> ContinentsViewModelProtocol {
+        ContinentsViewModel(mode: mode)
+    }
     // MARK: - Constants, countinue
     private func checkSizeScreenIphone(_ view: UIView) -> CGFloat {
         view.frame.height > 736 ? 180 : 320
+    }
+    
+    private func color(_ section: Int) -> [UIColor] {
+        switch section {
+        case 0: [.gummigut, .greenEmerald, .redTangerineTango]
+        default: [.indigo, .grayStone]
+        }
     }
     
     private func image(name: String) -> UIImage? {

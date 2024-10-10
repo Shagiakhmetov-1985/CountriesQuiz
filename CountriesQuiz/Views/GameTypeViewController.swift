@@ -477,11 +477,11 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     @objc private func favorites() {
-        let favourites = viewModel.favouritesViewModel()
-        let favouritesVC = FavoritesViewController()
-        let navigationVC = UINavigationController(rootViewController: favouritesVC)
-        favouritesVC.viewModel = favourites
-        favouritesVC.delegate = self
+        let favorites = viewModel.favouritesViewModel()
+        let favoritesVC = FavoritesViewController()
+        let navigationVC = UINavigationController(rootViewController: favoritesVC)
+        favoritesVC.viewModel = favorites
+        favoritesVC.delegate = self
         navigationVC.modalPresentationStyle = .custom
         present(navigationVC, animated: true)
     }

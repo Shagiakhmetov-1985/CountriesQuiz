@@ -357,7 +357,7 @@ class GameTypeViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         guard sender.tag > 0 else { return viewModel.setAllCountries(sender) }
         viewModel.setCountContinents(sender.backgroundColor == .white ? -1 : 1)
         guard viewModel.countContinents > 4 else { return viewModel.condition(sender) }
-        viewModel.setAllCountries(sender)
+        viewModel.setAllCountries(buttonAllCountries)
     }
     // MARK: - Button press checkmark, change setting countdown
     @objc func countdown() {

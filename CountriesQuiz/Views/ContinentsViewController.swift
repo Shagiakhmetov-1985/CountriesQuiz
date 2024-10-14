@@ -100,6 +100,7 @@ class ContinentsViewController: UIViewController {
     private func setDesing() {
         view.backgroundColor = .blueMiddlePersian
         navigationItem.hidesBackButton = true
+        viewModel.counterContinents()
     }
     
     private func setBarButton() {

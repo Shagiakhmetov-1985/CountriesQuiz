@@ -519,7 +519,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
     }
     
     func condition(_ sender: UIButton) {
-        countContinents == 0 ? setAllCountries(sender) : setContinent(sender)
+        countContinents == 0 ? setAllCountries(buttonAllCountries) : setContinent(sender)
     }
     
     func buttonAllCountries(_ button: UIButton, isOn: Bool) {

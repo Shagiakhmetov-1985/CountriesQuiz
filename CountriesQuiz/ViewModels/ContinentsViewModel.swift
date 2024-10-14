@@ -27,6 +27,7 @@ protocol ContinentsViewModelProtocol {
     func attributedText(text: String, tag: Int) -> NSMutableAttributedString
     func isSelect(isOn: Bool) -> UIColor
     func setButtonsContinent(button: UIButton)
+    func counterContinents()
     
     func setContinents(sender: UIButton)
     func setSquare(subview: UIView, sizes: CGFloat)
@@ -57,6 +58,7 @@ class ContinentsViewModel: ContinentsViewModelProtocol {
     var mode: Setting
     
     private var countContinents = 0
+    private var background: UIColor = .blueMiddlePersian
     
     private var buttonAllCountries: UIButton!
     private var buttonAmerica: UIButton!
@@ -122,11 +124,16 @@ class ContinentsViewModel: ContinentsViewModelProtocol {
         }
     }
     
+    func counterContinents() {
+        counterContinents(continents: americaContinent, europeContinent,
+                          africaContinent, asiaContinent, oceaniaContinent)
+    }
+    
     func setContinents(sender: UIButton) {
         guard sender.tag > 0 else { return setAllCountries(sender) }
         setCountContinents(sender.backgroundColor == .white ? -1 : 1)
-        guard countContinents > 4 else { return  }
-        setAllCountries(sender)
+        guard countContinents > 4 else { return condition(sender) }
+        setAllCountries(buttonAllCountries)
     }
     
     func setSquare(subview: UIView, sizes: CGFloat) {
@@ -182,21 +189,38 @@ extension ContinentsViewModel {
         }
     }
     
+    private func counterContinents(continents: Bool...) {
+        continents.forEach { continent in
+            if continent {
+                setCountContinents(1)
+            }
+        }
+    }
+    
     private func setAllCountries(_ sender: UIButton) {
-        guard sender.backgroundColor == .blueMiddlePersian else { return }
+        guard sender.backgroundColor == background else { return }
         setCountContinents(0)
         buttonAllCountries(sender, isOn: true)
-        setColorButtons(buttons: buttonAmerica, buttonEurope, buttonAfrica, buttonAsia, buttonOcean)
+        turnOffButtons(buttons: buttonAmerica, buttonEurope, buttonAfrica, buttonAsia, buttonOcean)
     }
     
     private func buttonAllCountries(_ sender: UIButton, isOn: Bool) {
         let backgroundColor: UIColor = isOn ? .white : .blueMiddlePersian
         let textColor: UIColor = isOn ? .blueMiddlePersian : .white
         setColor(buttons: sender, backgroundColor: backgroundColor, textColor: textColor)
+        continentToggle(sender, isOn: isOn)
+    }
+    
+    private func setButtonOnOff(_ sender: UIButton) {
+        let backgroundColor = sender.backgroundColor == background ? .white : background
+        let textColor = sender.backgroundColor == background ? background : .white
+        let isOn = sender.backgroundColor == background ? true : false
+        setColor(buttons: sender, backgroundColor: backgroundColor, textColor: textColor)
+        continentToggle(sender, isOn: isOn)
     }
     
     private func condition(_ sender: UIButton) {
-        countContinents == 0 ? setCountContinents(0) : 
+        countContinents == 0 ? setAllCountries(buttonAllCountries) : setContinent(sender)
     }
     
     private func setColor(buttons: UIButton..., backgroundColor: UIColor,
@@ -209,9 +233,27 @@ extension ContinentsViewModel {
         }
     }
     
-    private func setColorButtons(buttons: UIButton...) {
+    private func turnOffButtons(buttons: UIButton...) {
         buttons.forEach { button in
             setColor(buttons: button, backgroundColor: .blueMiddlePersian, textColor: .white)
+            continentToggle(button, isOn: false)
+        }
+    }
+    
+    private func setContinent(_ sender: UIButton) {
+        setButtonOnOff(sender)
+        guard buttonAllCountries.backgroundColor == .white else { return }
+        buttonAllCountries(buttonAllCountries, isOn: false)
+    }
+    
+    private func continentToggle(_ sender: UIButton, isOn: Bool) {
+        switch sender.tag {
+        case 0: mode.allCountries = isOn
+        case 1: mode.americaContinent = isOn
+        case 2: mode.europeContinent = isOn
+        case 3: mode.africaContinent = isOn
+        case 4: mode.asiaContinent = isOn
+        default: mode.oceaniaContinent = isOn
         }
     }
 }

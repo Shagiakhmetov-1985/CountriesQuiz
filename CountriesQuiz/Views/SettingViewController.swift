@@ -454,6 +454,7 @@ extension SettingViewController {
         switch (row, section) {
         case (0, 0): countQuestionsViewController()
         case (1, 0): continentsViewController()
+        case (2, 0): timeViewController()
         default: break
         }
     }
@@ -472,6 +473,14 @@ extension SettingViewController {
         continentsVC.viewModel = continentsViewModel
         continentsVC.delegate = self
         navigationController?.pushViewController(continentsVC, animated: true)
+    }
+    
+    private func timeViewController() {
+        let timeViewModel = viewModel.timeViewController()
+        let timeVC = TimeViewController()
+        timeVC.viewModel = timeViewModel
+        timeVC.delegate = self
+        navigationController?.pushViewController(timeVC, animated: true)
     }
     // MARK: - Setting of checkmarks
     /*

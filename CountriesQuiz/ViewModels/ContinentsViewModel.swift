@@ -130,10 +130,7 @@ class ContinentsViewModel: ContinentsViewModelProtocol {
     }
     
     func setContinents(sender: UIButton) {
-        guard sender.tag > 0 else { return setAllCountries(sender) }
-        setCountContinents(sender.backgroundColor == .white ? -1 : 1)
-        guard countContinents > 4 else { return condition(sender) }
-        setAllCountries(buttonAllCountries)
+        sender.tag > 0 ? setContinent(sender) : setAllCountries(sender)
     }
     
     func setSquare(subview: UIView, sizes: CGFloat) {
@@ -197,53 +194,68 @@ extension ContinentsViewModel {
         }
     }
     
+    private func setContinent(_ sender: UIButton) {
+        setCountContinents(sender.backgroundColor == .white ? -1 : 1)
+        switch countContinents {
+        case 0, 5: setAllCountries(buttonAllCountries)
+        default: setButtonOnOff(sender)
+        }
+    }
+    
     private func setAllCountries(_ sender: UIButton) {
         guard sender.backgroundColor == background else { return }
         setCountContinents(0)
-        buttonAllCountries(sender, isOn: true)
         turnOffButtons(buttons: buttonAmerica, buttonEurope, buttonAfrica, buttonAsia, buttonOcean)
+        buttonAllCountries(sender, isOn: true)
+        setConstants()
     }
     
     private func buttonAllCountries(_ sender: UIButton, isOn: Bool) {
         let backgroundColor: UIColor = isOn ? .white : .blueMiddlePersian
         let textColor: UIColor = isOn ? .blueMiddlePersian : .white
-        setColor(buttons: sender, backgroundColor: backgroundColor, textColor: textColor)
-        continentToggle(sender, isOn: isOn)
+        changeData(sender: sender, backgroundColor, textColor: textColor, and: isOn)
     }
     
     private func setButtonOnOff(_ sender: UIButton) {
         let backgroundColor = sender.backgroundColor == background ? .white : background
         let textColor = sender.backgroundColor == background ? background : .white
         let isOn = sender.backgroundColor == background ? true : false
-        setColor(buttons: sender, backgroundColor: backgroundColor, textColor: textColor)
-        continentToggle(sender, isOn: isOn)
+        if allCountries {
+            buttonAllCountries(buttonAllCountries, isOn: false)
+        }
+        changeData(sender: sender, backgroundColor, textColor: textColor, and: isOn)
+        setConstants()
     }
     
     private func condition(_ sender: UIButton) {
         countContinents == 0 ? setAllCountries(buttonAllCountries) : setContinent(sender)
     }
     
-    private func setColor(buttons: UIButton..., backgroundColor: UIColor,
+    private func changeData(sender: UIButton, _ backgroundColor: UIColor,
+                            textColor: UIColor, and isOn: Bool) {
+        setColor(button: sender, backgroundColor: backgroundColor, textColor: textColor)
+        continentToggle(sender, isOn: isOn)
+    }
+    
+    private func setConstants() {
+        setCountRows()
+        setCountQuestions()
+        setTimeAllQuestions()
+    }
+    
+    private func setColor(button: UIButton, backgroundColor: UIColor,
                           textColor: UIColor) {
-        buttons.forEach { button in
-            UIView.animate(withDuration: 0.3) {
-                button.backgroundColor = backgroundColor
-                button.setTitleColor(textColor, for: .normal)
-            }
+        UIView.animate(withDuration: 0.3) {
+            button.backgroundColor = backgroundColor
+            button.setTitleColor(textColor, for: .normal)
         }
     }
     
     private func turnOffButtons(buttons: UIButton...) {
         buttons.forEach { button in
-            setColor(buttons: button, backgroundColor: .blueMiddlePersian, textColor: .white)
+            setColor(button: button, backgroundColor: .blueMiddlePersian, textColor: .white)
             continentToggle(button, isOn: false)
         }
-    }
-    
-    private func setContinent(_ sender: UIButton) {
-        setButtonOnOff(sender)
-        guard buttonAllCountries.backgroundColor == .white else { return }
-        buttonAllCountries(buttonAllCountries, isOn: false)
     }
     
     private func continentToggle(_ sender: UIButton, isOn: Bool) {
@@ -255,5 +267,42 @@ extension ContinentsViewModel {
         case 4: mode.asiaContinent = isOn
         default: mode.oceaniaContinent = isOn
         }
+    }
+    
+    private func setCountRows() {
+        let countCountries = countCountries(
+            continents: allCountries, americaContinent, europeContinent,
+            africaContinent, asiaContinent, oceaniaContinent)
+        let countRows = limitCountRows(countRows: countCountries - 9)
+        mode.countRows = countRows
+    }
+    
+    private func countCountries(continents: Bool...) -> Int {
+        var countRows = 0
+        var counter = 0
+        continents.forEach { continent in
+            if continent {
+                countRows += countCountries(tag: counter)
+            }
+            counter += 1
+        }
+        return countRows
+    }
+    
+    private func limitCountRows(countRows: Int) -> Int {
+        let limitCountRows = DefaultSetting.countRows.rawValue
+        return countRows > limitCountRows ? limitCountRows : countRows
+    }
+    
+    private func setCountQuestions() {
+        let countQuestions = mode.countQuestions
+        let countRows = mode.countRows + 9
+        let count = countRows < countQuestions ? countRows : countQuestions
+        mode.countQuestions = count
+    }
+    
+    private func setTimeAllQuestions() {
+        let time = 5 * mode.countQuestions
+        mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = time
     }
 }

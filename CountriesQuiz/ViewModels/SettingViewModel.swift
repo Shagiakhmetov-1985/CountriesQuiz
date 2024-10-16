@@ -94,6 +94,7 @@ protocol SettingViewModelProtocol {
     
     func countQuestionsViewController() -> CountQuestionsViewModelProtocol
     func continentsViewController() -> ContinentsViewModelProtocol
+    func timeViewController() -> TimeViewModelProtocol
 }
 
 class SettingViewModel: SettingViewModelProtocol {
@@ -160,6 +161,10 @@ class SettingViewModel: SettingViewModelProtocol {
     }
     private var seconds: Int {
         isOneQuestion() ? oneQuestionTime : allQuestionsTime
+    }
+    private var continents: String {
+        comma(continents: allCountries, americaContinent, europeContinent,
+              africaContinent, asiaContinent, oceaniaContinent)
     }
     
     private var buttonAllCountries: UIButton!
@@ -259,6 +264,7 @@ class SettingViewModel: SettingViewModelProtocol {
         cell.view.backgroundColor = color(indexPath.section)[indexPath.row]
         cell.image.image = image(name: images(indexPath.section)[indexPath.row])
         cell.title.text = title(indexPath.section)[indexPath.row]
+        cell.setTitle(size: size(row: indexPath.row, section: indexPath.section))
         cell.additional.text = additional(indexPath.section)[indexPath.row]
     }
     
@@ -567,6 +573,10 @@ class SettingViewModel: SettingViewModelProtocol {
     func continentsViewController() -> ContinentsViewModelProtocol {
         ContinentsViewModel(mode: mode)
     }
+    
+    func timeViewController() -> TimeViewModelProtocol {
+        TimeViewModel(mode: mode)
+    }
     // MARK: - Constants, countinue
     private func checkSizeScreenIphone(_ view: UIView) -> CGFloat {
         view.frame.height > 736 ? 180 : 320
@@ -600,8 +610,38 @@ class SettingViewModel: SettingViewModelProtocol {
     
     private func additional(_ section: Int) -> [String] {
         switch section {
-        case 0: ["\(countQuestions)", "", "\(time) сек."]
+        case 0: ["\(countQuestions)", "\(continents)", "\(time) сек."]
         default: ["Русский", ""]
+        }
+    }
+    
+    private func comma(continents: Bool...) -> String {
+        var text = ""
+        var counter = 0
+        continents.forEach { continent in
+            if continent {
+                text += text == "" ? title(counter) : ", \(title(counter))"
+            }
+            counter += 1
+        }
+        return text
+    }
+    
+    private func title(_ counter: Int) -> String {
+        switch counter {
+        case 0: "Все страны"
+        case 1: "Америка"
+        case 2: "Европа"
+        case 3: "Африка"
+        case 4: "Азия"
+        default: "Океания"
+        }
+    }
+    
+    private func size(row: Int, section: Int) -> CGFloat {
+        switch (row, section) {
+        case (1, 0): 18
+        default: 21
         }
     }
     // MARK: - Change color buttons and labels of continents

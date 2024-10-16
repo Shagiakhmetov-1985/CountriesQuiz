@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C327453F2CBFD765001F7C2A /* TimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C327453E2CBFD765001F7C2A /* TimeViewController.swift */; };
+		C32745412CBFD83D001F7C2A /* TimeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32745402CBFD83D001F7C2A /* TimeViewModel.swift */; };
 		C32C24392C7722880088D40D /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C24382C7722880088D40D /* DetailsViewController.swift */; };
 		C32C243B2C7722A80088D40D /* DetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C243A2C7722A80088D40D /* DetailsViewModel.swift */; };
 		C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3301D6C2B9C8D3E00024479 /* Box.swift */; };
@@ -68,6 +70,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C327453E2CBFD765001F7C2A /* TimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeViewController.swift; sourceTree = "<group>"; };
+		C32745402CBFD83D001F7C2A /* TimeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeViewModel.swift; sourceTree = "<group>"; };
 		C32C24382C7722880088D40D /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		C32C243A2C7722A80088D40D /* DetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewModel.swift; sourceTree = "<group>"; };
 		C3301D6C2B9C8D3E00024479 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
@@ -167,6 +171,7 @@
 				C33167C62BF9F7EB00504F47 /* SettingViewModel.swift */,
 				C3B972F92CB6A15B0013A32F /* CountQuestionsViewModel.swift */,
 				C3AF1F582CB7B70D0096EE1F /* ContinentsViewModel.swift */,
+				C32745402CBFD83D001F7C2A /* TimeViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -274,6 +279,7 @@
 				C3D292EA293F5F0900786752 /* SettingViewController.swift */,
 				C3B972F72CB6A11D0013A32F /* CountQuestionsViewController.swift */,
 				C3AF1F562CB7B6F60096EE1F /* ContinentsViewController.swift */,
+				C327453E2CBFD765001F7C2A /* TimeViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -414,6 +420,7 @@
 				C341078E2BBFE4C800D0E993 /* ResultsViewModel.swift in Sources */,
 				C3E2EB302938E7F300AB40AD /* AppDelegate.swift in Sources */,
 				C3E2EB322938E7F300AB40AD /* SceneDelegate.swift in Sources */,
+				C32745412CBFD83D001F7C2A /* TimeViewModel.swift in Sources */,
 				C36F58F82A7288FB0023E98F /* UIButton + Extension.swift in Sources */,
 				C38DF4DB2A8E4BF000550BCC /* IncorrectAnswersViewController.swift in Sources */,
 				C3B972F42CB6496E0013A32F /* SettingCell.swift in Sources */,
@@ -423,6 +430,7 @@
 				C33167C72BF9F7EB00504F47 /* SettingViewModel.swift in Sources */,
 				C3AF1F572CB7B6F60096EE1F /* ContinentsViewController.swift in Sources */,
 				C33BB07E2C70B7EC0083D907 /* Favorites.swift in Sources */,
+				C327453F2CBFD765001F7C2A /* TimeViewController.swift in Sources */,
 				C38C023F2981025C008C2202 /* ResultsViewController.swift in Sources */,
 				C3301D6D2B9C8D3E00024479 /* Box.swift in Sources */,
 				C3342B352ACD9E6600C75C6E /* IncorrectViewController.swift in Sources */,

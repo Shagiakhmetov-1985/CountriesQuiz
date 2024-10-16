@@ -21,6 +21,11 @@ class SettingCell: UITableViewCell {
         setConstraints()
     }
     
+    func setTitle(size: CGFloat) {
+        setTitle(title: additional, color: .blueMiddlePersian.withAlphaComponent(0.6),
+                 size: size, alignment: .right)
+    }
+    
     private func setSubviews() {
         addSubviews(subviews: view, image, title, additional, arrow, on: contentView)
     }
@@ -36,7 +41,6 @@ class SettingCell: UITableViewCell {
         setView(view: view)
         setImage(image: image)
         setTitle(title: title, color: .blueMiddlePersian, size: 19)
-        setTitle(title: additional, color: .blueMiddlePersian.withAlphaComponent(0.6), size: 21)
         setImageArrow(image: arrow)
     }
 }
@@ -50,13 +54,16 @@ extension SettingCell {
         image.tintColor = .white
     }
     
-    private func setTitle(title: UILabel, color: UIColor, size: CGFloat) {
+    private func setTitle(title: UILabel, color: UIColor, size: CGFloat,
+                          alignment: NSTextAlignment? = nil) {
         title.textColor = color
         title.font = UIFont(name: "GillSans", size: size)
+        title.textAlignment = alignment ?? .natural
+        title.numberOfLines = 0
     }
     
     private func setImageArrow(image: UIImageView) {
-        let size = UIImage.SymbolConfiguration(pointSize: 23)
+        let size = UIImage.SymbolConfiguration(pointSize: 20)
         image.image = UIImage(systemName: "chevron.right", withConfiguration: size)
         image.tintColor = .blueMiddlePersian.withAlphaComponent(0.4)
     }
@@ -82,8 +89,9 @@ extension SettingCell {
         ])
         
         NSLayoutConstraint.activate([
+            additional.leadingAnchor.constraint(equalTo: title.trailingAnchor, constant: 10),
             additional.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            additional.trailingAnchor.constraint(equalTo: arrow.leadingAnchor, constant: -10)
+            additional.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30)
         ])
         
         NSLayoutConstraint.activate([

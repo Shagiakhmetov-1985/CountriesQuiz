@@ -423,7 +423,7 @@ class QuizOfCapitalsViewModel: QuizOfCapitalsViewModelProtocol {
     // MARK: - Get countries for questions, countinue
     private func getRandomCountries() -> [Countries] {
         checkContinents(continents: mode.allCountries, mode.americaContinent,
-                        mode.europeContinent, mode.africaContinent, mode.asiaContinent,
+                        mode.europaContinent, mode.africaContinent, mode.asiaContinent,
                         mode.oceaniaContinent)
     }
     

@@ -12,7 +12,7 @@ struct Setting: Codable {
     var countRows: Int
     var allCountries: Bool
     var americaContinent: Bool
-    var europeContinent: Bool
+    var europaContinent: Bool
     var africaContinent: Bool
     var asiaContinent: Bool
     var oceaniaContinent: Bool
@@ -43,7 +43,7 @@ extension Setting {
             countRows: DefaultSetting.countRows.rawValue,
             allCountries: true,
             americaContinent: false,
-            europeContinent: false,
+            europaContinent: false,
             africaContinent: false,
             asiaContinent: false,
             oceaniaContinent: false,

@@ -43,7 +43,7 @@ class ContinentsViewModel: ContinentsViewModelProtocol {
         mode.americaContinent
     }
     var europeContinent: Bool {
-        mode.europeContinent
+        mode.europaContinent
     }
     var africaContinent: Bool {
         mode.africaContinent
@@ -262,7 +262,7 @@ extension ContinentsViewModel {
         switch sender.tag {
         case 0: mode.allCountries = isOn
         case 1: mode.americaContinent = isOn
-        case 2: mode.europeContinent = isOn
+        case 2: mode.europaContinent = isOn
         case 3: mode.africaContinent = isOn
         case 4: mode.asiaContinent = isOn
         default: mode.oceaniaContinent = isOn

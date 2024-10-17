@@ -130,7 +130,7 @@ class GameTypeViewModel: GameTypeViewModelProtocol {
         mode.americaContinent
     }
     var europeContinent: Bool {
-        mode.europeContinent
+        mode.europaContinent
     }
     var africaContinent: Bool {
         mode.africaContinent
@@ -1147,7 +1147,7 @@ extension GameTypeViewModel {
     }
     
     private func setEuropeContinent(_ bool: Bool) {
-        mode.europeContinent = bool
+        mode.europaContinent = bool
     }
     
     private func setAfricaContinent(_ bool: Bool) {

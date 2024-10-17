@@ -32,35 +32,58 @@ class TimeViewController: UIViewController, UIPickerViewDataSource, UIPickerView
     }()
     
     private lazy var labelTitle: UILabel = {
-        viewModel.setLabel(text: viewModel.title, font: "GillSans-Bold", size: 21)
+        viewModel.setLabel(text: viewModel.title, color: .white, font: "GillSans-Bold", size: 21)
     }()
     
     private lazy var labelDescription: UILabel = {
-        viewModel.setLabel(text: viewModel.description, font: "GillSans", size: 20)
+        viewModel.setLabel(text: viewModel.description, color: .white, font: "GillSans", size: 20)
+    }()
+    
+    private lazy var labelTurnOnOff: UILabel = {
+        viewModel.setLabel(text: viewModel.titleTimer, color: .blueMiddlePersian, font: "mr_fontick", size: 26)
+    }()
+    
+    private lazy var switchToggle: UISwitch = {
+        let switchOn = UISwitch()
+        switchOn.isOn = viewModel.isOn
+        switchOn.onTintColor = .blueMiddlePersian
+        switchOn.tintColor = .grayLight
+        switchOn.layer.cornerRadius = switchOn.frame.height / 2
+        switchOn.backgroundColor = .grayLight
+        switchOn.clipsToBounds = true
+        switchOn.addTarget(self, action: #selector(switchAction), for: .valueChanged)
+        switchOn.translatesAutoresizingMaskIntoConstraints = false
+        return switchOn
+    }()
+    
+    private lazy var viewToggle: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 10
+        view.translatesAutoresizingMaskIntoConstraints = false
+        viewModel.setSubviews(subviews: labelTurnOnOff, switchToggle, on: view)
+        viewModel.setConstraints(labelTurnOnOff, switchToggle, on: view)
+        return view
     }()
     
     private lazy var segmentedControl: UISegmentedControl = {
         let segment = UISegmentedControl(items: viewModel.items)
-        let font = UIFont(name: "mr_fontick", size: 26)
-        let titleColorSelected: UIColor = viewModel.colorSelected
-        let titleColorNormal: UIColor = viewModel.colorNormal
-        let borderColor: UIColor = viewModel.colorSelected
         segment.backgroundColor = viewModel.colorSelected
         segment.selectedSegmentTintColor = viewModel.colorNormal
         segment.setTitleTextAttributes([
             NSAttributedString.Key
-                .font: font ?? "",
-            .foregroundColor: titleColorSelected
+                .font: viewModel.font ?? "",
+            .foregroundColor: viewModel.colorSelected
         ], for: .selected)
         segment.setTitleTextAttributes([
             NSAttributedString.Key
-                .font: font ?? "",
-            .foregroundColor: titleColorNormal
+                .font: viewModel.font ?? "",
+            .foregroundColor: viewModel.colorNormal
         ], for: .normal)
         segment.selectedSegmentIndex = viewModel.segmentIndex
         segment.isUserInteractionEnabled = viewModel.isTime
         segment.layer.borderWidth = 5
-        segment.layer.borderColor = borderColor.cgColor
+        segment.layer.borderColor = viewModel.colorSelected.cgColor
         segment.addTarget(self, action: #selector(segmentAction), for: .valueChanged)
         segment.translatesAutoresizingMaskIntoConstraints = false
         return segment
@@ -78,6 +101,15 @@ class TimeViewController: UIViewController, UIPickerViewDataSource, UIPickerView
         let stackView = UIStackView(arrangedSubviews: [pickerViewOne, pickerViewTwo])
         stackView.spacing = 15
         stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    private lazy var stackView: UIStackView = {
+        let stackView = UIStackView(
+            arrangedSubviews: [segmentedControl, stackViewPickerViews])
+        stackView.axis = .vertical
+        stackView.spacing = 15
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -124,12 +156,16 @@ class TimeViewController: UIViewController, UIPickerViewDataSource, UIPickerView
     
     private func setSubviews() {
         viewModel.setSubviews(subviews: image, labelTitle, labelDescription,
-                              segmentedControl, stackViewPickerViews, to: view)
+                              viewToggle, stackView, on: view)
     }
     
     @objc private func backToSetting() {
         delegate.dataToSetting(mode: viewModel.mode)
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func switchAction() {
+        viewModel.switchToggle(segment: segmentedControl)
     }
     
     @objc private func segmentAction() {
@@ -140,7 +176,7 @@ class TimeViewController: UIViewController, UIPickerViewDataSource, UIPickerView
 extension TimeViewController {
     private func setPickerView(tag: Int) -> UIPickerView {
         let pickerView = UIPickerView()
-        pickerView.backgroundColor = .white
+        pickerView.backgroundColor = viewModel.backgroundColor(tag)
         pickerView.layer.cornerRadius = 13
         pickerView.translatesAutoresizingMaskIntoConstraints = false
         pickerView.tag = tag
@@ -174,17 +210,17 @@ extension TimeViewController {
         ])
         
         NSLayoutConstraint.activate([
-            segmentedControl.topAnchor.constraint(equalTo: labelDescription.bottomAnchor, constant: 10),
-            segmentedControl.heightAnchor.constraint(equalToConstant: 50),
-            segmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            segmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            viewToggle.heightAnchor.constraint(equalToConstant: 50),
+            viewToggle.topAnchor.constraint(equalTo: labelDescription.bottomAnchor, constant: 20),
+            viewToggle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            viewToggle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
         NSLayoutConstraint.activate([
-            stackViewPickerViews.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20),
-            stackViewPickerViews.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stackViewPickerViews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            stackViewPickerViews.heightAnchor.constraint(equalToConstant: 200)
+            stackView.topAnchor.constraint(equalTo: viewToggle.bottomAnchor, constant: 15),
+            stackView.heightAnchor.constraint(equalToConstant: 270),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
     }
 }

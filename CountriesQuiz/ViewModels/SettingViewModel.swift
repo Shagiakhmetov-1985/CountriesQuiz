@@ -157,7 +157,7 @@ class SettingViewModel: SettingViewModelProtocol {
         DefaultSetting.countRows.rawValue
     }
     private var time: String {
-        isTime() ? "\(seconds)" : "Нет"
+        isTime() ? "\(seconds) сек." : "Нет"
     }
     private var seconds: Int {
         isOneQuestion() ? oneQuestionTime : allQuestionsTime
@@ -610,7 +610,7 @@ class SettingViewModel: SettingViewModelProtocol {
     
     private func additional(_ section: Int) -> [String] {
         switch section {
-        case 0: ["\(countQuestions)", "\(continents)", "\(time) сек."]
+        case 0: ["\(countQuestions)", "\(continents)", "\(time)"]
         default: ["Русский", ""]
         }
     }

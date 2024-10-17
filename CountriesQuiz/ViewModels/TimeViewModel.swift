@@ -10,7 +10,10 @@ import UIKit
 protocol TimeViewModelProtocol {
     var title: String { get }
     var description: String { get }
+    var titleTimer: String { get }
+    var isOn: Bool { get }
     var items: [String] { get }
+    var font: UIFont? { get }
     var isTime: Bool { get }
     var colorSelected: UIColor { get }
     var colorNormal: UIColor { get }
@@ -23,23 +26,31 @@ protocol TimeViewModelProtocol {
     init(mode: Setting)
     
     func setBarButton(button: UIButton, navigationItem: UINavigationItem)
-    func setSubviews(subviews: UIView..., to subviewOther: UIView)
-    func setLabel(text: String, font: String, size: CGFloat) -> UILabel
+    func setSubviews(subviews: UIView..., on subviewOther: UIView)
+    func setLabel(text: String, color: UIColor, font: String, size: CGFloat) -> UILabel
     func setPickerView(_ pickerView: UIPickerView)
     func numberOfRows(_ pickerView: UIPickerView) -> Int
     func setTitles(pickerView: UIPickerView,_ row: Int, and segment: UISegmentedControl) -> UIView
+    func backgroundColor(_ tag: Int) -> UIColor
     func isEnabled(_ tag: Int) -> Bool
     func setRow(_ tag: Int) -> Int
     
+    func switchToggle(segment: UISegmentedControl)
     func segmentSelect(segment: UISegmentedControl)
     func setTimeFromRow(pickerView: UIPickerView, and row: Int)
+    func setConstraints(_ label: UILabel,_ switch: UISwitch, on view: UIView)
     func setSquare(subview: UIView, sizes: CGFloat)
 }
 
 class TimeViewModel: TimeViewModelProtocol {
     var title = "Время для вопросов"
-    var description = "Установите таймер для одного вопроса или же таймер для всех вопросов. При истечении времени для одного вопроса, станет недоступным сам вопрос, а для всех вопросов - завершается игра. Также таймер вы можете отключить."
+    var description = "Установите таймер для одного вопроса или же таймер для всех вопросов. При истечении времени для одного вопроса, станет недоступным сам вопрос, а для всех вопросов - завершается игра."
+    var titleTimer = "Таймер"
+    var isOn: Bool {
+        isTime
+    }
     var items = ["Один вопрос", "Все вопросы"]
+    var font = UIFont(name: "mr_fontick", size: 26)
     var isTime: Bool {
         mode.timeElapsed.timeElapsed ? true : false
     }
@@ -78,17 +89,17 @@ class TimeViewModel: TimeViewModelProtocol {
         navigationItem.leftBarButtonItem = barButton
     }
     
-    func setSubviews(subviews: UIView..., to subviewOther: UIView) {
+    func setSubviews(subviews: UIView..., on subviewOther: UIView) {
         subviews.forEach { subview in
             subviewOther.addSubview(subview)
         }
     }
     
-    func setLabel(text: String, font: String, size: CGFloat) -> UILabel {
+    func setLabel(text: String, color: UIColor, font: String, size: CGFloat) -> UILabel {
         let label = UILabel()
         label.text = text
         label.font = UIFont(name: font, size: size)
-        label.textColor = .white
+        label.textColor = color
         label.textAlignment = .center
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -125,10 +136,17 @@ class TimeViewModel: TimeViewModelProtocol {
         return label
     }
     
+    func backgroundColor(_ tag: Int) -> UIColor {
+        switch tag {
+        case 1: isTime ? isOneQuestion ? .white : .skyGrayLight : .skyGrayLight
+        default: isTime ? isOneQuestion ? .skyGrayLight : .white : .skyGrayLight
+        }
+    }
+    
     func isEnabled(_ tag: Int) -> Bool {
         switch tag {
-        case 1: isOneQuestion ? true : false
-        default: isOneQuestion ? false : true
+        case 1: isTime ? isOneQuestion ? true : false : false
+        default: isTime ? isOneQuestion ? false : true : false
         }
     }
     
@@ -136,13 +154,37 @@ class TimeViewModel: TimeViewModelProtocol {
         tag == 1 ? timeOneQuestion - 6 : timeAllQuestions - 4 * mode.countQuestions
     }
     
+    func switchToggle(segment: UISegmentedControl) {
+        let isOn = isTime ? false : true
+        setTime(isOn)
+        changeSegment(segment)
+        changePickerView(isOneQuestion ? pickerViewOne : pickerViewTwo, isOn: isOn)
+        reloadPickerViews(pickerViews: isOneQuestion ? pickerViewOne : pickerViewTwo)
+    }
+    
     func segmentSelect(segment: UISegmentedControl) {
-        setPickerViewOnOff(segment.selectedSegmentIndex == 0 ? pickerViewOne : pickerViewTwo)
+        let index = segment.selectedSegmentIndex
+        let isOn = index == 0 ? true : false
+        setOneQuestion(isOn)
+        setPickerViewOnOff(index == 0 ? pickerViewOne : pickerViewTwo)
+        reloadPickerViews(pickerViews: pickerViewOne, pickerViewTwo)
     }
     
     func setTimeFromRow(pickerView: UIPickerView, and row: Int) {
         let time = pickerView.tag == 1 ? row + 6 : row + 4 * mode.countQuestions
         pickerView.tag == 1 ? setTimeOneQuestion(time) : setTimeAllQuestions(time)
+    }
+    
+    func setConstraints(_ label: UILabel, _ switchOn: UISwitch, on view: UIView) {
+        NSLayoutConstraint.activate([
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            switchOn.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            switchOn.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
     }
     
     func setSquare(subview: UIView, sizes: CGFloat) {
@@ -155,13 +197,30 @@ class TimeViewModel: TimeViewModelProtocol {
 
 extension TimeViewModel {
     private func setPickerViewOnOff(_ pickerView: UIPickerView) {
-        if pickerView.tag == 0 {
+        if pickerView.tag == 1 {
             changePickerView(pickerViewOne, isOn: true)
             changePickerView(pickerViewTwo, isOn: false)
         } else {
             changePickerView(pickerViewOne, isOn: false)
             changePickerView(pickerViewTwo, isOn: true)
         }
+    }
+    
+    private func changeSegment(_ segment: UISegmentedControl) {
+        segment.backgroundColor = colorSelected
+        segment.selectedSegmentTintColor = colorNormal
+        segment.setTitleTextAttributes([
+            NSAttributedString.Key
+                .font: font ?? "",
+            .foregroundColor: colorSelected
+        ], for: .selected)
+        segment.setTitleTextAttributes([
+            NSAttributedString.Key
+                .font: font ?? "",
+            .foregroundColor: colorNormal
+        ], for: .normal)
+        segment.layer.borderColor = colorSelected.cgColor
+        segment.isUserInteractionEnabled = isTime
     }
     
     private func changePickerView(_ pickerView: UIPickerView, isOn: Bool) {
@@ -185,9 +244,15 @@ extension TimeViewModel {
     private func color(tag: Int, segment: UISegmentedControl) -> UIColor {
         switch segment.selectedSegmentIndex {
         case 0:
-            return tag == 1 ? .blueMiddlePersian : .grayLight
+            return isTime ? tag == 1 ? .blueMiddlePersian : .grayLight : .grayLight
         default:
-            return tag == 1 ? .grayLight : .blueMiddlePersian
+            return isTime ? tag == 1 ? .grayLight : .blueMiddlePersian : .grayLight
+        }
+    }
+    
+    private func reloadPickerViews(pickerViews: UIPickerView...) {
+        pickerViews.forEach { pickerView in
+            pickerView.reloadAllComponents()
         }
     }
     
@@ -197,5 +262,13 @@ extension TimeViewModel {
     
     private func setTimeAllQuestions(_ time: Int) {
         mode.timeElapsed.questionSelect.questionTime.allQuestionsTime = time
+    }
+    
+    private func setOneQuestion(_ isOn: Bool) {
+        mode.timeElapsed.questionSelect.oneQuestion = isOn
+    }
+    
+    private func setTime(_ isOn: Bool) {
+        mode.timeElapsed.timeElapsed = isOn
     }
 }
